@@ -22,6 +22,6 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "descubre-uq"
+rootProject.name = "trip-link"
 include(":app")
  
