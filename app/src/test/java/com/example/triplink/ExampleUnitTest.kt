@@ -1,4 +1,4 @@
-package com.example.descubre_uq
+package com.example.triplink
 
 import org.junit.Test
 

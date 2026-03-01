@@ -1,4 +1,4 @@
-package com.example.descubre_uq.ui.theme
+package com.example.triplink.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
