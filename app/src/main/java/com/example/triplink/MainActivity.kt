@@ -13,6 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.triplink.features.home.HomeScreen
 import com.example.triplink.features.login.LoginScreen
+import com.example.triplink.features.recoverypassword.RecoveryPasswordScreen
 import com.example.triplink.ui.theme.DescubreuqTheme
 
 class MainActivity : ComponentActivity() {
@@ -20,7 +21,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            LoginScreen()
+            RecoveryPasswordScreen()
         }
     }
 }
