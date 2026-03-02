@@ -6,6 +6,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.interaction.collectIsHoveredAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -27,10 +28,13 @@ import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.triplink.R
 import com.example.triplink.core.components.AppTitle
@@ -53,7 +57,16 @@ fun LoginScreen(
             contentDescription = "Icono de la aplicacion",
             Modifier.size(200.dp)
         )
+
         AppTitle()
+
+        Text(
+            text = "Bienvenido de nuevo",
+            modifier = Modifier.fillMaxWidth().padding(bottom = 30.dp),
+            textAlign = TextAlign.Center,
+            fontSize = 30.sp,
+            fontWeight = FontWeight.ExtraBold,
+        )
 
         FormField(
             label = "Email",
@@ -95,9 +108,10 @@ fun LoginScreen(
             colors = ButtonDefaults.textButtonColors(
                 contentColor = Color(0xFF42A5F5)
             ),
-            modifier = Modifier.background(
+            modifier = Modifier.padding(bottom = 8.dp).background(
                 color = if (isHovered) Color(0xFF42A5F5).copy(alpha = 0.1f) else Color.Transparent,
                 shape = RoundedCornerShape(8.dp)
+
             )
         ) {
             Text(text = "¿Olvidaste tu contraseña?")
@@ -114,5 +128,28 @@ fun LoginScreen(
             enabled = viewModel.isFormValid,
             text = "Iniciar Sesión"
         )
+
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(space = 0.dp, alignment = Alignment.CenterHorizontally)
+        ) {
+            Text(text = "¿No tienes una cuenta?")
+            TextButton(
+                onClick = {
+                    // Navegar a la pantalla de recuperación de contraseña
+                },
+                interactionSource = viewModel.forgotPasswordInteractionSource,
+                colors = ButtonDefaults.textButtonColors(
+                    contentColor = Color(0xFF42A5F5)
+                ),
+                modifier = Modifier.background(
+                    color = if (isHovered) Color(0xFF42A5F5).copy(alpha = 0.1f) else Color.Transparent,
+                    shape = RoundedCornerShape(8.dp)
+                )
+            ) {
+                Text(text = "Crea tu cuenta")
+            }
+        }
     }
 }
