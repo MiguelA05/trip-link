@@ -6,7 +6,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.interaction.collectIsHoveredAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -40,6 +39,7 @@ import com.example.triplink.R
 import com.example.triplink.core.components.AppTitle
 import com.example.triplink.core.components.FormField
 import com.example.triplink.core.components.GeneralButton
+import com.example.triplink.core.components.LinkTextRow
 
 @Composable
 fun LoginScreen(
@@ -129,27 +129,12 @@ fun LoginScreen(
             text = "Iniciar Sesión"
         )
 
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            verticalAlignment = CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(space = 0.dp, alignment = Alignment.CenterHorizontally)
-        ) {
-            Text(text = "¿No tienes una cuenta?")
-            TextButton(
-                onClick = {
-                    // Navegar a la pantalla de recuperación de contraseña
-                },
-                interactionSource = viewModel.forgotPasswordInteractionSource,
-                colors = ButtonDefaults.textButtonColors(
-                    contentColor = Color(0xFF42A5F5)
-                ),
-                modifier = Modifier.background(
-                    color = if (isHovered) Color(0xFF42A5F5).copy(alpha = 0.1f) else Color.Transparent,
-                    shape = RoundedCornerShape(8.dp)
-                )
-            ) {
-                Text(text = "Crea tu cuenta")
+        LinkTextRow(
+            text = "¿No tienes una cuenta?",
+            buttonText = "Crea tu cuenta",
+            onClick = {
+                // Navegar a la pantalla de registro
             }
-        }
+        )
     }
 }
