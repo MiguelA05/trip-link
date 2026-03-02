@@ -20,7 +20,10 @@ fun FormField(
     placeholder: String,
     modifier: Modifier = Modifier,
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
-    visualTransformation: VisualTransformation = VisualTransformation.None
+    visualTransformation: VisualTransformation = VisualTransformation.None,
+    isError: Boolean = false,
+    errorText: String? = null,
+    trailingIcon: @Composable (() -> Unit)? = null
 ) {
     Column(
         modifier = modifier,
@@ -39,6 +42,9 @@ fun FormField(
             placeholder = { Text(text = placeholder) },
             keyboardOptions = keyboardOptions,
             visualTransformation = visualTransformation,
+            isError = isError,
+            supportingText = errorText?.let { { Text(text = it) } },
+            trailingIcon = trailingIcon,
             singleLine = true
         )
     }

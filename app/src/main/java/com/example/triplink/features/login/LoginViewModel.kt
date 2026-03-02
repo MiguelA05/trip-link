@@ -1,9 +1,9 @@
 package com.example.triplink.features.login
 
 import android.util.Patterns
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import com.example.triplink.core.utils.ValidatedField
@@ -41,6 +41,12 @@ class LoginViewModel : ViewModel() {
 
     var showDialog by
     mutableStateOf(false)
+
+    val forgotPasswordInteractionSource = MutableInteractionSource()
+
+    fun togglePasswordVisibility() {
+        passwordVisible = !passwordVisible
+    }
 
 
     fun resetForm() {
