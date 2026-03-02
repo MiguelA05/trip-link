@@ -20,6 +20,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.triplink.R
+import com.example.triplink.core.components.AppTitle
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -59,15 +60,7 @@ fun RecoveryPasswordScreen(
                 painter = painterResource(R.drawable.logo),
                 "Icono de la aplicacion"
             )
-            Row() {
-                Text(
-                    text = "Trip"
-                )
-                Text(
-                    text = "Link"
-                )
-
-            }
+            AppTitle()
             Text(
                 text = "Introduce el correo electrónico de tu cuenta y te enviaremos un correo electrónico " +
                         "con un enlace para recuperar tu contraseña"
