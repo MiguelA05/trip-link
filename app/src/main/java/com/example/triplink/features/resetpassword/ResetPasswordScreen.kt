@@ -41,6 +41,7 @@ import com.example.triplink.R
 import com.example.triplink.core.components.AppTitle
 import com.example.triplink.core.components.FormField
 import com.example.triplink.core.components.GeneralButton
+import com.example.triplink.core.components.GeneralTopBar
 import com.example.triplink.core.utils.RequestResult
 import com.example.triplink.ui.theme.PrincipalBlue
 import com.example.triplink.ui.theme.PrincipalRed
@@ -79,21 +80,9 @@ fun ResetPasswordScreen(
             }
         },
         topBar = {
-            CenterAlignedTopAppBar(
-                title = {
-                    Text(
-                        text = "Restablecer Contraseña",
-                        style = MaterialTheme.typography.titleLarge
-                    )
-                },
-                navigationIcon = {
-                    IconButton(onClick = onBack) {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = "Volver"
-                        )
-                    }
-                }
+            GeneralTopBar(
+                title = "Restablecer Contraseña",
+                onBack = {}
             )
         }
     ) { paddingValues ->

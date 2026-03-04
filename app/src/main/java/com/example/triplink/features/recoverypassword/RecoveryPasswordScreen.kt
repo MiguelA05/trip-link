@@ -9,12 +9,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Email
-import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Snackbar
@@ -38,6 +34,7 @@ import com.example.triplink.core.components.AppTitle
 import com.example.triplink.core.components.FormField
 import com.example.triplink.core.components.GeneralAlertDialog
 import com.example.triplink.core.components.GeneralButton
+import com.example.triplink.core.components.GeneralTopBar
 import com.example.triplink.core.utils.RequestResult
 import com.example.triplink.ui.theme.PrincipalBlue
 import com.example.triplink.ui.theme.PrincipalRed
@@ -47,6 +44,7 @@ import kotlinx.coroutines.delay
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RecoveryPasswordScreen(
+    onBack: () -> Unit,
     viewModel: RecoveryPasswordViewModel = viewModel()
 ) {
     val snackbarHostState = remember { SnackbarHostState() }
@@ -87,24 +85,9 @@ fun RecoveryPasswordScreen(
             }
         },
         topBar = {
-            CenterAlignedTopAppBar(
-                title = {
-                    Text(
-                        text = "Recuperar Contraseña",
-                        style = MaterialTheme.typography.titleLarge
-                    )
-                },
-                navigationIcon = {
-                    IconButton(
-                        onClick = { /* Navegar atrás */ },
-                        content = {
-                            Icon(
-                                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                                contentDescription = "Back"
-                            )
-                        }
-                    )
-                }
+            GeneralTopBar(
+                title = "Recuperar Contraseña",
+                onBack = onBack
             )
         }
     ) { paddingValues ->
