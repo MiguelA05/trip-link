@@ -20,21 +20,20 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.triplink.core.components.AppTitle
 import com.example.triplink.core.components.FormField
 import com.example.triplink.core.components.GeneralButton
 import com.example.triplink.core.components.LinkTextRow
+import com.example.triplink.features.login.LoginViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RegisterScreen(
+    registerViewModel: RegisterViewModel = viewModel(),
     onBackClick: () -> Unit = {},
     onLoginClick: () -> Unit = {}
 ) {
-    var name by remember { mutableStateOf("") }
-    var email by remember { mutableStateOf("") }
-    var password by remember { mutableStateOf("") }
-    var addExactLocation by remember { mutableStateOf(false) }
 
     Scaffold(
         topBar = {
@@ -93,8 +92,8 @@ fun RegisterScreen(
 
             FormField(
                 label = "Nombre Completo",
-                value = name,
-                onValueChange = { name = it },
+                value = registerViewModel.name,
+                onValueChange = { registerViewModel.name = it },
                 placeholder = "John Doe",
                 modifier = Modifier.fillMaxWidth()
             )
@@ -103,8 +102,8 @@ fun RegisterScreen(
 
             FormField(
                 label = "Correo electrónico",
-                value = email,
-                onValueChange = { email = it },
+                value = registerViewModel.email,
+                onValueChange = { registerViewModel.email = it },
                 placeholder = "tu@email.com",
                 modifier = Modifier.fillMaxWidth()
             )
@@ -113,8 +112,8 @@ fun RegisterScreen(
 
             FormField(
                 label = "Contraseña",
-                value = password,
-                onValueChange = { password = it },
+                value = registerViewModel.password,
+                onValueChange = { registerViewModel.password = it },
                 placeholder = "••••••••••••",
                 modifier = Modifier.fillMaxWidth()
             )
@@ -146,8 +145,8 @@ fun RegisterScreen(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Checkbox(
-                    checked = addExactLocation,
-                    onCheckedChange = { addExactLocation = it },
+                    checked = registerViewModel.addExactLocation,
+                    onCheckedChange = { registerViewModel.addExactLocation = it },
                     colors = CheckboxDefaults.colors(checkedColor = Color(0xFF2563EB))
                 )
                 Text(
@@ -157,7 +156,7 @@ fun RegisterScreen(
                 )
             }
 
-            if (addExactLocation) {
+            if (registerViewModel.addExactLocation) {
                 Spacer(modifier = Modifier.height(12.dp))
                 // Map Placeholder
                 Box(
