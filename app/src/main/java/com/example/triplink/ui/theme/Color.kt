@@ -44,4 +44,6 @@ val PrincipalWhite = Color(0xFFFFFFFF)
 
 val PrincipalBlack = Color(0xFF000000)
 
-
+val FormFieldPlaceholder = Color(0xFF9E9E9E)
+val FormFieldBackground = Color(0xFFF5F5F5)
+val FormFieldBorder = Color(0xFFE0E0E0)

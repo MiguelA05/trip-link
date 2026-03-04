@@ -2,22 +2,20 @@ package com.example.triplink.core.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.interaction.collectIsHoveredAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.example.triplink.ui.theme.PrincipalBlack
 import com.example.triplink.ui.theme.PrincipalBlue
 
@@ -38,9 +36,9 @@ fun LinkTextRow(
     ) {
         Text(
             text = text,
-            fontSize = 16.sp,
-            color = textColor
-
+            style = MaterialTheme.typography.bodyLarge.copy(
+                color = textColor
+            )
         )
         TextButton(
             onClick = onClick,
@@ -55,7 +53,10 @@ fun LinkTextRow(
         ) {
             Text(
                 text = buttonText,
-                fontSize = 16.sp,)
+                style = MaterialTheme.typography.bodyLarge.copy(
+                    color = PrincipalBlue
+                )
+            )
         }
     }
 }

@@ -6,18 +6,22 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
+import com.example.triplink.ui.theme.FormFieldBackground
+import com.example.triplink.ui.theme.FormFieldBorder
+import com.example.triplink.ui.theme.FormFieldPlaceholder
+import com.example.triplink.ui.theme.PrincipalBlack
+import com.example.triplink.ui.theme.PrincipalRed
 
 @Composable
 fun FormField(
@@ -40,9 +44,10 @@ fun FormField(
             modifier = Modifier.fillMaxWidth(),
             textAlign = TextAlign.Left,
             text = label,
-            fontWeight = FontWeight.SemiBold,
-            fontSize = 14.sp,
-            color = Color.Black
+            style = MaterialTheme.typography.labelLarge.copy(
+                fontWeight = FontWeight.SemiBold,
+                color = PrincipalBlack
+            )
         )
 
         OutlinedTextField(
@@ -52,28 +57,36 @@ fun FormField(
             placeholder = { 
                 Text(
                     text = placeholder,
-                    color = Color(0xFF9E9E9E),
-                    fontSize = 16.sp
+                    style = MaterialTheme.typography.bodyLarge.copy(
+                        color = FormFieldPlaceholder
+                    )
                 ) 
             },
             keyboardOptions = keyboardOptions,
             visualTransformation = visualTransformation,
             isError = isError,
             supportingText = if (isError && errorText != null) {
-                { Text(text = errorText) }
+                { 
+                    Text(
+                        text = errorText, 
+                        style = MaterialTheme.typography.bodySmall,
+                        color = PrincipalRed
+                    ) 
+                }
             } else null,
             trailingIcon = trailingIcon,
+            textStyle = MaterialTheme.typography.bodyLarge.copy(color = PrincipalBlack),
             singleLine = true,
             shape = RoundedCornerShape(12.dp),
             colors = OutlinedTextFieldDefaults.colors(
-                focusedContainerColor = Color(0xFFF5F5F5),
-                unfocusedContainerColor = Color(0xFFF5F5F5),
-                disabledContainerColor = Color(0xFFF5F5F5),
-                errorContainerColor = Color(0xFFF5F5F5),
-                focusedBorderColor = Color(0xFFE0E0E0),
-                unfocusedBorderColor = Color(0xFFE0E0E0),
-                errorBorderColor = Color.Red,
-                cursorColor = Color.Black
+                focusedContainerColor = FormFieldBackground,
+                unfocusedContainerColor = FormFieldBackground,
+                disabledContainerColor = FormFieldBackground,
+                errorContainerColor = FormFieldBackground,
+                focusedBorderColor = FormFieldBorder,
+                unfocusedBorderColor = FormFieldBorder,
+                errorBorderColor = PrincipalRed,
+                cursorColor = PrincipalBlack
             )
         )
     }

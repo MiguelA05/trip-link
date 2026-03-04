@@ -10,15 +10,17 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
+import com.example.triplink.ui.theme.PrincipalBlue
 import com.example.triplink.ui.theme.PrincipalBlueBlocked
+import com.example.triplink.ui.theme.PrincipalGray
+import com.example.triplink.ui.theme.PrincipalWhite
 
 @Composable
 fun GeneralButton(
@@ -41,8 +43,9 @@ fun GeneralButton(
         }
         Text(
             text = text,
-            fontSize = 16.sp,
-            fontWeight = FontWeight.Bold
+            style = MaterialTheme.typography.titleMedium.copy(
+                fontWeight = FontWeight.Bold
+            )
         )
     }
 
@@ -56,11 +59,10 @@ fun GeneralButton(
             shape = RoundedCornerShape(16.dp),
             enabled = enabled,
             colors = ButtonDefaults.buttonColors(
-                containerColor = Color(0xFF2563EB), // Color normal
-                contentColor = Color.White,         // Texto normal
-
-                disabledContainerColor = PrincipalBlueBlocked, // Un azul más claro o gris
-                disabledContentColor = Color.White.copy(alpha = 0.6f) // Texto semi-transparente
+                containerColor = PrincipalBlue,
+                contentColor = PrincipalWhite,
+                disabledContainerColor = PrincipalBlueBlocked,
+                disabledContentColor = PrincipalWhite
             )
         ) {
             content()
@@ -68,7 +70,6 @@ fun GeneralButton(
     } else {
         FilledTonalButton(
             onClick = onClick,
-
             modifier = Modifier
                 .padding(vertical = 8.dp)
                 .fillMaxWidth()
@@ -76,10 +77,9 @@ fun GeneralButton(
             enabled = enabled,
             shape = RoundedCornerShape(16.dp),
             colors = ButtonDefaults.filledTonalButtonColors(
-                disabledContainerColor = Color(0xFFE0E0E0),
-                disabledContentColor = Color.Gray
+                disabledContainerColor = PrincipalBlueBlocked,
+                disabledContentColor = PrincipalGray
             )
-
         ) {
             content()
         }

@@ -2,7 +2,6 @@ package com.example.triplink.features.login
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.interaction.collectIsHoveredAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -48,65 +47,56 @@ import com.example.triplink.core.components.FormField
 import com.example.triplink.core.components.GeneralButton
 import com.example.triplink.core.components.LinkTextRow
 import com.example.triplink.core.utils.RequestResult
-import com.example.triplink.ui.theme.PastelBlue
-import kotlinx.coroutines.delay
 import com.example.triplink.ui.theme.PrincipalBlue
 import com.example.triplink.ui.theme.PrincipalRed
 import com.example.triplink.ui.theme.PrincipalWhite
+import kotlinx.coroutines.delay
 
 
 @Composable
 fun LoginScreen(
     onNavigateToUsers: () -> Unit,
-    viewModel: LoginViewModel = viewModel() // Se crea o se obtiene el ViewModel
+    viewModel: LoginViewModel = viewModel()
 ) {
-
-    // Estado para gestionar los snackbars
     val snackbarHostState = remember { SnackbarHostState() }
-    // Observar el estado de loginResult
     val loginResult by viewModel.loginResult.collectAsState()
 
-    // Efecto para mostrar el snackbar cuando hay resultado
     LaunchedEffect(loginResult) {
         loginResult?.let { result ->
-            // Obtener el mensaje según el resultado
             val message = when (result) {
                 is RequestResult.Success -> result.message
                 is RequestResult.Failure -> result.errorMessage
             }
-            snackbarHostState.showSnackbar(message) // Mostrar el snackbar con el mensaje
+            snackbarHostState.showSnackbar(message)
 
-            // Navegar a la pantalla de usuarios si el login fue exitoso. Se puede agregar un delay para que el usuario alcance a ver el mensaje
             if (result is RequestResult.Success) {
-                delay(1000) // 2 segundos
+                delay(1000)
                 onNavigateToUsers()
             }
-
-            // Reseta el estado del loginResult en el ViewModel después de mostrar el mensaje
             viewModel.resetLoginResult()
         }
     }
 
-    // Se envuelve el contenido dentro de un Scaffold
     Scaffold(
         snackbarHost = {
-            // Mostrar el SnackbarHost para gestionar los snackbars. Un SnackbarHost es un contenedor que muestra los snackbars.
             SnackbarHost(snackbarHostState) { data ->
                 val isError = loginResult is RequestResult.Failure
-                // Mostrar el Snackbar con el estilo adecuado según si es error o éxito
                 Snackbar(
                     containerColor = if (isError) PrincipalRed else PrincipalBlue,
                     contentColor = PrincipalWhite
                 ) {
-                    Text(data.visuals.message)
+                    Text(
+                        text = data.visuals.message,
+                        style = MaterialTheme.typography.bodyMedium
+                    )
                 }
             }
         }) { paddingValues ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(paddingValues) // Aplicar los padding del Scaffold
-                .padding(horizontal = 30.dp), // Padding horizontal adicional
+                .padding(paddingValues)
+                .padding(horizontal = 30.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(space = 16.dp, alignment = CenterVertically)
         ) {
@@ -122,10 +112,11 @@ fun LoginScreen(
                 text = "Bienvenido de nuevo",
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(bottom = 30.dp),
+                    .padding(bottom = 26.dp),
                 textAlign = TextAlign.Center,
-                fontSize = 30.sp,
-                fontWeight = FontWeight.ExtraBold,
+                style = MaterialTheme.typography.headlineMedium.copy(
+                    fontWeight = FontWeight.ExtraBold
+                )
             )
 
             FormField(
@@ -173,12 +164,13 @@ fun LoginScreen(
                     .background(
                         color = Color.Transparent,
                         shape = RoundedCornerShape(8.dp)
-
                     )
             ) {
                 Text(
                     text = "¿Olvidaste tu contraseña?",
-                    fontSize = 16.sp,
+                    style = MaterialTheme.typography.bodyLarge.copy(
+                        color = PrincipalBlue
+                    )
                 )
             }
 
@@ -192,9 +184,12 @@ fun LoginScreen(
             )
 
             LinkTextRow(
-                text = "¿No tienes una cuenta?", buttonText = "Crea tu cuenta", onClick = {
+                text = "¿No tienes una cuenta?", 
+                buttonText = "Crea tu cuenta", 
+                onClick = {
                     // Navegar a la pantalla de registro
-                })
+                }
+            )
         }
     }
 }
