@@ -4,7 +4,6 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -13,19 +12,18 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.Button
+import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.Label
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -45,24 +43,26 @@ fun RecoveryPasswordScreen(
 
     Scaffold(
         topBar = {
-
-            TopAppBar(
+            CenterAlignedTopAppBar(
                 title = {
                     Text(
+
+                        fontFamily = FontFamily.SansSerif,
+                        fontWeight = FontWeight.Normal,
+
                         text = "Recuperar Contraseña"
                     )
                 },
                 navigationIcon = {
                     Icon(
-                        modifier = Modifier.clickable{
-
+                        modifier = Modifier.clickable {
+                            // Acción para volver
                         },
-                        imageVector = Icons.AutoMirrored.Default.ArrowBack,
+                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                         contentDescription = "Icono de navegacion hacia atras para volver"
                     )
                 }
             )
-
         }
     ) { paddingValues ->
 
@@ -82,11 +82,12 @@ fun RecoveryPasswordScreen(
             )
             AppTitle()
             Text(
+                textAlign = TextAlign.Center,
                 text = descriptionText
             )
 
-            //Este elemento hay que generalizacro
-            FormField(    label = "Correo Electrónico",
+            FormField(
+                label = "Correo Electrónico",
                 value = viewModel.email.value,
                 onValueChange = { viewModel.email.onChange(it) },
                 placeholder = "tu@email.com",
@@ -107,12 +108,5 @@ fun RecoveryPasswordScreen(
                 }
             )
         }
-
-
-
-
-
-
-
     }
 }
