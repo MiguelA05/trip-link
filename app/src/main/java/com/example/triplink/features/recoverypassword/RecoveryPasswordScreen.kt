@@ -4,7 +4,6 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -13,19 +12,20 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.Button
+import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.Label
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -33,36 +33,57 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.triplink.R
 import com.example.triplink.core.components.AppTitle
 import com.example.triplink.core.components.FormField
+import com.example.triplink.core.components.GeneralButton
+import com.example.triplink.core.utils.RequestResult
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RecoveryPasswordScreen(
-    buttonText: String = "Enviar Correo",
-    descriptionText: String = "Introduce el correo electrónico de tu cuenta y te enviaremos un correo electrónico " +
-            "con un enlace para recuperar tu contraseña" ,
     viewModel: RecoveryPasswordViewModel = viewModel()
+
 ){
+    val recoveryMessage = "Introduce el correo electrónico de tu cuenta y te enviaremos un " +
+            "correo electrónico con un enlace para recuperar tu contraseña"
+    val recoveryResendMessage = "¿No recibiste el correo electrónico o el enlace ya ha caducado? " +
+            "Revisa el correo electrónico que introdujiste y te reenviaremos el correo de recuperación"
+    var recoveryResult = viewModel.recoveryResult.collectAsState()
+
+    LaunchedEffect(recoveryResult) {
+        when(recoveryResult){
+            is RequestResult.Success -> {
+                // Mostrar mensaje de éxito
+            }
+            is RequestResult.Failure -> {
+                // Mostrar mensaje de error
+            }
+            else -> {}
+        }
+
+    }
+
 
     Scaffold(
         topBar = {
-
-            TopAppBar(
+            CenterAlignedTopAppBar(
                 title = {
                     Text(
+
+                        fontFamily = FontFamily.SansSerif,
+                        fontWeight = FontWeight.Normal,
+
                         text = "Recuperar Contraseña"
                     )
                 },
                 navigationIcon = {
                     Icon(
-                        modifier = Modifier.clickable{
-
+                        modifier = Modifier.clickable {
+                            // Acción para volver
                         },
-                        imageVector = Icons.AutoMirrored.Default.ArrowBack,
+                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                         contentDescription = "Icono de navegacion hacia atras para volver"
                     )
                 }
             )
-
         }
     ) { paddingValues ->
 
@@ -82,37 +103,30 @@ fun RecoveryPasswordScreen(
             )
             AppTitle()
             Text(
-                text = descriptionText
+                textAlign = TextAlign.Center,
+                text = if(!viewModel.resendRecoveryPassword) recoveryMessage else recoveryResendMessage
             )
 
-            //Este elemento hay que generalizacro
-            FormField(    label = "Correo Electrónico",
+            FormField(
+                label = "Correo Electrónico",
                 value = viewModel.email.value,
                 onValueChange = { viewModel.email.onChange(it) },
                 placeholder = "tu@email.com",
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email)
+                modifier = Modifier.fillMaxWidth(),
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
+                isError = viewModel.email.error != null,
+                errorText = viewModel.email.error
             )
 
-
-            Button(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(58.dp),
+            GeneralButton(
+                primary = true,
                 onClick = {
                     viewModel.sendPasswordResetEmail()
                 },
                 enabled = viewModel.isFormValid,
-                content = {
-                    Text(text = buttonText)
-                }
+                text = if(!viewModel.resendRecoveryPassword) "Enviar Correo" else "Reenviar Correo"
             )
+
         }
-
-
-
-
-
-
-
     }
 }
