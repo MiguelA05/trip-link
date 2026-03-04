@@ -40,4 +40,8 @@ val PrincipalGray = Color(0xFFAEADAD)
 
 val DarkGray = Color(0xFF6B7B90)
 
+val PrincipalWhite = Color(0xFFFFFFFF)
+
+val PrincipalBlack = Color(0xFF000000)
+
 

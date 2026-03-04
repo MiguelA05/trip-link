@@ -18,17 +18,18 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.triplink.ui.theme.PrincipalBlack
+import com.example.triplink.ui.theme.PrincipalBlue
 
 @Composable
 fun LinkTextRow(
     text: String,
-    textColor: Color = Color.Black,
+    textColor: Color = PrincipalBlack,
     buttonText: String,
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val interactionSource = remember { MutableInteractionSource() }
-    val isHovered by interactionSource.collectIsHoveredAsState()
 
     Row(
         modifier = modifier.fillMaxWidth(),
@@ -45,16 +46,16 @@ fun LinkTextRow(
             onClick = onClick,
             interactionSource = interactionSource,
             colors = ButtonDefaults.textButtonColors(
-                contentColor = Color(0xFF42A5F5)
+                contentColor = PrincipalBlue
             ),
             modifier = Modifier.background(
-                color = if (isHovered) Color(0xFF42A5F5).copy(alpha = 0.1f) else Color.Transparent,
+                color = Color.Transparent,
                 shape = RoundedCornerShape(8.dp)
             )
         ) {
             Text(
                 text = buttonText,
-                fontSize = 18.sp,)
+                fontSize = 16.sp,)
         }
     }
 }

@@ -6,7 +6,11 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
+import com.example.triplink.core.utils.RequestResult
 import com.example.triplink.core.utils.ValidatedField
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 
 
 class LoginViewModel : ViewModel() {
@@ -44,6 +48,10 @@ class LoginViewModel : ViewModel() {
 
     val forgotPasswordInteractionSource = MutableInteractionSource()
 
+    private val _loginResult = MutableStateFlow<RequestResult?>(null)
+
+    val loginResult: StateFlow<RequestResult?> = _loginResult.asStateFlow()
+
     fun togglePasswordVisibility() {
         passwordVisible = !passwordVisible
     }
@@ -54,9 +62,20 @@ class LoginViewModel : ViewModel() {
         password.reset()
     }
 
+    fun resetLoginResult() {
+        _loginResult.value = null
+    }
 
-    fun login():Boolean{
-        return email.equals("admin") && password.equals("admin")
+
+    fun login() {
+        if (isFormValid) {
+            // Simulación de un proceso de login con datos estáticos
+            _loginResult.value = if (email.value == "carlos@email.com" && password.value == "123456") {
+                RequestResult.Success("Login exitoso")
+            } else {
+                RequestResult.Failure("Credenciales inválidas")
+            }
+        }
     }
 
 }

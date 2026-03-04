@@ -4,16 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
-import com.example.triplink.features.home.HomeScreen
 import com.example.triplink.features.login.LoginScreen
-import com.example.triplink.features.recoverypassword.RecoveryPasswordScreen
 import com.example.triplink.ui.theme.DescubreuqTheme
 
 class MainActivity : ComponentActivity() {
@@ -21,8 +12,13 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            HomeScreen()
+            DescubreuqTheme {
+                LoginScreen(
+                    onNavigateToUsers = {
+                        // TODO: Implement navigation to Users screen
+                    }
+                )
+            }
         }
     }
 }
-

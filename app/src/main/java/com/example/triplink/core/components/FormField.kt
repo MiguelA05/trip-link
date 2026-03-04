@@ -41,7 +41,7 @@ fun FormField(
             textAlign = TextAlign.Left,
             text = label,
             fontWeight = FontWeight.SemiBold,
-            fontSize = 18.sp,
+            fontSize = 14.sp,
             color = Color.Black
         )
 
