@@ -36,6 +36,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.triplink.R
 import com.example.triplink.core.components.AppTitle
 import com.example.triplink.core.components.FormField
+import com.example.triplink.core.components.GeneralButton
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -140,18 +141,13 @@ fun ResetPasswordScreen(
                 }
             )
 
-
-            Button(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(58.dp),
+            GeneralButton(
+                primary = true,
                 onClick = {
                     viewModel.resetPassword()
                 },
                 enabled = viewModel.isFormValid,
-                content = {
-                    Text(text = "Restablecer Contraseña")
-                }
+                text = "Restablecer Contraseña"
             )
         }
     }
