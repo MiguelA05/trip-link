@@ -1,7 +1,5 @@
 package com.example.triplink.features.resetpassword
 
-import android.util.Patterns
-import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -14,9 +12,9 @@ import kotlinx.coroutines.flow.asStateFlow
 
 class ResetPasswordViewModel : ViewModel() {
 
-
     private val _recoveryResult = MutableStateFlow<RequestResult?>(null)
     val recoveryResult: StateFlow<RequestResult?> = _recoveryResult.asStateFlow()
+
     var password = ValidatedField("") { value ->
         when {
             value.isEmpty() -> "La contraseña es obligatoria"
@@ -27,54 +25,36 @@ class ResetPasswordViewModel : ViewModel() {
 
     var confirmPassword = ValidatedField("") { value ->
         when {
-            value.isEmpty() -> "La contraseña es obligatoria"
-            value.length < 6 -> "La contraseña debe tener al menos 6 caracteres"
+            value.isEmpty() -> "La confirmación es obligatoria"
             value != password.value -> "Las contraseñas no coinciden"
             else -> null
         }
     }
 
     val isFormValid: Boolean
-        get() =  password.isValid && confirmPassword.isValid
+        get() = password.isValid && confirmPassword.isValid && password.value.isNotEmpty()
 
-
-    var passwordError by
-    mutableStateOf("")
-
-    var passwordVisible by
-    mutableStateOf(false)
-
+    var passwordVisible by mutableStateOf(false)
     var confirmPasswordVisible by mutableStateOf(false)
-
-    var showDialog by
-    mutableStateOf(false)
-
 
     fun togglePasswordVisibility() {
         passwordVisible = !passwordVisible
     }
 
-    fun toggleConfirmPasswordVisibility(){
+    fun toggleConfirmPasswordVisibility() {
         confirmPasswordVisible = !confirmPasswordVisible
     }
 
-    fun resetForm() {
-        password.reset()
-        confirmPassword.reset()
+    fun resetRecoveryResult() {
+        _recoveryResult.value = null
     }
 
-
-    fun resetPassword():Boolean{
-        return  password.equals("admin")
-    }
-
-    fun saveNewPassword(){
+    fun saveNewPassword() {
         if (isFormValid) {
-            // Simulate sending a password reset email
-            _recoveryResult.value = RequestResult.Success("Se ha enviado un correo de recuperación")
+            // Simulate password reset success
+            _recoveryResult.value = RequestResult.Success("¡Contraseña restablecida con éxito!")
         } else {
-            _recoveryResult.value = RequestResult.Failure("Por favor, ingresa un email válido")
+            _recoveryResult.value = RequestResult.Failure("Por favor, verifica los campos")
         }
     }
-
 }

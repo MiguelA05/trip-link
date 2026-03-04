@@ -137,9 +137,9 @@ fun RecoveryPasswordScreen(
 
     if(viewModel.resendRecoveryPassword){
         AlertDialog(
-            onDismissRequest = { /* TODO */ },
+            onDismissRequest = { viewModel.dismissDialog() },
             confirmButton = {
-                Button(onClick = { /* TODO */ }) {
+                Button(onClick = { viewModel.dismissDialog() }) {
                     Text("OK")
                 }
             },

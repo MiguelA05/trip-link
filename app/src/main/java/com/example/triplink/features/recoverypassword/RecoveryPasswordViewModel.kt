@@ -29,6 +29,14 @@ class RecoveryPasswordViewModel : ViewModel() {
     val isFormValid: Boolean
         get() = email.isValid
 
+    fun resetRecoveryResult() {
+        _recoveryResult.value = null
+    }
+
+    fun dismissDialog() {
+        resendRecoveryPassword = false
+    }
+
     fun sendPasswordResetEmail() {
         if (isFormValid) {
             resendRecoveryPassword = true

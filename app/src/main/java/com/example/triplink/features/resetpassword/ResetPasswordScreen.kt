@@ -1,12 +1,10 @@
 package com.example.triplink.features.resetpassword
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.KeyboardOptions
@@ -14,20 +12,24 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
-import androidx.compose.material3.Button
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Snackbar
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -40,48 +42,57 @@ import com.example.triplink.core.components.AppTitle
 import com.example.triplink.core.components.FormField
 import com.example.triplink.core.components.GeneralButton
 import com.example.triplink.core.utils.RequestResult
+import com.example.triplink.ui.theme.PrincipalBlue
+import com.example.triplink.ui.theme.PrincipalRed
+import com.example.triplink.ui.theme.PrincipalWhite
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ResetPasswordScreen(
+    onBack: () -> Unit,
     viewModel: ResetPasswordViewModel = viewModel()
-){
-    var recoveryResult = viewModel.recoveryResult.collectAsState()
+) {
+    val snackbarHostState = remember { SnackbarHostState() }
+    val recoveryResult by viewModel.recoveryResult.collectAsState()
 
     LaunchedEffect(recoveryResult) {
-        when(recoveryResult){
-            is RequestResult.Success -> {
-                // Mostrar mensaje de éxito
+        recoveryResult?.let { result ->
+            val message = when (result) {
+                is RequestResult.Success -> result.message
+                is RequestResult.Failure -> result.errorMessage
             }
-            is RequestResult.Failure -> {
-                // Mostrar mensaje de error
-            }
-            else -> {}
+            snackbarHostState.showSnackbar(message)
+            viewModel.resetRecoveryResult()
         }
-
     }
 
-
     Scaffold(
+        snackbarHost = {
+            SnackbarHost(snackbarHostState) { data ->
+                val isError = recoveryResult is RequestResult.Failure
+                Snackbar(
+                    containerColor = if (isError) PrincipalRed else PrincipalBlue,
+                    contentColor = PrincipalWhite
+                ) {
+                    Text(text = data.visuals.message, style = MaterialTheme.typography.bodyMedium)
+                }
+            }
+        },
         topBar = {
             CenterAlignedTopAppBar(
                 title = {
                     Text(
-
-                        fontFamily = FontFamily.SansSerif,
-                        fontWeight = FontWeight.Normal,
-
-                        text = "Restablecer Contraseña"
+                        text = "Restablecer Contraseña",
+                        style = MaterialTheme.typography.titleLarge
                     )
                 },
                 navigationIcon = {
-                    Icon(
-                        modifier = Modifier.clickable {
-                            // Acción para volver
-                        },
-                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                        contentDescription = "Icono de navegacion hacia atras para volver"
-                    )
+                    IconButton(onClick = onBack) {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = "Volver"
+                        )
+                    }
                 }
             )
         }
@@ -104,19 +115,9 @@ fun ResetPasswordScreen(
             AppTitle()
             Text(
                 textAlign = TextAlign.Center,
-                text = "Es momento de restablecer tu contraseña! Introduce una nueva contraseña para " +
-                        "tu cuenta"
+                text = "Es momento de restablecer tu contraseña! Introduce una nueva contraseña para tu cuenta",
+                style = MaterialTheme.typography.bodyLarge
             )
-
-            //TODO: Poner dos campos para contraseña con las variables viewmodel correspondientes
-            /*
-            FormField(
-                label = "Correo Electrónico",
-                value = viewModel.email.value,
-                onValueChange = { viewModel.email.onChange(it) },
-                placeholder = "tu@email.com",
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email)
-            )*/
 
             FormField(
                 label = "Contraseña",
@@ -161,7 +162,7 @@ fun ResetPasswordScreen(
             GeneralButton(
                 primary = true,
                 onClick = {
-                    viewModel.resetPassword()
+                    viewModel.saveNewPassword()
                 },
                 enabled = viewModel.isFormValid,
                 text = "Restablecer Contraseña"
