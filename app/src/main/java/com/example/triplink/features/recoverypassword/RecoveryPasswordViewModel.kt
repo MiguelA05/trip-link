@@ -1,6 +1,9 @@
 package com.example.triplink.features.recoverypassword
 
 import android.util.Patterns
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import com.example.triplink.core.utils.RequestResult
 import com.example.triplink.core.utils.ValidatedField
@@ -12,6 +15,8 @@ class RecoveryPasswordViewModel : ViewModel() {
 
     private val _recoveryResult = MutableStateFlow<RequestResult?>(null)
     val recoveryResult: StateFlow<RequestResult?> = _recoveryResult.asStateFlow()
+
+    var resendRecoveryPassword by mutableStateOf(false)
 
     val email = ValidatedField("") { value ->
         when {
@@ -26,6 +31,7 @@ class RecoveryPasswordViewModel : ViewModel() {
 
     fun sendPasswordResetEmail() {
         if (isFormValid) {
+            resendRecoveryPassword = true
             // Simulate sending a password reset email
             _recoveryResult.value = RequestResult.Success("Se ha enviado un correo de recuperación")
         } else {

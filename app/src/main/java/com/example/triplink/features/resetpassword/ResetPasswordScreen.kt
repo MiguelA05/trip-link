@@ -22,6 +22,8 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -37,12 +39,27 @@ import com.example.triplink.R
 import com.example.triplink.core.components.AppTitle
 import com.example.triplink.core.components.FormField
 import com.example.triplink.core.components.GeneralButton
+import com.example.triplink.core.utils.RequestResult
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ResetPasswordScreen(
     viewModel: ResetPasswordViewModel = viewModel()
 ){
+    var recoveryResult = viewModel.recoveryResult.collectAsState()
+
+    LaunchedEffect(recoveryResult) {
+        when(recoveryResult){
+            is RequestResult.Success -> {
+                // Mostrar mensaje de éxito
+            }
+            is RequestResult.Failure -> {
+                // Mostrar mensaje de error
+            }
+            else -> {}
+        }
+
+    }
 
 
     Scaffold(

@@ -12,7 +12,7 @@ import androidx.compose.ui.unit.sp
 
 @Composable
 fun AppTitle(modifier: Modifier = Modifier, fontSize: Int = 28) {
-    Row(modifier = modifier.padding(bottom = 40.dp)) {
+    Row {
         Text(
             text = "Trip",
             fontSize = fontSize.sp,
