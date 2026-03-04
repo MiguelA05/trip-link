@@ -2,6 +2,7 @@ package com.example.triplink.features.register
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -25,7 +26,8 @@ import com.example.triplink.core.components.AppTitle
 import com.example.triplink.core.components.FormField
 import com.example.triplink.core.components.GeneralButton
 import com.example.triplink.core.components.LinkTextRow
-import com.example.triplink.features.login.LoginViewModel
+import com.example.triplink.core.utils.RequestResult
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -34,8 +36,27 @@ fun RegisterScreen(
     onBackClick: () -> Unit = {},
     onLoginClick: () -> Unit = {}
 ) {
+    val snackbarHostState = remember { SnackbarHostState() }
+    val registerResult by registerViewModel.registerResult.collectAsState()
+
+    LaunchedEffect(registerResult) {
+        registerResult?.let { result ->
+            when (result) {
+                is RequestResult.Success -> {
+                    snackbarHostState.showSnackbar(result.message)
+                    // Optional: Navigate or clear state here
+                }
+                is RequestResult.Failure -> {
+                    snackbarHostState.showSnackbar(result.errorMessage)
+                }
+            }
+            // Clear result after showing snackbar to avoid repeated triggers on recomposition
+            registerViewModel.clearResult()
+        }
+    }
 
     Scaffold(
+        snackbarHost = { SnackbarHost(snackbarHostState) },
         topBar = {
             CenterAlignedTopAppBar(
                 title = {
@@ -93,9 +114,11 @@ fun RegisterScreen(
             FormField(
                 label = "Nombre Completo",
                 value = registerViewModel.name,
-                onValueChange = { registerViewModel.name = it },
+                onValueChange = { registerViewModel.onNameChange(it) },
                 placeholder = "John Doe",
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
+                isError = registerViewModel.nameError != null,
+                errorText = registerViewModel.nameError
             )
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -103,9 +126,11 @@ fun RegisterScreen(
             FormField(
                 label = "Correo electrónico",
                 value = registerViewModel.email,
-                onValueChange = { registerViewModel.email = it },
+                onValueChange = { registerViewModel.onEmailChange(it) },
                 placeholder = "tu@email.com",
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
+                isError = registerViewModel.emailError != null,
+                errorText = registerViewModel.emailError
             )
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -113,9 +138,11 @@ fun RegisterScreen(
             FormField(
                 label = "Contraseña",
                 value = registerViewModel.password,
-                onValueChange = { registerViewModel.password = it },
+                onValueChange = { registerViewModel.onPasswordChange(it) },
                 placeholder = "••••••••••••",
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
+                isError = registerViewModel.passwordError != null,
+                errorText = registerViewModel.passwordError
             )
 
             Spacer(modifier = Modifier.height(24.dp))
@@ -134,8 +161,21 @@ fun RegisterScreen(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(12.dp)
             ) {
-                DropdownPlaceholder(text = "Ciudad", modifier = Modifier.weight(1f))
-                DropdownPlaceholder(text = "Departamento", modifier = Modifier.weight(1.5f))
+                SelectableDropdown(
+                    label = "Dpto",
+                    selectedValue = registerViewModel.selectedDepartment,
+                    options = registerViewModel.departments,
+                    onOptionSelected = { registerViewModel.onDepartmentChange(it) },
+                    modifier = Modifier.weight(1f)
+                )
+
+                SelectableDropdown(
+                    label = "Ciudad",
+                    selectedValue = registerViewModel.selectedCity,
+                    options = registerViewModel.citiesMap[registerViewModel.selectedDepartment] ?: emptyList(),
+                    onOptionSelected = { registerViewModel.onCityChange(it) },
+                    modifier = Modifier.weight(1.5f)
+                )
             }
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -158,7 +198,6 @@ fun RegisterScreen(
 
             if (registerViewModel.addExactLocation) {
                 Spacer(modifier = Modifier.height(12.dp))
-                // Map Placeholder
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -181,9 +220,34 @@ fun RegisterScreen(
 
             Spacer(modifier = Modifier.height(32.dp))
 
+            // Result message display as per your example
+            registerResult?.let { result ->
+                when (result) {
+                    is RequestResult.Success -> {
+                        Text(
+                            text = result.message,
+                            color = Color(0xFF4CAF50),
+                            fontSize = 14.sp,
+                            modifier = Modifier.padding(bottom = 8.dp)
+                        )
+                    }
+                    is RequestResult.Failure -> {
+                        Text(
+                            text = result.errorMessage,
+                            color = Color.Red,
+                            fontSize = 14.sp,
+                            modifier = Modifier.padding(bottom = 8.dp)
+                        )
+                    }
+                }
+            }
+
             GeneralButton(
                 text = "Crear Cuenta",
-                onClick = { /* Handle registration */ }
+                enabled = registerViewModel.isFormValid,
+                onClick = {
+                    registerViewModel.register()
+                }
             )
 
             LinkTextRow(
@@ -197,22 +261,56 @@ fun RegisterScreen(
 }
 
 @Composable
-fun DropdownPlaceholder(text: String, modifier: Modifier = Modifier) {
-    Row(
-        modifier = modifier
-            .background(Color(0xFFF5F5F5), RoundedCornerShape(24.dp))
-            .border(1.dp, Color(0xFFE0E0E0), RoundedCornerShape(24.dp))
-            .padding(horizontal = 16.dp, vertical = 12.dp),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween
-    ) {
-        Text(text = text, color = Color(0xFF9E9E9E), fontSize = 14.sp)
-        Icon(
-            imageVector = Icons.Default.KeyboardArrowDown,
-            contentDescription = null,
-            tint = Color(0xFF2563EB),
-            modifier = Modifier.size(20.dp)
-        )
+fun SelectableDropdown(
+    label: String,
+    selectedValue: String,
+    options: List<String>,
+    onOptionSelected: (String) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    var expanded by remember { mutableStateOf(false) }
+
+    Box(modifier = modifier) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(Color(0xFFF5F5F5), RoundedCornerShape(24.dp))
+                .border(1.dp, Color(0xFFE0E0E0), RoundedCornerShape(24.dp))
+                .clickable { expanded = true }
+                .padding(horizontal = 16.dp, vertical = 12.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Text(
+                text = selectedValue.ifEmpty { label },
+                color = if (selectedValue.isEmpty()) Color(0xFF9E9E9E) else Color.Black,
+                fontSize = 14.sp,
+                maxLines = 1
+            )
+            Icon(
+                imageVector = Icons.Default.KeyboardArrowDown,
+                contentDescription = null,
+                tint = Color(0xFF2563EB),
+                modifier = Modifier.size(20.dp)
+            )
+        }
+
+        DropdownMenu(
+            expanded = expanded,
+            onDismissRequest = { expanded = false },
+            modifier = Modifier
+                .background(Color.White)
+        ) {
+            options.forEach { option ->
+                DropdownMenuItem(
+                    text = { Text(text = option) },
+                    onClick = {
+                        onOptionSelected(option)
+                        expanded = false
+                    }
+                )
+            }
+        }
     }
 }
 
