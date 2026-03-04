@@ -11,9 +11,12 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -53,6 +56,7 @@ import com.example.triplink.ui.theme.PrincipalWhite
 import kotlinx.coroutines.delay
 
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LoginScreen(
     onNavigateToUsers: () -> Unit,
@@ -91,7 +95,35 @@ fun LoginScreen(
                     )
                 }
             }
-        }) { paddingValues ->
+        },
+        topBar = {
+            CenterAlignedTopAppBar(
+                title = {
+                    Text(
+                        text = "Recuperar Contraseña",
+                        style = MaterialTheme.typography.titleLarge
+                    )
+                },
+                navigationIcon = {
+                    IconButton(
+                        onClick = {
+
+                        },
+                        content = {
+                            Icon(
+                                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                                contentDescription = "Back"
+                            )
+                        }
+                    )
+                }
+            )
+        }
+
+    )
+
+
+    { paddingValues ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -184,8 +216,8 @@ fun LoginScreen(
             )
 
             LinkTextRow(
-                text = "¿No tienes una cuenta?", 
-                buttonText = "Crea tu cuenta", 
+                text = "¿No tienes una cuenta?",
+                buttonText = "Crea tu cuenta",
                 onClick = {
                     // Navegar a la pantalla de registro
                 }

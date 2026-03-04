@@ -16,7 +16,13 @@ class RecoveryPasswordViewModel : ViewModel() {
     private val _recoveryResult = MutableStateFlow<RequestResult?>(null)
     val recoveryResult: StateFlow<RequestResult?> = _recoveryResult.asStateFlow()
 
-    var resendRecoveryPassword by mutableStateOf(false)
+    // Controla si el correo ya se envió al menos una vez (para cambiar los textos de la UI)
+    var isEmailSent by mutableStateOf(false)
+        private set
+
+    // Controla la visibilidad del modal de éxito
+    var showSuccessDialog by mutableStateOf(false)
+        private set
 
     val email = ValidatedField("") { value ->
         when {
@@ -34,12 +40,13 @@ class RecoveryPasswordViewModel : ViewModel() {
     }
 
     fun dismissDialog() {
-        resendRecoveryPassword = false
+        showSuccessDialog = false
     }
 
     fun sendPasswordResetEmail() {
         if (isFormValid) {
-            resendRecoveryPassword = true
+            isEmailSent = true
+            showSuccessDialog = true
             // Simulate sending a password reset email
             _recoveryResult.value = RequestResult.Success("Se ha enviado un correo de recuperación")
         } else {

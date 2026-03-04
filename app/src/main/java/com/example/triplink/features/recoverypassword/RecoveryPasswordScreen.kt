@@ -10,18 +10,22 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Button
+import androidx.compose.material.icons.filled.Email
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Snackbar
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -32,38 +36,55 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.triplink.R
 import com.example.triplink.core.components.AppTitle
 import com.example.triplink.core.components.FormField
+import com.example.triplink.core.components.GeneralAlertDialog
 import com.example.triplink.core.components.GeneralButton
 import com.example.triplink.core.utils.RequestResult
+import com.example.triplink.ui.theme.PrincipalBlue
+import com.example.triplink.ui.theme.PrincipalRed
+import com.example.triplink.ui.theme.PrincipalWhite
+import kotlinx.coroutines.delay
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RecoveryPasswordScreen(
     viewModel: RecoveryPasswordViewModel = viewModel()
-
-){
+) {
+    val snackbarHostState = remember { SnackbarHostState() }
     val recoveryMessage = "Introduce el correo electrónico de tu cuenta y te enviaremos un " +
             "correo electrónico con un enlace para recuperar tu contraseña"
     val recoveryResendMessage = "¿No recibiste el correo electrónico o el enlace ya ha caducado? " +
             "Revisa el correo electrónico que introdujiste y te reenviaremos el correo de recuperación"
-    var recoveryResult = viewModel.recoveryResult.collectAsState()
+    val recoveryResult by viewModel.recoveryResult.collectAsState()
 
     LaunchedEffect(recoveryResult) {
-        when(recoveryResult){
-            is RequestResult.Success -> {
-                // Mostrar mensaje de éxito
+        recoveryResult?.let { result ->
+            val message = when (result) {
+                is RequestResult.Success -> result.message
+                is RequestResult.Failure -> result.errorMessage
             }
-            is RequestResult.Failure -> {
-                // Mostrar mensaje de error
+            snackbarHostState.showSnackbar(message)
+
+            if (result is RequestResult.Success) {
+                delay(1000)
             }
-            else -> {}
+            viewModel.resetRecoveryResult()
         }
-
     }
-
 
     Scaffold(
         snackbarHost = {
-
+            SnackbarHost(snackbarHostState) { data ->
+                val isError = recoveryResult is RequestResult.Failure
+                Snackbar(
+                    containerColor = if (isError) PrincipalRed else PrincipalBlue,
+                    contentColor = PrincipalWhite
+                ) {
+                    Text(
+                        text = data.visuals.message,
+                        style = MaterialTheme.typography.bodyMedium
+                    )
+                }
+            }
         },
         topBar = {
             CenterAlignedTopAppBar(
@@ -74,10 +95,8 @@ fun RecoveryPasswordScreen(
                     )
                 },
                 navigationIcon = {
-                    IconButton (
-                        onClick = {
-
-                        },
+                    IconButton(
+                        onClick = { /* Navegar atrás */ },
                         content = {
                             Icon(
                                 imageVector = Icons.AutoMirrored.Filled.ArrowBack,
@@ -89,16 +108,17 @@ fun RecoveryPasswordScreen(
             )
         }
     ) { paddingValues ->
-
         Column(
             modifier = Modifier
                 .padding(paddingValues)
                 .fillMaxSize()
                 .padding(horizontal = 30.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(space = 32.dp, alignment = Alignment.CenterVertically)
+            verticalArrangement = Arrangement.spacedBy(
+                space = 32.dp,
+                alignment = Alignment.CenterVertically
+            )
         ) {
-
             Image(
                 modifier = Modifier.width(74.dp),
                 painter = painterResource(R.drawable.logo),
@@ -107,7 +127,7 @@ fun RecoveryPasswordScreen(
             AppTitle()
             Text(
                 textAlign = TextAlign.Center,
-                text = if (!viewModel.resendRecoveryPassword) recoveryMessage else recoveryResendMessage,
+                text = if (!viewModel.isEmailSent) recoveryMessage else recoveryResendMessage,
                 style = MaterialTheme.typography.bodyLarge
             )
 
@@ -128,26 +148,18 @@ fun RecoveryPasswordScreen(
                     viewModel.sendPasswordResetEmail()
                 },
                 enabled = viewModel.isFormValid,
-                text = if(!viewModel.resendRecoveryPassword) "Enviar Correo" else "Reenviar Correo"
+                text = if (!viewModel.isEmailSent) "Enviar Correo" else "Reenviar Correo"
             )
-
         }
     }
 
-
-    if(viewModel.resendRecoveryPassword){
-        AlertDialog(
+    if (viewModel.showSuccessDialog) {
+        GeneralAlertDialog(
             onDismissRequest = { viewModel.dismissDialog() },
-            confirmButton = {
-                Button(onClick = { viewModel.dismissDialog() }) {
-                    Text("OK")
-                }
-            },
-            title = { Text("Correo Enviado", style = MaterialTheme.typography.headlineSmall) },
-            text = { Text("Revisa tu bandeja de entrada para continuar.", style = MaterialTheme.typography.bodyMedium) }
+            onConfirm = { viewModel.dismissDialog() },
+            title = "Revisa tu correo",
+            message = "Comprueba tu bandeja de entrada y sigue el enlace para reestablecer tu contraseña de forma segura",
+            icon = Icons.Default.Email
         )
     }
-
-
-
 }
