@@ -42,6 +42,7 @@ fun AppNavigation() {
 
             composable<MainRoutes.Login> {
                 LoginScreen(
+                    onBackClick = {navController.popBackStack()} ,
                     onNavigateToUsers = {
                         navController.navigate(MainRoutes.UserHome) {
                             // Limpiar el stack de navegación para que no se pueda volver al login con el botón atrás

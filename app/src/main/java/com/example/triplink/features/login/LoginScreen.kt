@@ -57,6 +57,7 @@ import kotlinx.coroutines.delay
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LoginScreen(
+    onBackClick: () -> Unit,
     onNavigateToUsers: () -> Unit,
     onNavigateToRecovery: () -> Unit,
     viewModel: LoginViewModel = viewModel()
@@ -98,7 +99,7 @@ fun LoginScreen(
         topBar = {
             GeneralTopBar(
                 title = "Iniciar Sesión",
-                onBack = {}
+                onBack = onBackClick
             )
         }
     ) { paddingValues ->
