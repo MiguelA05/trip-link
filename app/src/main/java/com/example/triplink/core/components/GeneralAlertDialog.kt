@@ -156,4 +156,6 @@ fun GeneralAlertDialogPreview() {
         title = "Revisa tu correo",
         message = "Comprueba tu bandeja de entrada y sigue el enlace para reestablecer tu contraseña de forma segura"
     )
+
+
 }

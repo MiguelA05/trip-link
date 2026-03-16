@@ -195,9 +195,8 @@ fun LoginScreen(
             LinkTextRow(
                 text = "¿No tienes una cuenta?",
                 buttonText = "Crea tu cuenta",
-                onClick = {
-                    // Navegar a la pantalla de registro
-                }
+                onClick = onNavigateToUsers
+
             )
         }
     }
