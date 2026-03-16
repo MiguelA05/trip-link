@@ -31,7 +31,10 @@ import com.example.triplink.core.components.LinkTextRow
 
 
 @Composable
-fun HomeScreen() {
+fun HomeScreen(
+    onNavigateToLogin: () -> Unit, // Función para navegar a la pantalla de Login
+    onNavigateToRegister: () -> Unit // Función para navegar a la pantalla de Registro
+) {
     Box(modifier = Modifier.fillMaxSize()) {
         // 1. Imagen de fondo
         Image(
@@ -98,7 +101,7 @@ fun HomeScreen() {
             GeneralButton(
                 icon = Icons.Filled.Add,
                 contentDescription = "Crear cuenta",
-                onClick = { },
+                onClick = onNavigateToRegister  ,
                 text = "Register"
             )
 
@@ -106,9 +109,8 @@ fun HomeScreen() {
                 text = "¿Tienes una cuenta?",
                 buttonText = "Inicia sesión",
                 textColor = Color.White,
-                onClick = {
-                    // Navegar a la pantalla de registro
-                }
+                onClick = onNavigateToLogin
+
             )
 
         }

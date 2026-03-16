@@ -4,7 +4,11 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import com.example.triplink.core.components.PublicationList
+import com.example.triplink.core.navigation.AppNavigation
 import com.example.triplink.features.login.LoginScreen
+import com.example.triplink.features.recoverypassword.RecoveryPasswordScreen
+import com.example.triplink.features.resetpassword.ResetPasswordScreen
 import com.example.triplink.ui.theme.DescubreuqTheme
 
 class MainActivity : ComponentActivity() {
@@ -13,12 +17,12 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             DescubreuqTheme {
-                LoginScreen(
-                    onNavigateToUsers = {
-                        // TODO: Implement navigation to Users screen
-                    }
-                )
+
+                // La navegación de la aplicación se maneja aquí
+                AppNavigation()
+
             }
+
         }
     }
 }
