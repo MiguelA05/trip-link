@@ -17,8 +17,6 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             DescubreuqTheme {
-
-                // La navegación de la aplicación se maneja aquí
                 AppNavigation()
 
             }

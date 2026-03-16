@@ -9,6 +9,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.triplink.features.appHome.HomeScreen
 import com.example.triplink.features.login.LoginScreen
+import com.example.triplink.features.recoverypassword.RecoveryPasswordScreen
 import com.example.triplink.features.register.RegisterScreen
 import com.example.triplink.features.userHome.UserHomeScreen
 
@@ -46,6 +47,9 @@ fun AppNavigation() {
                             // Limpiar el stack de navegación para que no se pueda volver al login con el botón atrás
                             popUpTo(MainRoutes.Home) { inclusive = true }
                         }
+                    },
+                    onNavigateToRecovery = {
+                        navController.navigate(MainRoutes.RecoveryPassword)
                     }
                 )
             }
@@ -65,6 +69,15 @@ fun AppNavigation() {
 
             composable<MainRoutes.UserHome> {
                 UserHomeScreen()
+            }
+
+            composable<MainRoutes.RecoveryPassword>{
+                RecoveryPasswordScreen(
+                    onBack = {
+                        navController.popBackStack()
+                    }
+
+                )
             }
 
         }

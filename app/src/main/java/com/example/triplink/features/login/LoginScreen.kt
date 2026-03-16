@@ -58,6 +58,7 @@ import kotlinx.coroutines.delay
 @Composable
 fun LoginScreen(
     onNavigateToUsers: () -> Unit,
+    onNavigateToRecovery: () -> Unit,
     viewModel: LoginViewModel = viewModel()
 ) {
     val snackbarHostState = remember { SnackbarHostState() }
@@ -161,9 +162,7 @@ fun LoginScreen(
                 })
 
             TextButton(
-                onClick = {
-                    // Navegar a la pantalla de recuperación de contraseña
-                },
+                onClick = onNavigateToRecovery,
                 interactionSource = viewModel.forgotPasswordInteractionSource,
                 colors = ButtonDefaults.textButtonColors(
                     contentColor = PrincipalBlue

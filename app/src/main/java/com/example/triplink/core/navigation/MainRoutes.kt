@@ -16,4 +16,6 @@ sealed class MainRoutes {
     @Serializable
     data object UserHome : MainRoutes()
 
+    @Serializable
+    data object RecoveryPassword: MainRoutes()
 }
