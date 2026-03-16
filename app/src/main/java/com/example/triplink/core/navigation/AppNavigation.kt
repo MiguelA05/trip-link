@@ -7,9 +7,10 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.triplink.features.home.HomeScreen
+import com.example.triplink.features.appHome.HomeScreen
 import com.example.triplink.features.login.LoginScreen
 import com.example.triplink.features.register.RegisterScreen
+import com.example.triplink.features.userHome.UserHomeScreen
 
 @Composable
 fun AppNavigation() {
@@ -40,12 +41,30 @@ fun AppNavigation() {
 
             composable<MainRoutes.Login> {
                 LoginScreen(
-
+                    onNavigateToUsers = {
+                        navController.navigate(MainRoutes.UserHome) {
+                            // Limpiar el stack de navegación para que no se pueda volver al login con el botón atrás
+                            popUpTo(MainRoutes.Home) { inclusive = true }
+                        }
+                    }
                 )
             }
 
             composable<MainRoutes.Register> {
-                RegisterScreen()
+                RegisterScreen(
+                    onBackClick = {
+                        navController.popBackStack()
+                    },
+                    onLoginClick = {
+                        navController.navigate(MainRoutes.Login) {
+                            popUpTo(MainRoutes.Home)
+                        }
+                    }
+                )
+            }
+
+            composable<MainRoutes.UserHome> {
+                UserHomeScreen()
             }
 
         }

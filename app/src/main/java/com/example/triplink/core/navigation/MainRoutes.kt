@@ -13,4 +13,7 @@ sealed class MainRoutes {
     @Serializable
     data object Register : MainRoutes()
 
+    @Serializable
+    data object UserHome : MainRoutes()
+
 }
