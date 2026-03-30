@@ -1,4 +1,4 @@
-package com.example.triplink.features.userHome
+package com.example.triplink.features.user.home
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -62,3 +62,4 @@ class UserHomeViewModel : ViewModel() {
         }
     }
 }
+

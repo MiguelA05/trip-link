@@ -15,7 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.example.triplink.features.userInfo.ContributionTab
+import com.example.triplink.features.user.info.ContributionTab
 import com.example.triplink.ui.theme.PrincipalBlue
 
 @Composable

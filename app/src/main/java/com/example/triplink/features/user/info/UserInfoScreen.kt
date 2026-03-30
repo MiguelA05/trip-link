@@ -1,4 +1,4 @@
-package com.example.triplink.features.userInfo
+package com.example.triplink.features.user.info
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -22,8 +22,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.triplink.core.components.navigation.BottomBar
-import com.example.triplink.core.components.navigation.defaultNavItems
 import com.example.triplink.core.components.profile.EmptyState
 import com.example.triplink.core.components.profile.ProfileHeader
 import com.example.triplink.core.components.profile.SectionCard
@@ -33,21 +31,18 @@ import com.example.triplink.ui.theme.PrincipalBlue
 import com.example.triplink.ui.theme.PrincipalWhite
 
 @Composable
-fun UserInfoScreen(viewModel: UserInfoViewModel = viewModel()) {
+fun UserInfoScreen(
+	viewModel: UserInfoViewModel = viewModel(),
+	contentPadding: PaddingValues = PaddingValues()
+) {
 	val state = viewModel.uiState
-	val navItems = defaultNavItems()
 
 	Scaffold(
-		modifier = Modifier.fillMaxSize(),
+		modifier = Modifier
+			.fillMaxSize()
+			.padding(contentPadding),
 		containerColor = Color(0xFFF0F2F5),
 		contentWindowInsets = WindowInsets(0, 0, 0, 0),
-		bottomBar = {
-			BottomBar(
-				items = navItems,
-				selectedIndex = state.selectedBottomTabIndex,
-				onItemSelected = viewModel::onBottomTabSelected
-			)
-		}
 	) { paddingValues ->
 		LazyColumn(
 			modifier = Modifier
@@ -145,4 +140,5 @@ fun UserInfoScreen(viewModel: UserInfoViewModel = viewModel()) {
 		}
 	}
 }
+
 
