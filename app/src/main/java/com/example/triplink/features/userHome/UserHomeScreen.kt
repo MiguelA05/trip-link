@@ -20,10 +20,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.foundation.layout.systemBarsPadding
 import com.example.triplink.core.components.PublicationCard
-import com.example.triplink.core.components.SectionDividerTitle
-import com.example.triplink.core.components.UserHomeBottomBar
-import com.example.triplink.core.components.UserHomeHeader
-import com.example.triplink.core.components.defaultUserHomeNavItems
+import com.example.triplink.core.components.common.BrandHeader
+import com.example.triplink.core.components.common.SectionTitleDivider
+import com.example.triplink.core.components.navigation.BottomBar
+import com.example.triplink.core.components.navigation.defaultNavItems
 import com.example.triplink.ui.theme.PrincipalBlue
 import com.example.triplink.ui.theme.PrincipalWhite
 
@@ -32,7 +32,7 @@ fun UserHomeScreen(
     viewModel: UserHomeViewModel = viewModel(),
     onCommentsClick: (String) -> Unit = {}
 ) {
-    val navItems = defaultUserHomeNavItems()
+    val navItems = defaultNavItems()
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -42,11 +42,11 @@ fun UserHomeScreen(
             Column(
                 modifier = Modifier.systemBarsPadding()
             ) {
-                UserHomeHeader(
+                BrandHeader(
                     locationText = "Armenia, Quindio",
                     onNotificationsClick = {}
                 )
-                SectionDividerTitle(title = "RECOMENDADOS")
+                SectionTitleDivider(title = "RECOMENDADOS")
             }
         },
         floatingActionButton = {
@@ -62,7 +62,7 @@ fun UserHomeScreen(
             }
         },
         bottomBar = {
-            UserHomeBottomBar(
+            BottomBar(
                 items = navItems,
                 selectedIndex = viewModel.selectedTabIndex,
                 onItemSelected = viewModel::selectTab

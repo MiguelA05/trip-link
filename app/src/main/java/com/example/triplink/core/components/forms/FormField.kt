@@ -15,7 +15,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.triplink.ui.theme.FormFieldBackground
 import com.example.triplink.ui.theme.FormFieldBorder
@@ -92,15 +91,3 @@ fun FormField(
     }
 }
 
-@Preview(showBackground = true)
-@Composable
-fun FormFieldPreview() {
-    Column(modifier = Modifier.padding(16.dp)) {
-        FormField(
-            label = "Correo electrónico",
-            value = "",
-            onValueChange = {},
-            placeholder = "tu@email.com"
-        )
-    }
-}

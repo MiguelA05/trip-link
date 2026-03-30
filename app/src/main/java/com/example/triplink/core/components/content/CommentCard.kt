@@ -33,7 +33,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.triplink.domain.model.Comment
@@ -150,18 +149,3 @@ fun CommentCard(
     }
 }
 
-@Preview(showBackground = true)
-@Composable
-fun CommentCardPreview() {
-    val sampleComment = Comment(
-        id = "1",
-        userName = "Camila Torres",
-        date = "15 feb 2026",
-        rating = 5.0f,
-        text = "Un lugar con mucha magia, supera todas las expectativas y te hace emocionar por su belleza y tranquilidad. Sus altas palmeras de aceite de más de 100 años la mayoría, el paisaje te transporta a",
-        userInitials = "CT"
-    )
-    Box(modifier = Modifier.padding(16.dp)) {
-        CommentCard(comment = sampleComment)
-    }
-}

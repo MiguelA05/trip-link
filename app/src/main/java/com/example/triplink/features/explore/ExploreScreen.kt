@@ -19,17 +19,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.triplink.core.components.ExploreCategoryChips
-import com.example.triplink.core.components.ExploreSearchBar
 import com.example.triplink.core.components.PublicationCard
-import com.example.triplink.core.components.UserHomeBottomBar
-import com.example.triplink.core.components.defaultUserHomeNavItems
+import com.example.triplink.core.components.common.CategoryChips
+import com.example.triplink.core.components.common.SearchBar
+import com.example.triplink.core.components.navigation.BottomBar
+import com.example.triplink.core.components.navigation.defaultNavItems
 import com.example.triplink.ui.theme.PrincipalBlue
 import com.example.triplink.ui.theme.PrincipalWhite
 
 @Composable
 fun ExploreScreen(viewModel: ExploreViewModel = viewModel()) {
-	val navItems = defaultUserHomeNavItems()
+	val navItems = defaultNavItems()
 
 	Scaffold(
 		modifier = Modifier.fillMaxSize(),
@@ -42,12 +42,12 @@ fun ExploreScreen(viewModel: ExploreViewModel = viewModel()) {
 					.padding(horizontal = 12.dp, vertical = 8.dp),
 				verticalArrangement = Arrangement.spacedBy(8.dp)
 			) {
-				ExploreSearchBar(
+				SearchBar(
 					query = viewModel.query,
 					onQueryChange = viewModel::onQueryChange,
 					onFilterClick = {}
 				)
-				ExploreCategoryChips(
+				CategoryChips(
 					categories = viewModel.categories,
 					selectedCategory = viewModel.selectedCategory,
 					onCategorySelected = viewModel::onCategorySelected
@@ -67,7 +67,7 @@ fun ExploreScreen(viewModel: ExploreViewModel = viewModel()) {
 			}
 		},
 		bottomBar = {
-			UserHomeBottomBar(
+			BottomBar(
 				items = navItems,
 				selectedIndex = viewModel.selectedTabIndex,
 				onItemSelected = viewModel::onBottomTabSelected

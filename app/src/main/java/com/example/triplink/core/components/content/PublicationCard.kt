@@ -20,7 +20,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
@@ -254,35 +253,3 @@ fun PublicationCard(
     }
 }
 
-@Preview(showBackground = true)
-@Composable
-fun PublicationCardPreview() {
-    val samplePublication = Publication(
-        id = "1",
-        authorName = "Laura Gómez",
-        authorInitials = "LG",
-        timeAgo = "1 hora",
-        distance = "3.9 km",
-        category = "Naturaleza y Parques",
-        rating = 4.8,
-        title = "Valle del Cocora",
-        location = "Salento, Quindío",
-        imageUrl = "https://images.unsplash.com/photo-1599408162165-276634c0e351?q=80&w=1000&auto=format&fit=crop",
-        commentsCount = 34,
-        likesCount = 247,
-        isFavorite = true
-    )
-    
-    Column {
-        PublicationCard(
-            publication = samplePublication,
-            onCommentsClick = {}
-        )
-        Spacer(modifier = Modifier.height(16.dp))
-        PublicationCard(
-            publication = samplePublication.copy(isFavorite = false), 
-            showFooter = true,
-            onCommentsClick = {}
-        )
-    }
-}

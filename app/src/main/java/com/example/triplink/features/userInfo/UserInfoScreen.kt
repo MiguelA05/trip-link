@@ -1,7 +1,6 @@
 package com.example.triplink.features.userInfo
 
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
@@ -9,7 +8,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -23,26 +21,26 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.triplink.core.components.ContributionTabs
-import com.example.triplink.core.components.EmptyInfoState
-import com.example.triplink.core.components.UserHomeBottomBar
-import com.example.triplink.core.components.UserInfoHeader
-import com.example.triplink.core.components.UserInfoSectionCard
-import com.example.triplink.core.components.UserStatsRow
-import com.example.triplink.core.components.defaultUserHomeNavItems
+import com.example.triplink.core.components.navigation.BottomBar
+import com.example.triplink.core.components.navigation.defaultNavItems
+import com.example.triplink.core.components.profile.EmptyState
+import com.example.triplink.core.components.profile.ProfileHeader
+import com.example.triplink.core.components.profile.SectionCard
+import com.example.triplink.core.components.profile.StatsRow
+import com.example.triplink.core.components.profile.StatusTabs
 import com.example.triplink.ui.theme.PrincipalBlue
 import com.example.triplink.ui.theme.PrincipalWhite
 
 @Composable
 fun UserInfoScreen(viewModel: UserInfoViewModel = viewModel()) {
 	val state = viewModel.uiState
-	val navItems = defaultUserHomeNavItems()
+	val navItems = defaultNavItems()
 
 	Scaffold(
 		modifier = Modifier.fillMaxSize(),
 		containerColor = Color(0xFFF0F2F5),
 		bottomBar = {
-			UserHomeBottomBar(
+			BottomBar(
 				items = navItems,
 				selectedIndex = state.selectedBottomTabIndex,
 				onItemSelected = viewModel::onBottomTabSelected
@@ -57,7 +55,7 @@ fun UserInfoScreen(viewModel: UserInfoViewModel = viewModel()) {
 			verticalArrangement = Arrangement.spacedBy(12.dp)
 		) {
 			item {
-				UserInfoHeader(
+				ProfileHeader(
 					userName = state.userName,
 					initials = state.userInitials,
 					roleLabel = state.roleLabel,
@@ -68,7 +66,7 @@ fun UserInfoScreen(viewModel: UserInfoViewModel = viewModel()) {
 			}
 
 			item {
-				UserStatsRow(
+				StatsRow(
 					points = state.points,
 					contributions = state.contributions,
 					activeDays = state.activeDays,
@@ -77,13 +75,13 @@ fun UserInfoScreen(viewModel: UserInfoViewModel = viewModel()) {
 			}
 
 			item {
-				UserInfoSectionCard(
+				SectionCard(
 					title = "Mis Insignias",
 					actionLabel = "Ver todas",
 					onActionClick = {},
 					modifier = Modifier.padding(horizontal = 10.dp)
 				) {
-					EmptyInfoState(message = "Aun no tienes insignias ganadas")
+					EmptyState(message = "Aun no tienes insignias ganadas")
 				}
 			}
 
@@ -93,7 +91,7 @@ fun UserInfoScreen(viewModel: UserInfoViewModel = viewModel()) {
 					colors = CardDefaults.cardColors(containerColor = Color(0xFFF7F8FA)),
 					elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
 				) {
-					ContributionTabs(
+					StatusTabs(
 						selectedTab = state.selectedContributionTab,
 						onTabSelected = viewModel::onContributionTabSelected,
 						modifier = Modifier.padding(horizontal = 4.dp)

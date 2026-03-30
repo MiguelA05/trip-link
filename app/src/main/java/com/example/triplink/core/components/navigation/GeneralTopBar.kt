@@ -13,10 +13,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import com.example.triplink.ui.theme.PrincipalBlue
-import com.example.triplink.ui.theme.PrincipalGray
-import com.example.triplink.ui.theme.PrincipalWhite
 import com.example.triplink.ui.theme.SoftBlue
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -55,11 +52,3 @@ fun GeneralTopBar(
     )
 }
 
-@Preview
-@Composable
-fun GeneralTopBarPreview() {
-    GeneralTopBar(
-        title = "Iniciar Sesión",
-        onBack = {}
-    )
-}

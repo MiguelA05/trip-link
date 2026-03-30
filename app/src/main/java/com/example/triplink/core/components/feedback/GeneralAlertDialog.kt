@@ -32,7 +32,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.triplink.ui.theme.PastelBlue
@@ -147,15 +146,3 @@ fun GeneralAlertDialog(
     }
 }
 
-@Preview
-@Composable
-fun GeneralAlertDialogPreview() {
-    GeneralAlertDialog(
-        onDismissRequest = {},
-        onConfirm = {},
-        title = "Revisa tu correo",
-        message = "Comprueba tu bandeja de entrada y sigue el enlace para reestablecer tu contraseña de forma segura"
-    )
-
-
-}
