@@ -1,4 +1,4 @@
-package com.example.triplink.features.explore
+package com.example.triplink.features.user.explore
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf

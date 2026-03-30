@@ -11,7 +11,7 @@ import com.example.triplink.features.appHome.HomeScreen
 import com.example.triplink.features.login.LoginScreen
 import com.example.triplink.features.recoverypassword.RecoveryPasswordScreen
 import com.example.triplink.features.register.RegisterScreen
-import com.example.triplink.features.userHome.UserHomeScreen
+import com.example.triplink.features.user.section.UserSectionScreen
 
 @Composable
 fun AppNavigation() {
@@ -44,7 +44,7 @@ fun AppNavigation() {
                 LoginScreen(
                     onBackClick = {navController.popBackStack()} ,
                     onNavigateToUsers = {
-                        navController.navigate(MainRoutes.UserHome) {
+                        navController.navigate(MainRoutes.UserSection) {
                             // Limpiar el stack de navegación para que no se pueda volver al login con el botón atrás
                             popUpTo(MainRoutes.Home) { inclusive = true }
                         }
@@ -68,10 +68,8 @@ fun AppNavigation() {
                 )
             }
 
-            composable<MainRoutes.UserHome> {
-                UserHomeScreen(
-
-                )
+            composable<MainRoutes.UserSection> {
+                UserSectionScreen()
             }
 
             composable<MainRoutes.RecoveryPassword>{

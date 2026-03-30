@@ -1,4 +1,4 @@
-package com.example.triplink.features.explore
+package com.example.triplink.features.user.explore
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -22,17 +22,18 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.triplink.core.components.PublicationCard
 import com.example.triplink.core.components.common.CategoryChips
 import com.example.triplink.core.components.common.SearchBar
-import com.example.triplink.core.components.navigation.BottomBar
-import com.example.triplink.core.components.navigation.defaultNavItems
 import com.example.triplink.ui.theme.PrincipalBlue
 import com.example.triplink.ui.theme.PrincipalWhite
 
 @Composable
-fun ExploreScreen(viewModel: ExploreViewModel = viewModel()) {
-	val navItems = defaultNavItems()
-
+fun ExploreScreen(
+	viewModel: ExploreViewModel = viewModel(),
+	contentPadding: PaddingValues = PaddingValues()
+) {
 	Scaffold(
-		modifier = Modifier.fillMaxSize(),
+		modifier = Modifier
+			.fillMaxSize()
+			.padding(contentPadding),
 		containerColor = Color(0xFFF5F6F8),
 		contentWindowInsets = ScaffoldDefaults.contentWindowInsets,
 		topBar = {
@@ -65,19 +66,12 @@ fun ExploreScreen(viewModel: ExploreViewModel = viewModel()) {
 					contentDescription = "Ver mapa"
 				)
 			}
-		},
-		bottomBar = {
-			BottomBar(
-				items = navItems,
-				selectedIndex = viewModel.selectedTabIndex,
-				onItemSelected = viewModel::onBottomTabSelected
-			)
 		}
-	) { paddingValues ->
+	) { scaffoldPaddingValues ->
 		LazyColumn(
 			modifier = Modifier
 				.fillMaxSize()
-				.padding(paddingValues),
+				.padding(scaffoldPaddingValues),
 			contentPadding = PaddingValues(horizontal = 8.dp, vertical = 8.dp),
 			verticalArrangement = Arrangement.spacedBy(6.dp)
 		) {
