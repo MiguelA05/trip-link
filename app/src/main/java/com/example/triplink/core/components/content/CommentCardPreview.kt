@@ -6,12 +6,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.example.triplink.domain.model.Comment
+import com.example.triplink.domain.model.Comentario
+
 
 @Preview(showBackground = true)
 @Composable
 fun CommentCardPreview() {
-    val sampleComment = Comment(
+    val sampleComment = Comentario(
         id = "1",
         userName = "Camila Torres",
         date = "15 feb 2026",
