@@ -8,7 +8,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.example.triplink.domain.model.Publication
+import com.example.triplink.domain.model.PuntoInteres
 
 @Composable
 fun PublicationList(
@@ -16,8 +16,8 @@ fun PublicationList(
     onFavoriteToggle: (String) -> Unit = {},
     onCommentsClick: (String) -> Unit = {}
 ) {
-    val publications = listOf(
-        Publication(
+    val puntoInteres = listOf(
+        PuntoInteres(
             id = "1",
             authorName = "Laura Gómez",
             authorInitials = "LG",
@@ -31,7 +31,7 @@ fun PublicationList(
             commentsCount = 34,
             likesCount = 247
         ),
-        Publication(
+        PuntoInteres(
             id = "2",
             authorName = "Carlos Ruiz",
             authorInitials = "CR",
@@ -45,7 +45,7 @@ fun PublicationList(
             commentsCount = 12,
             likesCount = 150
         ),
-        Publication(
+        PuntoInteres(
             id = "3",
             authorName = "Ana Maria",
             authorInitials = "AM",
@@ -66,9 +66,9 @@ fun PublicationList(
         contentPadding = PaddingValues(16.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        items(publications) { publication ->
+        items(puntoInteres) { publication ->
             PublicationCard(
-                publication = publication,
+                puntoInteres = publication,
                 onFavoriteToggle = { onFavoriteToggle(publication.id) },
                 onCommentsClick = { onCommentsClick(publication.id) }
             )

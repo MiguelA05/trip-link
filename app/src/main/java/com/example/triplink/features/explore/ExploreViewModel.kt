@@ -5,7 +5,7 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
-import com.example.triplink.domain.model.Publication
+import com.example.triplink.domain.model.PuntoInteres
 import java.util.Locale
 
 class ExploreViewModel : ViewModel() {
@@ -27,8 +27,8 @@ class ExploreViewModel : ViewModel() {
 		"Cultura"
 	)
 
-	private val allPublications = listOf(
-        Publication(
+	private val allPuntoInteres = listOf(
+        PuntoInteres(
             id = "1",
             authorName = "Laura Gomez",
             authorInitials = "LG",
@@ -42,7 +42,7 @@ class ExploreViewModel : ViewModel() {
             commentsCount = 0,
             likesCount = 0,
         ),
-		Publication(
+		PuntoInteres(
 			id = "2",
 			title = "Parque del Cafe",
 			authorName = "Miguel Mira",
@@ -56,7 +56,7 @@ class ExploreViewModel : ViewModel() {
 			commentsCount = 0,
 			likesCount = 0
 		),
-		Publication(
+		PuntoInteres(
 			id = "3",
 			title = "Cafe de Origen Quindio",
 			authorName = "Pedro Sanchez",
@@ -72,10 +72,10 @@ class ExploreViewModel : ViewModel() {
 		)
 	)
 
-	val filteredPublications: List<Publication>
+	val filteredPuntoInteres: List<PuntoInteres>
 		get() {
 			val normalizedQuery = query.trim().lowercase(Locale.ROOT)
-			return allPublications.filter { publication ->
+			return allPuntoInteres.filter { publication ->
 				val categoryMatches = selectedCategory == "Todos" ||
 					publication.category.equals(selectedCategory, ignoreCase = true)
 

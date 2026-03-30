@@ -25,12 +25,12 @@ import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
 import coil3.request.crossfade
-import com.example.triplink.domain.model.Publication
+import com.example.triplink.domain.model.PuntoInteres
 import com.example.triplink.ui.theme.PrincipalRed
 
 @Composable
 fun PublicationCard(
-    publication: Publication,
+    puntoInteres: PuntoInteres,
     showFooter: Boolean = true,
     modifier: Modifier = Modifier,
     onFavoriteToggle: (Boolean) -> Unit = {},
@@ -61,7 +61,7 @@ fun PublicationCard(
                     contentAlignment = Alignment.Center
                 ) {
                     Text(
-                        text = publication.authorInitials,
+                        text = puntoInteres.authorInitials,
                         color = Color(0xFF1967D2),
                         fontWeight = FontWeight.Bold,
                         fontSize = 16.sp
@@ -72,13 +72,13 @@ fun PublicationCard(
 
                 Column(modifier = Modifier.weight(1f)) {
                     Text(
-                        text = publication.authorName,
+                        text = puntoInteres.authorName,
                         fontWeight = FontWeight.Bold,
                         fontSize = 16.sp,
                         color = Color.Black
                     )
                     Text(
-                        text = "Hace ${publication.timeAgo}",
+                        text = "Hace ${puntoInteres.timeAgo}",
                         fontSize = 12.sp,
                         color = Color.Gray
                     )
@@ -90,7 +90,7 @@ fun PublicationCard(
                     shape = RoundedCornerShape(16.dp)
                 ) {
                     Text(
-                        text = "A ${publication.distance} de ti",
+                        text = "A ${puntoInteres.distance} de ti",
                         modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp),
                         color = Color(0xFF1967D2),
                         fontSize = 12.sp,
@@ -110,7 +110,7 @@ fun PublicationCard(
             ) {
                 AsyncImage(
                     model = ImageRequest.Builder(LocalContext.current)
-                        .data(publication.imageUrl)
+                        .data(puntoInteres.imageUrl)
                         .crossfade(true)
                         .build(),
                     contentDescription = null,
@@ -127,7 +127,7 @@ fun PublicationCard(
                     shape = RoundedCornerShape(8.dp)
                 ) {
                     Text(
-                        text = publication.category,
+                        text = puntoInteres.category,
                         modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp),
                         color = Color.White,
                         fontSize = 12.sp,
@@ -155,7 +155,7 @@ fun PublicationCard(
                             modifier = Modifier.size(16.dp)
                         )
                         Text(
-                            text = publication.rating.toString(),
+                            text = puntoInteres.rating.toString(),
                             fontWeight = FontWeight.Bold,
                             fontSize = 12.sp,
                             color = Color.Black
@@ -177,7 +177,7 @@ fun PublicationCard(
                 ) {
                     Column {
                         Text(
-                            text = publication.title,
+                            text = puntoInteres.title,
                             color = Color.White,
                             fontSize = 20.sp,
                             fontWeight = FontWeight.Bold
@@ -191,7 +191,7 @@ fun PublicationCard(
                             )
                             Spacer(modifier = Modifier.width(4.dp))
                             Text(
-                                text = publication.location,
+                                text = puntoInteres.location,
                                 color = Color.White,
                                 fontSize = 12.sp
                             )
@@ -222,7 +222,7 @@ fun PublicationCard(
                         }
                         Spacer(modifier = Modifier.width(8.dp))
                         Text(
-                            text = publication.commentsCount.toString(),
+                            text = puntoInteres.commentsCount.toString(),
                             color = Color.Gray,
                             fontSize = 14.sp
                         )
@@ -230,19 +230,19 @@ fun PublicationCard(
 
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         IconButton(
-                            onClick = { onFavoriteToggle(!publication.isFavorite) },
+                            onClick = { onFavoriteToggle(!puntoInteres.isFavorite) },
                             modifier = Modifier.size(24.dp)
                         ) {
                             Icon(
-                                imageVector = if (publication.isFavorite) Icons.Filled.Favorite else Icons.Outlined.FavoriteBorder,
-                                contentDescription = if (publication.isFavorite) "Quitar de favoritos" else "Agregar a favoritos",
-                                tint = if (publication.isFavorite) PrincipalRed else Color.Gray,
+                                imageVector = if (puntoInteres.isFavorite) Icons.Filled.Favorite else Icons.Outlined.FavoriteBorder,
+                                contentDescription = if (puntoInteres.isFavorite) "Quitar de favoritos" else "Agregar a favoritos",
+                                tint = if (puntoInteres.isFavorite) PrincipalRed else Color.Gray,
                                 modifier = Modifier.size(24.dp)
                             )
                         }
                         Spacer(modifier = Modifier.width(8.dp))
                         Text(
-                            text = publication.likesCount.toString(),
+                            text = puntoInteres.likesCount.toString(),
                             color = Color.Gray,
                             fontSize = 14.sp
                         )

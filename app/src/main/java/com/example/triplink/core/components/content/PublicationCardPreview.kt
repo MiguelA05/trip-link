@@ -7,12 +7,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.example.triplink.domain.model.Publication
+import com.example.triplink.domain.model.PuntoInteres
 
 @Preview(showBackground = true)
 @Composable
 fun PublicationCardPreview() {
-    val samplePublication = Publication(
+    val samplePuntoInteres = PuntoInteres(
         id = "1",
         authorName = "Laura Gomez",
         authorInitials = "LG",
@@ -30,12 +30,12 @@ fun PublicationCardPreview() {
 
     Column {
         PublicationCard(
-            publication = samplePublication,
+            puntoInteres = samplePuntoInteres,
             onCommentsClick = {}
         )
         Spacer(modifier = Modifier.height(16.dp))
         PublicationCard(
-            publication = samplePublication.copy(isFavorite = false),
+            puntoInteres = samplePuntoInteres.copy(isFavorite = false),
             showFooter = true,
             onCommentsClick = {}
         )

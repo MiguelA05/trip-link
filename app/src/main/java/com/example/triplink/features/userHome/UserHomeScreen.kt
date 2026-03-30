@@ -76,9 +76,9 @@ fun UserHomeScreen(
             contentPadding = PaddingValues(horizontal = 10.dp, vertical = 8.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            items(items = viewModel.publications, key = { it.id }) { publication ->
+            items(items = viewModel.puntoInteres, key = { it.id }) { publication ->
                 PublicationCard(
-                    publication = publication,
+                    puntoInteres = publication,
                     onFavoriteToggle = { viewModel.toggleFavorite(publication.id) },
                     onCommentsClick = { onCommentsClick(publication.id) }
                 )
