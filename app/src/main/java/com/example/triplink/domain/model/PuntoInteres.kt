@@ -1,7 +1,9 @@
 package com.example.triplink.domain.model
 
-data class Publication(
+data class PuntoInteres(
+    //Clave principal del punto de interes
     val id: String,
+
     val title: String,
     val authorName: String,
     val authorInitials: String,
