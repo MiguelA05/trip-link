@@ -81,9 +81,9 @@ fun ExploreScreen(viewModel: ExploreViewModel = viewModel()) {
 			contentPadding = PaddingValues(horizontal = 8.dp, vertical = 8.dp),
 			verticalArrangement = Arrangement.spacedBy(6.dp)
 		) {
-			items(viewModel.filteredPublications, key = { it.id }) { publication ->
+			items(viewModel.filteredPuntoInteres, key = { it.id }) { publication ->
 				PublicationCard(
-					publication = publication,
+					puntoInteres = publication,
 					showFooter = false
 				)
 			}

@@ -5,15 +5,15 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
-import com.example.triplink.domain.model.Publication
+import com.example.triplink.domain.model.PuntoInteres
 
 class UserHomeViewModel : ViewModel() {
 
     var selectedTabIndex by mutableIntStateOf(0)
         private set
 
-    private val _publications = mutableStateListOf(
-        Publication(
+    private val _puntoInteres = mutableStateListOf(
+        PuntoInteres(
             id = "1",
             authorName = "Laura Gomez",
             authorInitials = "LG",
@@ -28,7 +28,7 @@ class UserHomeViewModel : ViewModel() {
             likesCount = 247,
             isFavorite = false
         ),
-        Publication(
+        PuntoInteres(
             id = "2",
             authorName = "Martin Ruiz",
             authorInitials = "MR",
@@ -44,18 +44,18 @@ class UserHomeViewModel : ViewModel() {
             isFavorite = false
         )
     )
-    val publications: List<Publication> get() = _publications
+    val puntoInteres: List<PuntoInteres> get() = _puntoInteres
 
     fun selectTab(index: Int) {
         selectedTabIndex = index
     }
 
     fun toggleFavorite(publicationId: String) {
-        val index = _publications.indexOfFirst { it.id == publicationId }
+        val index = _puntoInteres.indexOfFirst { it.id == publicationId }
         if (index != -1) {
-            val publication = _publications[index]
+            val publication = _puntoInteres[index]
             val newIsFavorite = !publication.isFavorite
-            _publications[index] = publication.copy(
+            _puntoInteres[index] = publication.copy(
                 isFavorite = newIsFavorite,
                 likesCount = if (newIsFavorite) publication.likesCount + 1 else publication.likesCount - 1
             )
