@@ -36,12 +36,12 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.triplink.domain.model.Comment
+import com.example.triplink.domain.model.Comentario
 import java.util.Locale
 
 @Composable
 fun CommentCard(
-    comment: Comment,
+    comment: Comentario,
     modifier: Modifier = Modifier
 ) {
     var isExpanded by remember { mutableStateOf(false) }
@@ -153,7 +153,7 @@ fun CommentCard(
 @Preview(showBackground = true)
 @Composable
 fun CommentCardPreview() {
-    val sampleComment = Comment(
+    val sampleComment = Comentario(
         id = "1",
         userName = "Camila Torres",
         date = "15 feb 2026",

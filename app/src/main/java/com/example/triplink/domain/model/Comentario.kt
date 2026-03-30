@@ -1,6 +1,6 @@
 package com.example.triplink.domain.model
 
-data class Comment(
+data class Comentario(
     val id: String,
     val userName: String,
     val date: String,
