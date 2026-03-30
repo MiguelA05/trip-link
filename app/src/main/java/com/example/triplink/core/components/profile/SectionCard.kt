@@ -1,6 +1,7 @@
 package com.example.triplink.core.components.profile
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -29,8 +30,9 @@ fun SectionCard(
 ) {
     Card(
         modifier = modifier.fillMaxWidth(),
-        colors = CardDefaults.cardColors(containerColor = Color(0xFFF2F4F7)),
+        colors = CardDefaults.cardColors(containerColor = Color(0xFFF7F8FA)),
         shape = RoundedCornerShape(18.dp),
+        border = BorderStroke(1.dp, Color(0xFFE5EAF1)),
         elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
     ) {
         Column(

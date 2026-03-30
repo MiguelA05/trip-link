@@ -6,7 +6,8 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.systemBarsPadding
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -39,6 +40,7 @@ fun UserInfoScreen(viewModel: UserInfoViewModel = viewModel()) {
 	Scaffold(
 		modifier = Modifier.fillMaxSize(),
 		containerColor = Color(0xFFF0F2F5),
+		contentWindowInsets = WindowInsets(0, 0, 0, 0),
 		bottomBar = {
 			BottomBar(
 				items = navItems,
@@ -61,7 +63,7 @@ fun UserInfoScreen(viewModel: UserInfoViewModel = viewModel()) {
 					roleLabel = state.roleLabel,
 					onBackClick = {},
 					onEditClick = {},
-					modifier = Modifier.systemBarsPadding()
+					modifier = Modifier.statusBarsPadding()
 				)
 			}
 
