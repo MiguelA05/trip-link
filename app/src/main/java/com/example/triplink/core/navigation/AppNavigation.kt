@@ -69,7 +69,9 @@ fun AppNavigation() {
             }
 
             composable<MainRoutes.UserHome> {
-                UserHomeScreen()
+                UserHomeScreen(
+
+                )
             }
 
             composable<MainRoutes.RecoveryPassword>{
