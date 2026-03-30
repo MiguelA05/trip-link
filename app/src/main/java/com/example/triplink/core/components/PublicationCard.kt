@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.outlined.ChatBubbleOutline
 import androidx.compose.material.icons.outlined.FavoriteBorder
@@ -26,12 +27,15 @@ import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
 import coil3.request.crossfade
 import com.example.triplink.domain.model.Publication
+import com.example.triplink.ui.theme.PrincipalRed
 
 @Composable
 fun PublicationCard(
     publication: Publication,
     showFooter: Boolean = true,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onFavoriteToggle: (Boolean) -> Unit = {},
+    onCommentsClick: () -> Unit = {}
 ) {
     Card(
         modifier = modifier
@@ -206,12 +210,17 @@ fun PublicationCard(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Row(verticalAlignment = Alignment.CenterVertically) {
-                        Icon(
-                            imageVector = Icons.Outlined.ChatBubbleOutline,
-                            contentDescription = "Comentarios",
-                            tint = Color.Gray,
+                        IconButton(
+                            onClick = onCommentsClick,
                             modifier = Modifier.size(24.dp)
-                        )
+                        ) {
+                            Icon(
+                                imageVector = Icons.Outlined.ChatBubbleOutline,
+                                contentDescription = "Comentarios",
+                                tint = Color.Gray,
+                                modifier = Modifier.size(24.dp)
+                            )
+                        }
                         Spacer(modifier = Modifier.width(8.dp))
                         Text(
                             text = publication.commentsCount.toString(),
@@ -221,12 +230,17 @@ fun PublicationCard(
                     }
 
                     Row(verticalAlignment = Alignment.CenterVertically) {
-                        Icon(
-                            imageVector = Icons.Outlined.FavoriteBorder,
-                            contentDescription = "Me gusta",
-                            tint = Color.Gray,
+                        IconButton(
+                            onClick = { onFavoriteToggle(!publication.isFavorite) },
                             modifier = Modifier.size(24.dp)
-                        )
+                        ) {
+                            Icon(
+                                imageVector = if (publication.isFavorite) Icons.Filled.Favorite else Icons.Outlined.FavoriteBorder,
+                                contentDescription = if (publication.isFavorite) "Quitar de favoritos" else "Agregar a favoritos",
+                                tint = if (publication.isFavorite) PrincipalRed else Color.Gray,
+                                modifier = Modifier.size(24.dp)
+                            )
+                        }
                         Spacer(modifier = Modifier.width(8.dp))
                         Text(
                             text = publication.likesCount.toString(),
@@ -248,19 +262,27 @@ fun PublicationCardPreview() {
         authorName = "Laura Gómez",
         authorInitials = "LG",
         timeAgo = "1 hora",
-        distance = "3.2 km",
+        distance = "3.9 km",
         category = "Naturaleza y Parques",
         rating = 4.8,
         title = "Valle del Cocora",
         location = "Salento, Quindío",
         imageUrl = "https://images.unsplash.com/photo-1599408162165-276634c0e351?q=80&w=1000&auto=format&fit=crop",
         commentsCount = 34,
-        likesCount = 247
+        likesCount = 247,
+        isFavorite = true
     )
     
     Column {
-        PublicationCard(publication = samplePublication)
+        PublicationCard(
+            publication = samplePublication,
+            onCommentsClick = {}
+        )
         Spacer(modifier = Modifier.height(16.dp))
-        PublicationCard(publication = samplePublication, showFooter = false)
+        PublicationCard(
+            publication = samplePublication.copy(isFavorite = false), 
+            showFooter = true,
+            onCommentsClick = {}
+        )
     }
 }

@@ -12,7 +12,11 @@ import androidx.compose.ui.unit.dp
 import com.example.triplink.domain.model.Publication
 
 @Composable
-fun PublicationList(modifier: Modifier = Modifier) {
+fun PublicationList(
+    modifier: Modifier = Modifier,
+    onFavoriteToggle: (String) -> Unit = {},
+    onCommentsClick: (String) -> Unit = {}
+) {
     val publications = listOf(
         Publication(
             id = "1",
@@ -64,7 +68,11 @@ fun PublicationList(modifier: Modifier = Modifier) {
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         items(publications) { publication ->
-            PublicationCard(publication = publication)
+            PublicationCard(
+                publication = publication,
+                onFavoriteToggle = { onFavoriteToggle(publication.id) },
+                onCommentsClick = { onCommentsClick(publication.id) }
+            )
         }
     }
 }

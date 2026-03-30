@@ -12,5 +12,6 @@ data class Publication(
     val location: String,
     val imageUrl: String,
     val commentsCount: Int,
-    val likesCount: Int
+    val likesCount: Int,
+    val isFavorite: Boolean = false
 )
