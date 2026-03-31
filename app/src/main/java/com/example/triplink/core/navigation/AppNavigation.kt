@@ -69,7 +69,14 @@ fun AppNavigation() {
             }
 
             composable<MainRoutes.UserSection> {
-                UserSectionScreen()
+                UserSectionScreen(
+                    onLogout = {
+                        navController.navigate(MainRoutes.Home) {
+                            popUpTo(MainRoutes.UserSection) { inclusive = true }
+                            launchSingleTop = true
+                        }
+                    }
+                )
             }
 
             composable<MainRoutes.RecoveryPassword>{

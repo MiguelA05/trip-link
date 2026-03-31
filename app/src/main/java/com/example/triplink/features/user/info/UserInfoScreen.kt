@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -19,9 +18,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.outlined.Logout
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.triplink.core.components.GeneralAlertDialog
 import com.example.triplink.core.components.profile.EmptyState
 import com.example.triplink.core.components.profile.ProfileHeader
 import com.example.triplink.core.components.profile.SectionCard
@@ -33,7 +35,8 @@ import com.example.triplink.ui.theme.PrincipalWhite
 @Composable
 fun UserInfoScreen(
 	viewModel: UserInfoViewModel = viewModel(),
-	contentPadding: PaddingValues = PaddingValues()
+	contentPadding: PaddingValues = PaddingValues(),
+	onLogoutClick: () -> Unit = {}
 ) {
 	val state = viewModel.uiState
 
@@ -56,9 +59,9 @@ fun UserInfoScreen(
 					userName = state.userName,
 					initials = state.userInitials,
 					roleLabel = state.roleLabel,
-					onBackClick = {},
+	  onBackClick = viewModel::onLogoutRequested,
 					onEditClick = {},
-					modifier = Modifier.statusBarsPadding()
+					modifier = Modifier
 				)
 			}
 
@@ -139,6 +142,22 @@ fun UserInfoScreen(
 			}
 		}
 	}
+
+			if (viewModel.showLogoutDialog) {
+				GeneralAlertDialog(
+					onDismissRequest = viewModel::dismissLogoutDialog,
+					onConfirm = {
+						viewModel.dismissLogoutDialog()
+						onLogoutClick()
+					},
+					title = "¿Cerrar sesión?",
+					message = "Se cerrará tu sesión en este dispositivo.\nPodrás volver a ingresar en cualquier momento.",
+					icon = Icons.AutoMirrored.Outlined.Logout,
+					buttonText = "Cerrar sesión",
+					dismissButtonText = "Cancelar",
+					onDismissAction = viewModel::dismissLogoutDialog
+				)
+			}
 }
 
 

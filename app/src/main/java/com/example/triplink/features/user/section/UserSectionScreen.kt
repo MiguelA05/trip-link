@@ -1,6 +1,7 @@
 package com.example.triplink.features.user.section
 
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -19,7 +20,9 @@ import com.example.triplink.features.user.home.UserHomeScreen
 import com.example.triplink.features.user.info.UserInfoScreen
 
 @Composable
-fun UserSectionScreen() {
+fun UserSectionScreen(
+    onLogout: () -> Unit = {}
+) {
     val navController = rememberNavController()
     val navItems = defaultNavItems()
     val tabRoutes = listOf(
@@ -36,6 +39,7 @@ fun UserSectionScreen() {
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
+        contentWindowInsets = WindowInsets(0, 0, 0, 0),
         bottomBar = {
             BottomBar(
                 items = navItems,
@@ -65,7 +69,10 @@ fun UserSectionScreen() {
                 ExploreScreen(contentPadding = paddingValues)
             }
             composable<UserSectionRoutes.UserInfo> {
-                UserInfoScreen(contentPadding = paddingValues)
+                UserInfoScreen(
+                    contentPadding = paddingValues,
+                    onLogoutClick = onLogout
+                )
             }
         }
     }

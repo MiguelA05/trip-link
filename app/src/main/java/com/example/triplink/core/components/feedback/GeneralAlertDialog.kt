@@ -23,6 +23,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -46,7 +47,9 @@ fun GeneralAlertDialog(
     title: String,
     message: String,
     icon: ImageVector = Icons.Default.Email,
-    buttonText: String = "Confirmar"
+    buttonText: String = "Confirmar",
+    dismissButtonText: String? = null,
+    onDismissAction: (() -> Unit)? = null
 ) {
     BasicAlertDialog(
         onDismissRequest = onDismissRequest
@@ -121,24 +124,68 @@ fun GeneralAlertDialog(
                     
                     HorizontalDivider(color = Color(0xFFF0F0F0))
 
-                    // Botón de confirmar centrado
-                    Button(
-                        onClick = onConfirm,
-                        modifier = Modifier
-                            .fillMaxWidth(0.7f)
-                            .height(50.dp),
-                        shape = RoundedCornerShape(25.dp),
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = PrincipalBlue
-                        )
-                    ) {
-                        Text(
-                            text = buttonText,
-                            style = MaterialTheme.typography.titleMedium.copy(
-                                fontWeight = FontWeight.Bold,
-                                color = PrincipalWhite
+                    if (dismissButtonText != null && onDismissAction != null) {
+                        androidx.compose.foundation.layout.Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.spacedBy(12.dp)
+                        ) {
+                            OutlinedButton(
+                                onClick = onDismissAction,
+                                modifier = Modifier
+                                    .weight(1f)
+                                    .height(50.dp),
+                                shape = RoundedCornerShape(25.dp),
+                                colors = ButtonDefaults.outlinedButtonColors(
+                                    contentColor = PrincipalBlue
+                                )
+                            ) {
+                                Text(
+                                    text = dismissButtonText,
+                                    style = MaterialTheme.typography.titleMedium.copy(
+                                        fontWeight = FontWeight.Bold
+                                    )
+                                )
+                            }
+
+                            Button(
+                                onClick = onConfirm,
+                                modifier = Modifier
+                                    .weight(1f)
+                                    .height(50.dp),
+                                shape = RoundedCornerShape(25.dp),
+                                colors = ButtonDefaults.buttonColors(
+                                    containerColor = PrincipalBlue
+                                )
+                            ) {
+                                Text(
+                                    text = buttonText,
+                                    style = MaterialTheme.typography.titleMedium.copy(
+                                        fontWeight = FontWeight.Bold,
+                                        color = PrincipalWhite
+                                    )
+                                )
+                            }
+                        }
+                    } else {
+                        // Mantiene comportamiento previo de un solo botón
+                        Button(
+                            onClick = onConfirm,
+                            modifier = Modifier
+                                .fillMaxWidth(0.7f)
+                                .height(50.dp),
+                            shape = RoundedCornerShape(25.dp),
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = PrincipalBlue
                             )
-                        )
+                        ) {
+                            Text(
+                                text = buttonText,
+                                style = MaterialTheme.typography.titleMedium.copy(
+                                    fontWeight = FontWeight.Bold,
+                                    color = PrincipalWhite
+                                )
+                            )
+                        }
                     }
                 }
             }
