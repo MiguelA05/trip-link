@@ -1,7 +1,10 @@
 plugins {
     alias(libs.plugins.android.application)
+    alias(libs.plugins.kotlinAndroid)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.kotlinx.serialization)
+    alias(libs.plugins.hiltAndroid)
+    alias(libs.plugins.ksp)
 
 }
 
@@ -39,6 +42,10 @@ android {
     buildFeatures {
         compose = true
     }
+
+    kotlinOptions {
+        jvmTarget = "11"
+    }
 }
 
 dependencies {
@@ -63,5 +70,8 @@ dependencies {
     debugImplementation(libs.androidx.compose.ui.test.manifest)
     implementation(libs.androidx.navigation.compose)
     implementation(libs.kotlinx.serialization.json)
+    implementation(libs.hiltAndroid)
+    ksp(libs.hiltCompiler)
+    implementation(libs.androidxHiltNavigationCompose)
 
 }
