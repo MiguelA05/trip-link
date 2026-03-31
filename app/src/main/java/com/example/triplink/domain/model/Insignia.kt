@@ -5,5 +5,4 @@ data class Insignia(
     val nombre: String,
     val descripcion: String,
     val imagenUrl: String
-
 )
