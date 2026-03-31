@@ -36,7 +36,8 @@ import com.example.triplink.ui.theme.PrincipalWhite
 fun UserInfoScreen(
 	viewModel: UserInfoViewModel = viewModel(),
 	contentPadding: PaddingValues = PaddingValues(),
-	onLogoutClick: () -> Unit = {}
+	onLogoutClick: () -> Unit = {},
+	onEditClick: () -> Unit = {}
 ) {
 	val state = viewModel.uiState
 
@@ -60,7 +61,7 @@ fun UserInfoScreen(
 					initials = state.userInitials,
 					roleLabel = state.roleLabel,
 	  onBackClick = viewModel::onLogoutRequested,
-					onEditClick = {},
+					onEditClick = onEditClick,
 					modifier = Modifier
 				)
 			}
