@@ -10,7 +10,9 @@ import com.example.triplink.features.login.LoginScreen
 import com.example.triplink.features.recoverypassword.RecoveryPasswordScreen
 import com.example.triplink.features.resetpassword.ResetPasswordScreen
 import com.example.triplink.ui.theme.DescubreuqTheme
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
