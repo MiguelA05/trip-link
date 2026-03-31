@@ -33,10 +33,11 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.triplink.domain.model.Comentario
+import java.text.SimpleDateFormat
+import java.util.Date
 import java.util.Locale
 
 @Composable
@@ -70,7 +71,7 @@ fun CommentCard(
                     contentAlignment = Alignment.Center
                 ) {
                     Text(
-                        text = comment.userInitials,
+                        text = buildInitials(comment.userName),
                         color = Color.White,
                         fontWeight = FontWeight.Bold,
                         fontSize = 18.sp
@@ -86,7 +87,7 @@ fun CommentCard(
                         fontWeight = FontWeight.Bold
                     )
                     Text(
-                        text = comment.date,
+                        text = formatDate(comment.date),
                         style = MaterialTheme.typography.bodySmall,
                         color = Color.LightGray
                     )
@@ -148,6 +149,17 @@ fun CommentCard(
             }
         }
     }
+}
+
+private fun buildInitials(name: String): String {
+    val parts = name.trim().split(" ").filter { it.isNotBlank() }
+    if (parts.isEmpty()) return "U"
+    return parts.take(2).joinToString("") { it.first().uppercaseChar().toString() }
+}
+
+private fun formatDate(timestamp: Long): String {
+    val formatter = SimpleDateFormat("dd MMM yyyy", Locale.getDefault())
+    return formatter.format(Date(timestamp))
 }
 
 

@@ -51,7 +51,7 @@ import com.example.triplink.core.utils.RequestResult
 import com.example.triplink.ui.theme.PrincipalBlue
 import com.example.triplink.ui.theme.PrincipalRed
 import com.example.triplink.ui.theme.PrincipalWhite
-import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -71,11 +71,13 @@ fun LoginScreen(
                 is RequestResult.Success -> result.message
                 is RequestResult.Failure -> result.errorMessage
             }
-            snackbarHostState.showSnackbar(message)
 
             if (result is RequestResult.Success) {
-                delay(1000)
+                // Mostrar feedback y navegar sin bloquear la transición.
+                launch { snackbarHostState.showSnackbar(message) }
                 onNavigateToUsers()
+            } else {
+                snackbarHostState.showSnackbar(message)
             }
             viewModel.resetLoginResult()
         }

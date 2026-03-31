@@ -9,6 +9,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.example.triplink.domain.model.PuntoInteres
+import com.example.triplink.domain.model.Ubicacion
+import com.example.triplink.domain.model.enums.Categoria
 
 @Composable
 fun PublicationList(
@@ -19,45 +21,30 @@ fun PublicationList(
     val puntoInteres = listOf(
         PuntoInteres(
             id = "1",
-            authorName = "Laura Gómez",
-            authorInitials = "LG",
-            timeAgo = "1 hora",
-            distance = "3.2 km",
-            category = "Naturaleza y Parques",
-            rating = 4.8,
-            title = "Valle del Cocora",
-            location = "Salento, Quindío",
-            imageUrl = "https://images.unsplash.com/photo-1599408162165-276634c0e351?q=80&w=1000&auto=format&fit=crop",
-            commentsCount = 34,
-            likesCount = 247
+            titulo = "Valle del Cocora",
+            informacion = "Paisajes de palmas y senderos en el Quindio",
+            usuarioAutorId = "Laura Gomez",
+            categoria = Categoria.NATURALEZA,
+            ubicacion = Ubicacion(4.6383, -75.4964, "Salento, Quindio"),
+            fotos = listOf("https://images.unsplash.com/photo-1599408162165-276634c0e351?q=80&w=1000&auto=format&fit=crop")
         ),
         PuntoInteres(
             id = "2",
-            authorName = "Carlos Ruiz",
-            authorInitials = "CR",
-            timeAgo = "2 horas",
-            distance = "5.0 km",
-            category = "Cultura",
-            rating = 4.5,
-            title = "Museo del Oro",
-            location = "Bogotá, Colombia",
-            imageUrl = "https://images.unsplash.com/photo-1582650800082-9366367793b8?q=80&w=1000&auto=format&fit=crop",
-            commentsCount = 12,
-            likesCount = 150
+            titulo = "Museo del Oro",
+            informacion = "Coleccion historica y cultural",
+            usuarioAutorId = "Carlos Ruiz",
+            categoria = Categoria.CULTURA,
+            ubicacion = Ubicacion(4.6017, -74.0721, "Bogota, Colombia"),
+            fotos = listOf("https://images.unsplash.com/photo-1582650800082-9366367793b8?q=80&w=1000&auto=format&fit=crop")
         ),
         PuntoInteres(
             id = "3",
-            authorName = "Ana Maria",
-            authorInitials = "AM",
-            timeAgo = "3 horas",
-            distance = "1.5 km",
-            category = "Gastronomía",
-            rating = 4.9,
-            title = "Restaurante El Mirador",
-            location = "Salento, Quindío",
-            imageUrl = "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?q=80&w=1000&auto=format&fit=crop",
-            commentsCount = 45,
-            likesCount = 312
+            titulo = "Restaurante El Mirador",
+            informacion = "Comida local con vista al valle",
+            usuarioAutorId = "Ana Maria",
+            categoria = Categoria.GASTRONOMIA,
+            ubicacion = Ubicacion(4.6375, -75.5723, "Salento, Quindio"),
+            fotos = listOf("https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?q=80&w=1000&auto=format&fit=crop")
         )
     )
 
