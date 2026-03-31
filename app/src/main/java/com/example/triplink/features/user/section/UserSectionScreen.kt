@@ -8,6 +8,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavGraph.Companion.findStartDestination
+import androidx.navigation.toRoute
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
@@ -15,6 +16,8 @@ import androidx.navigation.compose.rememberNavController
 import com.example.triplink.core.components.navigation.BottomBar
 import com.example.triplink.core.components.navigation.defaultNavItems
 import com.example.triplink.core.navigation.UserSectionRoutes
+import com.example.triplink.features.comments.CommentsScreen
+import com.example.triplink.features.publicationDetails.PublicationDetailsScreen
 import com.example.triplink.features.user.accountEdit.AccountEditScreen
 import com.example.triplink.features.user.explore.ExploreScreen
 import com.example.triplink.features.user.home.UserHomeScreen
@@ -69,7 +72,12 @@ fun UserSectionScreen(
                 .fillMaxSize()
         ) {
             composable<UserSectionRoutes.UserHome> {
-                UserHomeScreen(contentPadding = paddingValues)
+                UserHomeScreen(
+                    contentPadding = paddingValues,
+                    onCommentsClick = { publicationId ->
+                        navController.navigate(UserSectionRoutes.PublicationDetails(publicationId))
+                    }
+                )
             }
             composable<UserSectionRoutes.Explore> {
                 ExploreScreen(contentPadding = paddingValues)
@@ -93,6 +101,23 @@ fun UserSectionScreen(
                             }
                         }
                     }
+                )
+            }
+            composable<UserSectionRoutes.PublicationDetails> { backStackEntry ->
+                val route = backStackEntry.toRoute<UserSectionRoutes.PublicationDetails>()
+                PublicationDetailsScreen(
+                    publicationId = route.publicationId,
+                    onBackClick = { navController.popBackStack() },
+                    onSeeAllReviewsClick = { publicationId ->
+                        navController.navigate(UserSectionRoutes.Comments(publicationId))
+                    }
+                )
+            }
+            composable<UserSectionRoutes.Comments> { backStackEntry ->
+                val route = backStackEntry.toRoute<UserSectionRoutes.Comments>()
+                CommentsScreen(
+                    publicationId = route.publicationId,
+                    onBackClick = { navController.popBackStack() }
                 )
             }
         }

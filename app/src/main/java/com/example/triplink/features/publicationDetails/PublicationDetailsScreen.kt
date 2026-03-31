@@ -42,7 +42,11 @@ data class Review(
 )
 
 @Composable
-fun PublicationDetailsScreen() {
+fun PublicationDetailsScreen(
+    publicationId: String = "",
+    onBackClick: () -> Unit = {},
+    onSeeAllReviewsClick: (String) -> Unit = {}
+) {
     val schedules = listOf(
         DaySchedule("Lunes", "8:00 am - 5:00 pm"),
         DaySchedule("Martes", "8:00 am - 5:00 pm"),
@@ -69,7 +73,7 @@ fun PublicationDetailsScreen() {
                 // Barra superior fija
                 GeneralTopBar(
                     title = "Detalle del Lugar",
-                    onBack = { /* Por ahora vacío */ }
+                    onBack = onBackClick
                 )
                 // Imagen y texto fijados (no se mueven al hacer scroll)
                 ImageHeader()
@@ -100,7 +104,13 @@ fun PublicationDetailsScreen() {
                 ScheduleSection(schedules = schedules, today = today)
             }
             item {
-                ReviewsSection(reviews = reviews, generalRating = generalRating)
+                ReviewsSection(
+                    reviews = reviews,
+                    generalRating = generalRating,
+                    onSeeAllReviewsClick = {
+                        onSeeAllReviewsClick(publicationId)
+                    }
+                )
             }
             // Espacio extra al final
             item {
@@ -440,7 +450,11 @@ fun LocationSection() {
 }
 
 @Composable
-fun ReviewsSection(reviews: List<Review>, generalRating: Double) {
+fun ReviewsSection(
+    reviews: List<Review>,
+    generalRating: Double,
+    onSeeAllReviewsClick: () -> Unit
+) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -492,7 +506,7 @@ fun ReviewsSection(reviews: List<Review>, generalRating: Double) {
         Spacer(modifier = Modifier.height(8.dp))
 
         GeneralButton(
-            onClick = { /* TODO */ },
+            onClick = onSeeAllReviewsClick,
             text = "Ver todas las reseñas"
         )
     }
