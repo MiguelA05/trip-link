@@ -6,6 +6,8 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import com.example.triplink.domain.model.PuntoInteres
+import com.example.triplink.domain.model.Ubicacion
+import com.example.triplink.domain.model.enums.Categoria
 
 class UserHomeViewModel : ViewModel() {
 
@@ -15,33 +17,21 @@ class UserHomeViewModel : ViewModel() {
     private val _puntoInteres = mutableStateListOf(
         PuntoInteres(
             id = "1",
-            authorName = "Laura Gomez",
-            authorInitials = "LG",
-            timeAgo = "1 hora",
-            distance = "3.2 km",
-            category = "Naturaleza y Parques",
-            rating = 4.8,
-            title = "Valle del Cocora",
-            location = "Salento, Quindio",
-            imageUrl = "https://visitmycolombia.com/wp-content/uploads/2024/01/bosque-de-palmas-valle-de-cocora-1536x864.jpg",
-            commentsCount = 34,
-            likesCount = 247,
-            isFavorite = false
+            titulo = "Valle del Cocora",
+            informacion = "Paisajes de palmas y senderos en el Quindio",
+            usuarioAutorId = "Laura Gomez",
+            categoria = Categoria.NATURALEZA,
+            ubicacion = Ubicacion(4.6383, -75.4964, "Salento, Quindio"),
+            fotos = listOf("https://visitmycolombia.com/wp-content/uploads/2024/01/bosque-de-palmas-valle-de-cocora-1536x864.jpg")
         ),
         PuntoInteres(
             id = "2",
-            authorName = "Martin Ruiz",
-            authorInitials = "MR",
-            timeAgo = "3 horas",
-            distance = "1.8 km",
-            category = "Cafes Especiales",
-            rating = 4.7,
-            title = "Cafe de Origen Quindio",
-            location = "Armenia, Quindio",
-            imageUrl = "https://images.unsplash.com/photo-1509042239860-f550ce710b93?q=80&w=1200&auto=format&fit=crop",
-            commentsCount = 12,
-            likesCount = 198,
-            isFavorite = false
+            titulo = "Cafe de Origen Quindio",
+            informacion = "Cafe especial de la region",
+            usuarioAutorId = "Martin Ruiz",
+            categoria = Categoria.GASTRONOMIA,
+            ubicacion = Ubicacion(4.5339, -75.6811, "Armenia, Quindio"),
+            fotos = listOf("https://images.unsplash.com/photo-1509042239860-f550ce710b93?q=80&w=1200&auto=format&fit=crop")
         )
     )
     val puntoInteres: List<PuntoInteres> get() = _puntoInteres
@@ -51,15 +41,7 @@ class UserHomeViewModel : ViewModel() {
     }
 
     fun toggleFavorite(publicationId: String) {
-        val index = _puntoInteres.indexOfFirst { it.id == publicationId }
-        if (index != -1) {
-            val publication = _puntoInteres[index]
-            val newIsFavorite = !publication.isFavorite
-            _puntoInteres[index] = publication.copy(
-                isFavorite = newIsFavorite,
-                likesCount = if (newIsFavorite) publication.likesCount + 1 else publication.likesCount - 1
-            )
-        }
+        // Placeholder visual: el modelo de dominio actual no expone estado de favoritos.
     }
 }
 

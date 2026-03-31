@@ -1,19 +1,22 @@
 package com.example.triplink.domain.model
 
-data class PuntoInteres(
-    //Clave principal del punto de interes
-    val id: String,
+import com.example.triplink.domain.model.enums.Categoria
+import com.example.triplink.domain.model.enums.EstadoPublicacion
+import com.example.triplink.domain.model.enums.RangoPrecios
 
-    val title: String,
-    val authorName: String,
-    val authorInitials: String,
-    val timeAgo: String,
-    val distance: String,
-    val category: String,
-    val rating: Double,
-    val location: String,
-    val imageUrl: String,
-    val commentsCount: Int,
-    val likesCount: Int,
-    val isFavorite: Boolean = false
+data class PuntoInteres(
+    val id: String,
+    val titulo: String,
+    val informacion: String,
+
+    val usuarioAutorId: String,
+
+    val categoria: Categoria,
+    val ubicacion: Ubicacion,
+
+    val fotos: List<String>,
+    val horario: Pair<Long, Long>? = null,
+
+    val estado: EstadoPublicacion = EstadoPublicacion.PENDIENTE,
+    val rangoPrecios: RangoPrecios? = null
 )

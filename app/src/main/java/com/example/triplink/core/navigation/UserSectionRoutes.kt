@@ -12,5 +12,8 @@ sealed class UserSectionRoutes {
 
     @Serializable
     data object UserInfo : UserSectionRoutes()
+
+    @Serializable
+    data object AccountEdit : UserSectionRoutes()
 }
 

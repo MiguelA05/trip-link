@@ -14,11 +14,12 @@ import com.example.triplink.domain.model.Comentario
 fun CommentCardPreview() {
     val sampleComment = Comentario(
         id = "1",
+        usuarioId = "u1",
+        puntoInteresId = "poi1",
         userName = "Camila Torres",
-        date = "15 feb 2026",
+        date = System.currentTimeMillis(),
         rating = 5.0f,
-        text = "Un lugar con mucha magia, supera todas las expectativas y te hace emocionar por su belleza y tranquilidad.",
-        userInitials = "CT"
+        text = "Un lugar con mucha magia, supera todas las expectativas y te hace emocionar por su belleza y tranquilidad."
     )
     Box(modifier = Modifier.padding(16.dp)) {
         CommentCard(comment = sampleComment)

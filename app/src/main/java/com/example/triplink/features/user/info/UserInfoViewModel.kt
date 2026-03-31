@@ -25,6 +25,9 @@ data class UserInfoUiState(
 
 class UserInfoViewModel : ViewModel() {
 
+	var showLogoutDialog by mutableStateOf(false)
+		private set
+
 	var uiState by mutableStateOf(
 		UserInfoUiState(
 			userName = "Usuario 1",
@@ -46,6 +49,14 @@ class UserInfoViewModel : ViewModel() {
 	fun onBottomTabSelected(index: Int) {
 		uiState = uiState.copy(selectedBottomTabIndex = index)
 	}
+
+			fun onLogoutRequested() {
+				showLogoutDialog = true
+			}
+
+			fun dismissLogoutDialog() {
+				showLogoutDialog = false
+			}
 
 	private companion object {
 		fun buildInitials(name: String): String {

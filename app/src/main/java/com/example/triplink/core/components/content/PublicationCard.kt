@@ -27,6 +27,7 @@ import coil3.request.ImageRequest
 import coil3.request.crossfade
 import com.example.triplink.domain.model.PuntoInteres
 import com.example.triplink.ui.theme.PrincipalRed
+import java.util.Locale
 
 @Composable
 fun PublicationCard(
@@ -61,7 +62,7 @@ fun PublicationCard(
                     contentAlignment = Alignment.Center
                 ) {
                     Text(
-                        text = puntoInteres.authorInitials,
+                        text = buildInitials(puntoInteres.usuarioAutorId),
                         color = Color(0xFF1967D2),
                         fontWeight = FontWeight.Bold,
                         fontSize = 16.sp
@@ -72,13 +73,13 @@ fun PublicationCard(
 
                 Column(modifier = Modifier.weight(1f)) {
                     Text(
-                        text = puntoInteres.authorName,
+                        text = formatAuthorName(puntoInteres.usuarioAutorId),
                         fontWeight = FontWeight.Bold,
                         fontSize = 16.sp,
                         color = Color.Black
                     )
                     Text(
-                        text = "Hace ${puntoInteres.timeAgo}",
+                        text = "Hace un momento",
                         fontSize = 12.sp,
                         color = Color.Gray
                     )
@@ -90,7 +91,7 @@ fun PublicationCard(
                     shape = RoundedCornerShape(16.dp)
                 ) {
                     Text(
-                        text = "A ${puntoInteres.distance} de ti",
+                        text = "Cerca de ti",
                         modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp),
                         color = Color(0xFF1967D2),
                         fontSize = 12.sp,
@@ -110,7 +111,7 @@ fun PublicationCard(
             ) {
                 AsyncImage(
                     model = ImageRequest.Builder(LocalContext.current)
-                        .data(puntoInteres.imageUrl)
+                        .data(puntoInteres.fotos.firstOrNull())
                         .crossfade(true)
                         .build(),
                     contentDescription = null,
@@ -127,7 +128,7 @@ fun PublicationCard(
                     shape = RoundedCornerShape(8.dp)
                 ) {
                     Text(
-                        text = puntoInteres.category,
+                        text = formatCategory(puntoInteres.categoria.name),
                         modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp),
                         color = Color.White,
                         fontSize = 12.sp,
@@ -155,7 +156,7 @@ fun PublicationCard(
                             modifier = Modifier.size(16.dp)
                         )
                         Text(
-                            text = puntoInteres.rating.toString(),
+                            text = "4.8",
                             fontWeight = FontWeight.Bold,
                             fontSize = 12.sp,
                             color = Color.Black
@@ -177,7 +178,7 @@ fun PublicationCard(
                 ) {
                     Column {
                         Text(
-                            text = puntoInteres.title,
+                            text = puntoInteres.titulo,
                             color = Color.White,
                             fontSize = 20.sp,
                             fontWeight = FontWeight.Bold
@@ -191,7 +192,7 @@ fun PublicationCard(
                             )
                             Spacer(modifier = Modifier.width(4.dp))
                             Text(
-                                text = puntoInteres.location,
+                                text = puntoInteres.ubicacion.ciudad,
                                 color = Color.White,
                                 fontSize = 12.sp
                             )
@@ -222,7 +223,7 @@ fun PublicationCard(
                         }
                         Spacer(modifier = Modifier.width(8.dp))
                         Text(
-                            text = puntoInteres.commentsCount.toString(),
+                            text = "0",
                             color = Color.Gray,
                             fontSize = 14.sp
                         )
@@ -230,19 +231,19 @@ fun PublicationCard(
 
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         IconButton(
-                            onClick = { onFavoriteToggle(!puntoInteres.isFavorite) },
+                            onClick = { onFavoriteToggle(true) },
                             modifier = Modifier.size(24.dp)
                         ) {
                             Icon(
-                                imageVector = if (puntoInteres.isFavorite) Icons.Filled.Favorite else Icons.Outlined.FavoriteBorder,
-                                contentDescription = if (puntoInteres.isFavorite) "Quitar de favoritos" else "Agregar a favoritos",
-                                tint = if (puntoInteres.isFavorite) PrincipalRed else Color.Gray,
+                                imageVector = Icons.Outlined.FavoriteBorder,
+                                contentDescription = "Agregar a favoritos",
+                                tint = Color.Gray,
                                 modifier = Modifier.size(24.dp)
                             )
                         }
                         Spacer(modifier = Modifier.width(8.dp))
                         Text(
-                            text = puntoInteres.likesCount.toString(),
+                            text = "0",
                             color = Color.Gray,
                             fontSize = 14.sp
                         )
@@ -252,4 +253,17 @@ fun PublicationCard(
         }
     }
 }
+
+private fun buildInitials(value: String): String {
+    val parts = value.trim().split(" ").filter { it.isNotBlank() }
+    if (parts.isEmpty()) return "U"
+    return parts.take(2).joinToString("") { it.first().uppercaseChar().toString() }
+}
+
+private fun formatAuthorName(userId: String): String =
+    userId.replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.ROOT) else it.toString() }
+
+private fun formatCategory(category: String): String =
+    category.lowercase(Locale.ROOT)
+        .replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.ROOT) else it.toString() }
 
