@@ -7,14 +7,19 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.AccessTime
+import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.Circle
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Image
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.LocationOn
+import androidx.compose.material.icons.filled.MenuBook
 import androidx.compose.material.icons.filled.WarningAmber
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -25,10 +30,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
 import com.example.triplink.core.components.FormField
 import com.example.triplink.core.components.GeneralButton
 import com.example.triplink.core.components.GeneralTopBar
@@ -42,6 +50,7 @@ fun PostCreationScreen(
     var description by remember { mutableStateOf("") }
     var isOpenEveryDay by remember { mutableStateOf(false) }
     var selectedPriceRange by remember { mutableStateOf("Gratuito") }
+    var showSuccessModal by remember { mutableStateOf(false) }
 
     Scaffold(
         topBar = {
@@ -214,15 +223,14 @@ fun PostCreationScreen(
                         style = MaterialTheme.typography.bodySmall,
                         color = Color.Gray
                     )
-                    // Map Placeholder with Button Overlay
+                    // Placeholder mapa
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
                             .height(200.dp)
-                            .background(Color(0xFFD1E7D1), RoundedCornerShape(12.dp)) // Light green for map feel
+                            .background(Color(0xFFD1E7D1), RoundedCornerShape(12.dp))
                             .border(1.dp, Color(0xFFE0E0E0), RoundedCornerShape(12.dp))
                     ) {
-                        // Grid effect to simulate map
                         Canvas(modifier = Modifier.fillMaxSize()) {
                             val gridSpacing = 40.dp.toPx()
                             for (x in 0..size.width.toInt() step gridSpacing.toInt()) {
@@ -386,7 +394,204 @@ fun PostCreationScreen(
 
             GeneralButton(
                 text = "Publicar",
-                onClick = { /* Handle publish */ }
+                onClick = { showSuccessModal = true }
+            )
+        }
+
+        if (showSuccessModal) {
+            PostSuccessModal(
+                onDismiss = { showSuccessModal = false },
+                onNavigateToPosts = {
+                    showSuccessModal = false
+                    /* Navigate */
+                }
+            )
+        }
+    }
+}
+
+@Composable
+fun PostSuccessModal(
+    onDismiss: () -> Unit,
+    onNavigateToPosts: () -> Unit
+) {
+    Dialog(
+        onDismissRequest = onDismiss,
+        properties = DialogProperties(usePlatformDefaultWidth = false)
+    ) {
+        Surface(
+            modifier = Modifier
+                .fillMaxWidth(0.9f)
+                .wrapContentHeight(),
+            shape = RoundedCornerShape(24.dp),
+            color = Color.White
+        ) {
+            Column(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(PrincipalBlue)
+                        .padding(vertical = 32.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                        Surface(
+                            modifier = Modifier.size(48.dp),
+                            shape = CircleShape,
+                            color = Color.White.copy(alpha = 0.3f)
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Check,
+                                contentDescription = null,
+                                tint = Color.White,
+                                modifier = Modifier.padding(8.dp)
+                            )
+                        }
+                        Spacer(modifier = Modifier.height(16.dp))
+                        Text(
+                            text = "¡Publicación enviada!",
+                            color = Color.White,
+                            fontSize = 22.sp,
+                            fontWeight = FontWeight.Bold
+                        )
+                        Text(
+                            text = "Está en manos del equipo de moderación",
+                            color = Color.White.copy(alpha = 0.9f),
+                            fontSize = 14.sp
+                        )
+                    }
+                }
+
+                Column(
+                    modifier = Modifier
+                        .padding(24.dp)
+                        .fillMaxWidth(),
+                    verticalArrangement = Arrangement.spacedBy(24.dp)
+                ) {
+                    Text(
+                        text = "PROCESO DE PUBLICACIÓN",
+                        style = MaterialTheme.typography.labelMedium,
+                        color = Color.Gray,
+                        letterSpacing = 1.sp
+                    )
+
+                    // Paso 1: Enviada
+                    StepRow(
+                        icon = Icons.Default.Check,
+                        title = "Publicación enviada",
+                        subtitle = "Recibida correctamente",
+                        status = StepStatus.COMPLETED
+                    )
+
+                    // Paso 2: En revisión
+                    StepRow(
+                        icon = Icons.Default.AccessTime,
+                        title = "En revisión",
+                        subtitle = "Moderadores revisarán en ~24 h",
+                        status = StepStatus.ACTIVE
+                    )
+
+                    // Paso 3: Publicada
+                    StepRow(
+                        icon = Icons.Default.Circle,
+                        title = "Publicada",
+                        subtitle = "Visible para la comunidad",
+                        status = StepStatus.INACTIVE
+                    )
+
+                    Spacer(modifier = Modifier.height(8.dp))
+
+
+                    Button(
+                        onClick = onDismiss,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(56.dp),
+                        colors = ButtonDefaults.buttonColors(containerColor = PrincipalBlue),
+                        shape = RoundedCornerShape(16.dp)
+                    ) {
+                        Text("Aceptar", fontWeight = FontWeight.Bold, fontSize = 16.sp)
+                    }
+
+                    OutlinedButton(
+                        onClick = onNavigateToPosts,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(56.dp),
+                        border = androidx.compose.foundation.BorderStroke(1.dp, PrincipalBlue.copy(alpha = 0.1f)),
+                        colors = ButtonDefaults.outlinedButtonColors(contentColor = PrincipalBlue, containerColor = Color(0xFFF5F8FF)),
+                        shape = RoundedCornerShape(16.dp)
+                    ) {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Icon(Icons.Default.MenuBook, contentDescription = null, modifier = Modifier.size(18.dp))
+                            Spacer(Modifier.width(8.dp))
+                            Text("Ver mis publicaciones", fontWeight = FontWeight.Bold, fontSize = 16.sp)
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+enum class StepStatus { COMPLETED, ACTIVE, INACTIVE }
+
+@Composable
+fun StepRow(
+    icon: androidx.compose.ui.graphics.vector.ImageVector,
+    title: String,
+    subtitle: String,
+    status: StepStatus
+) {
+    Row(
+        verticalAlignment = Alignment.Top,
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+            Surface(
+                modifier = Modifier.size(32.dp),
+                shape = CircleShape,
+                color = when (status) {
+                    StepStatus.COMPLETED -> Color(0xFF4CAF50)
+                    StepStatus.ACTIVE -> Color(0xFFFF9800)
+                    StepStatus.INACTIVE -> Color(0xFFE0E0E0)
+                }
+            ) {
+                Icon(
+                    imageVector = icon,
+                    contentDescription = null,
+                    tint = Color.White,
+                    modifier = Modifier.padding(6.dp)
+                )
+            }
+
+            if (status != StepStatus.INACTIVE) {
+                Box(
+                    modifier = Modifier
+                        .width(2.dp)
+                        .height(16.dp)
+                        .background(if (status == StepStatus.COMPLETED) Color(0xFF4CAF50) else Color(0xFFE0E0E0))
+                )
+            }
+        }
+
+        Spacer(modifier = Modifier.width(16.dp))
+
+        Column {
+            Text(
+                text = title,
+                fontWeight = FontWeight.Bold,
+                fontSize = 15.sp,
+                color = if (status == StepStatus.INACTIVE) Color.LightGray else Color.Black
+            )
+            Text(
+                text = subtitle,
+                fontSize = 13.sp,
+                color = if (status == StepStatus.ACTIVE) Color(0xFFFF9800) else Color.Gray
             )
         }
     }
