@@ -48,7 +48,11 @@ fun esInapropiado(): Boolean = (0..1).random() == 1
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun PublicationDetailsScreen() {
+fun PublicationDetailsScreen(
+    publicationId: String,
+    onBackClick: () -> Unit,
+    onSeeAllReviewsClick: (String) -> Unit
+) {
     var showReportModal by remember { mutableStateOf(false) }
     var showRatingModal by remember { mutableStateOf(false) }
 
@@ -76,9 +80,12 @@ fun PublicationDetailsScreen() {
             Column {
                 GeneralTopBar(
                     title = "Detalle del Lugar",
-                    onBack = { /* Por ahora vacío */ }
+                    onBack = onBackClick
                 )
-                ImageHeader(onReportClick = { showReportModal = true })
+                ImageHeader(
+                    onReportClick = { showReportModal = true },
+                    onBackClick = onBackClick
+                )
             }
         },
         bottomBar = {
@@ -104,7 +111,12 @@ fun PublicationDetailsScreen() {
                 ScheduleSection(schedules = schedules, today = today)
             }
             item {
-                ReviewsSection(reviews = reviews, generalRating = generalRating)
+                ReviewsSection(
+                    publicationId = publicationId,
+                    reviews = reviews,
+                    generalRating = generalRating,
+                    onSeeAllReviewsClick = onSeeAllReviewsClick
+                )
             }
             item {
                 Spacer(modifier = Modifier.height(16.dp))
@@ -122,7 +134,7 @@ fun PublicationDetailsScreen() {
 }
 
 @Composable
-fun ImageHeader(onReportClick: () -> Unit) {
+fun ImageHeader(onReportClick: () -> Unit, onBackClick: () -> Unit) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -161,7 +173,7 @@ fun ImageHeader(onReportClick: () -> Unit) {
             shape = CircleShape,
             color = Color.Black.copy(alpha = 0.4f)
         ) {
-            IconButton(onClick = { /* TODO */ }) {
+            IconButton(onClick = onBackClick) {
                 Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = null, tint = Color.White)
             }
         }
@@ -929,7 +941,12 @@ fun LocationSection() {
 }
 
 @Composable
-fun ReviewsSection(reviews: List<Review>, generalRating: Double) {
+fun ReviewsSection(
+    publicationId: String,
+    reviews: List<Review>,
+    generalRating: Double,
+    onSeeAllReviewsClick: (String) -> Unit
+) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -981,7 +998,7 @@ fun ReviewsSection(reviews: List<Review>, generalRating: Double) {
         Spacer(modifier = Modifier.height(8.dp))
 
         GeneralButton(
-            onClick = { /* TODO */ },
+            onClick = { onSeeAllReviewsClick(publicationId) },
             text = "Ver todas las reseñas"
         )
     }
