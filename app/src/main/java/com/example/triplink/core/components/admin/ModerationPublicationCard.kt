@@ -13,6 +13,8 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccessTime
+import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.outlined.Check
 import androidx.compose.material.icons.outlined.Close
 import androidx.compose.material.icons.outlined.RemoveRedEye
@@ -39,6 +41,8 @@ import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
 import coil3.request.crossfade
+import com.example.triplink.features.admin.reports.AdminReportUi
+import com.example.triplink.features.admin.reports.toModerationPublicationUi
 import com.example.triplink.features.admin.moderation.ModerationPublicationUi
 import com.example.triplink.features.admin.moderation.PublicationModerationStatus
 import com.example.triplink.ui.theme.PrincipalBlue
@@ -51,7 +55,8 @@ fun ModerationPublicationCard(
     onApproveRequested: (String) -> Unit,
     onRejectRequested: (String) -> Unit,
     onDetailsClick: (String) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    swipeHintText: String = "Desliza para rechazar o aprobar"
 ) {
     val interactionEnabled = publication.status == PublicationModerationStatus.PENDING
 
@@ -206,36 +211,102 @@ fun ModerationPublicationCard(
                         color = Color(0xFF1E2430)
                     )
 
-                    Surface(
-                        shape = RoundedCornerShape(8.dp),
-                        color = Color(0xFFFFE9D6)
+                    val acceptedReportsText = when (publication.reportCount) {
+                        1 -> "1 reporte aceptado"
+                        else -> "${publication.reportCount} reportes aceptados"
+                    }
+
+                    Row(
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                        verticalAlignment = Alignment.CenterVertically
                     ) {
+                        Surface(
+                            shape = RoundedCornerShape(8.dp),
+                            color = Color(0xFFFFE9D6)
+                        ) {
+                            Text(
+                                text = publication.categoryLabel,
+                                modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
+                                style = MaterialTheme.typography.labelMedium,
+                                color = Color(0xFFF07A17),
+                                fontWeight = FontWeight.SemiBold
+                            )
+                        }
+
+                        if (publication.reportCount > 0) {
+                            Surface(
+                                shape = RoundedCornerShape(8.dp),
+                                color = Color(0xFFFFF1D7)
+                            ) {
+                                Text(
+                                    text = acceptedReportsText,
+                                    modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
+                                    style = MaterialTheme.typography.labelMedium,
+                                    color = Color(0xFFD97A00),
+                                    fontWeight = FontWeight.SemiBold
+                                )
+                            }
+                        }
+                    }
+
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Icon(
+                                imageVector = Icons.Default.LocationOn,
+                            contentDescription = null,
+                            tint = Color(0xFF9AA3B2),
+                            modifier = Modifier.size(18.dp)
+                        )
+                        Spacer(modifier = Modifier.size(4.dp))
                         Text(
-                            text = publication.categoryLabel,
-                            modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
-                            style = MaterialTheme.typography.labelMedium,
-                            color = Color(0xFFF07A17),
-                            fontWeight = FontWeight.SemiBold
+                            text = publication.cityLabel,
+                            style = MaterialTheme.typography.bodyLarge,
+                            color = Color(0xFF6A7688)
                         )
                     }
 
-                    Text(
-                        text = "	${publication.cityLabel}",
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = Color(0xFF6A7688)
-                    )
-
                     Surface(
-                        shape = RoundedCornerShape(10.dp),
-                        color = Color(0xFFF1F3F7)
+                        shape = RoundedCornerShape(14.dp),
+                        color = Color(0xFFF1F4FB)
                     ) {
-                        Text(
-                            text = "\$ ${publication.priceLabel}    |    ${publication.scheduleLabel}",
-                            modifier = Modifier.padding(horizontal = 10.dp, vertical = 8.dp),
-                            style = MaterialTheme.typography.bodySmall,
-                            color = Color(0xFF677487),
-                            fontWeight = FontWeight.Medium
-                        )
+                        Row(
+                            modifier = Modifier.padding(horizontal = 12.dp, vertical = 10.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Text(
+                                text = "\$",
+                                style = MaterialTheme.typography.bodyLarge,
+                                color = PrincipalBlue,
+                                fontWeight = FontWeight.Bold
+                            )
+                            Spacer(modifier = Modifier.size(6.dp))
+                            Text(
+                                text = publication.priceLabel,
+                                style = MaterialTheme.typography.bodyLarge,
+                                color = PrincipalBlue,
+                                fontWeight = FontWeight.Bold
+                            )
+                            Spacer(modifier = Modifier.size(12.dp))
+                            Text(
+                                text = "|",
+                                style = MaterialTheme.typography.bodyLarge,
+                                color = Color(0xFFD1D8E3),
+                                fontWeight = FontWeight.Bold
+                            )
+                            Spacer(modifier = Modifier.size(12.dp))
+                            Icon(
+                                imageVector = Icons.Default.AccessTime,
+                                contentDescription = null,
+                                tint = Color(0xFF8A93A3),
+                                modifier = Modifier.size(18.dp)
+                            )
+                            Spacer(modifier = Modifier.size(6.dp))
+                            Text(
+                                text = publication.scheduleLabel,
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = Color(0xFF677487),
+                                fontWeight = FontWeight.Medium
+                            )
+                        }
                     }
 
                     publication.reasonMessage?.takeIf { it.isNotBlank() }?.let { message ->
@@ -315,7 +386,7 @@ fun ModerationPublicationCard(
                         }
 
                         Text(
-                            text = "Desliza para rechazar o aprobar",
+                            text = swipeHintText,
                             style = MaterialTheme.typography.labelSmall,
                             color = Color(0xFFB0B8C5),
                             modifier = Modifier.align(Alignment.CenterHorizontally)
@@ -325,5 +396,24 @@ fun ModerationPublicationCard(
             }
         }
     }
+}
+
+@Composable
+fun ModerationPublicationCard(
+    publication: AdminReportUi,
+    onApproveRequested: (String) -> Unit,
+    onRejectRequested: (String) -> Unit,
+    onDetailsClick: (String) -> Unit,
+    modifier: Modifier = Modifier,
+    swipeHintText: String = "Desliza para rechazar o aprobar"
+) {
+    ModerationPublicationCard(
+        publication = publication.toModerationPublicationUi(),
+        onApproveRequested = onApproveRequested,
+        onRejectRequested = onRejectRequested,
+        onDetailsClick = onDetailsClick,
+        modifier = modifier,
+        swipeHintText = swipeHintText
+    )
 }
 

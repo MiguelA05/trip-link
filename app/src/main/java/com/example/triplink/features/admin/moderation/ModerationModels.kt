@@ -29,6 +29,7 @@ data class ModerationPublicationUi(
     val scheduleLabel: String,
     val imageUrl: String,
     val status: PublicationModerationStatus,
+    val reportCount: Int = 0,
     val reasonMessage: String? = null,
     val rejectReason: String? = null
 )
