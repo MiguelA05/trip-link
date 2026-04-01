@@ -12,8 +12,6 @@ import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.FilterChip
-import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -31,6 +29,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.triplink.core.components.ApprovePublicationDialog
 import com.example.triplink.core.components.ModerationPublicationCard
 import com.example.triplink.core.components.RejectPublicationDialog
+import com.example.triplink.core.components.common.CategoryChips
 import com.example.triplink.ui.theme.PrincipalBlue
 
 @Composable
@@ -38,6 +37,8 @@ fun ModerationScreen(
     contentPadding: PaddingValues = PaddingValues(),
     viewModel: ModerationViewModel = viewModel()
 ) {
+    val moderationChipLabels = listOf("Todas", "Pendientes", "Verificadas", "Rechazadas")
+
     var pendingDecision by remember { mutableStateOf<ModerationDecision?>(null) }
     var selectedPublication by remember { mutableStateOf<ModerationPublicationUi?>(null) }
     var rejectionReason by remember { mutableStateOf("") }
@@ -128,28 +129,13 @@ fun ModerationScreen(
             )
         }
 
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-            listOf(
-                ModerationFilter.ALL to "Todas",
-                ModerationFilter.PENDING to "Pendientes",
-                ModerationFilter.VERIFIED to "Verificadas",
-                ModerationFilter.REJECTED to "Rechazadas"
-            ).forEach { (filter, label) ->
-                FilterChip(
-                    selected = viewModel.selectedFilter == filter,
-                    onClick = { viewModel.onFilterSelected(filter) },
-                    label = { Text(label) },
-                    colors = FilterChipDefaults.filterChipColors(
-                        containerColor = Color(0xFFEDEFF3),
-                        selectedContainerColor = PrincipalBlue,
-                        selectedLabelColor = Color.White
-                    )
-                )
+        CategoryChips(
+            categories = moderationChipLabels,
+            selectedCategory = viewModel.selectedFilter.toChipLabel(),
+            onCategorySelected = { selectedLabel ->
+                viewModel.onFilterSelected(selectedLabel.toModerationFilter())
             }
-        }
+        )
 
         LazyColumn(
             modifier = Modifier.fillMaxSize(),
@@ -221,6 +207,20 @@ fun ModerationScreen(
 
         null -> Unit
     }
+}
+
+private fun ModerationFilter.toChipLabel(): String = when (this) {
+    ModerationFilter.ALL -> "Todas"
+    ModerationFilter.PENDING -> "Pendientes"
+    ModerationFilter.VERIFIED -> "Verificadas"
+    ModerationFilter.REJECTED -> "Rechazadas"
+}
+
+private fun String.toModerationFilter(): ModerationFilter = when (this) {
+    "Pendientes" -> ModerationFilter.PENDING
+    "Verificadas" -> ModerationFilter.VERIFIED
+    "Rechazadas" -> ModerationFilter.REJECTED
+    else -> ModerationFilter.ALL
 }
 
 @Composable
