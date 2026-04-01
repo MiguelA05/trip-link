@@ -47,7 +47,8 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
 import coil3.request.crossfade
-import com.example.triplink.features.admin.reports.AdminReportsViewModel
+import com.example.triplink.features.admin.reports.AdminReportDetails.AdminReportsDetailsViewModel
+import com.example.triplink.data.repository.admin.reports.AdminReportsRepository
 import com.example.triplink.ui.theme.PrincipalBlue
 import com.example.triplink.ui.theme.PrincipalGreen
 
@@ -55,10 +56,11 @@ import com.example.triplink.ui.theme.PrincipalGreen
 fun AdminReportDetailsScreen(
     reportId: String,
     contentPadding: PaddingValues = PaddingValues(),
-    viewModel: AdminReportsViewModel = viewModel(),
+    repository: AdminReportsRepository,
     onBackClick: () -> Unit = {}
 ) {
-    val report = remember { viewModel.getReportById(reportId) }
+    val viewModel: AdminReportsDetailsViewModel = viewModel(factory = AdminReportsDetailsViewModel.factory(repository))
+    val report = viewModel.getReportById(reportId)
 
     if (report == null) {
         Column(

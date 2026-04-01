@@ -24,15 +24,17 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.triplink.core.components.ModerationPublicationCard
+import com.example.triplink.core.components.admin.ReportModerationPublicationCard
+import com.example.triplink.data.repository.admin.reports.AdminReportsRepository
 import com.example.triplink.ui.theme.PrincipalBlue
 
 @Composable
 fun AdminReportsScreen(
     contentPadding: PaddingValues = PaddingValues(),
-    viewModel: AdminReportsViewModel = viewModel(),
+    repository: AdminReportsRepository,
     onReportClick: (String) -> Unit = {}
 ) {
+    val viewModel: AdminReportsViewModel = viewModel(factory = AdminReportsViewModel.factory(repository))
     val listState = rememberLazyListState()
 
     Column(
@@ -112,12 +114,11 @@ fun AdminReportsScreen(
             verticalArrangement = Arrangement.spacedBy(20.dp)
         ) {
             items(viewModel.reportCards, key = { it.id }) { publication ->
-                ModerationPublicationCard(
+                ReportModerationPublicationCard(
                     publication = publication.toCardUi(),
-                    onApproveRequested = { viewModel.invalidateReport(it) },
-                    onRejectRequested = { viewModel.confirmReport(it) },
+                    onConfirmReport = viewModel::confirmReport,
+                    onInvalidateReport = viewModel::invalidateReport,
                     onDetailsClick = { onReportClick(it) },
-                    swipeHintText = "Desliza a la izquierda para confirmar • Desliza a la derecha para invalidar"
                 )
             }
 
