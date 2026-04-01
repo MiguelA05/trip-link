@@ -8,6 +8,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.triplink.features.appHome.HomeScreen
+import com.example.triplink.features.admin.section.AdminSectionScreen
 import com.example.triplink.features.login.LoginScreen
 import com.example.triplink.features.recoverypassword.RecoveryPasswordScreen
 import com.example.triplink.features.register.RegisterScreen
@@ -49,6 +50,11 @@ fun AppNavigation() {
                             popUpTo(MainRoutes.Home) { inclusive = true }
                         }
                     },
+                    onNavigateToAdmin = {
+                        navController.navigate(MainRoutes.AdminSection) {
+                            popUpTo(MainRoutes.Home) { inclusive = true }
+                        }
+                    },
                     onNavigateToRecovery = {
                         navController.navigate(MainRoutes.RecoveryPassword)
                     }
@@ -73,6 +79,17 @@ fun AppNavigation() {
                     onLogout = {
                         navController.navigate(MainRoutes.Home) {
                             popUpTo(MainRoutes.UserSection) { inclusive = true }
+                            launchSingleTop = true
+                        }
+                    }
+                )
+            }
+
+            composable<MainRoutes.AdminSection> {
+                AdminSectionScreen(
+                    onLogout = {
+                        navController.navigate(MainRoutes.Home) {
+                            popUpTo(MainRoutes.AdminSection) { inclusive = true }
                             launchSingleTop = true
                         }
                     }

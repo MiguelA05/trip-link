@@ -12,6 +12,10 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 
+enum class LoginRole {
+    USER,
+    ADMIN
+}
 
 class LoginViewModel : ViewModel() {
     var email = ValidatedField("") { value ->
@@ -49,8 +53,10 @@ class LoginViewModel : ViewModel() {
     val forgotPasswordInteractionSource = MutableInteractionSource()
 
     private val _loginResult = MutableStateFlow<RequestResult?>(null)
+    private val _loginRole = MutableStateFlow<LoginRole?>(null)
 
     val loginResult: StateFlow<RequestResult?> = _loginResult.asStateFlow()
+    val loginRole: StateFlow<LoginRole?> = _loginRole.asStateFlow()
 
     fun togglePasswordVisibility() {
         passwordVisible = !passwordVisible
@@ -64,16 +70,26 @@ class LoginViewModel : ViewModel() {
 
     fun resetLoginResult() {
         _loginResult.value = null
+        _loginRole.value = null
     }
 
 
     fun login() {
         if (isFormValid) {
             // Simulación de un proceso de login con datos estáticos
-            _loginResult.value = if (email.value == "carlos@email.com" && password.value == "123456") {
-                RequestResult.Success("Login exitoso")
-            } else {
-                RequestResult.Failure("Credenciales inválidas")
+            when {
+                email.value == "carlos@email.com" && password.value == "123456" -> {
+                    _loginRole.value = LoginRole.USER
+                    _loginResult.value = RequestResult.Success("Login exitoso")
+                }
+                email.value == "admin@triplink.com" && password.value == "admin123" -> {
+                    _loginRole.value = LoginRole.ADMIN
+                    _loginResult.value = RequestResult.Success("Login de administrador exitoso")
+                }
+                else -> {
+                    _loginRole.value = null
+                    _loginResult.value = RequestResult.Failure("Credenciales inválidas")
+                }
             }
         }
     }
