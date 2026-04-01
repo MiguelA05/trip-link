@@ -113,7 +113,7 @@ fun AdminReportsScreen(
         ) {
             items(viewModel.reportCards, key = { it.id }) { publication ->
                 ModerationPublicationCard(
-                    publication = publication,
+                    publication = publication.toCardUi(),
                     onApproveRequested = { viewModel.invalidateReport(it) },
                     onRejectRequested = { viewModel.confirmReport(it) },
                     onDetailsClick = { onReportClick(it) },

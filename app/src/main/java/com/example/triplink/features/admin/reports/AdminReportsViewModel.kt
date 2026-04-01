@@ -136,7 +136,7 @@ class AdminReportsViewModel : ViewModel() {
     val pendingCount: Int
         get() = pendingReports.size
 
-    val reportCards: List<ReportModerationPublicationCardUi>
+    val reportCards: List<AdminReportUi>
         get() = pendingReports
             .map { it.toUi(acceptedReportsCountByPublication[it.pointOfInterest.id] ?: 0) }
             .sortedByDescending { it.report.fechaCreacion }
@@ -173,7 +173,7 @@ class AdminReportsViewModel : ViewModel() {
         pendingReports.removeAt(index)
     }
 
-    private fun ReportEntry.toUi(acceptedReportsCount: Int): ReportModerationPublicationCardUi = ReportModerationPublicationCardUi(
+    private fun ReportEntry.toUi(acceptedReportsCount: Int): AdminReportUi = AdminReportUi(
         report = report,
         pointOfInterest = pointOfInterest,
         reporterName = reporterName,

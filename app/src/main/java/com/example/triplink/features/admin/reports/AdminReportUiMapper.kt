@@ -8,7 +8,7 @@ import com.example.triplink.domain.model.enums.RazonReporte
 import com.example.triplink.features.admin.moderation.ModerationPublicationCardStatus
 import com.example.triplink.features.admin.moderation.ModerationPublicationCardUi
 
-fun ReportModerationPublicationCardUi.toCardUi(): ModerationPublicationCardUi = ModerationPublicationCardUi(
+fun AdminReportUi.toCardUi(): ModerationPublicationCardUi = ModerationPublicationCardUi(
     id = id,
     title = title,
     categoryLabel = categoryLabel,

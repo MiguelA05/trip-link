@@ -7,7 +7,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.example.triplink.features.admin.moderation.ModerationScreen
 import com.example.triplink.features.admin.reports.AdminReportsScreen
-import com.example.triplink.features.admin.reports.AdminReportDetailsScreen
+import com.example.triplink.features.admin.reports.AdminReportDetails.AdminReportDetailsScreen
 
 @Composable
 fun AdminNavigation(

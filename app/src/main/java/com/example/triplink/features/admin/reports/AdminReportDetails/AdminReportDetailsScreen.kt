@@ -1,4 +1,4 @@
-package com.example.triplink.features.admin.reports
+package com.example.triplink.features.admin.reports.AdminReportDetails
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -14,7 +14,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -22,11 +21,15 @@ import androidx.compose.material.icons.automirrored.outlined.ArrowBack
 import androidx.compose.material.icons.filled.AccessTime
 import androidx.compose.material.icons.filled.AttachMoney
 import androidx.compose.material.icons.filled.LocationOn
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -44,6 +47,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
 import coil3.request.crossfade
+import com.example.triplink.features.admin.reports.AdminReportsViewModel
 import com.example.triplink.ui.theme.PrincipalBlue
 import com.example.triplink.ui.theme.PrincipalGreen
 
@@ -344,12 +348,12 @@ fun AdminReportDetailsScreen(
                     shape = RoundedCornerShape(12.dp),
                     color = Color(0xFFF35A5A)
                 ) {
-                    androidx.compose.material3.Button(
+                    Button(
                         onClick = { showRejectDialog = true },
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(12.dp),
-                        colors = androidx.compose.material3.ButtonDefaults.buttonColors(
+                        colors = ButtonDefaults.buttonColors(
                             containerColor = Color.Transparent
                         )
                     ) {
@@ -366,12 +370,12 @@ fun AdminReportDetailsScreen(
                     shape = RoundedCornerShape(12.dp),
                     color = PrincipalGreen
                 ) {
-                    androidx.compose.material3.Button(
+                    Button(
                         onClick = { showConfirmDialog = true },
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(12.dp),
-                        colors = androidx.compose.material3.ButtonDefaults.buttonColors(
+                        colors = ButtonDefaults.buttonColors(
                             containerColor = Color.Transparent
                         )
                     ) {
@@ -416,7 +420,7 @@ private fun ConfirmReportDialog(
     onDismiss: () -> Unit,
     onConfirm: () -> Unit
 ) {
-    androidx.compose.material3.AlertDialog(
+    AlertDialog(
         onDismissRequest = onDismiss,
         title = { Text("Confirmar Reporte") },
         text = {
@@ -426,9 +430,9 @@ private fun ConfirmReportDialog(
             )
         },
         confirmButton = {
-            androidx.compose.material3.TextButton(
+            TextButton(
                 onClick = onConfirm,
-                colors = androidx.compose.material3.ButtonDefaults.textButtonColors(
+                colors = ButtonDefaults.textButtonColors(
                     contentColor = PrincipalGreen
                 )
             ) {
@@ -436,7 +440,7 @@ private fun ConfirmReportDialog(
             }
         },
         dismissButton = {
-            androidx.compose.material3.TextButton(onClick = onDismiss) {
+            TextButton(onClick = onDismiss) {
                 Text("Cancelar")
             }
         }
@@ -449,7 +453,7 @@ private fun RejectReportDialog(
     onDismiss: () -> Unit,
     onConfirm: () -> Unit
 ) {
-    androidx.compose.material3.AlertDialog(
+    AlertDialog(
         onDismissRequest = onDismiss,
         title = { Text("Rechazar Reporte") },
         text = {
@@ -459,9 +463,9 @@ private fun RejectReportDialog(
             )
         },
         confirmButton = {
-            androidx.compose.material3.TextButton(
+            TextButton(
                 onClick = onConfirm,
-                colors = androidx.compose.material3.ButtonDefaults.textButtonColors(
+                colors = ButtonDefaults.textButtonColors(
                     contentColor = Color(0xFFF35A5A)
                 )
             ) {
@@ -469,7 +473,7 @@ private fun RejectReportDialog(
             }
         },
         dismissButton = {
-            androidx.compose.material3.TextButton(onClick = onDismiss) {
+            TextButton(onClick = onDismiss) {
                 Text("Cancelar")
             }
         }
