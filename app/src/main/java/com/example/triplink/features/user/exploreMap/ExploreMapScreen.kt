@@ -91,7 +91,7 @@ fun ExploreMapScreen(
 						.fillMaxWidth()
 						.navigationBarsPadding()
 						.padding(horizontal = 12.dp, vertical = 8.dp)
-						.padding(bottom = contentPadding.calculateBottomPadding() + 12.dp)
+						.padding(bottom = 45.dp)
 				) {
 					Box(
 						modifier = Modifier
