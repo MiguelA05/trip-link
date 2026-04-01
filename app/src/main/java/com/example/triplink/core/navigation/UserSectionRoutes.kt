@@ -11,9 +11,18 @@ sealed class UserSectionRoutes {
     data object Explore : UserSectionRoutes()
 
     @Serializable
+    data object ExploreMap : UserSectionRoutes()
+
+    @Serializable
     data object UserInfo : UserSectionRoutes()
 
     @Serializable
     data object AccountEdit : UserSectionRoutes()
+
+    @Serializable
+    data class PublicationDetails(val publicationId: String) : UserSectionRoutes()
+
+    @Serializable
+    data class Comments(val publicationId: String) : UserSectionRoutes()
 }
 

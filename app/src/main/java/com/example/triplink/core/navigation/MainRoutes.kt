@@ -17,5 +17,8 @@ sealed class MainRoutes {
     data object UserSection : MainRoutes()
 
     @Serializable
+    data object AdminSection : MainRoutes()
+
+    @Serializable
     data object RecoveryPassword: MainRoutes()
 }

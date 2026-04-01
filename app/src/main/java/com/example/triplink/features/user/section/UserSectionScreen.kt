@@ -8,17 +8,12 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavGraph.Companion.findStartDestination
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.triplink.core.components.navigation.BottomBar
 import com.example.triplink.core.components.navigation.defaultNavItems
+import com.example.triplink.core.navigation.UserNavigation
 import com.example.triplink.core.navigation.UserSectionRoutes
-import com.example.triplink.features.user.accountEdit.AccountEditScreen
-import com.example.triplink.features.user.explore.ExploreScreen
-import com.example.triplink.features.user.home.UserHomeScreen
-import com.example.triplink.features.user.info.UserInfoScreen
 
 @Composable
 fun UserSectionScreen(
@@ -31,15 +26,19 @@ fun UserSectionScreen(
         UserSectionRoutes.Explore,
         UserSectionRoutes.UserInfo
     )
+    val routesWithBottomBar = tabRoutes + UserSectionRoutes.ExploreMap
 
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = navBackStackEntry?.destination
-    val isTabRoute = tabRoutes.any { route ->
+    val isTabRoute = routesWithBottomBar.any { route ->
         currentDestination?.hasRoute(route::class) == true
     }
-    val selectedIndex = tabRoutes.indexOfFirst { route ->
-        currentDestination?.hasRoute(route::class) == true
-    }.takeIf { it >= 0 } ?: 0
+    val selectedIndex = when {
+        currentDestination?.hasRoute(UserSectionRoutes.ExploreMap::class) == true -> 1
+        else -> tabRoutes.indexOfFirst { route ->
+            currentDestination?.hasRoute(route::class) == true
+        }.takeIf { it >= 0 } ?: 0
+    }
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -62,41 +61,10 @@ fun UserSectionScreen(
             }
         }
     ) { paddingValues ->
-        NavHost(
+        UserNavigation(
             navController = navController,
-            startDestination = UserSectionRoutes.UserHome,
-            modifier = Modifier
-                .fillMaxSize()
-        ) {
-            composable<UserSectionRoutes.UserHome> {
-                UserHomeScreen(contentPadding = paddingValues)
-            }
-            composable<UserSectionRoutes.Explore> {
-                ExploreScreen(contentPadding = paddingValues)
-            }
-            composable<UserSectionRoutes.UserInfo> {
-                UserInfoScreen(
-                    contentPadding = paddingValues,
-                    onLogoutClick = onLogout,
-                    onEditClick = {
-                        navController.navigate(UserSectionRoutes.AccountEdit)
-                    }
-                )
-            }
-            composable<UserSectionRoutes.AccountEdit> {
-                AccountEditScreen(
-                    onBackClick = {
-                        val navigatedBack = navController.popBackStack()
-                        if (!navigatedBack) {
-                            navController.navigate(UserSectionRoutes.UserInfo) {
-                                launchSingleTop = true
-                            }
-                        }
-                    }
-                )
-            }
-        }
+            padding = paddingValues,
+            onLogout = onLogout
+        )
     }
 }
-
-

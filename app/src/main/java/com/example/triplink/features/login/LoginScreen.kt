@@ -59,11 +59,14 @@ import kotlinx.coroutines.launch
 fun LoginScreen(
     onBackClick: () -> Unit,
     onNavigateToUsers: () -> Unit,
+    onNavigateToRegister: () -> Unit,
+    onNavigateToAdmin: () -> Unit,
     onNavigateToRecovery: () -> Unit,
     viewModel: LoginViewModel = viewModel()
 ) {
     val snackbarHostState = remember { SnackbarHostState() }
     val loginResult by viewModel.loginResult.collectAsState()
+    val loginRole by viewModel.loginRole.collectAsState()
 
     LaunchedEffect(loginResult) {
         loginResult?.let { result ->
@@ -75,7 +78,11 @@ fun LoginScreen(
             if (result is RequestResult.Success) {
                 // Mostrar feedback y navegar sin bloquear la transición.
                 launch { snackbarHostState.showSnackbar(message) }
-                onNavigateToUsers()
+                when (loginRole) {
+                    LoginRole.ADMIN -> onNavigateToAdmin()
+                    LoginRole.USER -> onNavigateToUsers()
+                    null -> Unit
+                }
             } else {
                 snackbarHostState.showSnackbar(message)
             }
@@ -197,7 +204,7 @@ fun LoginScreen(
             LinkTextRow(
                 text = "¿No tienes una cuenta?",
                 buttonText = "Crea tu cuenta",
-                onClick = onNavigateToUsers
+                onClick = onNavigateToRegister
 
             )
         }
