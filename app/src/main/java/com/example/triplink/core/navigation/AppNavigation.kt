@@ -55,6 +55,9 @@ fun AppNavigation() {
                             popUpTo(MainRoutes.Home) { inclusive = true }
                         }
                     },
+                    onNavigateToRegister = {
+                        navController.navigate(MainRoutes.Register)
+                    },
                     onNavigateToRecovery = {
                         navController.navigate(MainRoutes.RecoveryPassword)
                     }

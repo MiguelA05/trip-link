@@ -59,6 +59,7 @@ import kotlinx.coroutines.launch
 fun LoginScreen(
     onBackClick: () -> Unit,
     onNavigateToUsers: () -> Unit,
+    onNavigateToRegister: () -> Unit,
     onNavigateToAdmin: () -> Unit,
     onNavigateToRecovery: () -> Unit,
     viewModel: LoginViewModel = viewModel()
@@ -203,7 +204,7 @@ fun LoginScreen(
             LinkTextRow(
                 text = "¿No tienes una cuenta?",
                 buttonText = "Crea tu cuenta",
-                onClick = onNavigateToUsers
+                onClick = onNavigateToRegister
 
             )
         }

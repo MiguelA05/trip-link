@@ -66,7 +66,11 @@ class ModerationViewModel : ViewModel() {
 
     val filteredPublications: List<ModerationPublicationUi>
         get() = when (selectedFilter) {
-            ModerationFilter.ALL -> pendingPublications + reviewedPublications
+            ModerationFilter.ALL -> buildList {
+                // Prioriza pendientes y conserva histórico al final.
+                addAll(pendingPublications)
+                addAll(reviewedPublications)
+            }
             ModerationFilter.PENDING -> pendingPublications
             ModerationFilter.VERIFIED -> reviewedPublications.filter { it.status == PublicationModerationStatus.VERIFIED }
             ModerationFilter.REJECTED -> reviewedPublications.filter { it.status == PublicationModerationStatus.REJECTED }
@@ -85,6 +89,7 @@ class ModerationViewModel : ViewModel() {
         pendingPublications.remove(publication)
 
         reviewedPublications.add(
+            reviewedPublications.size,
             publication.copy(
                 status = if (decision == ModerationDecision.APPROVE) {
                     PublicationModerationStatus.VERIFIED
