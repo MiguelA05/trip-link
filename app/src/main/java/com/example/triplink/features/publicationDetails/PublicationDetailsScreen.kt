@@ -50,6 +50,7 @@ fun esInapropiado(): Boolean = (0..1).random() == 1
 @Composable
 fun PublicationDetailsScreen(
     publicationId: String,
+    userType: String = "",
     onBackClick: () -> Unit,
     onSeeAllReviewsClick: (String) -> Unit
 ) {
@@ -89,7 +90,10 @@ fun PublicationDetailsScreen(
             }
         },
         bottomBar = {
-            BottomActionsBar(onVisitedClick = { showRatingModal = true })
+            BottomActionsBar(
+                userType = userType,
+                onVisitedClick = { showRatingModal = true }
+            )
         }
     ) { paddingValues ->
         LazyColumn(
@@ -1050,7 +1054,9 @@ fun ReviewCard(review: Review) {
 }
 
 @Composable
-fun BottomActionsBar(onVisitedClick: () -> Unit) {
+fun BottomActionsBar(userType: String, onVisitedClick: () -> Unit) {
+    var isInterested by remember { mutableStateOf(false) }
+
     Surface(
         modifier = Modifier.fillMaxWidth(),
         shadowElevation = 16.dp,
@@ -1062,40 +1068,86 @@ fun BottomActionsBar(onVisitedClick: () -> Unit) {
                 .navigationBarsPadding(),
             horizontalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            OutlinedButton(
-                onClick = { /* TODO */ },
-                modifier = Modifier
-                    .weight(1f)
-                    .height(54.dp),
-                shape = RoundedCornerShape(12.dp),
-                border = BorderStroke(1.5.dp, PrincipalBlue),
-                colors = ButtonDefaults.outlinedButtonColors(contentColor = PrincipalBlue)
-            ) {
-                Icon(Icons.Outlined.FavoriteBorder, contentDescription = null)
-                Spacer(modifier = Modifier.width(8.dp))
-                Text(
-                    "Me interesa",
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 16.sp
-                )
-            }
+            if (userType == "user") {
+                // Botón Editar
+                Button(
+                    onClick = { println("Editando publicación") },
+                    modifier = Modifier
+                        .weight(1f)
+                        .height(54.dp),
+                    shape = RoundedCornerShape(12.dp),
+                    border = BorderStroke(1.5.dp, PrincipalBlue),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Color(0xFFE8EFFF),
+                        contentColor = PrincipalBlue
+                    )
+                ) {
+                    Icon(Icons.Outlined.Edit, contentDescription = null)
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text("Editar", fontWeight = FontWeight.Bold, fontSize = 16.sp)
+                }
 
-            OutlinedButton(
-                onClick = onVisitedClick,
-                modifier = Modifier
-                    .weight(1f)
-                    .height(54.dp),
-                shape = RoundedCornerShape(12.dp),
-                border = BorderStroke(1.5.dp, PrincipalGreen),
-                colors = ButtonDefaults.outlinedButtonColors(contentColor = PrincipalGreen)
-            ) {
-                Icon(Icons.Outlined.CheckCircle, contentDescription = null)
-                Spacer(modifier = Modifier.width(8.dp))
-                Text(
-                    "Visitado",
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 16.sp
-                )
+                // Botón Eliminar
+                Button(
+                    onClick = { println("Eliminando publicación") },
+                    modifier = Modifier
+                        .weight(1f)
+                        .height(54.dp),
+                    shape = RoundedCornerShape(12.dp),
+                    border = BorderStroke(1.5.dp, PrincipalRed),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Color(0xFFFFEBEE),
+                        contentColor = PrincipalRed
+                    )
+                ) {
+                    Icon(Icons.Outlined.Delete, contentDescription = null)
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text("Eliminar", fontWeight = FontWeight.Bold, fontSize = 16.sp)
+                }
+            } else {
+                // Botón Me interesa (con lógica de estado)
+                Button(
+                    onClick = { isInterested = !isInterested },
+                    modifier = Modifier
+                        .weight(1f)
+                        .height(54.dp),
+                    shape = RoundedCornerShape(12.dp),
+                    border = if (isInterested) null else BorderStroke(1.5.dp, PrincipalBlue),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = if (isInterested) PrincipalBlue else Color.White,
+                        contentColor = if (isInterested) Color.White else PrincipalBlue
+                    )
+                ) {
+                    Icon(
+                        imageVector = if (isInterested) Icons.Filled.Favorite else Icons.Outlined.FavoriteBorder,
+                        contentDescription = null
+                    )
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text(
+                        "Me interesa",
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 16.sp
+                    )
+                }
+
+                // Botón Visitado
+                OutlinedButton(
+                    onClick = onVisitedClick,
+                    modifier = Modifier
+                        .weight(1f)
+                        .height(54.dp),
+                    shape = RoundedCornerShape(12.dp),
+                    border = BorderStroke(1.5.dp, PrincipalGreen),
+                    colors = ButtonDefaults.outlinedButtonColors(contentColor = PrincipalGreen)
+                ) {
+                    Icon(Icons.Outlined.CheckCircle, contentDescription = null)
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text(
+                        "Visitado",
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 16.sp
+                    )
+                }
             }
         }
     }
