@@ -11,6 +11,9 @@ sealed class UserSectionRoutes {
     data object Explore : UserSectionRoutes()
 
     @Serializable
+    data object ExploreMap : UserSectionRoutes()
+
+    @Serializable
     data object UserInfo : UserSectionRoutes()
 
     @Serializable

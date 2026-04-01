@@ -20,6 +20,7 @@ import com.example.triplink.features.comments.CommentsScreen
 import com.example.triplink.features.publicationDetails.PublicationDetailsScreen
 import com.example.triplink.features.user.accountEdit.AccountEditScreen
 import com.example.triplink.features.user.explore.ExploreScreen
+import com.example.triplink.features.user.exploreMap.ExploreMapScreen
 import com.example.triplink.features.user.home.UserHomeScreen
 import com.example.triplink.features.user.info.UserInfoScreen
 
@@ -34,15 +35,19 @@ fun UserSectionScreen(
         UserSectionRoutes.Explore,
         UserSectionRoutes.UserInfo
     )
+    val routesWithBottomBar = tabRoutes + UserSectionRoutes.ExploreMap
 
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = navBackStackEntry?.destination
-    val isTabRoute = tabRoutes.any { route ->
+    val isTabRoute = routesWithBottomBar.any { route ->
         currentDestination?.hasRoute(route::class) == true
     }
-    val selectedIndex = tabRoutes.indexOfFirst { route ->
-        currentDestination?.hasRoute(route::class) == true
-    }.takeIf { it >= 0 } ?: 0
+    val selectedIndex = when {
+        currentDestination?.hasRoute(UserSectionRoutes.ExploreMap::class) == true -> 1
+        else -> tabRoutes.indexOfFirst { route ->
+            currentDestination?.hasRoute(route::class) == true
+        }.takeIf { it >= 0 } ?: 0
+    }
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -80,7 +85,25 @@ fun UserSectionScreen(
                 )
             }
             composable<UserSectionRoutes.Explore> {
-                ExploreScreen(contentPadding = paddingValues)
+                ExploreScreen(
+                    contentPadding = paddingValues,
+                    onMapClick = {
+                        navController.navigate(UserSectionRoutes.ExploreMap)
+                    }
+                )
+            }
+            composable<UserSectionRoutes.ExploreMap> {
+                ExploreMapScreen(
+                    contentPadding = paddingValues,
+                    onBackToExplore = {
+                        val navigatedBack = navController.popBackStack()
+                        if (!navigatedBack) {
+                            navController.navigate(UserSectionRoutes.Explore) {
+                                launchSingleTop = true
+                            }
+                        }
+                    }
+                )
             }
             composable<UserSectionRoutes.UserInfo> {
                 UserInfoScreen(

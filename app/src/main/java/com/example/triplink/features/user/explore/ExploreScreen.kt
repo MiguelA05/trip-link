@@ -30,7 +30,8 @@ import com.example.triplink.ui.theme.PrincipalWhite
 @Composable
 fun ExploreScreen(
 	viewModel: ExploreViewModel = viewModel(),
-	contentPadding: PaddingValues = PaddingValues()
+	contentPadding: PaddingValues = PaddingValues(),
+	onMapClick: () -> Unit = {}
 ) {
 	Scaffold(
 		modifier = Modifier
@@ -61,7 +62,7 @@ fun ExploreScreen(
 		},
 		floatingActionButton = {
 			FloatingActionButton(
-				onClick = {},
+				onClick = onMapClick,
 				containerColor = PrincipalBlue,
 				contentColor = PrincipalWhite
 			) {
