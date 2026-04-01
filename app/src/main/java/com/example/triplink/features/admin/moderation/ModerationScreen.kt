@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -31,6 +32,8 @@ import com.example.triplink.core.components.ModerationPublicationCard
 import com.example.triplink.core.components.RejectPublicationDialog
 import com.example.triplink.core.components.common.CategoryChips
 import com.example.triplink.ui.theme.PrincipalBlue
+import kotlinx.coroutines.launch
+import androidx.compose.runtime.rememberCoroutineScope
 
 @Composable
 fun ModerationScreen(
@@ -38,6 +41,8 @@ fun ModerationScreen(
     viewModel: ModerationViewModel = viewModel()
 ) {
     val moderationChipLabels = listOf("Todas", "Pendientes", "Verificadas", "Rechazadas")
+    val listState = rememberLazyListState()
+    val coroutineScope = rememberCoroutineScope()
 
     var pendingDecision by remember { mutableStateOf<ModerationDecision?>(null) }
     var selectedPublication by remember { mutableStateOf<ModerationPublicationUi?>(null) }
@@ -139,9 +144,10 @@ fun ModerationScreen(
 
         LazyColumn(
             modifier = Modifier.fillMaxSize(),
+            state = listState,
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
-            items(viewModel.filteredPublications, key = { it.id }) { publication ->
+            items(viewModel.filteredPublications, key = { "${it.id}-${it.status}" }) { publication ->
                 ModerationPublicationCard(
                     publication = publication,
                     onApproveRequested = ::openApproveDialog,
@@ -180,6 +186,7 @@ fun ModerationScreen(
                 onDismiss = ::dismissDialog,
                 onConfirm = {
                     selectedPublication?.let { viewModel.applyDecision(it.id, ModerationDecision.APPROVE) }
+                    coroutineScope.launch { listState.scrollToItem(0) }
                     dismissDialog()
                 }
             )
@@ -200,6 +207,7 @@ fun ModerationScreen(
                             reason = rejectionReason.trim()
                         )
                     }
+                    coroutineScope.launch { listState.scrollToItem(0) }
                     dismissDialog()
                 }
             )

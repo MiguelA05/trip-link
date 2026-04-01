@@ -8,15 +8,12 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavGraph.Companion.findStartDestination
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.triplink.core.components.navigation.BottomBar
 import com.example.triplink.core.components.navigation.adminNavItems
+import com.example.triplink.core.navigation.AdminNavigation
 import com.example.triplink.core.navigation.AdminRoutes
-import com.example.triplink.features.admin.moderation.ModerationScreen
-import com.example.triplink.features.admin.reports.AdminReportsScreen
 
 @Composable
 fun AdminSectionScreen(
@@ -28,6 +25,7 @@ fun AdminSectionScreen(
 
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = navBackStackEntry?.destination
+    
     val selectedIndex = when {
         currentDestination?.hasRoute(AdminRoutes.Moderation::class) == true -> 1
         currentDestination?.hasRoute(AdminRoutes.Reports::class) == true -> 2
@@ -63,18 +61,9 @@ fun AdminSectionScreen(
             )
         }
     ) { paddingValues ->
-        NavHost(
+        AdminNavigation(
             navController = navController,
-            startDestination = AdminRoutes.Moderation,
-            modifier = Modifier.fillMaxSize()
-        ) {
-            composable<AdminRoutes.Moderation> {
-                ModerationScreen(contentPadding = paddingValues)
-            }
-            composable<AdminRoutes.Reports> {
-                AdminReportsScreen(contentPadding = paddingValues)
-            }
-        }
+            padding = paddingValues
+        )
     }
 }
-
