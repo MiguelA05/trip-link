@@ -141,6 +141,14 @@ class AdminReportsViewModel : ViewModel() {
             .map { it.toUi(acceptedReportsCountByPublication[it.pointOfInterest.id] ?: 0) }
             .sortedByDescending { it.report.fechaCreacion }
 
+    fun getReportById(reportId: String): AdminReportUi? {
+        return pendingReports
+            .find { it.report.id == reportId }
+            ?.let { entry ->
+                entry.toUi(acceptedReportsCountByPublication[entry.pointOfInterest.id] ?: 0)
+            }
+    }
+
     fun confirmReport(reportId: String) {
         val index = pendingReports.indexOfFirst { it.report.id == reportId }
         if (index == -1) return

@@ -31,6 +31,9 @@ import com.example.triplink.core.components.ApprovePublicationDialog
 import com.example.triplink.core.components.ModerationPublicationCard
 import com.example.triplink.core.components.RejectPublicationDialog
 import com.example.triplink.core.components.common.CategoryChips
+import com.example.triplink.domain.model.enums.moderator.DecisionModerador
+import com.example.triplink.domain.model.enums.moderator.ModerationFilter
+import com.example.triplink.domain.model.moderator.ModerationPublication
 import com.example.triplink.ui.theme.PrincipalBlue
 import kotlinx.coroutines.launch
 import androidx.compose.runtime.rememberCoroutineScope
@@ -44,14 +47,14 @@ fun ModerationScreen(
     val listState = rememberLazyListState()
     val coroutineScope = rememberCoroutineScope()
 
-    var pendingDecision by remember { mutableStateOf<ModerationDecision?>(null) }
-    var selectedPublication by remember { mutableStateOf<ModerationPublicationUi?>(null) }
+    var pendingDecision by remember { mutableStateOf<DecisionModerador?>(null) }
+    var selectedPublication by remember { mutableStateOf<ModerationPublication?>(null) }
     var rejectionReason by remember { mutableStateOf("") }
 
     fun openApproveDialog(publicationId: String) {
         selectedPublication = viewModel.filteredPublications.firstOrNull { it.id == publicationId }
         if (selectedPublication != null) {
-            pendingDecision = ModerationDecision.APPROVE
+            pendingDecision = DecisionModerador.APROBADA
         }
     }
 
@@ -59,11 +62,16 @@ fun ModerationScreen(
         selectedPublication = viewModel.filteredPublications.firstOrNull { it.id == publicationId }
         if (selectedPublication != null) {
             rejectionReason = ""
-            pendingDecision = ModerationDecision.REJECT
+            pendingDecision = DecisionModerador.RECHAZADA
         }
     }
 
-    fun dismissDialog() {
+    fun dismissApproveDialog() {
+        pendingDecision = null
+        selectedPublication = null
+    }
+
+    fun dismissRejectDialog() {
         pendingDecision = null
         selectedPublication = null
         rejectionReason = ""
@@ -147,9 +155,9 @@ fun ModerationScreen(
             state = listState,
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
-            items(viewModel.filteredPublications, key = { "${it.id}-${it.status}" }) { publication ->
+            items(viewModel.filteredPublications, key = { "${it.id}-${it.pointOfInterest.estado}" }) { publication ->
                 ModerationPublicationCard(
-                    publication = publication,
+                    publication = publication.toCardUi(),
                     onApproveRequested = ::openApproveDialog,
                     onRejectRequested = ::openRejectDialog,
                     onDetailsClick = {}
@@ -177,38 +185,38 @@ fun ModerationScreen(
         }
     }
 
-    val publicationTitle = selectedPublication?.title.orEmpty()
+    val publicationTitle = selectedPublication?.pointOfInterest?.titulo.orEmpty()
 
     when (pendingDecision) {
-        ModerationDecision.APPROVE -> {
+        DecisionModerador.APROBADA -> {
             ApprovePublicationDialog(
                 publicationTitle = publicationTitle,
-                onDismiss = ::dismissDialog,
+                onDismiss = ::dismissApproveDialog,
                 onConfirm = {
-                    selectedPublication?.let { viewModel.applyDecision(it.id, ModerationDecision.APPROVE) }
+                    selectedPublication?.let { viewModel.applyDecision(it.id, DecisionModerador.APROBADA) }
                     coroutineScope.launch { listState.scrollToItem(0) }
-                    dismissDialog()
+                    dismissApproveDialog()
                 }
             )
         }
 
-        ModerationDecision.REJECT -> {
+        DecisionModerador.RECHAZADA -> {
             RejectPublicationDialog(
                 publicationTitle = publicationTitle,
                 reason = rejectionReason,
                 onReasonChange = { rejectionReason = it },
-                onDismiss = ::dismissDialog,
+                onDismiss = ::dismissRejectDialog,
                 onConfirm = {
                     if (rejectionReason.isBlank()) return@RejectPublicationDialog
                     selectedPublication?.let {
                         viewModel.applyDecision(
                             publicationId = it.id,
-                            decision = ModerationDecision.REJECT,
+                            decision = DecisionModerador.RECHAZADA,
                             reason = rejectionReason.trim()
                         )
                     }
                     coroutineScope.launch { listState.scrollToItem(0) }
-                    dismissDialog()
+                    dismissRejectDialog()
                 }
             )
         }

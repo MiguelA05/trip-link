@@ -30,7 +30,8 @@ import com.example.triplink.ui.theme.PrincipalBlue
 @Composable
 fun AdminReportsScreen(
     contentPadding: PaddingValues = PaddingValues(),
-    viewModel: AdminReportsViewModel = viewModel()
+    viewModel: AdminReportsViewModel = viewModel(),
+    onReportClick: (String) -> Unit = {}
 ) {
     val listState = rememberLazyListState()
 
@@ -112,10 +113,10 @@ fun AdminReportsScreen(
         ) {
             items(viewModel.reportCards, key = { it.id }) { publication ->
                 ModerationPublicationCard(
-                    publication = publication,
+                    publication = publication.toCardUi(),
                     onApproveRequested = { viewModel.invalidateReport(it) },
                     onRejectRequested = { viewModel.confirmReport(it) },
-                    onDetailsClick = {},
+                    onDetailsClick = { onReportClick(it) },
                     swipeHintText = "Desliza a la izquierda para confirmar • Desliza a la derecha para invalidar"
                 )
             }

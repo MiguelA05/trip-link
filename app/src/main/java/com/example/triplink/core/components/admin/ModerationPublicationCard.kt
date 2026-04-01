@@ -41,24 +41,22 @@ import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
 import coil3.request.crossfade
-import com.example.triplink.features.admin.reports.AdminReportUi
-import com.example.triplink.features.admin.reports.toModerationPublicationUi
-import com.example.triplink.features.admin.moderation.ModerationPublicationUi
-import com.example.triplink.features.admin.moderation.PublicationModerationStatus
+import com.example.triplink.features.admin.moderation.ModerationPublicationCardStatus
+import com.example.triplink.features.admin.moderation.ModerationPublicationCardUi
 import com.example.triplink.ui.theme.PrincipalBlue
 import com.example.triplink.ui.theme.PrincipalGreen
 import com.example.triplink.ui.theme.PrincipalRed
 
 @Composable
 fun ModerationPublicationCard(
-    publication: ModerationPublicationUi,
+    publication: ModerationPublicationCardUi,
     onApproveRequested: (String) -> Unit,
     onRejectRequested: (String) -> Unit,
     onDetailsClick: (String) -> Unit,
     modifier: Modifier = Modifier,
     swipeHintText: String = "Desliza para rechazar o aprobar"
 ) {
-    val interactionEnabled = publication.status == PublicationModerationStatus.PENDING
+    val interactionEnabled = publication.status == ModerationPublicationCardStatus.PENDING
 
     val dismissState = rememberSwipeToDismissBoxState(
         positionalThreshold = { it * 0.32f },
@@ -172,9 +170,9 @@ fun ModerationPublicationCard(
                     Surface(
                         shape = RoundedCornerShape(999.dp),
                         color = when (publication.status) {
-                            PublicationModerationStatus.PENDING -> Color(0xFFFFEEE0)
-                            PublicationModerationStatus.VERIFIED -> Color(0xFFE4F5E7)
-                            PublicationModerationStatus.REJECTED -> Color(0xFFFDE6E6)
+                            ModerationPublicationCardStatus.PENDING -> Color(0xFFFFEEE0)
+                            ModerationPublicationCardStatus.VERIFIED -> Color(0xFFE4F5E7)
+                            ModerationPublicationCardStatus.REJECTED -> Color(0xFFFDE6E6)
                         },
                         modifier = Modifier
                             .align(Alignment.TopEnd)
@@ -182,17 +180,17 @@ fun ModerationPublicationCard(
                     ) {
                         Text(
                             text = when (publication.status) {
-                                PublicationModerationStatus.PENDING -> "Pendiente"
-                                PublicationModerationStatus.VERIFIED -> "Verificado"
-                                PublicationModerationStatus.REJECTED -> "Rechazado"
+                                ModerationPublicationCardStatus.PENDING -> "Pendiente"
+                                ModerationPublicationCardStatus.VERIFIED -> "Verificado"
+                                ModerationPublicationCardStatus.REJECTED -> "Rechazado"
                             },
                             modifier = Modifier.padding(horizontal = 10.dp, vertical = 5.dp),
                             style = MaterialTheme.typography.labelMedium,
                             fontWeight = FontWeight.Bold,
                             color = when (publication.status) {
-                                PublicationModerationStatus.PENDING -> Color(0xFFCC6E00)
-                                PublicationModerationStatus.VERIFIED -> Color(0xFF2E7D32)
-                                PublicationModerationStatus.REJECTED -> Color(0xFFD84343)
+                                ModerationPublicationCardStatus.PENDING -> Color(0xFFCC6E00)
+                                ModerationPublicationCardStatus.VERIFIED -> Color(0xFF2E7D32)
+                                ModerationPublicationCardStatus.REJECTED -> Color(0xFFD84343)
                             }
                         )
                     }
@@ -396,24 +394,5 @@ fun ModerationPublicationCard(
             }
         }
     }
-}
-
-@Composable
-fun ModerationPublicationCard(
-    publication: AdminReportUi,
-    onApproveRequested: (String) -> Unit,
-    onRejectRequested: (String) -> Unit,
-    onDetailsClick: (String) -> Unit,
-    modifier: Modifier = Modifier,
-    swipeHintText: String = "Desliza para rechazar o aprobar"
-) {
-    ModerationPublicationCard(
-        publication = publication.toModerationPublicationUi(),
-        onApproveRequested = onApproveRequested,
-        onRejectRequested = onRejectRequested,
-        onDetailsClick = onDetailsClick,
-        modifier = modifier,
-        swipeHintText = swipeHintText
-    )
 }
 

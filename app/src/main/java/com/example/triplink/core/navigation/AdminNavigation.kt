@@ -7,6 +7,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.example.triplink.features.admin.moderation.ModerationScreen
 import com.example.triplink.features.admin.reports.AdminReportsScreen
+import com.example.triplink.features.admin.reports.AdminReportDetails.AdminReportDetailsScreen
 
 @Composable
 fun AdminNavigation(
@@ -21,7 +22,21 @@ fun AdminNavigation(
             ModerationScreen(contentPadding = padding)
         }
         composable<AdminRoutes.Reports> {
-            AdminReportsScreen(contentPadding = padding)
+            AdminReportsScreen(
+                contentPadding = padding,
+                onReportClick = { reportId ->
+                    navController.navigate(AdminRoutes.ReportDetails(reportId))
+                }
+            )
+        }
+        composable<AdminRoutes.ReportDetails> { backStackEntry ->
+            val route = backStackEntry.destination.route ?: return@composable
+            val reportId = route.split("/").lastOrNull() ?: return@composable
+            AdminReportDetailsScreen(
+                reportId = reportId,
+                contentPadding = padding,
+                onBackClick = { navController.popBackStack() }
+            )
         }
     }
 }
