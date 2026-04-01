@@ -1,24 +1,12 @@
 package com.example.triplink.features.admin.moderation
 
-enum class PublicationModerationStatus {
+enum class ModerationPublicationCardStatus {
     PENDING,
     VERIFIED,
     REJECTED
 }
 
-enum class ModerationFilter {
-    ALL,
-    PENDING,
-    VERIFIED,
-    REJECTED
-}
-
-enum class ModerationDecision {
-    APPROVE,
-    REJECT
-}
-
-data class ModerationPublicationUi(
+data class ModerationPublicationCardUi(
     val id: String,
     val title: String,
     val categoryLabel: String,
@@ -28,9 +16,10 @@ data class ModerationPublicationUi(
     val priceLabel: String,
     val scheduleLabel: String,
     val imageUrl: String,
-    val status: PublicationModerationStatus,
+    val status: ModerationPublicationCardStatus,
     val reportCount: Int = 0,
     val reasonMessage: String? = null,
     val rejectReason: String? = null
 )
+
 
