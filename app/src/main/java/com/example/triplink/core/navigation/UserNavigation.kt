@@ -9,6 +9,7 @@ import androidx.navigation.toRoute
 import com.example.triplink.features.comments.CommentsScreen
 import com.example.triplink.features.filters.FiltersScreen
 import com.example.triplink.features.notifications.NotificationsScreen
+import com.example.triplink.features.postCreation.PostCreationScreen
 import com.example.triplink.features.publicationDetails.PublicationDetailsScreen
 import com.example.triplink.features.user.accountEdit.AccountEditScreen
 import com.example.triplink.features.user.explore.ExploreScreen
@@ -37,6 +38,9 @@ fun UserNavigation(
                 },
                 onNotificationsClick = {
                     navController.navigate(UserSectionRoutes.Notifications)
+                },
+                onPostCreationClick = {
+                    navController.navigate(UserSectionRoutes.PostCreation)
                 }
             )
         }
@@ -63,6 +67,12 @@ fun UserNavigation(
                             launchSingleTop = true
                         }
                     }
+                },
+                onFiltersClick = {
+                    navController.navigate(UserSectionRoutes.Filters)
+                },
+                onPublicationDetailsClick = { publicationId ->
+                    navController.navigate(UserSectionRoutes.PublicationDetails(publicationId))
                 }
             )
         }
@@ -108,6 +118,9 @@ fun UserNavigation(
         }
         composable<UserSectionRoutes.Filters> {
             FiltersScreen({ navController.popBackStack() })
+        }
+        composable<UserSectionRoutes.PostCreation> {
+            PostCreationScreen({ navController.popBackStack() })
         }
     }
 }

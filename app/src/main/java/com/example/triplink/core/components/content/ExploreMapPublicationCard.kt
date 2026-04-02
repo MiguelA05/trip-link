@@ -41,7 +41,7 @@ fun ExploreMapPublicationCard(
     ratingLabel: String,
     expanded: Boolean,
     modifier: Modifier = Modifier,
-    onOpenPublication: () -> Unit = {}
+    onOpenPublication: (() -> Unit)? = null
 ) {
     Column(
         modifier = modifier
@@ -174,7 +174,7 @@ fun ExploreMapPublicationCard(
                 )
 
                 GeneralButton(
-                    onClick = onOpenPublication,
+                    onClick = { onOpenPublication?.invoke() },
                     text = "Ver publicacion completa  >"
                 )
                 Spacer(modifier = Modifier.height(2.dp))

@@ -30,6 +30,7 @@ fun UserHomeScreen(
     onCommentsClick: (String) -> Unit = {},
     contentPadding: PaddingValues = PaddingValues(),
     onNotificationsClick: () -> Unit = {},
+    onPostCreationClick: () -> Unit = {}
 ) {
     val viewModel: UserHomeViewModel = hiltViewModel()
 
@@ -50,7 +51,7 @@ fun UserHomeScreen(
         },
         floatingActionButton = {
             FloatingActionButton(
-                onClick = {},
+                onClick = onPostCreationClick,
                 containerColor = PrincipalBlue,
                 contentColor = PrincipalWhite
             ) {

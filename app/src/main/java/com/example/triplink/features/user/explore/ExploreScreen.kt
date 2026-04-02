@@ -32,7 +32,7 @@ fun ExploreScreen(
 	contentPadding: PaddingValues = PaddingValues(),
 	onPublicationClick: (String) -> Unit = {},
 	onMapClick: () -> Unit = {},
-	onFiltersClick: () -> Unit = {},
+	onFiltersClick: () -> Unit = {}
 ) {
 	val viewModel: ExploreViewModel = hiltViewModel()
 

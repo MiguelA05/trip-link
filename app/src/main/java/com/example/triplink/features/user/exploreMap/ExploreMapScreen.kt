@@ -63,7 +63,9 @@ import androidx.compose.material3.rememberStandardBottomSheetState
 fun ExploreMapScreen(
 	viewModel: ExploreMapViewModel = viewModel(),
 	contentPadding: PaddingValues = PaddingValues(),
-	onBackToExplore: () -> Unit = {}
+	onBackToExplore: () -> Unit = {},
+	onFiltersClick: () -> Unit = {},
+	onPublicationDetailsClick: (String) -> Unit = {}
 ) {
 	val sheetState = rememberStandardBottomSheetState(
 		initialValue = SheetValue.PartiallyExpanded,
@@ -114,7 +116,7 @@ fun ExploreMapScreen(
 						publication = viewModel.selectedPublication,
 						ratingLabel = viewModel.selectedMarkerRatingLabel,
 						expanded = sheetState.targetValue == SheetValue.Expanded || sheetState.currentValue == SheetValue.Expanded,
-						onOpenPublication = {}
+						onOpenPublication = {onPublicationDetailsClick("")}
 					)
 				}
 
@@ -160,7 +162,7 @@ fun ExploreMapScreen(
 				SearchBar(
 					query = viewModel.query,
 					onQueryChange = viewModel::onQueryChange,
-					onFilterClick = {}
+					onFilterClick = onFiltersClick
 				)
 				CategoryChips(
 					categories = viewModel.categories,
