@@ -23,18 +23,16 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.triplink.core.components.admin.ReportModerationPublicationCard
-import com.example.triplink.data.repository.admin.reports.AdminReportsRepository
 import com.example.triplink.ui.theme.PrincipalBlue
 
 @Composable
 fun AdminReportsScreen(
     contentPadding: PaddingValues = PaddingValues(),
-    repository: AdminReportsRepository,
     onReportClick: (String) -> Unit = {}
 ) {
-    val viewModel: AdminReportsViewModel = viewModel(factory = AdminReportsViewModel.factory(repository))
+    val viewModel: AdminReportsViewModel = hiltViewModel()
     val listState = rememberLazyListState()
 
     Column(

@@ -1,12 +1,14 @@
 package com.example.triplink.features.admin.moderation.ModerationPublicationDetails
 
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
-import com.example.triplink.data.repository.admin.moderation.AdminModerationRepository
 import com.example.triplink.domain.model.enums.moderator.DecisionModerador
 import com.example.triplink.domain.model.moderator.ModerationPublication
+import com.example.triplink.domain.repository.admin.moderation.AdminModerationRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 
-class ModerationPublicationDetailsViewModel(
+@HiltViewModel
+class ModerationPublicationDetailsViewModel @Inject constructor(
     private val repository: AdminModerationRepository
 ) : ViewModel() {
 
@@ -18,15 +20,5 @@ class ModerationPublicationDetailsViewModel(
         reason: String? = null
     ) {
         repository.applyDecision(publicationId, decision, reason)
-    }
-
-    companion object {
-        fun factory(repository: AdminModerationRepository): ViewModelProvider.Factory =
-            object : ViewModelProvider.Factory {
-                @Suppress("UNCHECKED_CAST")
-                override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                    return ModerationPublicationDetailsViewModel(repository) as T
-                }
-            }
     }
 }

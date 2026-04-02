@@ -26,12 +26,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.triplink.core.components.ApprovePublicationDialog
 import com.example.triplink.core.components.ModerationPublicationCard
 import com.example.triplink.core.components.RejectPublicationDialog
 import com.example.triplink.core.components.common.CategoryChips
-import com.example.triplink.data.repository.admin.moderation.AdminModerationRepository
 import com.example.triplink.domain.model.enums.moderator.DecisionModerador
 import com.example.triplink.domain.model.enums.moderator.ModerationFilter
 import com.example.triplink.domain.model.moderator.ModerationPublication
@@ -42,10 +41,9 @@ import androidx.compose.runtime.rememberCoroutineScope
 @Composable
 fun ModerationScreen(
     contentPadding: PaddingValues = PaddingValues(),
-    repository: AdminModerationRepository,
     onPublicationDetailsClick: (String) -> Unit = {}
 ) {
-    val viewModel: ModerationViewModel = viewModel(factory = ModerationViewModel.factory(repository))
+    val viewModel: ModerationViewModel = hiltViewModel()
     val moderationChipLabels = listOf("Todas", "Pendientes", "Verificadas", "Rechazadas")
     val listState = rememberLazyListState()
     val coroutineScope = rememberCoroutineScope()

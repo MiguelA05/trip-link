@@ -1,22 +1,26 @@
 package com.example.triplink.data.repository.admin.reports
 
-import com.example.triplink.features.admin.reports.AdminReportUi
 import com.example.triplink.domain.model.enums.EstadoPublicacion
+import com.example.triplink.domain.repository.admin.reports.AdminReportsRepository
+import com.example.triplink.features.admin.reports.AdminReportUi
+import javax.inject.Inject
+import javax.inject.Singleton
 
-class AdminReportsRepository {
+@Singleton
+class AdminReportsRepositoryImpl @Inject constructor() : AdminReportsRepository {
 
     private val acceptedReportThreshold = 3
     private val seedState = createAdminReportsSeedState()
 
-    val pendingCount: Int
+    override val pendingCount: Int
         get() = seedState.pendingReports.size
 
-    val reportCards: List<AdminReportUi>
+    override val reportCards: List<AdminReportUi>
         get() = seedState.pendingReports
             .map { it.toUi(seedState.acceptedReportsCountByPublication[it.pointOfInterest.id] ?: 0) }
             .sortedByDescending { it.report.fechaCreacion }
 
-    fun getReportById(reportId: String): AdminReportUi? {
+    override fun getReportById(reportId: String): AdminReportUi? {
         return seedState.pendingReports
             .find { it.report.id == reportId }
             ?.let { entry ->
@@ -24,7 +28,7 @@ class AdminReportsRepository {
             }
     }
 
-    fun confirmReport(reportId: String) {
+    override fun confirmReport(reportId: String) {
         val index = seedState.pendingReports.indexOfFirst { it.report.id == reportId }
         if (index == -1) return
 
@@ -42,7 +46,7 @@ class AdminReportsRepository {
         }
     }
 
-    fun invalidateReport(reportId: String) {
+    override fun invalidateReport(reportId: String) {
         val index = seedState.pendingReports.indexOfFirst { it.report.id == reportId }
         if (index == -1) return
 
@@ -56,9 +60,4 @@ class AdminReportsRepository {
         acceptedReportsCount = acceptedReportsCount
     )
 }
-
-
-
-
-
 

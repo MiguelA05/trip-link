@@ -4,26 +4,31 @@ import com.example.triplink.domain.model.enums.EstadoPublicacion
 import com.example.triplink.domain.model.enums.moderator.DecisionModerador
 import com.example.triplink.domain.model.enums.moderator.ModerationFilter
 import com.example.triplink.domain.model.moderator.ModerationPublication
+import com.example.triplink.domain.repository.admin.moderation.AdminModerationRepository
+import javax.inject.Inject
+import javax.inject.Singleton
 
-class AdminModerationRepository {
+@Singleton
+class AdminModerationRepositoryImpl  @Inject constructor(): AdminModerationRepository {
 
     private val seedState = createAdminModerationSeedState()
 
-    val pendingCount: Int
+
+    override val pendingCount: Int
         get() = seedState.pendingPublications.size
 
-    val verifiedCount: Int
+    override val verifiedCount: Int
         get() = seedState.reviewedPublications.count { it.pointOfInterest.estado == EstadoPublicacion.VERIFICADA }
 
-    val rejectedCount: Int
+    override val rejectedCount: Int
         get() = seedState.reviewedPublications.count { it.pointOfInterest.estado == EstadoPublicacion.RECHAZADA }
 
-    fun getPublicationById(publicationId: String): ModerationPublication? {
+    override fun getPublicationById(publicationId: String): ModerationPublication? {
         return seedState.pendingPublications.firstOrNull { it.id == publicationId }
             ?: seedState.reviewedPublications.firstOrNull { it.id == publicationId }
     }
 
-    fun publicationsFor(filter: ModerationFilter): List<ModerationPublication> = when (filter) {
+    override fun publicationsFor(filter: ModerationFilter): List<ModerationPublication> = when (filter) {
         ModerationFilter.ALL -> buildList {
             addAll(seedState.pendingPublications)
             addAll(seedState.reviewedPublications)
@@ -33,10 +38,10 @@ class AdminModerationRepository {
         ModerationFilter.REJECTED -> seedState.reviewedPublications.filter { it.pointOfInterest.estado == EstadoPublicacion.RECHAZADA }
     }
 
-    fun applyDecision(
+    override fun applyDecision(
         publicationId: String,
         decision: DecisionModerador,
-        reason: String? = null
+        reason: String?
     ) {
         val publication = seedState.pendingPublications.firstOrNull { it.id == publicationId } ?: return
         seedState.pendingPublications.remove(publication)
@@ -56,5 +61,5 @@ class AdminModerationRepository {
             )
         )
     }
-}
 
+}

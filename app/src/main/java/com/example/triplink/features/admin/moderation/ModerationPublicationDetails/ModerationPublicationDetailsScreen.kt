@@ -31,7 +31,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.triplink.core.components.ApprovePublicationDialog
 import com.example.triplink.core.components.GeneralTopBar
 import com.example.triplink.core.components.RejectPublicationDialog
@@ -42,7 +42,6 @@ import com.example.triplink.core.components.publicationdetails.sections.Publicat
 import com.example.triplink.core.components.publicationdetails.sections.PublicationWeeklyScheduleSection
 import com.example.triplink.core.components.publicationdetails.utils.currentDayLabelEs
 import com.example.triplink.core.components.publicationdetails.utils.toWeeklyScheduleUi
-import com.example.triplink.data.repository.admin.moderation.AdminModerationRepository
 import com.example.triplink.domain.model.enums.EstadoPublicacion
 import com.example.triplink.domain.model.enums.moderator.DecisionModerador
 import com.example.triplink.ui.theme.PrincipalGreen
@@ -52,12 +51,9 @@ import com.example.triplink.ui.theme.PrincipalRed
 fun ModerationPublicationDetailsScreen(
     publicationId: String,
     contentPadding: PaddingValues = PaddingValues(),
-    repository: AdminModerationRepository,
     onBackClick: () -> Unit = {}
 ) {
-    val viewModel: ModerationPublicationDetailsViewModel = viewModel(
-        factory = ModerationPublicationDetailsViewModel.factory(repository)
-    )
+    val viewModel: ModerationPublicationDetailsViewModel = hiltViewModel()
     val publication = viewModel.getPublicationById(publicationId)
 
     if (publication == null) {

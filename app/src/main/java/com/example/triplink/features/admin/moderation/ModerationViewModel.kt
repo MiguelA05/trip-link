@@ -4,12 +4,14 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import com.example.triplink.domain.model.enums.moderator.DecisionModerador
 import com.example.triplink.domain.model.enums.moderator.ModerationFilter
-import com.example.triplink.data.repository.admin.moderation.AdminModerationRepository
+import com.example.triplink.domain.repository.admin.moderation.AdminModerationRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 
-class ModerationViewModel(
+@HiltViewModel
+class ModerationViewModel @Inject constructor(
     private val repository: AdminModerationRepository
 ) : ViewModel() {
 
@@ -40,15 +42,4 @@ class ModerationViewModel(
     }
 
     fun getPublicationById(publicationId: String) = repository.getPublicationById(publicationId)
-
-    companion object {
-        fun factory(repository: AdminModerationRepository): ViewModelProvider.Factory =
-            object : ViewModelProvider.Factory {
-                @Suppress("UNCHECKED_CAST")
-                override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                    return ModerationViewModel(repository) as T
-                }
-            }
-    }
 }
-

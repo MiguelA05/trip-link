@@ -1,6 +1,7 @@
 package com.example.triplink.data.repository.admin.moderation
 
 import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import com.example.triplink.domain.model.PuntoInteres
 import com.example.triplink.domain.model.Ubicacion
 import com.example.triplink.domain.model.enums.Categoria
@@ -9,8 +10,8 @@ import com.example.triplink.domain.model.enums.RangoPrecios
 import com.example.triplink.domain.model.moderator.ModerationPublication
 
 internal data class AdminModerationSeedState(
-    val pendingPublications: androidx.compose.runtime.snapshots.SnapshotStateList<ModerationPublication>,
-    val reviewedPublications: androidx.compose.runtime.snapshots.SnapshotStateList<ModerationPublication>
+    val pendingPublications: SnapshotStateList<ModerationPublication>,
+    val reviewedPublications: SnapshotStateList<ModerationPublication>
 )
 
 internal fun createAdminModerationSeedState(): AdminModerationSeedState {

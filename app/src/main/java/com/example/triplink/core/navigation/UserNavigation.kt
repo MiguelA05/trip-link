@@ -89,7 +89,7 @@ fun UserNavigation(
         composable<UserSectionRoutes.PublicationDetails> { backStackEntry ->
             val route = backStackEntry.toRoute<UserSectionRoutes.PublicationDetails>()
             PublicationDetailsScreen(
-                publicationId = route.publicationId,
+                route.publicationId,
                 onBackClick = { navController.popBackStack() },
                 onSeeAllReviewsClick = { publicationId ->
                     navController.navigate(UserSectionRoutes.Comments(publicationId))

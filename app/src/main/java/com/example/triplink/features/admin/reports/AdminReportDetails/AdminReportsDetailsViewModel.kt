@@ -1,11 +1,13 @@
 package com.example.triplink.features.admin.reports.AdminReportDetails
 
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
+import com.example.triplink.domain.repository.admin.reports.AdminReportsRepository
 import com.example.triplink.features.admin.reports.AdminReportUi
-import com.example.triplink.data.repository.admin.reports.AdminReportsRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 
-class AdminReportsDetailsViewModel(
+@HiltViewModel
+class AdminReportsDetailsViewModel @Inject constructor(
     private val repository: AdminReportsRepository
 ) : ViewModel() {
 
@@ -17,15 +19,5 @@ class AdminReportsDetailsViewModel(
 
 	fun invalidateReport(reportId: String) {
 		repository.invalidateReport(reportId)
-	}
-
-	companion object {
-		fun factory(repository: AdminReportsRepository): ViewModelProvider.Factory =
-			object : ViewModelProvider.Factory {
-				@Suppress("UNCHECKED_CAST")
-				override fun <T : ViewModel> create(modelClass: Class<T>): T {
-					return AdminReportsDetailsViewModel(repository) as T
-				}
-			}
 	}
 }

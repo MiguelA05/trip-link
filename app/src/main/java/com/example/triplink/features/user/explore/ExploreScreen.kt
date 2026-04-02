@@ -20,7 +20,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.triplink.core.components.PublicationCard
 import com.example.triplink.core.components.common.CategoryChips
 import com.example.triplink.core.components.common.SearchBar
@@ -29,12 +29,13 @@ import com.example.triplink.ui.theme.PrincipalWhite
 
 @Composable
 fun ExploreScreen(
-	viewModel: ExploreViewModel = viewModel(),
 	contentPadding: PaddingValues = PaddingValues(),
 	onPublicationClick: (String) -> Unit = {},
 	onMapClick: () -> Unit = {},
 	onFiltersClick: () -> Unit = {},
 ) {
+	val viewModel: ExploreViewModel = hiltViewModel()
+
 	Scaffold(
 		modifier = Modifier
 			.fillMaxSize()

@@ -17,7 +17,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.triplink.core.components.PublicationCard
 import com.example.triplink.core.components.common.BrandHeader
 import com.example.triplink.core.components.common.SectionTitleDivider
@@ -26,12 +26,13 @@ import com.example.triplink.ui.theme.PrincipalWhite
 
 @Composable
 fun UserHomeScreen(
-    viewModel: UserHomeViewModel = viewModel(),
     onPublicationClick: (String) -> Unit = {},
     onCommentsClick: (String) -> Unit = {},
     contentPadding: PaddingValues = PaddingValues(),
     onNotificationsClick: () -> Unit = {},
 ) {
+    val viewModel: UserHomeViewModel = hiltViewModel()
+
     Scaffold(
         modifier = Modifier
             .fillMaxSize()

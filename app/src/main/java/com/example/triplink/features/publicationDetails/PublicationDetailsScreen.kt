@@ -21,12 +21,18 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
+import androidx.hilt.navigation.compose.hiltViewModel
+import coil3.compose.AsyncImage
+import coil3.request.ImageRequest
+import coil3.request.crossfade
 import com.example.triplink.core.components.FormField
 import com.example.triplink.core.components.GeneralButton
 import com.example.triplink.core.components.GeneralTopBar
@@ -35,6 +41,8 @@ import com.example.triplink.core.components.publicationdetails.sections.Publicat
 import com.example.triplink.core.components.publicationdetails.sections.PublicationPriceRangeSection
 import com.example.triplink.core.components.publicationdetails.sections.PublicationTextSection
 import com.example.triplink.core.components.publicationdetails.sections.PublicationWeeklyScheduleSection
+import com.example.triplink.core.components.publicationdetails.utils.currentDayLabelEs
+import com.example.triplink.core.components.publicationdetails.utils.toWeeklyScheduleUi
 import com.example.triplink.ui.theme.*
 
 data class Review(
@@ -53,21 +61,46 @@ fun PublicationDetailsScreen(
     onBackClick: () -> Unit,
     onSeeAllReviewsClick: (String) -> Unit
 ) {
+    val viewModel: PublicationDetailsViewModel = hiltViewModel()
+    val publication = viewModel.getPublicationById(publicationId)
+
+    if (publication == null) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(Color(0xFFF4F5F7)),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(
+                text = "Publicacion no encontrada",
+                style = MaterialTheme.typography.headlineSmall,
+                fontWeight = FontWeight.Bold,
+                color = Color(0xFF1E2430)
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+            TextButton(onClick = onBackClick) {
+                Text("Volver")
+            }
+        }
+        return
+    }
+
     var showReportModal by remember { mutableStateOf(false) }
     var showRatingModal by remember { mutableStateOf(false) }
 
-    val schedules = listOf(
-        DayScheduleUi("Lunes", "8:00 am - 5:00 pm"),
-        DayScheduleUi("Martes", "8:00 am - 5:00 pm"),
-        DayScheduleUi("Miércoles", "8:00 am - 5:00 pm"),
-        DayScheduleUi("Jueves", "8:00 am - 5:00 pm"),
-        DayScheduleUi("Viernes", "8:00 am - 6:00 pm"),
-        DayScheduleUi("Sábado", "7:00 am - 6:00 pm"),
-        DayScheduleUi("Domingo", "Cerrado", isClosed = true)
-    )
-    val today = "Jueves"
-    
-    val selectedPriceLevel = "Económico"
+    val schedules: List<DayScheduleUi> = publication.horario.toWeeklyScheduleUi()
+    val today = currentDayLabelEs()
+
+    val selectedPriceLevel = publication.rangoPrecios?.let {
+        when (it.name) {
+            "GRATUITO" -> "Gratuito"
+            "ECONOMICO" -> "Económico"
+            "MODERADO" -> "Moderado"
+            "COSTOSO" -> "Costoso"
+            else -> "Sin precio"
+        }
+    } ?: "Sin precio"
 
     val reviews = listOf(
         Review("carlos_montoya", 5, "¡Increíble lugar! La vista es maravillosa."),
@@ -83,6 +116,9 @@ fun PublicationDetailsScreen(
                     onBack = onBackClick
                 )
                 ImageHeader(
+                    categoryLabel = publication.categoria.name,
+                    title = publication.titulo,
+                    imageUrl = publication.fotos.firstOrNull().orEmpty(),
                     onReportClick = { showReportModal = true },
                     onBackClick = onBackClick
                 )
@@ -104,7 +140,7 @@ fun PublicationDetailsScreen(
             item {
                 PublicationTextSection(
                     title = "Descripción",
-                    body = "El hogar de la palma de cera del Quindío, el árbol nacional de Colombia. Un paisaje surrealista de verdes montañas y niebla."
+                    body = publication.informacion
                 )
             }
             item {
@@ -112,8 +148,8 @@ fun PublicationDetailsScreen(
             }
             item {
                 PublicationLocationSection(
-                    city = "Ver en Mapas",
-                    coordinates = "4.6650, -75.5751"
+                    city = publication.ubicacion.ciudad,
+                    coordinates = "${publication.ubicacion.latitud}, ${publication.ubicacion.longitud}"
                 )
             }
             item {
@@ -146,31 +182,49 @@ fun PublicationDetailsScreen(
 }
 
 @Composable
-fun ImageHeader(onReportClick: () -> Unit, onBackClick: () -> Unit) {
+fun ImageHeader(
+    categoryLabel: String,
+    title: String,
+    imageUrl: String,
+    onReportClick: () -> Unit,
+    onBackClick: () -> Unit
+) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
             .height(300.dp) 
     ) {
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(Color.LightGray) 
-        )
-        
+        if (imageUrl.isNotBlank()) {
+            AsyncImage(
+                model = ImageRequest.Builder(LocalContext.current)
+                    .data(imageUrl)
+                    .crossfade(true)
+                    .build(),
+                contentDescription = title,
+                contentScale = ContentScale.Crop,
+                modifier = Modifier.fillMaxSize()
+            )
+        } else {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(Color.LightGray)
+            )
+        }
+
         Column(
             modifier = Modifier
                 .align(Alignment.BottomStart)
                 .padding(16.dp)
         ) {
             Text(
-                text = "NATURALEZA",
+                text = categoryLabel.uppercase(),
                 color = PrincipalGreen,
                 fontWeight = FontWeight.Bold,
                 fontSize = 16.sp
             )
             Text(
-                text = "Valle de Cocora",
+                text = title,
                 color = Color.White,
                 fontWeight = FontWeight.Bold,
                 fontSize = 28.sp
