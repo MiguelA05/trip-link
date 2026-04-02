@@ -30,6 +30,9 @@ import androidx.compose.ui.window.DialogProperties
 import com.example.triplink.core.components.FormField
 import com.example.triplink.core.components.GeneralButton
 import com.example.triplink.core.components.GeneralTopBar
+import com.example.triplink.core.components.publicationdetails.sections.PublicationLocationSection
+import com.example.triplink.core.components.publicationdetails.sections.PublicationPriceRangeSection
+import com.example.triplink.core.components.publicationdetails.sections.PublicationTextSection
 import com.example.triplink.ui.theme.*
 
 data class DaySchedule(
@@ -103,13 +106,19 @@ fun PublicationDetailsScreen(
                 .background(Color.White)
         ) {
             item {
-                DescriptionSection()
+                PublicationTextSection(
+                    title = "Descripción",
+                    body = "El hogar de la palma de cera del Quindío, el árbol nacional de Colombia. Un paisaje surrealista de verdes montañas y niebla."
+                )
             }
             item {
-                PriceRangeSection(selectedLevel = selectedPriceLevel)
+                PublicationPriceRangeSection(selectedLevel = selectedPriceLevel)
             }
             item {
-                LocationSection()
+                PublicationLocationSection(
+                    city = "Ver en Mapas",
+                    coordinates = "4.6650, -75.5751"
+                )
             }
             item {
                 ScheduleSection(schedules = schedules, today = today)
@@ -695,106 +704,6 @@ fun ReportOptionItem(option: ReportOptionData, isSelected: Boolean, onClick: () 
 }
 
 @Composable
-fun DescriptionSection() {
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(16.dp)
-    ) {
-        Text(
-            text = "Descripción",
-            style = MaterialTheme.typography.titleLarge,
-            fontWeight = FontWeight.Bold,
-            color = Color.Black
-        )
-        Spacer(modifier = Modifier.height(8.dp))
-        Text(
-            text = "El hogar de la palma de cera del Quindío, el árbol nacional de Colombia. Un paisaje surrealista de verdes montañas y niebla.",
-            style = MaterialTheme.typography.bodyLarge,
-            color = DarkGray,
-            lineHeight = 22.sp
-        )
-    }
-}
-
-@Composable
-fun PriceRangeSection(selectedLevel: String) {
-    val levels = listOf("Gratuito", "Económico", "Moderado", "Costoso")
-    val selectedIndex = levels.indexOf(selectedLevel).coerceAtLeast(0)
-
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 8.dp)
-    ) {
-        Text(
-            text = "Rango de precios",
-            style = MaterialTheme.typography.titleLarge,
-            fontWeight = FontWeight.Bold,
-            color = Color.Black
-        )
-        Spacer(modifier = Modifier.height(12.dp))
-        
-        Surface(
-            shape = RoundedCornerShape(16.dp),
-            border = BorderStroke(1.dp, Color(0xFFD1D5DB)),
-            color = Color.White,
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Row(
-                modifier = Modifier
-                    .padding(16.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                // Selector de precios basado en el índice
-                Row(
-                    modifier = Modifier.weight(1f),
-                    horizontalArrangement = Arrangement.spacedBy(8.dp)
-                ) {
-                    PriceTag(text = "$", isSelected = selectedIndex == 0)
-                    PriceTag(text = "$$", isSelected = selectedIndex == 1)
-                    PriceTag(text = "$$$", isSelected = selectedIndex == 2)
-                    PriceTag(text = "$$$$", isSelected = selectedIndex == 3)
-                }
-
-                Column(horizontalAlignment = Alignment.Start) {
-                    Text(
-                        text = selectedLevel,
-                        color = PrincipalBlue,
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 15.sp
-                    )
-                    Text(
-                        text = "Rango de precio\nestimado",
-                        color = PrincipalGray,
-                        fontSize = 12.sp,
-                        lineHeight = 14.sp
-                    )
-                }
-            }
-        }
-    }
-}
-
-@Composable
-fun PriceTag(text: String, isSelected: Boolean) {
-    Surface(
-        shape = RoundedCornerShape(12.dp),
-        color = if (isSelected) PrincipalBlue else Color(0xFFF1F5F9),
-        modifier = Modifier.size(width = 50.dp, height = 45.dp)
-    ) {
-        Box(contentAlignment = Alignment.Center) {
-            Text(
-                text = text,
-                color = if (isSelected) Color.White else PrincipalGray,
-                fontWeight = FontWeight.Bold,
-                fontSize = 18.sp
-            )
-        }
-    }
-}
-
-@Composable
 fun ScheduleSection(schedules: List<DaySchedule>, today: String) {
     Column(
         modifier = Modifier
@@ -879,70 +788,6 @@ fun ScheduleSection(schedules: List<DaySchedule>, today: String) {
     }
 }
 
-@Composable
-fun LocationSection() {
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(16.dp)
-    ) {
-        Text(
-            text = "Ubicación",
-            style = MaterialTheme.typography.titleLarge,
-            fontWeight = FontWeight.Bold,
-            color = Color.Black
-        )
-        Spacer(modifier = Modifier.height(12.dp))
-        
-        // Tarjeta de Mapa personalizada según la imagen
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(220.dp)
-                .clip(RoundedCornerShape(16.dp))
-                .background(Color(0xFFE2E8F0)) // Color base de fondo de mapa
-                .clickable { /* Abrir mapas */ },
-            contentAlignment = Alignment.Center
-        ) {
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                // Icono de Mapa en círculo blanco
-                Surface(
-                    shape = CircleShape,
-                    color = Color.White,
-                    modifier = Modifier.size(70.dp),
-                    shadowElevation = 4.dp
-                ) {
-                    Box(contentAlignment = Alignment.Center) {
-                        Icon(
-                            imageVector = Icons.Default.Map,
-                            contentDescription = null,
-                            tint = PrincipalBlue,
-                            modifier = Modifier.size(35.dp)
-                        )
-                    }
-                }
-                
-                Spacer(modifier = Modifier.height(12.dp))
-                
-                Text(
-                    text = "Ver en Mapas",
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 20.sp,
-                    color = Color.Black
-                )
-                
-                Text(
-                    text = "4.6650, -75.5751",
-                    fontSize = 14.sp,
-                    color = DarkGray,
-                    fontWeight = FontWeight.Medium
-                )
-            }
-        }
-    }
-}
 
 @Composable
 fun ReviewsSection(

@@ -7,7 +7,9 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
+import com.example.triplink.data.repository.admin.moderation.AdminModerationRepository
 import com.example.triplink.features.admin.moderation.ModerationScreen
+import com.example.triplink.features.admin.moderation.ModerationPublicationDetails.ModerationPublicationDetailsScreen
 import com.example.triplink.features.admin.reports.AdminReportsScreen
 import com.example.triplink.features.admin.reports.AdminReportDetails.AdminReportDetailsScreen
 import com.example.triplink.data.repository.admin.reports.AdminReportsRepository
@@ -17,6 +19,7 @@ fun AdminNavigation(
     navController: NavHostController,
     padding: PaddingValues
 ) {
+    val moderationRepository = remember { AdminModerationRepository() }
     val reportsRepository = remember { AdminReportsRepository() }
 
     NavHost(
@@ -24,7 +27,13 @@ fun AdminNavigation(
         startDestination = AdminRoutes.Moderation
     ) {
         composable<AdminRoutes.Moderation> {
-            ModerationScreen(contentPadding = padding)
+            ModerationScreen(
+                contentPadding = padding,
+                repository = moderationRepository,
+                onPublicationDetailsClick = { publicationId ->
+                    navController.navigate(AdminRoutes.ModerationPublicationDetails(publicationId))
+                }
+            )
         }
         composable<AdminRoutes.Reports> {
             AdminReportsScreen(
@@ -41,6 +50,16 @@ fun AdminNavigation(
                 reportId = route.reportId,
                 contentPadding = padding,
                 repository = reportsRepository,
+                onBackClick = { navController.popBackStack() }
+            )
+        }
+
+        composable<AdminRoutes.ModerationPublicationDetails> { backStackEntry ->
+            val route = backStackEntry.toRoute<AdminRoutes.ModerationPublicationDetails>()
+            ModerationPublicationDetailsScreen(
+                publicationId = route.publicationId,
+                contentPadding = padding,
+                repository = moderationRepository,
                 onBackClick = { navController.popBackStack() }
             )
         }

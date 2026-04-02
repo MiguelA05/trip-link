@@ -31,6 +31,7 @@ import com.example.triplink.core.components.ApprovePublicationDialog
 import com.example.triplink.core.components.ModerationPublicationCard
 import com.example.triplink.core.components.RejectPublicationDialog
 import com.example.triplink.core.components.common.CategoryChips
+import com.example.triplink.data.repository.admin.moderation.AdminModerationRepository
 import com.example.triplink.domain.model.enums.moderator.DecisionModerador
 import com.example.triplink.domain.model.enums.moderator.ModerationFilter
 import com.example.triplink.domain.model.moderator.ModerationPublication
@@ -41,8 +42,10 @@ import androidx.compose.runtime.rememberCoroutineScope
 @Composable
 fun ModerationScreen(
     contentPadding: PaddingValues = PaddingValues(),
-    viewModel: ModerationViewModel = viewModel()
+    repository: AdminModerationRepository,
+    onPublicationDetailsClick: (String) -> Unit = {}
 ) {
+    val viewModel: ModerationViewModel = viewModel(factory = ModerationViewModel.factory(repository))
     val moderationChipLabels = listOf("Todas", "Pendientes", "Verificadas", "Rechazadas")
     val listState = rememberLazyListState()
     val coroutineScope = rememberCoroutineScope()
@@ -160,7 +163,7 @@ fun ModerationScreen(
                     publication = publication.toCardUi(),
                     onApproveRequested = ::openApproveDialog,
                     onRejectRequested = ::openRejectDialog,
-                    onDetailsClick = {}
+                    onDetailsClick = onPublicationDetailsClick
                 )
             }
 
@@ -272,4 +275,3 @@ private fun StatItem(
         }
     }
 }
-

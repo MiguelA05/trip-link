@@ -12,5 +12,8 @@ sealed class AdminRoutes {
 
     @Serializable
     data class ReportDetails(val reportId: String) : AdminRoutes()
+
+    @Serializable
+    data class ModerationPublicationDetails(val publicationId: String) : AdminRoutes()
 }
 
