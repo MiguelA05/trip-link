@@ -39,7 +39,9 @@ import com.example.triplink.core.components.publicationdetails.hero.PublicationP
 import com.example.triplink.core.components.publicationdetails.sections.PublicationLocationSection
 import com.example.triplink.core.components.publicationdetails.sections.PublicationPriceRangeSection
 import com.example.triplink.core.components.publicationdetails.sections.PublicationTextSection
-import com.example.triplink.core.components.publicationdetails.utils.toScheduleLabel
+import com.example.triplink.core.components.publicationdetails.sections.PublicationWeeklyScheduleSection
+import com.example.triplink.core.components.publicationdetails.utils.currentDayLabelEs
+import com.example.triplink.core.components.publicationdetails.utils.toWeeklyScheduleUi
 import com.example.triplink.data.repository.admin.moderation.AdminModerationRepository
 import com.example.triplink.domain.model.enums.EstadoPublicacion
 import com.example.triplink.domain.model.enums.moderator.DecisionModerador
@@ -141,13 +143,11 @@ fun ModerationPublicationDetailsScreen(
                     )
                 }
 
-                publication.pointOfInterest.horario?.let {
-                    item {
-                        PublicationTextSection(
-                            title = "Horario",
-                            body = it.toScheduleLabel()
-                        )
-                    }
+                item {
+                    PublicationWeeklyScheduleSection(
+                        schedules = publication.pointOfInterest.horario.toWeeklyScheduleUi(),
+                        today = currentDayLabelEs()
+                    )
                 }
 
                 item { Spacer(modifier = Modifier.height(8.dp)) }

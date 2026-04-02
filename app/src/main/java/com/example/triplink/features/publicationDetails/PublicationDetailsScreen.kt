@@ -30,16 +30,12 @@ import androidx.compose.ui.window.DialogProperties
 import com.example.triplink.core.components.FormField
 import com.example.triplink.core.components.GeneralButton
 import com.example.triplink.core.components.GeneralTopBar
+import com.example.triplink.core.components.publicationdetails.sections.DayScheduleUi
 import com.example.triplink.core.components.publicationdetails.sections.PublicationLocationSection
 import com.example.triplink.core.components.publicationdetails.sections.PublicationPriceRangeSection
 import com.example.triplink.core.components.publicationdetails.sections.PublicationTextSection
+import com.example.triplink.core.components.publicationdetails.sections.PublicationWeeklyScheduleSection
 import com.example.triplink.ui.theme.*
-
-data class DaySchedule(
-    val day: String,
-    val hours: String,
-    val isClosed: Boolean = false
-)
 
 data class Review(
     val username: String,
@@ -61,13 +57,13 @@ fun PublicationDetailsScreen(
     var showRatingModal by remember { mutableStateOf(false) }
 
     val schedules = listOf(
-        DaySchedule("Lunes", "8:00 am - 5:00 pm"),
-        DaySchedule("Martes", "8:00 am - 5:00 pm"),
-        DaySchedule("Miércoles", "8:00 am - 5:00 pm"),
-        DaySchedule("Jueves", "8:00 am - 5:00 pm"),
-        DaySchedule("Viernes", "8:00 am - 6:00 pm"),
-        DaySchedule("Sábado", "7:00 am - 6:00 pm"),
-        DaySchedule("Domingo", "Cerrado", isClosed = true)
+        DayScheduleUi("Lunes", "8:00 am - 5:00 pm"),
+        DayScheduleUi("Martes", "8:00 am - 5:00 pm"),
+        DayScheduleUi("Miércoles", "8:00 am - 5:00 pm"),
+        DayScheduleUi("Jueves", "8:00 am - 5:00 pm"),
+        DayScheduleUi("Viernes", "8:00 am - 6:00 pm"),
+        DayScheduleUi("Sábado", "7:00 am - 6:00 pm"),
+        DayScheduleUi("Domingo", "Cerrado", isClosed = true)
     )
     val today = "Jueves"
     
@@ -121,7 +117,10 @@ fun PublicationDetailsScreen(
                 )
             }
             item {
-                ScheduleSection(schedules = schedules, today = today)
+                PublicationWeeklyScheduleSection(
+                    schedules = schedules,
+                    today = today
+                )
             }
             item {
                 ReviewsSection(
@@ -699,91 +698,6 @@ fun ReportOptionItem(option: ReportOptionData, isSelected: Boolean, onClick: () 
                     unselectedColor = Color.LightGray
                 )
             )
-        }
-    }
-}
-
-@Composable
-fun ScheduleSection(schedules: List<DaySchedule>, today: String) {
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(16.dp)
-    ) {
-        Text(
-            text = "Horarios",
-            style = MaterialTheme.typography.titleLarge,
-            fontWeight = FontWeight.Bold,
-            color = Color.Black
-        )
-        Spacer(modifier = Modifier.height(12.dp))
-        
-        Surface(
-            shape = RoundedCornerShape(24.dp),
-            border = BorderStroke(1.dp, Color(0xFFD1D5DB)),
-            color = Color.White,
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Column(
-                modifier = Modifier.padding(vertical = 16.dp, horizontal = 12.dp)
-            ) {
-                schedules.forEach { item ->
-                    val isToday = item.day == today
-                    
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .clip(RoundedCornerShape(12.dp))
-                            .background(if (isToday) SoftBlue else Color.Transparent)
-                            .padding(horizontal = 12.dp, vertical = 10.dp),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.SpaceBetween
-                    ) {
-                        Row(verticalAlignment = Alignment.CenterVertically) {
-                            if (isToday) {
-                                Box(
-                                    modifier = Modifier
-                                        .size(6.dp)
-                                        .background(PrincipalBlue, CircleShape)
-                                )
-                                Spacer(modifier = Modifier.width(8.dp))
-                            } else {
-                                Spacer(modifier = Modifier.width(14.dp))
-                            }
-                            
-                            Text(
-                                text = item.day,
-                                color = if (isToday) PrincipalBlue else if (item.isClosed) PrincipalGray else Color.Black,
-                                fontWeight = if (isToday) FontWeight.Bold else FontWeight.Medium,
-                                fontSize = 16.sp
-                            )
-                            
-                            if (isToday) {
-                                Spacer(modifier = Modifier.width(8.dp))
-                                Surface(
-                                    color = PastelBlue,
-                                    shape = RoundedCornerShape(8.dp)
-                                ) {
-                                    Text(
-                                        text = "Hoy",
-                                        modifier = Modifier.padding(horizontal = 8.dp, vertical = 2.dp),
-                                        color = PrincipalBlue,
-                                        fontSize = 12.sp,
-                                        fontWeight = FontWeight.Bold
-                                    )
-                                }
-                            }
-                        }
-                        
-                        Text(
-                            text = item.hours,
-                            color = if (isToday) PrincipalBlue else if (item.isClosed) PrincipalGray.copy(alpha = 0.6f) else DarkGray,
-                            fontWeight = if (isToday) FontWeight.Bold else FontWeight.Normal,
-                            fontSize = 15.sp
-                        )
-                    }
-                }
-            }
         }
     }
 }
