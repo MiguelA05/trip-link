@@ -28,7 +28,7 @@ val PrincipalBlue = Color(0xFF2563EB)
 
 val PrincipalBlueBlocked = Color(0xB22563EB)
 
-val PastelBlue = Color(0xFFBBDEFB)
+val PastelBlue = Color(0xFF7BBCFF)
 
 val Purple = Color(0xFF6A1B9A)
 
