@@ -7,6 +7,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
 import com.example.triplink.features.comments.CommentsScreen
+import com.example.triplink.features.filters.FiltersScreen
+import com.example.triplink.features.notifications.NotificationsScreen
 import com.example.triplink.features.publicationDetails.PublicationDetailsScreen
 import com.example.triplink.features.user.accountEdit.AccountEditScreen
 import com.example.triplink.features.user.explore.ExploreScreen
@@ -32,6 +34,9 @@ fun UserNavigation(
                 },
                 onCommentsClick = { publicationId ->
                     navController.navigate(UserSectionRoutes.Comments(publicationId))
+                },
+                onNotificationsClick = {
+                    navController.navigate(UserSectionRoutes.Notifications)
                 }
             )
         }
@@ -43,6 +48,9 @@ fun UserNavigation(
                 },
                 onPublicationClick = { publicationId ->
                     navController.navigate(UserSectionRoutes.PublicationDetails(publicationId))
+                },
+                onFiltersClick = {
+                    navController.navigate(UserSectionRoutes.Filters)
                 }
             )
         }
@@ -94,6 +102,12 @@ fun UserNavigation(
                 publicationId = route.publicationId,
                 onBackClick = { navController.popBackStack() }
             )
+        }
+        composable<UserSectionRoutes.Notifications> {
+            NotificationsScreen({ navController.popBackStack() })
+        }
+        composable<UserSectionRoutes.Filters> {
+            FiltersScreen({ navController.popBackStack() })
         }
     }
 }

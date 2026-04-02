@@ -32,7 +32,8 @@ fun ExploreScreen(
 	viewModel: ExploreViewModel = viewModel(),
 	contentPadding: PaddingValues = PaddingValues(),
 	onPublicationClick: (String) -> Unit = {},
-	onMapClick: () -> Unit = {}
+	onMapClick: () -> Unit = {},
+	onFiltersClick: () -> Unit = {},
 ) {
 	Scaffold(
 		modifier = Modifier
@@ -52,7 +53,7 @@ fun ExploreScreen(
 				SearchBar(
 					query = viewModel.query,
 					onQueryChange = viewModel::onQueryChange,
-					onFilterClick = {}
+					onFilterClick = onFiltersClick
 				)
 				CategoryChips(
 					categories = viewModel.categories,
