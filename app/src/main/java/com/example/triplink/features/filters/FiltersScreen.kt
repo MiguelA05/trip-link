@@ -11,6 +11,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.triplink.core.components.GeneralTopBar
 import com.example.triplink.ui.theme.DarkGray
 import com.example.triplink.ui.theme.PrincipalBlue
@@ -19,26 +21,9 @@ import com.example.triplink.ui.theme.PrincipalGray
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun FiltersScreen(
-    onBackClick: () -> Unit
+    onBackClick: () -> Unit,
+    viewModel:FiltersViewModel= viewModel()
 ) {
-    var selectedCategories by remember { mutableStateOf(setOf<String>()) }
-    var selectedLocations by remember { mutableStateOf(setOf<String>()) }
-    var selectedPrices by remember { mutableStateOf(setOf<String>()) }
-    var selectedRatings by remember { mutableStateOf(setOf<String>()) }
-
-    val categories = listOf(
-        "Naturaleza y Parques", "Cafes Especiales", "Museos y Cultura",
-        "Miradores", "Arquitectura Colonial", "Restaurantes Típicos",
-        "Vida Nocturna", "Aventura y Deporte"
-    )
-
-    val locations = listOf(
-        "Cercanos", "En la ciudad", "En el departamento", "En el país"
-    )
-
-    val priceRanges = listOf("Gratuito", "Economico", "Moderado", "Costoso")
-
-    val ratings = listOf("1★", "2★", "3★", "4★", "5★")
 
     Scaffold(
         topBar = {
@@ -60,15 +45,9 @@ fun FiltersScreen(
             item {
                 FilterSection(
                     title = "Categorías",
-                    options = categories,
-                    selectedOptions = selectedCategories,
-                    onOptionToggle = { option ->
-                        selectedCategories = if (selectedCategories.contains(option)) {
-                            selectedCategories - option
-                        } else {
-                            selectedCategories + option
-                        }
-                    }
+                    options = viewModel.categories,
+                    selectedOptions = viewModel.selectedCategories,
+                    onOptionToggle = { option -> viewModel.cambiarOpcion(option)}
                 )
             }
 
@@ -77,14 +56,9 @@ fun FiltersScreen(
             item {
                 FilterSection(
                     title = "Ubicación",
-                    options = locations,
-                    selectedOptions = selectedLocations,
-                    onOptionToggle = { option ->
-                        selectedLocations = if (selectedLocations.contains(option)) {
-                            selectedLocations - option
-                        } else {
-                            selectedLocations + option
-                        }
+                    options = viewModel.locations,
+                    selectedOptions = viewModel.selectedLocations,
+                    onOptionToggle = { option -> viewModel.cambiarOpcion(option)
                     }
                 )
             }
@@ -94,15 +68,9 @@ fun FiltersScreen(
             item {
                 FilterSection(
                     title = "Rango de Precios",
-                    options = priceRanges,
-                    selectedOptions = selectedPrices,
-                    onOptionToggle = { option ->
-                        selectedPrices = if (selectedPrices.contains(option)) {
-                            selectedPrices - option
-                        } else {
-                            selectedPrices + option
-                        }
-                    }
+                    options = viewModel.priceRanges,
+                    selectedOptions = viewModel.selectedPrices,
+                    onOptionToggle = { option -> viewModel.cambiarOpcion(option) }
                 )
             }
 
@@ -111,15 +79,9 @@ fun FiltersScreen(
             item {
                 FilterSection(
                     title = "Calificación Mínima",
-                    options = ratings,
-                    selectedOptions = selectedRatings,
-                    onOptionToggle = { option ->
-                        selectedRatings = if (selectedRatings.contains(option)) {
-                            selectedRatings - option
-                        } else {
-                            selectedRatings + option
-                        }
-                    }
+                    options = viewModel.ratings,
+                    selectedOptions = viewModel.selectedRatings,
+                    onOptionToggle = { option ->viewModel.cambiarOpcion(option) }
                 )
             }
 
