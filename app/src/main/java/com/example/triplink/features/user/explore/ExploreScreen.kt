@@ -31,6 +31,7 @@ import com.example.triplink.ui.theme.PrincipalWhite
 fun ExploreScreen(
 	viewModel: ExploreViewModel = viewModel(),
 	contentPadding: PaddingValues = PaddingValues(),
+	onPublicationClick: (String) -> Unit = {},
 	onMapClick: () -> Unit = {}
 ) {
 	Scaffold(
@@ -83,6 +84,7 @@ fun ExploreScreen(
 			items(viewModel.filteredPuntoInteres, key = { it.id }) { publication ->
 				PublicationCard(
 					puntoInteres = publication,
+					onCardClick = { onPublicationClick(publication.id) },
 					showFooter = false
 				)
 			}

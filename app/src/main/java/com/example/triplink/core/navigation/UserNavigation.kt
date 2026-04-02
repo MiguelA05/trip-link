@@ -40,6 +40,9 @@ fun UserNavigation(
                 contentPadding = padding,
                 onMapClick = {
                     navController.navigate(UserSectionRoutes.ExploreMap)
+                },
+                onPublicationClick = { publicationId ->
+                    navController.navigate(UserSectionRoutes.PublicationDetails(publicationId))
                 }
             )
         }
