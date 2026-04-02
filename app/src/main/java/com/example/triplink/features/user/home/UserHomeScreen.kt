@@ -29,7 +29,8 @@ fun UserHomeScreen(
     viewModel: UserHomeViewModel = viewModel(),
     onPublicationClick: (String) -> Unit = {},
     onCommentsClick: (String) -> Unit = {},
-    contentPadding: PaddingValues = PaddingValues()
+    contentPadding: PaddingValues = PaddingValues(),
+    onNotificationsClick: () -> Unit = {},
 ) {
     Scaffold(
         modifier = Modifier
@@ -41,7 +42,7 @@ fun UserHomeScreen(
             Column {
                 BrandHeader(
                     locationText = "Armenia, Quindio",
-                    onNotificationsClick = {}
+                    onNotificationsClick = onNotificationsClick
                 )
                 SectionTitleDivider(title = "RECOMENDADOS")
             }

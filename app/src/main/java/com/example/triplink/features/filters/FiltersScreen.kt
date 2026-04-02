@@ -19,7 +19,7 @@ import com.example.triplink.ui.theme.PrincipalGray
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun FiltersScreen(
-
+    onBackClick: () -> Unit
 ) {
     var selectedCategories by remember { mutableStateOf(setOf<String>()) }
     var selectedLocations by remember { mutableStateOf(setOf<String>()) }
@@ -44,7 +44,7 @@ fun FiltersScreen(
         topBar = {
             GeneralTopBar(
                 title = "Filtros",
-                onBack = { /* */ }
+                onBack = onBackClick
             )
         }
     ) { paddingValues ->

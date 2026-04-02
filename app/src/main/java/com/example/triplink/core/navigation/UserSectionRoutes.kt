@@ -24,5 +24,11 @@ sealed class UserSectionRoutes {
 
     @Serializable
     data class Comments(val publicationId: String) : UserSectionRoutes()
+
+    @Serializable
+    data object Notifications : UserSectionRoutes()
+
+    @Serializable
+    data object Filters : UserSectionRoutes()
 }
 

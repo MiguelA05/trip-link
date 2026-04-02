@@ -35,7 +35,7 @@ data class NotificationItem(
 
 @Composable
 fun NotificationsScreen(
-
+    onBackClick: () -> Unit
 ) {
     var notifications by remember {
         mutableStateOf(
@@ -60,7 +60,7 @@ fun NotificationsScreen(
         topBar = {
             GeneralTopBar(
                 title = "Notificaciones",
-                onBack = { /* Por ahora vacío */ }
+                onBack = onBackClick
             )
         }
     ) { paddingValues ->
