@@ -100,7 +100,7 @@ fun HomeScreen(
                 .imePadding()
                 .padding(20.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp, Alignment.Bottom),
-            horizontalAlignment = Alignment.End
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
             GeneralButton(
                 icon = Icons.Filled.Add,
