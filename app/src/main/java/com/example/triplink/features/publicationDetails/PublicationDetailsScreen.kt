@@ -21,22 +21,29 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
+import androidx.hilt.navigation.compose.hiltViewModel
+import coil3.compose.AsyncImage
+import coil3.request.ImageRequest
+import coil3.request.crossfade
 import com.example.triplink.core.components.FormField
 import com.example.triplink.core.components.GeneralButton
 import com.example.triplink.core.components.GeneralTopBar
+import com.example.triplink.core.components.publicationdetails.sections.DayScheduleUi
+import com.example.triplink.core.components.publicationdetails.sections.PublicationLocationSection
+import com.example.triplink.core.components.publicationdetails.sections.PublicationPriceRangeSection
+import com.example.triplink.core.components.publicationdetails.sections.PublicationTextSection
+import com.example.triplink.core.components.publicationdetails.sections.PublicationWeeklyScheduleSection
+import com.example.triplink.core.components.publicationdetails.utils.currentDayLabelEs
+import com.example.triplink.core.components.publicationdetails.utils.toWeeklyScheduleUi
 import com.example.triplink.ui.theme.*
-
-data class DaySchedule(
-    val day: String,
-    val hours: String,
-    val isClosed: Boolean = false
-)
 
 data class Review(
     val username: String,
@@ -54,21 +61,46 @@ fun PublicationDetailsScreen(
     onBackClick: () -> Unit,
     onSeeAllReviewsClick: (String) -> Unit
 ) {
+    val viewModel: PublicationDetailsViewModel = hiltViewModel()
+    val publication = viewModel.getPublicationById(publicationId)
+
+    if (publication == null) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(Color(0xFFF4F5F7)),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(
+                text = "Publicacion no encontrada",
+                style = MaterialTheme.typography.headlineSmall,
+                fontWeight = FontWeight.Bold,
+                color = Color(0xFF1E2430)
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+            TextButton(onClick = onBackClick) {
+                Text("Volver")
+            }
+        }
+        return
+    }
+
     var showReportModal by remember { mutableStateOf(false) }
     var showRatingModal by remember { mutableStateOf(false) }
 
-    val schedules = listOf(
-        DaySchedule("Lunes", "8:00 am - 5:00 pm"),
-        DaySchedule("Martes", "8:00 am - 5:00 pm"),
-        DaySchedule("Miércoles", "8:00 am - 5:00 pm"),
-        DaySchedule("Jueves", "8:00 am - 5:00 pm"),
-        DaySchedule("Viernes", "8:00 am - 6:00 pm"),
-        DaySchedule("Sábado", "7:00 am - 6:00 pm"),
-        DaySchedule("Domingo", "Cerrado", isClosed = true)
-    )
-    val today = "Jueves"
-    
-    val selectedPriceLevel = "Económico"
+    val schedules: List<DayScheduleUi> = publication.horario.toWeeklyScheduleUi()
+    val today = currentDayLabelEs()
+
+    val selectedPriceLevel = publication.rangoPrecios?.let {
+        when (it.name) {
+            "GRATUITO" -> "Gratuito"
+            "ECONOMICO" -> "Económico"
+            "MODERADO" -> "Moderado"
+            "COSTOSO" -> "Costoso"
+            else -> "Sin precio"
+        }
+    } ?: "Sin precio"
 
     val reviews = listOf(
         Review("carlos_montoya", 5, "¡Increíble lugar! La vista es maravillosa."),
@@ -84,6 +116,9 @@ fun PublicationDetailsScreen(
                     onBack = onBackClick
                 )
                 ImageHeader(
+                    categoryLabel = publication.categoria.name,
+                    title = publication.titulo,
+                    imageUrl = publication.fotos.firstOrNull().orEmpty(),
                     onReportClick = { showReportModal = true },
                     onBackClick = onBackClick
                 )
@@ -103,16 +138,25 @@ fun PublicationDetailsScreen(
                 .background(Color.White)
         ) {
             item {
-                DescriptionSection()
+                PublicationTextSection(
+                    title = "Descripción",
+                    body = publication.informacion
+                )
             }
             item {
-                PriceRangeSection(selectedLevel = selectedPriceLevel)
+                PublicationPriceRangeSection(selectedLevel = selectedPriceLevel)
             }
             item {
-                LocationSection()
+                PublicationLocationSection(
+                    city = publication.ubicacion.ciudad,
+                    coordinates = "${publication.ubicacion.latitud}, ${publication.ubicacion.longitud}"
+                )
             }
             item {
-                ScheduleSection(schedules = schedules, today = today)
+                PublicationWeeklyScheduleSection(
+                    schedules = schedules,
+                    today = today
+                )
             }
             item {
                 ReviewsSection(
@@ -138,31 +182,49 @@ fun PublicationDetailsScreen(
 }
 
 @Composable
-fun ImageHeader(onReportClick: () -> Unit, onBackClick: () -> Unit) {
+fun ImageHeader(
+    categoryLabel: String,
+    title: String,
+    imageUrl: String,
+    onReportClick: () -> Unit,
+    onBackClick: () -> Unit
+) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
             .height(300.dp) 
     ) {
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(Color.LightGray) 
-        )
-        
+        if (imageUrl.isNotBlank()) {
+            AsyncImage(
+                model = ImageRequest.Builder(LocalContext.current)
+                    .data(imageUrl)
+                    .crossfade(true)
+                    .build(),
+                contentDescription = title,
+                contentScale = ContentScale.Crop,
+                modifier = Modifier.fillMaxSize()
+            )
+        } else {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(Color.LightGray)
+            )
+        }
+
         Column(
             modifier = Modifier
                 .align(Alignment.BottomStart)
                 .padding(16.dp)
         ) {
             Text(
-                text = "NATURALEZA",
+                text = categoryLabel.uppercase(),
                 color = PrincipalGreen,
                 fontWeight = FontWeight.Bold,
                 fontSize = 16.sp
             )
             Text(
-                text = "Valle de Cocora",
+                text = title,
                 color = Color.White,
                 fontWeight = FontWeight.Bold,
                 fontSize = 28.sp
@@ -694,255 +756,6 @@ fun ReportOptionItem(option: ReportOptionData, isSelected: Boolean, onClick: () 
     }
 }
 
-@Composable
-fun DescriptionSection() {
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(16.dp)
-    ) {
-        Text(
-            text = "Descripción",
-            style = MaterialTheme.typography.titleLarge,
-            fontWeight = FontWeight.Bold,
-            color = Color.Black
-        )
-        Spacer(modifier = Modifier.height(8.dp))
-        Text(
-            text = "El hogar de la palma de cera del Quindío, el árbol nacional de Colombia. Un paisaje surrealista de verdes montañas y niebla.",
-            style = MaterialTheme.typography.bodyLarge,
-            color = DarkGray,
-            lineHeight = 22.sp
-        )
-    }
-}
-
-@Composable
-fun PriceRangeSection(selectedLevel: String) {
-    val levels = listOf("Gratuito", "Económico", "Moderado", "Costoso")
-    val selectedIndex = levels.indexOf(selectedLevel).coerceAtLeast(0)
-
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 8.dp)
-    ) {
-        Text(
-            text = "Rango de precios",
-            style = MaterialTheme.typography.titleLarge,
-            fontWeight = FontWeight.Bold,
-            color = Color.Black
-        )
-        Spacer(modifier = Modifier.height(12.dp))
-        
-        Surface(
-            shape = RoundedCornerShape(16.dp),
-            border = BorderStroke(1.dp, Color(0xFFD1D5DB)),
-            color = Color.White,
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Row(
-                modifier = Modifier
-                    .padding(16.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                // Selector de precios basado en el índice
-                Row(
-                    modifier = Modifier.weight(1f),
-                    horizontalArrangement = Arrangement.spacedBy(8.dp)
-                ) {
-                    PriceTag(text = "$", isSelected = selectedIndex == 0)
-                    PriceTag(text = "$$", isSelected = selectedIndex == 1)
-                    PriceTag(text = "$$$", isSelected = selectedIndex == 2)
-                    PriceTag(text = "$$$$", isSelected = selectedIndex == 3)
-                }
-
-                Column(horizontalAlignment = Alignment.Start) {
-                    Text(
-                        text = selectedLevel,
-                        color = PrincipalBlue,
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 15.sp
-                    )
-                    Text(
-                        text = "Rango de precio\nestimado",
-                        color = PrincipalGray,
-                        fontSize = 12.sp,
-                        lineHeight = 14.sp
-                    )
-                }
-            }
-        }
-    }
-}
-
-@Composable
-fun PriceTag(text: String, isSelected: Boolean) {
-    Surface(
-        shape = RoundedCornerShape(12.dp),
-        color = if (isSelected) PrincipalBlue else Color(0xFFF1F5F9),
-        modifier = Modifier.size(width = 50.dp, height = 45.dp)
-    ) {
-        Box(contentAlignment = Alignment.Center) {
-            Text(
-                text = text,
-                color = if (isSelected) Color.White else PrincipalGray,
-                fontWeight = FontWeight.Bold,
-                fontSize = 18.sp
-            )
-        }
-    }
-}
-
-@Composable
-fun ScheduleSection(schedules: List<DaySchedule>, today: String) {
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(16.dp)
-    ) {
-        Text(
-            text = "Horarios",
-            style = MaterialTheme.typography.titleLarge,
-            fontWeight = FontWeight.Bold,
-            color = Color.Black
-        )
-        Spacer(modifier = Modifier.height(12.dp))
-        
-        Surface(
-            shape = RoundedCornerShape(24.dp),
-            border = BorderStroke(1.dp, Color(0xFFD1D5DB)),
-            color = Color.White,
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Column(
-                modifier = Modifier.padding(vertical = 16.dp, horizontal = 12.dp)
-            ) {
-                schedules.forEach { item ->
-                    val isToday = item.day == today
-                    
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .clip(RoundedCornerShape(12.dp))
-                            .background(if (isToday) SoftBlue else Color.Transparent)
-                            .padding(horizontal = 12.dp, vertical = 10.dp),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.SpaceBetween
-                    ) {
-                        Row(verticalAlignment = Alignment.CenterVertically) {
-                            if (isToday) {
-                                Box(
-                                    modifier = Modifier
-                                        .size(6.dp)
-                                        .background(PrincipalBlue, CircleShape)
-                                )
-                                Spacer(modifier = Modifier.width(8.dp))
-                            } else {
-                                Spacer(modifier = Modifier.width(14.dp))
-                            }
-                            
-                            Text(
-                                text = item.day,
-                                color = if (isToday) PrincipalBlue else if (item.isClosed) PrincipalGray else Color.Black,
-                                fontWeight = if (isToday) FontWeight.Bold else FontWeight.Medium,
-                                fontSize = 16.sp
-                            )
-                            
-                            if (isToday) {
-                                Spacer(modifier = Modifier.width(8.dp))
-                                Surface(
-                                    color = PastelBlue,
-                                    shape = RoundedCornerShape(8.dp)
-                                ) {
-                                    Text(
-                                        text = "Hoy",
-                                        modifier = Modifier.padding(horizontal = 8.dp, vertical = 2.dp),
-                                        color = PrincipalBlue,
-                                        fontSize = 12.sp,
-                                        fontWeight = FontWeight.Bold
-                                    )
-                                }
-                            }
-                        }
-                        
-                        Text(
-                            text = item.hours,
-                            color = if (isToday) PrincipalBlue else if (item.isClosed) PrincipalGray.copy(alpha = 0.6f) else DarkGray,
-                            fontWeight = if (isToday) FontWeight.Bold else FontWeight.Normal,
-                            fontSize = 15.sp
-                        )
-                    }
-                }
-            }
-        }
-    }
-}
-
-@Composable
-fun LocationSection() {
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(16.dp)
-    ) {
-        Text(
-            text = "Ubicación",
-            style = MaterialTheme.typography.titleLarge,
-            fontWeight = FontWeight.Bold,
-            color = Color.Black
-        )
-        Spacer(modifier = Modifier.height(12.dp))
-        
-        // Tarjeta de Mapa personalizada según la imagen
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(220.dp)
-                .clip(RoundedCornerShape(16.dp))
-                .background(Color(0xFFE2E8F0)) // Color base de fondo de mapa
-                .clickable { /* Abrir mapas */ },
-            contentAlignment = Alignment.Center
-        ) {
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                // Icono de Mapa en círculo blanco
-                Surface(
-                    shape = CircleShape,
-                    color = Color.White,
-                    modifier = Modifier.size(70.dp),
-                    shadowElevation = 4.dp
-                ) {
-                    Box(contentAlignment = Alignment.Center) {
-                        Icon(
-                            imageVector = Icons.Default.Map,
-                            contentDescription = null,
-                            tint = PrincipalBlue,
-                            modifier = Modifier.size(35.dp)
-                        )
-                    }
-                }
-                
-                Spacer(modifier = Modifier.height(12.dp))
-                
-                Text(
-                    text = "Ver en Mapas",
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 20.sp,
-                    color = Color.Black
-                )
-                
-                Text(
-                    text = "4.6650, -75.5751",
-                    fontSize = 14.sp,
-                    color = DarkGray,
-                    fontWeight = FontWeight.Medium
-                )
-            }
-        }
-    }
-}
 
 @Composable
 fun ReviewsSection(

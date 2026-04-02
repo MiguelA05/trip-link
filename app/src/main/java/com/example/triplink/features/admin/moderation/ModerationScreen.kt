@@ -26,7 +26,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.triplink.core.components.ApprovePublicationDialog
 import com.example.triplink.core.components.ModerationPublicationCard
 import com.example.triplink.core.components.RejectPublicationDialog
@@ -41,8 +41,9 @@ import androidx.compose.runtime.rememberCoroutineScope
 @Composable
 fun ModerationScreen(
     contentPadding: PaddingValues = PaddingValues(),
-    viewModel: ModerationViewModel = viewModel()
+    onPublicationDetailsClick: (String) -> Unit = {}
 ) {
+    val viewModel: ModerationViewModel = hiltViewModel()
     val moderationChipLabels = listOf("Todas", "Pendientes", "Verificadas", "Rechazadas")
     val listState = rememberLazyListState()
     val coroutineScope = rememberCoroutineScope()
@@ -160,7 +161,7 @@ fun ModerationScreen(
                     publication = publication.toCardUi(),
                     onApproveRequested = ::openApproveDialog,
                     onRejectRequested = ::openRejectDialog,
-                    onDetailsClick = {}
+                    onDetailsClick = onPublicationDetailsClick
                 )
             }
 
@@ -272,4 +273,3 @@ private fun StatItem(
         }
     }
 }
-
