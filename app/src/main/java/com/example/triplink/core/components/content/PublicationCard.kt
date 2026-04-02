@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.outlined.ChatBubbleOutline
 import androidx.compose.material.icons.outlined.FavoriteBorder
@@ -26,14 +25,14 @@ import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
 import coil3.request.crossfade
 import com.example.triplink.domain.model.PuntoInteres
-import com.example.triplink.ui.theme.PrincipalRed
 import java.util.Locale
 
 @Composable
 fun PublicationCard(
     puntoInteres: PuntoInteres,
-    showFooter: Boolean = true,
     modifier: Modifier = Modifier,
+    showFooter: Boolean = true,
+    onCardClick: (() -> Unit)? = null,
     onFavoriteToggle: (Boolean) -> Unit = {},
     onCommentsClick: () -> Unit = {}
 ) {
@@ -41,6 +40,9 @@ fun PublicationCard(
         modifier = modifier
             .fillMaxWidth()
             .padding(8.dp),
+        // Toda la tarjeta abre detalle; los botones internos mantienen su accion propia.
+        onClick = { onCardClick?.invoke() },
+        enabled = onCardClick != null,
         colors = CardDefaults.cardColors(containerColor = Color.White),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
         shape = RoundedCornerShape(24.dp)

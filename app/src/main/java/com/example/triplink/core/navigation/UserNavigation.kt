@@ -27,8 +27,11 @@ fun UserNavigation(
         composable<UserSectionRoutes.UserHome> {
             UserHomeScreen(
                 contentPadding = padding,
-                onCommentsClick = { publicationId ->
+                onPublicationClick = { publicationId ->
                     navController.navigate(UserSectionRoutes.PublicationDetails(publicationId))
+                },
+                onCommentsClick = { publicationId ->
+                    navController.navigate(UserSectionRoutes.Comments(publicationId))
                 }
             )
         }

@@ -15,6 +15,7 @@ import com.example.triplink.domain.model.enums.Categoria
 @Composable
 fun PublicationList(
     modifier: Modifier = Modifier,
+    onPublicationClick: (String) -> Unit = {},
     onFavoriteToggle: (String) -> Unit = {},
     onCommentsClick: (String) -> Unit = {}
 ) {
@@ -56,6 +57,7 @@ fun PublicationList(
         items(puntoInteres) { publication ->
             PublicationCard(
                 puntoInteres = publication,
+                onCardClick = { onPublicationClick(publication.id) },
                 onFavoriteToggle = { onFavoriteToggle(publication.id) },
                 onCommentsClick = { onCommentsClick(publication.id) }
             )

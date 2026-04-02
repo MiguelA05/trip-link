@@ -27,6 +27,7 @@ import com.example.triplink.ui.theme.PrincipalWhite
 @Composable
 fun UserHomeScreen(
     viewModel: UserHomeViewModel = viewModel(),
+    onPublicationClick: (String) -> Unit = {},
     onCommentsClick: (String) -> Unit = {},
     contentPadding: PaddingValues = PaddingValues()
 ) {
@@ -68,6 +69,7 @@ fun UserHomeScreen(
             items(items = viewModel.puntoInteres, key = { it.id }) { publication ->
                 PublicationCard(
                     puntoInteres = publication,
+                    onCardClick = { onPublicationClick(publication.id) },
                     onFavoriteToggle = { viewModel.toggleFavorite(publication.id) },
                     onCommentsClick = { onCommentsClick(publication.id) }
                 )
