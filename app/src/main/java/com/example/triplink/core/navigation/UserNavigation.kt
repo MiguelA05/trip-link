@@ -11,6 +11,7 @@ import com.example.triplink.features.filters.FiltersScreen
 import com.example.triplink.features.notifications.NotificationsScreen
 import com.example.triplink.features.postCreation.PostCreationScreen
 import com.example.triplink.features.publicationDetails.PublicationDetailsScreen
+import com.example.triplink.features.recoverypassword.RecoveryPasswordScreen
 import com.example.triplink.features.user.accountEdit.AccountEditScreen
 import com.example.triplink.features.user.explore.ExploreScreen
 import com.example.triplink.features.user.exploreMap.ExploreMapScreen
@@ -93,7 +94,8 @@ fun UserNavigation(
                             launchSingleTop = true
                         }
                     }
-                }
+                },
+                onChangePasswordClick = {navController.navigate(MainRoutes.RecoveryPassword)}
             )
         }
         composable<UserSectionRoutes.PublicationDetails> { backStackEntry ->
@@ -121,6 +123,9 @@ fun UserNavigation(
         }
         composable<UserSectionRoutes.PostCreation> {
             PostCreationScreen({ navController.popBackStack() })
+        }
+        composable<MainRoutes.RecoveryPassword> {
+            RecoveryPasswordScreen({ navController.popBackStack() })
         }
     }
 }
