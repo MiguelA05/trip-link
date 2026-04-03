@@ -23,38 +23,18 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.triplink.core.components.GeneralTopBar
 import com.example.triplink.ui.theme.*
 
-data class NotificationItem(
-    val id: Int,
-    val title: String,
-    val description: String,
-    val time: String
-)
+
 
 @Composable
 fun NotificationsScreen(
-    onBackClick: () -> Unit
+    onBackClick: () -> Unit,
+    viewModel: NotificationsViewModel = viewModel()
 ) {
-    var notifications by remember {
-        mutableStateOf(
-            listOf(
-                NotificationItem(
-                    1,
-                    "Nuevo lugar cercano",
-                    "Mirador de Salento fue añadido a 1.2 km de tu ubicación actual.",
-                    "Hace 4 horas"
-                ),
-                NotificationItem(
-                    2,
-                    "Nuevo lugar cercano",
-                    "Hotel El Zafiro fue añadido a 1.9 km de tu ubicación actual.",
-                    "Hace 8 horas"
-                )
-            )
-        )
-    }
+
 
     Scaffold(
         topBar = {
@@ -70,14 +50,14 @@ fun NotificationsScreen(
                 .padding(paddingValues)
                 .background(Color.White)
         ) {
-            if (notifications.isEmpty()) {
+            if (viewModel.areNotificationsEmpty()) {
                 EmptyNotificationsView()
             } else {
                 NotificationsList(
-                    notifications = notifications,
-                    onMarkAllAsRead = { notifications = emptyList() },
+                    notifications = viewModel.notifications,
+                    onMarkAllAsRead = { viewModel.notifications = emptyList() },
                     onNotificationClick = { id ->
-                        notifications = notifications.filter { it.id != id }
+                        viewModel.notifications = viewModel.notifications.filter { it.id != id }
                     }
                 )
             }
