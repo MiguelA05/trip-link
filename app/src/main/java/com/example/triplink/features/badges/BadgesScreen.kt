@@ -23,66 +23,16 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.triplink.core.components.GeneralTopBar
 
-data class Badge(
-    val name: String,
-    val description: String,
-    val category: String,
-    val icon: ImageVector,
-    val color: Color
-)
 
 @Composable
 fun BadgesScreen(
-    onBack: () -> Unit = {}
+    onBack: () -> Unit = {},
+    viewModel: BadgesViewModel = viewModel()
 ) {
-    var selectedBadge by remember { mutableStateOf<Badge?>(null) }
 
-    val badges = listOf(
-        Badge(
-            "Explorador Novato",
-            "Has visitado 5 lugares y comenzado tu camino como explorador.",
-            "Exploración",
-            Icons.Default.Explore,
-            Color(0xFF2196F3)
-        ),
-        Badge(
-            "Crítico Gastronómico",
-            "Has realizado 10 reseñas de restaurantes locales con fotos detalladas.",
-            "Gastronomía",
-            Icons.Default.Restaurant,
-            Color(0xFFFF9800)
-        ),
-        Badge(
-            "Fotógrafo Experto",
-            "Has subido más de 50 fotos de alta calidad que han inspirado a otros.",
-            "Fotografía",
-            Icons.Default.CameraAlt,
-            Color(0xFFFFC107)
-        ),
-        Badge(
-            "Senderista Supremo",
-            "Has completado todas las rutas de senderismo registradas en el departamento.",
-            "Naturaleza",
-            Icons.Default.Terrain,
-            Color(0xFF4CAF50)
-        ),
-        Badge(
-            "Historiador",
-            "Has compartido información valiosa sobre la historia de 5 monumentos locales.",
-            "Cultura",
-            Icons.Default.HistoryEdu,
-            Color(0xFF9C27B0)
-        ),
-        Badge(
-            "Cafetero de Corazón",
-            "Has visitado y reseñado 10 fincas cafeteras tradicionales de la región.",
-            "Tradición",
-            Icons.Default.Coffee,
-            Color(0xFF795548)
-        )
-    )
 
     Scaffold(
         topBar = {
@@ -122,17 +72,17 @@ fun BadgesScreen(
                     verticalArrangement = Arrangement.spacedBy(24.dp),
                     modifier = Modifier.fillMaxSize()
                 ) {
-                    items(badges) { badge ->
-                        BadgeItem(badge = badge, onClick = { selectedBadge = badge })
+                    items(viewModel.badges) { badge ->
+                        BadgeItem(badge = badge, onClick = { viewModel.selectedBadge = badge })
                     }
                 }
             }
 
             // Modal
-            selectedBadge?.let { badge ->
+            viewModel.selectedBadge?.let { badge ->
                 BadgeDetailModal(
                     badge = badge,
-                    onDismiss = { selectedBadge = null }
+                    onDismiss = { viewModel.selectedBadge = null }
                 )
             }
         }

@@ -37,7 +37,8 @@ fun UserInfoScreen(
 	viewModel: UserInfoViewModel = viewModel(),
 	contentPadding: PaddingValues = PaddingValues(),
 	onLogoutClick: () -> Unit = {},
-	onEditClick: () -> Unit = {}
+	onEditClick: () -> Unit = {},
+	onBagdesClick: () -> Unit = {}
 ) {
 	val state = viewModel.uiState
 
@@ -79,7 +80,7 @@ fun UserInfoScreen(
 				SectionCard(
 					title = "Mis Insignias",
 					actionLabel = "Ver todas",
-					onActionClick = {},
+					onActionClick = onBagdesClick,
 					modifier = Modifier.padding(horizontal = 10.dp)
 				) {
 					EmptyState(message = "Aun no tienes insignias ganadas")

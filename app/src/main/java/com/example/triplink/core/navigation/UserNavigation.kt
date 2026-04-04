@@ -6,6 +6,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
+import com.example.triplink.features.badges.BadgesScreen
 import com.example.triplink.features.comments.CommentsScreen
 import com.example.triplink.features.filters.FiltersScreen
 import com.example.triplink.features.notifications.NotificationsScreen
@@ -83,6 +84,9 @@ fun UserNavigation(
                 onLogoutClick = onLogout,
                 onEditClick = {
                     navController.navigate(UserSectionRoutes.AccountEdit)
+                },
+                onBagdesClick = {
+                    navController.navigate(UserSectionRoutes.Bagdes)
                 }
             )
         }
@@ -126,6 +130,9 @@ fun UserNavigation(
         }
         composable<MainRoutes.RecoveryPassword> {
             RecoveryPasswordScreen({ navController.popBackStack() })
+        }
+        composable<UserSectionRoutes.Bagdes> {
+            BadgesScreen({ navController.popBackStack() })
         }
     }
 }

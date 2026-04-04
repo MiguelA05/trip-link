@@ -33,5 +33,8 @@ sealed class UserSectionRoutes {
 
     @Serializable
     data object PostCreation : UserSectionRoutes()
+
+    @Serializable
+    data object Bagdes : UserSectionRoutes()
 }
 
