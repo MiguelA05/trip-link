@@ -6,6 +6,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
+import com.example.triplink.features.appHome.HomeScreen
 import com.example.triplink.features.badges.BadgesScreen
 import com.example.triplink.features.comments.CommentsScreen
 import com.example.triplink.features.filters.FiltersScreen
@@ -87,6 +88,9 @@ fun UserNavigation(
                 },
                 onBagdesClick = {
                     navController.navigate(UserSectionRoutes.Bagdes)
+                },
+                onPostCreationClick = {
+                    navController.navigate(UserSectionRoutes.PostCreation)
                 }
             )
         }
@@ -99,7 +103,12 @@ fun UserNavigation(
                         }
                     }
                 },
-                onChangePasswordClick = {navController.navigate(MainRoutes.RecoveryPassword)}
+                onChangePasswordClick = {navController.navigate(MainRoutes.RecoveryPassword)},
+                onAppHomeClick = {
+                    navController.navigate(MainRoutes.Home) {
+                        popUpTo(MainRoutes.Home) { inclusive = true }
+                    }
+                }
             )
         }
         composable<UserSectionRoutes.PublicationDetails> { backStackEntry ->
@@ -126,7 +135,15 @@ fun UserNavigation(
             FiltersScreen({ navController.popBackStack() })
         }
         composable<UserSectionRoutes.PostCreation> {
-            PostCreationScreen({ navController.popBackStack() })
+            PostCreationScreen(
+                onBack = { navController.popBackStack() },
+                onUserHomeClick = {
+                    navController.navigate(UserSectionRoutes.UserHome)
+                },
+                onUserInfoClick = {
+                    navController.navigate(UserSectionRoutes.UserInfo)
+                }
+            )
         }
         composable<MainRoutes.RecoveryPassword> {
             RecoveryPasswordScreen({ navController.popBackStack() })
@@ -134,5 +151,6 @@ fun UserNavigation(
         composable<UserSectionRoutes.Bagdes> {
             BadgesScreen({ navController.popBackStack() })
         }
+
     }
 }

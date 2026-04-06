@@ -38,7 +38,8 @@ fun UserInfoScreen(
 	contentPadding: PaddingValues = PaddingValues(),
 	onLogoutClick: () -> Unit = {},
 	onEditClick: () -> Unit = {},
-	onBagdesClick: () -> Unit = {}
+	onBagdesClick: () -> Unit = {},
+	onPostCreationClick: () -> Unit = {}
 ) {
 	val state = viewModel.uiState
 
@@ -125,7 +126,7 @@ fun UserInfoScreen(
 						)
 
 						Button(
-							onClick = {},
+							onClick = onPostCreationClick,
 							colors = ButtonDefaults.buttonColors(
 								containerColor = PrincipalBlue,
 								contentColor = PrincipalWhite

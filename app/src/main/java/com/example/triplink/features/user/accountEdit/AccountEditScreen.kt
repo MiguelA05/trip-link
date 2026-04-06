@@ -37,11 +37,13 @@ import com.example.triplink.ui.theme.PrincipalRed
 fun AccountEditScreen(
     accountEditViewModel: AccountEditViewModel = viewModel(),
     onBackClick: () -> Unit = {},
-    onChangePasswordClick: () -> Unit = {}
+    onChangePasswordClick: () -> Unit = {},
+    onAppHomeClick: () -> Unit = {}
 ) {
     val snackbarHostState = remember { SnackbarHostState() }
     val updateResult by accountEditViewModel.updateResult.collectAsState()
     val deleteResult by accountEditViewModel.deleteResult.collectAsState()
+    var showDeleteConfirmation by remember { mutableStateOf(false) }
 
     LaunchedEffect(updateResult) {
         updateResult?.let { result ->
@@ -344,7 +346,7 @@ fun AccountEditScreen(
             // Delete Account Button
             Button(
                 onClick = {
-                    accountEditViewModel.deleteAccount()
+                    showDeleteConfirmation = true
                 },
                 colors = ButtonDefaults.buttonColors(
                     containerColor = Color.Transparent,
@@ -363,6 +365,55 @@ fun AccountEditScreen(
 
             Spacer(modifier = Modifier.height(24.dp))
         }
+    }
+
+    if (showDeleteConfirmation) {
+        AlertDialog(
+            onDismissRequest = { showDeleteConfirmation = false },
+            title = {
+                Text(
+                    text = "¿Eliminar cuenta?",
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 20.sp
+                )
+            },
+            text = {
+                Text(
+                    text = "Esta acción es irreversible y se perderán todos tus datos. ¿Deseas continuar?",
+                    fontSize = 16.sp,
+                    color = Color.Gray
+                )
+            },
+            confirmButton = {
+                Button(
+                    onClick = {
+                        showDeleteConfirmation = false
+                        accountEditViewModel.deleteAccount()
+                        onAppHomeClick()
+                    },
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = PrincipalRed,
+                        contentColor = Color.White
+                    ),
+                    shape = RoundedCornerShape(12.dp)
+                ) {
+                    Text("Eliminar", fontWeight = FontWeight.Bold)
+                }
+            },
+            dismissButton = {
+                TextButton(
+                    onClick = { showDeleteConfirmation = false }
+                ) {
+                    Text(
+                        "Cancelar",
+                        fontWeight = FontWeight.Medium,
+                        color = Color.Gray
+                    )
+                }
+            },
+            containerColor = Color.White,
+            shape = RoundedCornerShape(24.dp)
+        )
     }
 }
 
