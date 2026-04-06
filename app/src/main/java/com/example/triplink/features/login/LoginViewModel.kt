@@ -6,18 +6,22 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.example.triplink.data.datastore.SessionDataStore
 import com.example.triplink.core.utils.RequestResult
 import com.example.triplink.core.utils.ValidatedField
+import com.example.triplink.domain.model.enums.Rol
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-enum class LoginRole {
-    USER,
-    ADMIN
-}
-
-class LoginViewModel : ViewModel() {
+@HiltViewModel
+class LoginViewModel @Inject constructor(
+    private val sessionDataStore: SessionDataStore
+) : ViewModel() {
     var email = ValidatedField("") { value ->
         when {
             value.isEmpty() -> "El email es obligatorio"
@@ -53,10 +57,8 @@ class LoginViewModel : ViewModel() {
     val forgotPasswordInteractionSource = MutableInteractionSource()
 
     private val _loginResult = MutableStateFlow<RequestResult?>(null)
-    private val _loginRole = MutableStateFlow<LoginRole?>(null)
 
     val loginResult: StateFlow<RequestResult?> = _loginResult.asStateFlow()
-    val loginRole: StateFlow<LoginRole?> = _loginRole.asStateFlow()
 
     fun togglePasswordVisibility() {
         passwordVisible = !passwordVisible
@@ -70,26 +72,41 @@ class LoginViewModel : ViewModel() {
 
     fun resetLoginResult() {
         _loginResult.value = null
-        _loginRole.value = null
     }
 
 
     fun login() {
-        if (isFormValid) {
-            // Simulación de un proceso de login con datos estáticos
-            when {
-                email.value == "carlos@email.com" && password.value == "123456" -> {
-                    _loginRole.value = LoginRole.USER
-                    _loginResult.value = RequestResult.Success("Login exitoso")
-                }
-                email.value == "admin@triplink.com" && password.value == "admin123" -> {
-                    _loginRole.value = LoginRole.ADMIN
-                    _loginResult.value = RequestResult.Success("Login de administrador exitoso")
-                }
-                else -> {
-                    _loginRole.value = null
-                    _loginResult.value = RequestResult.Failure("Credenciales inválidas")
-                }
+        if (!isFormValid) {
+            _loginResult.value = RequestResult.Failure("Completa los campos requeridos")
+            return
+        }
+
+        // Login mockeado: al validar credenciales se persiste la sesión para que AppNavigation cambie de grafo.
+        val sessionToSave = when {
+            email.value == "carlos@email.com" && password.value == "123456" -> {
+                Triple("user-1", Rol.USUARIO, "Login exitoso")
+            }
+            email.value == "admin@triplink.com" && password.value == "admin123" -> {
+                Triple("admin-1", Rol.MODERADOR, "Login de administrador exitoso")
+            }
+            else -> null
+        }
+
+        if (sessionToSave == null) {
+            _loginResult.value = RequestResult.Failure("Credenciales inválidas")
+            return
+        }
+
+        viewModelScope.launch {
+            runCatching {
+                sessionDataStore.saveSession(
+                    userId = sessionToSave.first,
+                    role = sessionToSave.second
+                )
+            }.onSuccess {
+                _loginResult.value = RequestResult.Success(sessionToSave.third)
+            }.onFailure {
+                _loginResult.value = RequestResult.Failure("No fue posible iniciar sesión. Intenta nuevamente.")
             }
         }
     }

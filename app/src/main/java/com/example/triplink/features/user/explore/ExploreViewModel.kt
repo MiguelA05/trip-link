@@ -5,7 +5,7 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
-import com.example.triplink.data.repository.user.publications.UserPublicationsRepository
+import com.example.triplink.domain.repository.user.publications.UserPublicationsRepository
 import com.example.triplink.domain.model.PuntoInteres
 import dagger.hilt.android.lifecycle.HiltViewModel
 import java.util.Locale

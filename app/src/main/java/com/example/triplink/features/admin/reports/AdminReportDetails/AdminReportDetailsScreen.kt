@@ -43,11 +43,10 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.hilt.navigation.compose.hiltViewModel
 import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
 import coil3.request.crossfade
-import com.example.triplink.domain.repository.admin.reports.AdminReportsRepository
 import com.example.triplink.ui.theme.PrincipalBlue
 import com.example.triplink.ui.theme.PrincipalGreen
 
@@ -55,10 +54,9 @@ import com.example.triplink.ui.theme.PrincipalGreen
 fun AdminReportDetailsScreen(
     reportId: String,
     contentPadding: PaddingValues = PaddingValues(),
-    repository: AdminReportsRepository,
     onBackClick: () -> Unit = {}
 ) {
-    val viewModel: AdminReportsDetailsViewModel = viewModel(factory = AdminReportsDetailsViewModel.factory(repository))
+    val viewModel: AdminReportsDetailsViewModel = hiltViewModel()
     val report = viewModel.getReportById(reportId)
 
     if (report == null) {
@@ -480,6 +478,3 @@ private fun RejectReportDialog(
         }
     )
 }
-
-
-

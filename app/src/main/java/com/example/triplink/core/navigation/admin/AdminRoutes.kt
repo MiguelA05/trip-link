@@ -2,6 +2,7 @@ package com.example.triplink.core.navigation.admin
 
 import kotlinx.serialization.Serializable
 
+@Serializable
 sealed class AdminRoutes {
 
     @Serializable

@@ -40,7 +40,7 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.example.triplink.R
 import com.example.triplink.core.components.AppTitle
 import com.example.triplink.core.components.FormField
@@ -58,15 +58,12 @@ import kotlinx.coroutines.launch
 @Composable
 fun LoginScreen(
     onBackClick: () -> Unit,
-    onNavigateToUsers: () -> Unit,
     onNavigateToRegister: () -> Unit,
-    onNavigateToAdmin: () -> Unit,
     onNavigateToRecovery: () -> Unit,
-    viewModel: LoginViewModel = viewModel()
+    viewModel: LoginViewModel = hiltViewModel()
 ) {
     val snackbarHostState = remember { SnackbarHostState() }
     val loginResult by viewModel.loginResult.collectAsState()
-    val loginRole by viewModel.loginRole.collectAsState()
 
     LaunchedEffect(loginResult) {
         loginResult?.let { result ->
@@ -78,11 +75,6 @@ fun LoginScreen(
             if (result is RequestResult.Success) {
                 // Mostrar feedback y navegar sin bloquear la transición.
                 launch { snackbarHostState.showSnackbar(message) }
-                when (loginRole) {
-                    LoginRole.ADMIN -> onNavigateToAdmin()
-                    LoginRole.USER -> onNavigateToUsers()
-                    null -> Unit
-                }
             } else {
                 snackbarHostState.showSnackbar(message)
             }

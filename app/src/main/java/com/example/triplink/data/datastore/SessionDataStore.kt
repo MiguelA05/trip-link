@@ -1,7 +1,6 @@
 package com.example.triplink.data.datastore
 
 import android.content.Context
-import androidx.compose.ui.semantics.Role
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
@@ -19,7 +18,7 @@ private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(na
 
 @Singleton
 class SessionDataStore @Inject constructor(
-    @param:ApplicationContext private val context: Context
+    @ApplicationContext private val context: Context
 ) {
     // Claves para las preferencias
     private object Keys {

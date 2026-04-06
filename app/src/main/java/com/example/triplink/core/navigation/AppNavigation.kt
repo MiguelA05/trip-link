@@ -12,8 +12,6 @@ import androidx.compose.ui.Modifier
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.example.triplink.core.navigation.auth.AuthNavigation
 import com.example.triplink.core.navigation.main.MainNavigation
-import com.example.triplink.domain.model.enums.Rol
-import com.example.triplink.features.login.LoginRole
 
 @Composable
 fun AppNavigation(
@@ -30,14 +28,7 @@ fun AppNavigation(
                     CircularProgressIndicator()
                 }
             }
-            is SessionState.NotAuthenticated -> AuthNavigation(
-                onAuthenticated = { role ->
-                    when (role) {
-                        LoginRole.USER -> sessionViewModel.login(userId = "user-demo", role = Rol.USUARIO)
-                        LoginRole.ADMIN -> sessionViewModel.login(userId = "admin-demo", role = Rol.MODERADOR)
-                    }
-                }
-            )
+            is SessionState.NotAuthenticated -> AuthNavigation()
             is SessionState.Authenticated -> MainNavigation(
                 session = state.session,
                 onLogout = sessionViewModel::logout
