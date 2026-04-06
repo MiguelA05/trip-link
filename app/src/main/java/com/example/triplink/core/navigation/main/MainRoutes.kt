@@ -1,4 +1,4 @@
-package com.example.triplink.core.navigation
+package com.example.triplink.core.navigation.main
 
 import kotlinx.serialization.Serializable
 

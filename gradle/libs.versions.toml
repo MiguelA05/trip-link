@@ -16,6 +16,8 @@ kotlinxSerialization = "1.9.0"
 hiltAndroid = "2.59.2"
 hiltNavigationCompose = "1.3.0"
 ksp = "2.2.21-2.0.4"
+dataStore = "1.2.0"
+
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -41,6 +43,8 @@ kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-
 androidxHiltNavigationCompose = { module = "androidx.hilt:hilt-navigation-compose", version.ref = "hiltNavigationCompose" }
 hiltAndroid = { module = "com.google.dagger:hilt-android", version.ref = "hiltAndroid" }
 hiltCompiler = { module = "com.google.dagger:hilt-compiler", version.ref = "hiltAndroid" }
+data-store = { module = "androidx.datastore:datastore-preferences", version.ref = "dataStore" }
+
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

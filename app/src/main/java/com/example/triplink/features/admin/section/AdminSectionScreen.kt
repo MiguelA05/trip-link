@@ -18,8 +18,8 @@ import androidx.navigation.compose.rememberNavController
 import com.example.triplink.core.components.GeneralAlertDialog
 import com.example.triplink.core.components.navigation.BottomBar
 import com.example.triplink.core.components.navigation.adminNavItems
-import com.example.triplink.core.navigation.AdminNavigation
-import com.example.triplink.core.navigation.AdminRoutes
+import com.example.triplink.core.navigation.admin.AdminNavigation
+import com.example.triplink.core.navigation.admin.AdminRoutes
 
 @Composable
 fun AdminSectionScreen(

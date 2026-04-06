@@ -1,4 +1,4 @@
-package com.example.triplink.core.navigation
+package com.example.triplink.core.navigation.user
 
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
@@ -6,7 +6,8 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
-import com.example.triplink.features.appHome.HomeScreen
+import com.example.triplink.core.navigation.main.MainRoutes
+import com.example.triplink.core.navigation.user.UserSectionRoutes
 import com.example.triplink.features.badges.BadgesScreen
 import com.example.triplink.features.comments.CommentsScreen
 import com.example.triplink.features.filters.FiltersScreen

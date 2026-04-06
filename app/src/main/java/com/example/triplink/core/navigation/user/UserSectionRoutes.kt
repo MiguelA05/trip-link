@@ -1,4 +1,4 @@
-package com.example.triplink.core.navigation
+package com.example.triplink.core.navigation.user
 
 import kotlinx.serialization.Serializable
 
@@ -37,4 +37,3 @@ sealed class UserSectionRoutes {
     @Serializable
     data object Bagdes : UserSectionRoutes()
 }
-

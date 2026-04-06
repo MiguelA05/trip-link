@@ -2,11 +2,8 @@ package com.example.triplink.data.repository.user.publications
 
 import com.example.triplink.domain.model.PuntoInteres
 import com.example.triplink.domain.repository.user.publications.UserPublicationsRepository
-import javax.inject.Inject
-import javax.inject.Singleton
 
-@Singleton
-class UserPublicationsRepositoryImpl @Inject constructor() : UserPublicationsRepository {
+class UserPublicationsRepositoryImpl : UserPublicationsRepository {
     private val seedState = createUserPublicationsSeedState()
 
     override val publications: List<PuntoInteres>

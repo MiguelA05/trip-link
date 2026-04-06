@@ -1,4 +1,4 @@
-package com.example.triplink.core.navigation
+package com.example.triplink.core.navigation.admin
 
 import kotlinx.serialization.Serializable
 
@@ -16,4 +16,3 @@ sealed class AdminRoutes {
     @Serializable
     data class ModerationPublicationDetails(val publicationId: String) : AdminRoutes()
 }
-

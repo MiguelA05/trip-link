@@ -1,113 +1,47 @@
 package com.example.triplink.core.navigation
 
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
-import androidx.navigation.compose.rememberNavController
-import com.example.triplink.features.appHome.HomeScreen
-import com.example.triplink.features.admin.section.AdminSectionScreen
-import com.example.triplink.features.login.LoginScreen
-import com.example.triplink.features.recoverypassword.RecoveryPasswordScreen
-import com.example.triplink.features.register.RegisterScreen
-import com.example.triplink.features.user.section.UserSectionScreen
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import com.example.triplink.core.navigation.auth.AuthNavigation
+import com.example.triplink.core.navigation.main.MainNavigation
+import com.example.triplink.domain.model.enums.Rol
+import com.example.triplink.features.login.LoginRole
 
 @Composable
-fun AppNavigation() {
-    // Estado de la navegación, permite controlar la navegación entre pantallas
-    val navController = rememberNavController()
+fun AppNavigation(
+    sessionViewModel: SessionViewModel = hiltViewModel()
+) {
+    // Observa el estado de la sesión desde el ViewModel
+    val sessionState by sessionViewModel.sessionState.collectAsState()
 
-    // Un Surface que ocupa toda la pantalla y se adapta al tema de la aplicación
-    Surface(
-        modifier = Modifier.fillMaxSize()
-    ) {
-        NavHost(
-            navController = navController, // Controlador de navegación
-            startDestination = MainRoutes.Home // Pantalla de inicio, esta es la primer pantalla que se muestra al iniciar la aplicación
-        ) {
-
-            // Definición de las rutas y sus composables asociados (se puede agregar más rutas según sea necesario)
-
-            composable<MainRoutes.Home> {
-                HomeScreen(
-                    onNavigateToLogin = {
-                        navController.navigate(MainRoutes.Login)
-                    },
-                    onNavigateToRegister = {
-                        navController.navigate(MainRoutes.Register)
-                    }
-                )
+    Surface(modifier = Modifier.fillMaxSize()) {
+        when (val state = sessionState) {
+            is SessionState.Loading -> {
+                // Se muestra un indicador de carga mientras se determina el estado de la sesión
+                Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                    CircularProgressIndicator()
+                }
             }
-
-            composable<MainRoutes.Login> {
-                LoginScreen(
-                    onBackClick = {navController.popBackStack()} ,
-                    onNavigateToUsers = {
-                        navController.navigate(MainRoutes.UserSection) {
-                            // Limpiar el stack de navegación para que no se pueda volver al login con el botón atrás
-                            popUpTo(MainRoutes.Home) { inclusive = true }
-                        }
-                    },
-                    onNavigateToAdmin = {
-                        navController.navigate(MainRoutes.AdminSection) {
-                            popUpTo(MainRoutes.Home) { inclusive = true }
-                        }
-                    },
-                    onNavigateToRegister = {
-                        navController.navigate(MainRoutes.Register)
-                    },
-                    onNavigateToRecovery = {
-                        navController.navigate(MainRoutes.RecoveryPassword)
+            is SessionState.NotAuthenticated -> AuthNavigation(
+                onAuthenticated = { role ->
+                    when (role) {
+                        LoginRole.USER -> sessionViewModel.login(userId = "user-demo", role = Rol.USUARIO)
+                        LoginRole.ADMIN -> sessionViewModel.login(userId = "admin-demo", role = Rol.MODERADOR)
                     }
-                )
-            }
-
-            composable<MainRoutes.Register> {
-                RegisterScreen(
-                    onBackClick = {
-                        navController.popBackStack()
-                    },
-                    onLoginClick = {
-                        navController.navigate(MainRoutes.Login) {
-                            popUpTo(MainRoutes.Home)
-                        }
-                    }
-                )
-            }
-
-            composable<MainRoutes.UserSection> {
-                UserSectionScreen(
-                    onLogout = {
-                        navController.navigate(MainRoutes.Home) {
-                            popUpTo(MainRoutes.UserSection) { inclusive = true }
-                            launchSingleTop = true
-                        }
-                    }
-                )
-            }
-
-            composable<MainRoutes.AdminSection> {
-                AdminSectionScreen(
-                    onLogout = {
-                        navController.navigate(MainRoutes.Home) {
-                            popUpTo(MainRoutes.AdminSection) { inclusive = true }
-                            launchSingleTop = true
-                        }
-                    }
-                )
-            }
-
-            composable<MainRoutes.RecoveryPassword>{
-                RecoveryPasswordScreen(
-                    onBack = {
-                        navController.popBackStack()
-                    }
-
-                )
-            }
-
+                }
+            )
+            is SessionState.Authenticated -> MainNavigation(
+                session = state.session,
+                onLogout = sessionViewModel::logout
+            )
         }
     }
 }
