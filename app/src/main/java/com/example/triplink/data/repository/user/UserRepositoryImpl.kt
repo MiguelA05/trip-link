@@ -96,6 +96,26 @@ class UserRepositoryImpl @Inject constructor() : UserRepository {
         return _publications.value.filter { it.usuarioAutorId.equals(userId, ignoreCase = true) }
     }
 
+    override fun updatePuntoInteres(publication: PuntoInteres): Boolean {
+        val index = _publications.value.indexOfFirst { it.id == publication.id }
+        if (index == -1) return false
+        val updatedList = _publications.value.toMutableList()
+        updatedList[index] = publication
+        _publications.value = updatedList
+        return true
+    }
+
+    override fun deletePublicationById(publicationId: String): Boolean {
+        val initialSize = _publications.value.size
+        _publications.value = _publications.value.filter { it.id != publicationId }
+        _comments.remove(publicationId)
+        return _publications.value.size < initialSize
+    }
+
+    override fun getPublicationsByState(estado: com.example.triplink.domain.model.enums.EstadoPublicacion): List<PuntoInteres> {
+        return _publications.value.filter { it.estado == estado }
+    }
+
     override fun toggleFavorite(userId: String, publicationId: String): Boolean {
         val favorites = _favorites.getOrPut(userId) { mutableSetOf() }
         return if (favorites.contains(publicationId)) {
@@ -123,6 +143,34 @@ class UserRepositoryImpl @Inject constructor() : UserRepository {
 
     override fun getCommentsByPublicationId(publicationId: String): List<Comentario> {
         return _comments[publicationId] ?: emptyList()
+    }
+
+    override fun updateComment(publicationId: String, comment: Comentario): Boolean {
+        val comments = _comments[publicationId] ?: return false
+        val index = comments.indexOfFirst { it.id == comment.id }
+        if (index == -1) return false
+        comments[index] = comment
+        return true
+    }
+
+    override fun deleteComment(publicationId: String, commentId: String): Boolean {
+        val comments = _comments[publicationId] ?: return false
+        val initialSize = comments.size
+        _comments[publicationId] = comments.filter { it.id != commentId }.toMutableList()
+        return comments.size > initialSize
+    }
+
+    override fun getAverageRating(publicationId: String): Double {
+        val comments = _comments[publicationId] ?: return 0.0
+        if (comments.isEmpty()) return 0.0
+        return comments.map { it.rating }.average()
+    }
+
+    override fun deleteUser(email: String): Boolean {
+        val initialSize = _users.value.size
+        _users.value = _users.value.filter { !it.email.equals(email, ignoreCase = true) }
+        _favorites.remove(email)
+        return _users.value.size < initialSize
     }
 }
 

@@ -39,6 +39,9 @@ class CommentsViewModel @Inject constructor(
     private val _saveCommentResult = MutableStateFlow<RequestResult?>(null)
     val saveCommentResult: StateFlow<RequestResult?> = _saveCommentResult.asStateFlow()
 
+    private val _refreshTick = MutableStateFlow(0)
+    val refreshTick: StateFlow<Int> = _refreshTick.asStateFlow()
+
     fun updateCommentText(text: String) {
         commentText = text
     }
@@ -71,11 +74,60 @@ class CommentsViewModel @Inject constructor(
                     // Limpiar campos después de guardar exitosamente
                     commentText = ""
                     selectedRating = 5f
+                    _refreshTick.value += 1
                 } else {
                     _saveCommentResult.value = RequestResult.Failure("No se pudo guardar el comentario")
                 }
             } catch (e: Exception) {
                 _saveCommentResult.value = RequestResult.Failure("Error al guardar: ${e.message}")
+            }
+        }
+    }
+
+    fun updateComment(publicationId: String, commentId: String, newText: String) {
+        if (newText.isBlank()) {
+            _saveCommentResult.value = RequestResult.Failure("El comentario no puede estar vacío")
+            return
+        }
+
+        viewModelScope.launch {
+            try {
+                val existing = userRepository.getCommentsByPublicationId(publicationId)
+                    .firstOrNull { it.id == commentId }
+                    ?: run {
+                        _saveCommentResult.value = RequestResult.Failure("Comentario no encontrado")
+                        return@launch
+                    }
+
+                val wasUpdated = userRepository.updateComment(
+                    publicationId = publicationId,
+                    comment = existing.copy(text = newText)
+                )
+
+                _saveCommentResult.value = if (wasUpdated) {
+                    _refreshTick.value += 1
+                    RequestResult.Success("Comentario actualizado")
+                } else {
+                    RequestResult.Failure("No se pudo actualizar el comentario")
+                }
+            } catch (e: Exception) {
+                _saveCommentResult.value = RequestResult.Failure("Error al actualizar: ${e.message}")
+            }
+        }
+    }
+
+    fun deleteComment(publicationId: String, commentId: String) {
+        viewModelScope.launch {
+            try {
+                val wasDeleted = userRepository.deleteComment(publicationId, commentId)
+                _saveCommentResult.value = if (wasDeleted) {
+                    _refreshTick.value += 1
+                    RequestResult.Success("Comentario eliminado")
+                } else {
+                    RequestResult.Failure("No se pudo eliminar el comentario")
+                }
+            } catch (e: Exception) {
+                _saveCommentResult.value = RequestResult.Failure("Error al eliminar: ${e.message}")
             }
         }
     }
@@ -86,11 +138,9 @@ class CommentsViewModel @Inject constructor(
             ?: sampleReviews(publicationId)
 
         val totalReviews = reviews.size
-        val averageRating = if (reviews.isNotEmpty()) {
-            reviews.map { it.rating }.average()
-        } else {
-            0.0
-        }
+        val averageRating = userRepository.getAverageRating(publicationId)
+            .takeIf { it > 0.0 }
+            ?: if (reviews.isNotEmpty()) reviews.map { it.rating }.average() else 0.0
 
         val distribution = listOf(
             RatingCount(stars = 5, count = reviews.count { it.rating >= 5f }),

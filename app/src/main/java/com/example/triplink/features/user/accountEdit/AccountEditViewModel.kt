@@ -206,13 +206,11 @@ class AccountEditViewModel @Inject constructor(
             try {
                 val session = sessionDataStore.sessionFlow.first()
                 session?.userId?.let { userId ->
-                    val user = userRepository.getUserById(userId)
-                    user?.let {
-                        // Nota: El repositorio actual no tiene método delete, pero el código está listo
-                        // para cuando se implemente. Por ahora solo mostramos éxito.
-                        _deleteResult.value = RequestResult.Success("Cuenta eliminada exitosamente")
-                    } ?: run {
-                        _deleteResult.value = RequestResult.Failure("Usuario no encontrado")
+                    val wasDeleted = userRepository.deleteUser(userId)
+                    _deleteResult.value = if (wasDeleted) {
+                        RequestResult.Success("Cuenta eliminada exitosamente")
+                    } else {
+                        RequestResult.Failure("Usuario no encontrado")
                     }
                 } ?: run {
                     _deleteResult.value = RequestResult.Failure("Sesión expirada")

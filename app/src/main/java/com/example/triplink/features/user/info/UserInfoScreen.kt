@@ -118,8 +118,17 @@ fun UserInfoScreen(
 						horizontalAlignment = Alignment.CenterHorizontally,
 						verticalArrangement = Arrangement.spacedBy(18.dp)
 					) {
+						val tabLabel = when (state.selectedContributionTab) {
+							com.example.triplink.domain.model.enums.EstadoPublicacion.PENDIENTE -> "pendientes"
+							com.example.triplink.domain.model.enums.EstadoPublicacion.VERIFICADA -> "verificadas"
+							com.example.triplink.domain.model.enums.EstadoPublicacion.RECHAZADA -> "rechazadas"
+						}
 						Text(
-							text = "No tienes contribuciones\npendientes",
+							text = if (state.contributionsInSelectedTab == 0) {
+								"No tienes contribuciones\n$tabLabel"
+							} else {
+								"Tienes ${state.contributionsInSelectedTab}\ncontribuciones $tabLabel"
+							},
 							color = Color(0xFF8FA1BA),
 							style = androidx.compose.material3.MaterialTheme.typography.headlineSmall,
 							fontWeight = FontWeight.Medium

@@ -43,6 +43,7 @@ import com.example.triplink.core.components.publicationdetails.sections.Publicat
 import com.example.triplink.core.components.publicationdetails.sections.PublicationWeeklyScheduleSection
 import com.example.triplink.core.components.publicationdetails.utils.currentDayLabelEs
 import com.example.triplink.core.components.publicationdetails.utils.toWeeklyScheduleUi
+import com.example.triplink.core.utils.RequestResult
 import com.example.triplink.ui.theme.*
 
 data class Review(
@@ -63,6 +64,28 @@ fun PublicationDetailsScreen(
 ) {
     val viewModel: PublicationDetailsViewModel = hiltViewModel()
     val publication = viewModel.getPublicationById(publicationId)
+    val publicationActionResult by viewModel.publicationActionResult.collectAsState()
+    val snackbarHostState = remember { SnackbarHostState() }
+    var showEditModal by remember { mutableStateOf(false) }
+
+    LaunchedEffect(publicationId) {
+        viewModel.loadCommentsForPublication(publicationId)
+    }
+
+    LaunchedEffect(publicationActionResult) {
+        publicationActionResult?.let { result ->
+            when (result) {
+                is RequestResult.Success -> {
+                    snackbarHostState.showSnackbar(result.message)
+                    if (result.message.contains("eliminada", ignoreCase = true)) {
+                        onBackClick()
+                    }
+                }
+                is RequestResult.Failure -> snackbarHostState.showSnackbar(result.errorMessage)
+            }
+            viewModel.clearPublicationActionResult()
+        }
+    }
 
     if (publication == null) {
         Column(
@@ -102,13 +125,19 @@ fun PublicationDetailsScreen(
         }
     } ?: "Sin precio"
 
-    val reviews = listOf(
+    val fallbackReviews = listOf(
         Review("carlos_montoya", 5, "¡Increíble lugar! La vista es maravillosa."),
         Review("carlos_montoya", 4, "Me encanto la historia del lugar.")
     )
-    val generalRating = 4.8
+    val reviews = if (viewModel.comments.isNotEmpty()) {
+        viewModel.comments.map { Review(it.userName, it.rating.toInt(), it.text) }
+    } else {
+        fallbackReviews
+    }
+    val generalRating = viewModel.getAverageRating(publicationId).takeIf { it > 0.0 } ?: 4.8
 
     Scaffold(
+        snackbarHost = { SnackbarHost(snackbarHostState) },
         topBar = {
             Column {
                 GeneralTopBar(
@@ -127,7 +156,9 @@ fun PublicationDetailsScreen(
         bottomBar = {
             BottomActionsBar(
                 userType = userType,
-                onVisitedClick = { showRatingModal = true }
+                onVisitedClick = { showRatingModal = true },
+                onEditClick = { showEditModal = true },
+                onDeleteClick = { viewModel.deletePublication(publicationId) }
             )
         }
     ) { paddingValues ->
@@ -178,6 +209,17 @@ fun PublicationDetailsScreen(
 
     if (showRatingModal) {
         RatingModal(onDismiss = { showRatingModal = false })
+    }
+
+    if (showEditModal) {
+        EditPublicationModal(
+            publication = publication,
+            onDismiss = { showEditModal = false },
+            onSave = { updated ->
+                viewModel.updatePublication(updated)
+                showEditModal = false
+            }
+        )
     }
 }
 
@@ -867,7 +909,12 @@ fun ReviewCard(review: Review) {
 }
 
 @Composable
-fun BottomActionsBar(userType: String, onVisitedClick: () -> Unit) {
+fun BottomActionsBar(
+    userType: String,
+    onVisitedClick: () -> Unit,
+    onEditClick: () -> Unit = {},
+    onDeleteClick: () -> Unit = {}
+) {
     var isInterested by remember { mutableStateOf(false) }
 
     Surface(
@@ -884,7 +931,7 @@ fun BottomActionsBar(userType: String, onVisitedClick: () -> Unit) {
             if (userType == "user") {
                 // Botón Editar
                 Button(
-                    onClick = { println("Editando publicación") },
+                    onClick = onEditClick,
                     modifier = Modifier
                         .weight(1f)
                         .height(54.dp),
@@ -902,7 +949,7 @@ fun BottomActionsBar(userType: String, onVisitedClick: () -> Unit) {
 
                 // Botón Eliminar
                 Button(
-                    onClick = { println("Eliminando publicación") },
+                    onClick = onDeleteClick,
                     modifier = Modifier
                         .weight(1f)
                         .height(54.dp),
@@ -965,3 +1012,43 @@ fun BottomActionsBar(userType: String, onVisitedClick: () -> Unit) {
         }
     }
 }
+
+@Composable
+private fun EditPublicationModal(
+    publication: com.example.triplink.domain.model.PuntoInteres,
+    onDismiss: () -> Unit,
+    onSave: (com.example.triplink.domain.model.PuntoInteres) -> Unit
+) {
+    var title by remember(publication.id) { mutableStateOf(publication.titulo) }
+    var description by remember(publication.id) { mutableStateOf(publication.informacion) }
+
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text("Editar publicación") },
+        text = {
+            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                OutlinedTextField(
+                    value = title,
+                    onValueChange = { title = it },
+                    label = { Text("Título") }
+                )
+                OutlinedTextField(
+                    value = description,
+                    onValueChange = { description = it },
+                    label = { Text("Descripción") }
+                )
+            }
+        },
+        confirmButton = {
+            TextButton(onClick = {
+                onSave(publication.copy(titulo = title.trim(), informacion = description.trim()))
+            }) {
+                Text("Guardar")
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = onDismiss) { Text("Cancelar") }
+        }
+    )
+}
+
