@@ -131,4 +131,26 @@
     <string name="component_nav_item_publications">Publications</string>
     <!-- resource: component_nav_item_reports -->
     <string name="component_nav_item_reports">Reports</string>
+
+    <!-- COMPONENT: ProfileHeader -->
+    <!-- resource: component_profile_header_logout_content_description -->
+    <string name="component_profile_header_logout_content_description">Log out</string>
+    <!-- resource: component_profile_header_edit_content_description -->
+    <string name="component_profile_header_edit_content_description">Edit profile</string>
+
+    <!-- COMPONENT: StatsRow -->
+    <!-- resource: component_stats_row_points -->
+    <string name="component_stats_row_points">POINTS</string>
+    <!-- resource: component_stats_row_contributions -->
+    <string name="component_stats_row_contributions">CONTRIBUTIONS</string>
+    <!-- resource: component_stats_row_active_days -->
+    <string name="component_stats_row_active_days">ACTIVE DAYS</string>
+
+    <!-- COMPONENT: StatusTabs -->
+    <!-- resource: component_status_tabs_verified -->
+    <string name="component_status_tabs_verified">Verified</string>
+    <!-- resource: component_status_tabs_pending -->
+    <string name="component_status_tabs_pending">Pending</string>
+    <!-- resource: component_status_tabs_rejected -->
+    <string name="component_status_tabs_rejected">Rejected</string>
 </resources>

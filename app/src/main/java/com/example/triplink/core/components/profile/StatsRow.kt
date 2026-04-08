@@ -15,8 +15,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.example.triplink.R
 
 @Composable
 fun StatsRow(
@@ -45,7 +47,7 @@ fun StatsRow(
                 )
             )
             Text(
-                text = "PUNTOS",
+                text = stringResource(R.string.component_stats_row_points),
                 style = MaterialTheme.typography.titleMedium.copy(
                     color = Color(0xFF90A0B7),
                     fontWeight = FontWeight.Bold
@@ -73,7 +75,7 @@ fun StatsRow(
                 )
             )
             Text(
-                text = "APORTES",
+                text = stringResource(R.string.component_stats_row_contributions),
                 style = MaterialTheme.typography.titleMedium.copy(
                     color = Color(0xFF90A0B7),
                     fontWeight = FontWeight.Bold
@@ -101,7 +103,7 @@ fun StatsRow(
                 )
             )
             Text(
-                text = "DIAS ACTIVOS",
+                text = stringResource(R.string.component_stats_row_active_days),
                 style = MaterialTheme.typography.titleMedium.copy(
                     color = Color(0xFF90A0B7),
                     fontWeight = FontWeight.Bold

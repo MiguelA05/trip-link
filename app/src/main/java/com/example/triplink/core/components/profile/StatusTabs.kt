@@ -13,8 +13,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.example.triplink.R
 import com.example.triplink.domain.model.enums.EstadoPublicacion
 import com.example.triplink.ui.theme.PrincipalBlue
 
@@ -25,9 +27,9 @@ fun StatusTabs(
     modifier: Modifier = Modifier
 ) {
     val tabs = listOf(
-        EstadoPublicacion.VERIFICADA to "Verificados",
-        EstadoPublicacion.PENDIENTE to "Pendientes",
-        EstadoPublicacion.RECHAZADA to "Rechazados"
+        EstadoPublicacion.VERIFICADA,
+        EstadoPublicacion.PENDIENTE,
+        EstadoPublicacion.RECHAZADA
     )
 
     Row(
@@ -36,8 +38,15 @@ fun StatusTabs(
             .padding(horizontal = 10.dp, vertical = 2.dp),
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        tabs.forEach { (tab, label) ->
+        tabs.forEach { tab ->
             val selected = selectedTab == tab
+            val label = stringResource(
+                when (tab) {
+                    EstadoPublicacion.VERIFICADA -> R.string.component_status_tabs_verified
+                    EstadoPublicacion.PENDIENTE -> R.string.component_status_tabs_pending
+                    EstadoPublicacion.RECHAZADA -> R.string.component_status_tabs_rejected
+                }
+            )
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier

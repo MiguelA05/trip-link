@@ -133,4 +133,26 @@
     <string name="component_nav_item_publications">Publicaciones</string>
     <!-- resource: component_nav_item_reports -->
     <string name="component_nav_item_reports">Reportes</string>
+
+    <!-- COMPONENT: ProfileHeader -->
+    <!-- resource: component_profile_header_logout_content_description -->
+    <string name="component_profile_header_logout_content_description">Salir</string>
+    <!-- resource: component_profile_header_edit_content_description -->
+    <string name="component_profile_header_edit_content_description">Editar perfil</string>
+
+    <!-- COMPONENT: StatsRow -->
+    <!-- resource: component_stats_row_points -->
+    <string name="component_stats_row_points">PUNTOS</string>
+    <!-- resource: component_stats_row_contributions -->
+    <string name="component_stats_row_contributions">APORTES</string>
+    <!-- resource: component_stats_row_active_days -->
+    <string name="component_stats_row_active_days">DIAS ACTIVOS</string>
+
+    <!-- COMPONENT: StatusTabs -->
+    <!-- resource: component_status_tabs_verified -->
+    <string name="component_status_tabs_verified">Verificados</string>
+    <!-- resource: component_status_tabs_pending -->
+    <string name="component_status_tabs_pending">Pendientes</string>
+    <!-- resource: component_status_tabs_rejected -->
+    <string name="component_status_tabs_rejected">Rechazados</string>
 </resources>
