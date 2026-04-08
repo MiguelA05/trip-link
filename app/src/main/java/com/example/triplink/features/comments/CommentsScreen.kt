@@ -34,6 +34,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.example.triplink.core.components.CommentCard
+import com.example.triplink.core.components.GeneralButton
 import com.example.triplink.core.components.GeneralTopBar
 import com.example.triplink.core.components.RatingSummaryCard
 import com.example.triplink.core.navigation.SessionState
@@ -160,15 +161,17 @@ fun CommentsScreen(
 						label = { Text("Comentario") }
 					)
 					Spacer(modifier = Modifier.height(8.dp))
-					Button(onClick = {
-						viewModel.saveComment(
-							publicationId = publicationId,
-							userId = currentUserId,
-							userName = currentUserName
-						)
-					}) {
-						Text("Publicar")
-					}
+					GeneralButton(
+						text = "Publicar",
+						enabled = viewModel.commentText.isNotBlank(),
+						onClick = {
+							viewModel.saveComment(
+								publicationId = publicationId,
+								userId = currentUserId,
+								userName = currentUserName
+							)
+						}
+					)
 				}
 			}
 		}
