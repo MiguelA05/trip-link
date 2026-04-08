@@ -31,10 +31,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.triplink.R
 import com.example.triplink.ui.theme.PastelBlue
 import com.example.triplink.ui.theme.PrincipalBlue
 import com.example.triplink.ui.theme.PrincipalWhite
@@ -47,10 +49,14 @@ fun GeneralAlertDialog(
     title: String,
     message: String,
     icon: ImageVector = Icons.Default.Email,
-    buttonText: String = "Confirmar",
+    buttonText: String? = null,
     dismissButtonText: String? = null,
     onDismissAction: (() -> Unit)? = null
 ) {
+    val resolvedButtonText = buttonText ?: stringResource(
+        R.string.component_general_alert_dialog_confirm_action
+    )
+
     BasicAlertDialog(
         onDismissRequest = onDismissRequest
     ) {
@@ -72,7 +78,9 @@ fun GeneralAlertDialog(
                 ) {
                     Icon(
                         imageVector = Icons.Default.Close,
-                        contentDescription = "Cerrar",
+                        contentDescription = stringResource(
+                            R.string.component_general_alert_dialog_close_content_description
+                        ),
                         modifier = Modifier.size(16.dp),
                         tint = Color.Gray
                     )
@@ -158,7 +166,7 @@ fun GeneralAlertDialog(
                                 )
                             ) {
                                 Text(
-                                    text = buttonText,
+                                    text = resolvedButtonText,
                                     style = MaterialTheme.typography.titleMedium.copy(
                                         fontWeight = FontWeight.Bold,
                                         color = PrincipalWhite
@@ -179,7 +187,7 @@ fun GeneralAlertDialog(
                             )
                         ) {
                             Text(
-                                text = buttonText,
+                                text = resolvedButtonText,
                                 style = MaterialTheme.typography.titleMedium.copy(
                                     fontWeight = FontWeight.Bold,
                                     color = PrincipalWhite

@@ -107,4 +107,28 @@
         <item quantity="one">%1$d review</item>
         <item quantity="other">%1$d reviews</item>
     </plurals>
+
+    <!-- COMPONENT: GeneralAlertDialog -->
+    <!-- resource: component_general_alert_dialog_close_content_description -->
+    <string name="component_general_alert_dialog_close_content_description">Close</string>
+    <!-- resource: component_general_alert_dialog_confirm_action -->
+    <string name="component_general_alert_dialog_confirm_action">Confirm</string>
+
+    <!-- COMPONENT: GeneralTopBar -->
+    <!-- resource: component_general_top_bar_back_content_description -->
+    <string name="component_general_top_bar_back_content_description">Back</string>
+
+    <!-- COMPONENT: NavItem -->
+    <!-- resource: component_nav_item_home -->
+    <string name="component_nav_item_home">Home</string>
+    <!-- resource: component_nav_item_explore -->
+    <string name="component_nav_item_explore">Explore</string>
+    <!-- resource: component_nav_item_my_profile -->
+    <string name="component_nav_item_my_profile">My Profile</string>
+    <!-- resource: component_nav_item_logout -->
+    <string name="component_nav_item_logout">Log out</string>
+    <!-- resource: component_nav_item_publications -->
+    <string name="component_nav_item_publications">Publications</string>
+    <!-- resource: component_nav_item_reports -->
+    <string name="component_nav_item_reports">Reports</string>
 </resources>
