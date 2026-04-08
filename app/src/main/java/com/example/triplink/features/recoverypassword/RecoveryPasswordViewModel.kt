@@ -7,6 +7,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import com.example.triplink.core.utils.RequestResult
 import com.example.triplink.core.utils.ValidatedField
+import com.example.triplink.domain.repository.user.UserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -14,7 +15,9 @@ import kotlinx.coroutines.flow.asStateFlow
 import javax.inject.Inject
 
 @HiltViewModel
-class RecoveryPasswordViewModel @Inject constructor() : ViewModel() {
+class RecoveryPasswordViewModel @Inject constructor(
+    private val userRepository: UserRepository
+) : ViewModel() {
 
     private val _recoveryResult = MutableStateFlow<RequestResult?>(null)
     val recoveryResult: StateFlow<RequestResult?> = _recoveryResult.asStateFlow()
@@ -47,13 +50,22 @@ class RecoveryPasswordViewModel @Inject constructor() : ViewModel() {
     }
 
     fun sendPasswordResetEmail() {
-        if (isFormValid) {
-            isEmailSent = true
-            showSuccessDialog = true
-            // Simulate sending a password reset email
-            _recoveryResult.value = RequestResult.Success("Se ha enviado un correo de recuperación")
-        } else {
+        if (!isFormValid) {
             _recoveryResult.value = RequestResult.Failure("Por favor, ingresa un email válido")
+            return
         }
+
+        // Validar que el email existe en el sistema
+        val userExists = userRepository.findByEmail(email.value) != null
+        if (!userExists) {
+            _recoveryResult.value = RequestResult.Failure("Este email no está registrado en el sistema")
+            return
+        }
+
+        // En una aplicación real, aquí se enviaría un email
+        // Por ahora, simulamos el envío exitoso
+        isEmailSent = true
+        showSuccessDialog = true
+        _recoveryResult.value = RequestResult.Success("Se ha enviado un correo de recuperación a ${email.value}")
     }
 }

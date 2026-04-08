@@ -91,7 +91,7 @@ class LoginViewModel @Inject constructor(
         viewModelScope.launch {
             runCatching {
                 sessionDataStore.saveSession(
-                    userId = authenticatedUser.email,
+                    userId = authenticatedUser.email, // Email se usa como identificador único del usuario
                     role = authenticatedUser.rol
                 )
             }.onSuccess {
