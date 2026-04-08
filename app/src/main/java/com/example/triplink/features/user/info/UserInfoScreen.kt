@@ -20,9 +20,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.Logout
+import com.example.triplink.domain.model.enums.EstadoPublicacion
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.example.triplink.core.components.GeneralAlertDialog
 import com.example.triplink.core.components.profile.EmptyState
 import com.example.triplink.core.components.profile.ProfileHeader
@@ -62,7 +63,7 @@ fun UserInfoScreen(
 					userName = state.userName,
 					initials = state.userInitials,
 					roleLabel = state.roleLabel,
-	  onBackClick = viewModel::onLogoutRequested,
+	 				onBackClick = viewModel::onLogoutRequested,
 					onEditClick = onEditClick,
 					modifier = Modifier
 				)
@@ -119,9 +120,9 @@ fun UserInfoScreen(
 						verticalArrangement = Arrangement.spacedBy(18.dp)
 					) {
 						val tabLabel = when (state.selectedContributionTab) {
-							com.example.triplink.domain.model.enums.EstadoPublicacion.PENDIENTE -> "pendientes"
-							com.example.triplink.domain.model.enums.EstadoPublicacion.VERIFICADA -> "verificadas"
-							com.example.triplink.domain.model.enums.EstadoPublicacion.RECHAZADA -> "rechazadas"
+							EstadoPublicacion.PENDIENTE -> "pendientes"
+							EstadoPublicacion.VERIFICADA -> "verificadas"
+							EstadoPublicacion.RECHAZADA -> "rechazadas"
 						}
 						Text(
 							text = if (state.contributionsInSelectedTab == 0) {

@@ -5,12 +5,17 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.outlined.ChatBubbleOutline
 import androidx.compose.material.icons.outlined.FavoriteBorder
 import androidx.compose.material.icons.outlined.LocationOn
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -36,6 +41,8 @@ fun PublicationCard(
     onFavoriteToggle: (Boolean) -> Unit = {},
     onCommentsClick: () -> Unit = {}
 ) {
+    var isFavorite by remember(puntoInteres.id) { mutableStateOf(false) }
+
     Card(
         modifier = modifier
             .fillMaxWidth()
@@ -233,13 +240,16 @@ fun PublicationCard(
 
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         IconButton(
-                            onClick = { onFavoriteToggle(true) },
+                            onClick = {
+                                isFavorite = !isFavorite
+                                onFavoriteToggle(isFavorite)
+                            },
                             modifier = Modifier.size(24.dp)
                         ) {
                             Icon(
-                                imageVector = Icons.Outlined.FavoriteBorder,
+                                imageVector = if (isFavorite) Icons.Filled.Favorite else Icons.Outlined.FavoriteBorder,
                                 contentDescription = "Agregar a favoritos",
-                                tint = Color.Gray,
+                                tint = if (isFavorite) Color(0xFFE53935) else Color.Gray,
                                 modifier = Modifier.size(24.dp)
                             )
                         }

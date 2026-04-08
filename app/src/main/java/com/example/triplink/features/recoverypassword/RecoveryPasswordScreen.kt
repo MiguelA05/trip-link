@@ -40,7 +40,7 @@ import com.example.triplink.ui.theme.PrincipalBlue
 import com.example.triplink.ui.theme.PrincipalRed
 import com.example.triplink.ui.theme.PrincipalWhite
 import kotlinx.coroutines.delay
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
