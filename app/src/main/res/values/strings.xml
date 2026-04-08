@@ -70,4 +70,87 @@
     <string name="component_search_bar_search_content_description">Search</string>
     <!-- resource: component_search_bar_filters_content_description -->
     <string name="component_search_bar_filters_content_description">Filters</string>
+
+    <!-- COMPONENT: CommentCard -->
+    <!-- resource: component_comment_card_show_less -->
+    <string name="component_comment_card_show_less">Show less</string>
+    <!-- resource: component_comment_card_show_more -->
+    <string name="component_comment_card_show_more">Show more</string>
+    <!-- resource: component_comment_card_default_initial -->
+    <string name="component_comment_card_default_initial">U</string>
+
+    <!-- COMPONENT: ExploreMapPublicationCard -->
+    <!-- resource: component_explore_map_publication_card_rating -->
+    <string name="component_explore_map_publication_card_rating">%1$s (%2$d)</string>
+    <!-- resource: component_explore_map_publication_card_duration -->
+    <string name="component_explore_map_publication_card_duration">3-4 hrs</string>
+    <!-- resource: component_explore_map_publication_card_open_full_publication -->
+    <string name="component_explore_map_publication_card_open_full_publication">View full publication  ></string>
+
+    <!-- COMPONENT: PublicationCard -->
+    <!-- resource: component_publication_card_moment_ago -->
+    <string name="component_publication_card_moment_ago">A moment ago</string>
+    <!-- resource: component_publication_card_near_you -->
+    <string name="component_publication_card_near_you">Near you</string>
+    <!-- resource: component_publication_card_comments_content_description -->
+    <string name="component_publication_card_comments_content_description">Comments</string>
+    <!-- resource: component_publication_card_add_to_favorites_content_description -->
+    <string name="component_publication_card_add_to_favorites_content_description">Add to favorites</string>
+    <!-- resource: component_publication_card_default_initial -->
+    <string name="component_publication_card_default_initial">U</string>
+
+    <!-- COMPONENT: RatingSummaryCard -->
+    <!-- resource: component_rating_summary_card_based_on -->
+    <string name="component_rating_summary_card_based_on">Based on</string>
+    <!-- resource: component_rating_summary_card_reviews_count -->
+    <plurals name="component_rating_summary_card_reviews_count">
+        <item quantity="one">%1$d review</item>
+        <item quantity="other">%1$d reviews</item>
+    </plurals>
+
+    <!-- COMPONENT: GeneralAlertDialog -->
+    <!-- resource: component_general_alert_dialog_close_content_description -->
+    <string name="component_general_alert_dialog_close_content_description">Close</string>
+    <!-- resource: component_general_alert_dialog_confirm_action -->
+    <string name="component_general_alert_dialog_confirm_action">Confirm</string>
+
+    <!-- COMPONENT: GeneralTopBar -->
+    <!-- resource: component_general_top_bar_back_content_description -->
+    <string name="component_general_top_bar_back_content_description">Back</string>
+
+    <!-- COMPONENT: NavItem -->
+    <!-- resource: component_nav_item_home -->
+    <string name="component_nav_item_home">Home</string>
+    <!-- resource: component_nav_item_explore -->
+    <string name="component_nav_item_explore">Explore</string>
+    <!-- resource: component_nav_item_my_profile -->
+    <string name="component_nav_item_my_profile">My Profile</string>
+    <!-- resource: component_nav_item_logout -->
+    <string name="component_nav_item_logout">Log out</string>
+    <!-- resource: component_nav_item_publications -->
+    <string name="component_nav_item_publications">Publications</string>
+    <!-- resource: component_nav_item_reports -->
+    <string name="component_nav_item_reports">Reports</string>
+
+    <!-- COMPONENT: ProfileHeader -->
+    <!-- resource: component_profile_header_logout_content_description -->
+    <string name="component_profile_header_logout_content_description">Log out</string>
+    <!-- resource: component_profile_header_edit_content_description -->
+    <string name="component_profile_header_edit_content_description">Edit profile</string>
+
+    <!-- COMPONENT: StatsRow -->
+    <!-- resource: component_stats_row_points -->
+    <string name="component_stats_row_points">POINTS</string>
+    <!-- resource: component_stats_row_contributions -->
+    <string name="component_stats_row_contributions">CONTRIBUTIONS</string>
+    <!-- resource: component_stats_row_active_days -->
+    <string name="component_stats_row_active_days">ACTIVE DAYS</string>
+
+    <!-- COMPONENT: StatusTabs -->
+    <!-- resource: component_status_tabs_verified -->
+    <string name="component_status_tabs_verified">Verified</string>
+    <!-- resource: component_status_tabs_pending -->
+    <string name="component_status_tabs_pending">Pending</string>
+    <!-- resource: component_status_tabs_rejected -->
+    <string name="component_status_tabs_rejected">Rejected</string>
 </resources>

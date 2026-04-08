@@ -24,9 +24,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.triplink.R
 import com.example.triplink.ui.theme.PrincipalBlue
 import com.example.triplink.ui.theme.PrincipalWhite
 
@@ -60,7 +62,9 @@ fun ProfileHeader(
             ) {
                 Icon(
                     imageVector = Icons.AutoMirrored.Outlined.Logout,
-                    contentDescription = "Salir",
+                    contentDescription = stringResource(
+                        R.string.component_profile_header_logout_content_description
+                    ),
                     tint = PrincipalWhite
                 )
             }
@@ -71,7 +75,9 @@ fun ProfileHeader(
             ) {
                 Icon(
                     imageVector = Icons.Outlined.Edit,
-                    contentDescription = "Editar perfil",
+                    contentDescription = stringResource(
+                        R.string.component_profile_header_edit_content_description
+                    ),
                     tint = PrincipalWhite
                 )
             }

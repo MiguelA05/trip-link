@@ -27,11 +27,13 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
 import coil3.request.crossfade
+import com.example.triplink.R
 import com.example.triplink.domain.model.PuntoInteres
 import com.example.triplink.ui.theme.PrincipalOrange
 
@@ -122,7 +124,11 @@ fun ExploreMapPublicationCard(
                             modifier = Modifier.size(15.dp)
                         )
                         Text(
-                            text = "$ratingLabel (2)",
+                            text = stringResource(
+                                R.string.component_explore_map_publication_card_rating,
+                                ratingLabel,
+                                2
+                            ),
                             style = MaterialTheme.typography.labelLarge,
                             fontWeight = FontWeight.Bold,
                             color = Color(0xFF5B4A1A)
@@ -160,7 +166,7 @@ fun ExploreMapPublicationCard(
                         modifier = Modifier.size(14.dp)
                     )
                     Text(
-                        text = "3-4 hrs",
+                        text = stringResource(R.string.component_explore_map_publication_card_duration),
                         color = Color(0xFF808A99),
                         style = MaterialTheme.typography.bodyMedium,
                         fontWeight = FontWeight.SemiBold
@@ -175,7 +181,7 @@ fun ExploreMapPublicationCard(
 
                 GeneralButton(
                     onClick = { onOpenPublication?.invoke() },
-                    text = "Ver publicacion completa  >"
+                    text = stringResource(R.string.component_explore_map_publication_card_open_full_publication)
                 )
                 Spacer(modifier = Modifier.height(2.dp))
             }

@@ -23,12 +23,14 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
 import coil3.request.crossfade
+import com.example.triplink.R
 import com.example.triplink.domain.model.PuntoInteres
 import java.util.Locale
 
@@ -71,7 +73,10 @@ fun PublicationCard(
                     contentAlignment = Alignment.Center
                 ) {
                     Text(
-                        text = buildInitials(puntoInteres.usuarioAutorId),
+                        text = buildInitials(
+                            value = puntoInteres.usuarioAutorId,
+                            fallbackInitial = stringResource(R.string.component_publication_card_default_initial)
+                        ),
                         color = Color(0xFF1967D2),
                         fontWeight = FontWeight.Bold,
                         fontSize = 16.sp
@@ -88,7 +93,7 @@ fun PublicationCard(
                         color = Color.Black
                     )
                     Text(
-                        text = "Hace un momento",
+                        text = stringResource(R.string.component_publication_card_moment_ago),
                         fontSize = 12.sp,
                         color = Color.Gray
                     )
@@ -100,7 +105,7 @@ fun PublicationCard(
                     shape = RoundedCornerShape(16.dp)
                 ) {
                     Text(
-                        text = "Cerca de ti",
+                        text = stringResource(R.string.component_publication_card_near_you),
                         modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp),
                         color = Color(0xFF1967D2),
                         fontSize = 12.sp,
@@ -225,7 +230,9 @@ fun PublicationCard(
                         ) {
                             Icon(
                                 imageVector = Icons.Outlined.ChatBubbleOutline,
-                                contentDescription = "Comentarios",
+                                contentDescription = stringResource(
+                                    R.string.component_publication_card_comments_content_description
+                                ),
                                 tint = Color.Gray,
                                 modifier = Modifier.size(24.dp)
                             )
@@ -247,8 +254,10 @@ fun PublicationCard(
                             modifier = Modifier.size(24.dp)
                         ) {
                             Icon(
-                                imageVector = if (isFavorite) Icons.Filled.Favorite else Icons.Outlined.FavoriteBorder,
-                                contentDescription = "Agregar a favoritos",
+                                 imageVector = if (isFavorite) Icons.Filled.Favorite else Icons.Outlined.FavoriteBorder,
+                                contentDescription = stringResource(
+                                    R.string.component_publication_card_add_to_favorites_content_description
+                                ),
                                 tint = if (isFavorite) Color(0xFFE53935) else Color.Gray,
                                 modifier = Modifier.size(24.dp)
                             )
@@ -266,9 +275,9 @@ fun PublicationCard(
     }
 }
 
-private fun buildInitials(value: String): String {
+private fun buildInitials(value: String, fallbackInitial: String): String {
     val parts = value.trim().split(" ").filter { it.isNotBlank() }
-    if (parts.isEmpty()) return "U"
+    if (parts.isEmpty()) return fallbackInitial
     return parts.take(2).joinToString("") { it.first().uppercaseChar().toString() }
 }
 

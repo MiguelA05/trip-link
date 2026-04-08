@@ -12,6 +12,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.triplink.ui.theme.PrincipalBlue
 
@@ -36,11 +37,12 @@ fun BottomBar(
                 tonalElevation = 0.dp
             ) {
                 items.forEachIndexed { index, item ->
+                    val itemLabel = stringResource(item.labelRes)
                     NavigationBarItem(
                         selected = selectedIndex == index,
                         onClick = { onItemSelected(index) },
-                        icon = { Icon(imageVector = item.icon, contentDescription = item.label) },
-                        label = { Text(text = item.label) },
+                        icon = { Icon(imageVector = item.icon, contentDescription = itemLabel) },
+                        label = { Text(text = itemLabel) },
                         colors = NavigationBarItemDefaults.colors(
                             selectedIconColor = PrincipalBlue,
                             selectedTextColor = PrincipalBlue,
