@@ -7,7 +7,6 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
 import com.example.triplink.core.navigation.main.MainRoutes
-import com.example.triplink.core.navigation.user.UserSectionRoutes
 import com.example.triplink.features.badges.BadgesScreen
 import com.example.triplink.features.comments.CommentsScreen
 import com.example.triplink.features.filters.FiltersScreen
@@ -44,7 +43,7 @@ fun UserNavigation(
                     navController.navigate(UserSectionRoutes.Notifications)
                 },
                 onPostCreationClick = {
-                    navController.navigate(UserSectionRoutes.PostCreation)
+                    navController.navigate(UserSectionRoutes.PostCreation())
                 }
             )
         }
@@ -91,7 +90,10 @@ fun UserNavigation(
                     navController.navigate(UserSectionRoutes.Bagdes)
                 },
                 onPostCreationClick = {
-                    navController.navigate(UserSectionRoutes.PostCreation)
+                    navController.navigate(UserSectionRoutes.PostCreation())
+                },
+                onEditRejectedPublication = { publicationId ->
+                    navController.navigate(UserSectionRoutes.PostCreation(publicationId))
                 }
             )
         }
@@ -135,14 +137,20 @@ fun UserNavigation(
         composable<UserSectionRoutes.Filters> {
             FiltersScreen({ navController.popBackStack() })
         }
-        composable<UserSectionRoutes.PostCreation> {
+        composable<UserSectionRoutes.PostCreation> { backStackEntry ->
+            val route = backStackEntry.toRoute<UserSectionRoutes.PostCreation>()
             PostCreationScreen(
                 onBack = { navController.popBackStack() },
+                publicationIdToEdit = route.publicationId,
                 onUserHomeClick = {
-                    navController.navigate(UserSectionRoutes.UserHome)
+                    navController.navigate(UserSectionRoutes.UserHome) {
+                        launchSingleTop = true
+                    }
                 },
                 onUserInfoClick = {
-                    navController.navigate(UserSectionRoutes.UserInfo)
+                    navController.navigate(UserSectionRoutes.UserInfo) {
+                        launchSingleTop = true
+                    }
                 }
             )
         }

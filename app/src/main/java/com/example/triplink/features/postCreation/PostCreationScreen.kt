@@ -44,6 +44,7 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.example.triplink.core.components.FormField
 import com.example.triplink.core.components.GeneralButton
 import com.example.triplink.core.components.GeneralTopBar
+import com.example.triplink.core.utils.RequestResult
 import com.example.triplink.ui.theme.PrincipalBlue
 import kotlinx.coroutines.launch
 
@@ -59,11 +60,32 @@ data class DayScheduleData(
 fun PostCreationScreen(
     onBack: () -> Unit = {},
     viewModel: PostCreationViewModel = hiltViewModel(),
+    publicationIdToEdit: String? = null,
     onUserHomeClick: () -> Unit = {},
     onUserInfoClick: () -> Unit = {}
 ) {
     val snackbarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
+    val createResult by viewModel.createResult.collectAsState()
+
+    LaunchedEffect(publicationIdToEdit) {
+        viewModel.loadPublicationForEdit(publicationIdToEdit)
+    }
+
+    LaunchedEffect(createResult) {
+        when (val result = createResult) {
+            is RequestResult.Failure -> {
+                snackbarHostState.showSnackbar(result.errorMessage)
+                viewModel.clearResult()
+            }
+
+            is RequestResult.Success -> {
+                viewModel.clearResult()
+            }
+
+            null -> Unit
+        }
+    }
 
     Scaffold(
         topBar = {
@@ -463,15 +485,18 @@ fun PostCreationScreen(
 
 
             GeneralButton(
-                text = "Publicar",
-                onClick = { viewModel.showSuccessModal = true },
+                text = viewModel.submitButtonLabel,
+                onClick = { viewModel.createPost() },
                 enabled = viewModel.isFormValid
             )
         }
 
         if (viewModel.showSuccessModal) {
             PostSuccessBottomSheet(
-                onDismiss = onUserHomeClick,
+                onDismiss = {
+                    viewModel.dismissSuccessModal()
+                    onUserHomeClick()
+                },
                 onNavigateToPosts = onUserInfoClick
             )
         }

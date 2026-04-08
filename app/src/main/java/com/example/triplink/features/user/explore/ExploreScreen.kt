@@ -17,6 +17,8 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.ScaffoldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
@@ -35,6 +37,7 @@ fun ExploreScreen(
 	onFiltersClick: () -> Unit = {}
 ) {
 	val viewModel: ExploreViewModel = hiltViewModel()
+	val publications by viewModel.publications.collectAsState()
 
 	Scaffold(
 		modifier = Modifier
@@ -83,7 +86,7 @@ fun ExploreScreen(
 			contentPadding = PaddingValues(horizontal = 8.dp, vertical = 8.dp),
 			verticalArrangement = Arrangement.spacedBy(6.dp)
 		) {
-			items(viewModel.filteredPuntoInteres, key = { it.id }) { publication ->
+			items(viewModel.filteredPuntoInteres(publications), key = { it.id }) { publication ->
 				PublicationCard(
 					puntoInteres = publication,
 					onCardClick = { onPublicationClick(publication.id) },

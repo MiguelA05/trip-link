@@ -18,5 +18,6 @@ data class PuntoInteres(
     val horario: Pair<Long, Long>? = null,
 
     val estado: EstadoPublicacion = EstadoPublicacion.PENDIENTE,
-    val rangoPrecios: RangoPrecios? = null
+    val rangoPrecios: RangoPrecios? = null,
+    val motivoRechazo: String? = null
 )

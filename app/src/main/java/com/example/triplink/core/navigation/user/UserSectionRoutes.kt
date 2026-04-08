@@ -32,7 +32,7 @@ sealed class UserSectionRoutes {
     data object Filters : UserSectionRoutes()
 
     @Serializable
-    data object PostCreation : UserSectionRoutes()
+    data class PostCreation(val publicationId: String? = null) : UserSectionRoutes()
 
     @Serializable
     data object Bagdes : UserSectionRoutes()

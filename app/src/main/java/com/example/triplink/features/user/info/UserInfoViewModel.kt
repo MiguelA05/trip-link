@@ -6,6 +6,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.triplink.data.datastore.SessionDataStore
+import com.example.triplink.domain.model.PuntoInteres
 import com.example.triplink.domain.model.enums.EstadoPublicacion
 import com.example.triplink.domain.repository.user.UserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -13,6 +14,13 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import java.util.Locale
 import javax.inject.Inject
+
+data class UserContributionItem(
+	val id: String,
+	val title: String,
+	val status: EstadoPublicacion,
+	val rejectReason: String?
+)
 
 data class UserInfoUiState(
 	val userName: String,
@@ -23,7 +31,8 @@ data class UserInfoUiState(
 	val contributionsInSelectedTab: Int,
 	val activeDays: Int,
 	val selectedContributionTab: EstadoPublicacion,
-	val selectedBottomTabIndex: Int
+	val selectedBottomTabIndex: Int,
+	val selectedContributionItems: List<UserContributionItem>
 )
 
 @HiltViewModel
@@ -45,7 +54,8 @@ class UserInfoViewModel @Inject constructor(
 			contributionsInSelectedTab = 0,
 			activeDays = 1,
 			selectedContributionTab = EstadoPublicacion.PENDIENTE,
-			selectedBottomTabIndex = 2
+			selectedBottomTabIndex = 2,
+			selectedContributionItems = emptyList()
 		)
 	)
 		private set
@@ -57,14 +67,8 @@ class UserInfoViewModel @Inject constructor(
 	}
 
 	fun onContributionTabSelected(tab: EstadoPublicacion) {
-		val userId = currentUserId ?: return
-		val countInTab = userRepository
-			.getPublicationsByState(tab)
-			.count { it.usuarioAutorId.equals(userId, ignoreCase = true) }
-		uiState = uiState.copy(
-			selectedContributionTab = tab,
-			contributionsInSelectedTab = countInTab
-		)
+		uiState = uiState.copy(selectedContributionTab = tab)
+		refreshSelectedContributions()
 	}
 
 	fun onBottomTabSelected(index: Int) {
@@ -79,6 +83,10 @@ class UserInfoViewModel @Inject constructor(
 		showLogoutDialog = false
 	}
 
+	fun refreshData() {
+		loadUserData()
+	}
+
 	private fun loadUserData() {
 		viewModelScope.launch {
 			val session = sessionDataStore.sessionFlow.first()
@@ -88,10 +96,6 @@ class UserInfoViewModel @Inject constructor(
 			user?.let { mappedUser ->
 				currentUserId = mappedUser.email
 				val contributionsByUser = userRepository.getUserPublications(mappedUser.email)
-				val selectedTabCount = userRepository
-					.getPublicationsByState(uiState.selectedContributionTab)
-					.count { it.usuarioAutorId.equals(mappedUser.email, ignoreCase = true) }
-
 				val contributionCount = contributionsByUser.count {
 					it.estado == EstadoPublicacion.VERIFICADA ||
 						it.estado == EstadoPublicacion.PENDIENTE ||
@@ -104,12 +108,31 @@ class UserInfoViewModel @Inject constructor(
 					roleLabel = mappedUser.rol.name,
 					points = mappedUser.puntos,
 					contributions = contributionCount,
-					contributionsInSelectedTab = selectedTabCount,
 					activeDays = maxOf(contributionCount, 1)
 				)
+				refreshSelectedContributions()
 			}
 		}
 	}
+
+	private fun refreshSelectedContributions() {
+		val userId = currentUserId ?: return
+		val filtered = userRepository.getUserPublications(userId)
+			.filter { it.estado == uiState.selectedContributionTab }
+			.map { it.toContributionItem() }
+
+		uiState = uiState.copy(
+			contributionsInSelectedTab = filtered.size,
+			selectedContributionItems = filtered
+		)
+	}
+
+	private fun PuntoInteres.toContributionItem(): UserContributionItem = UserContributionItem(
+		id = id,
+		title = titulo,
+		status = estado,
+		rejectReason = motivoRechazo
+	)
 
 	private companion object {
 		fun buildInitials(name: String): String {

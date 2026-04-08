@@ -276,13 +276,23 @@ fun PublicationCard(
 }
 
 private fun buildInitials(value: String, fallbackInitial: String): String {
-    val parts = value.trim().split(" ").filter { it.isNotBlank() }
+    val normalized = value.substringBefore('@').replace('.', ' ').replace('_', ' ').trim()
+    val parts = normalized.split(" ").filter { it.isNotBlank() }
     if (parts.isEmpty()) return fallbackInitial
     return parts.take(2).joinToString("") { it.first().uppercaseChar().toString() }
 }
 
 private fun formatAuthorName(userId: String): String =
-    userId.replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.ROOT) else it.toString() }
+    userId.substringBefore('@')
+        .replace('.', ' ')
+        .replace('_', ' ')
+        .split(' ')
+        .filter { it.isNotBlank() }
+        .joinToString(" ") { token ->
+            token.lowercase(Locale.ROOT).replaceFirstChar {
+                if (it.isLowerCase()) it.titlecase(Locale.ROOT) else it.toString()
+            }
+        }
 
 private fun formatCategory(category: String): String =
     category.lowercase(Locale.ROOT)

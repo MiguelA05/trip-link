@@ -3,6 +3,7 @@ package com.example.triplink.domain.repository.user
 import com.example.triplink.domain.model.Comentario
 import com.example.triplink.domain.model.PuntoInteres
 import com.example.triplink.domain.model.Usuario
+import com.example.triplink.domain.model.enums.EstadoPublicacion
 import kotlinx.coroutines.flow.StateFlow
 
 interface UserRepository {
@@ -15,6 +16,7 @@ interface UserRepository {
     fun login(email: String, password: String): Usuario?
     fun updateUser(user: Usuario): Boolean
     fun getUserById(userId: String): Usuario?
+    fun findUserNameById(userId: String): String?
     fun deleteUser(email: String): Boolean
 
 
@@ -26,7 +28,7 @@ interface UserRepository {
     fun updatePuntoInteres(publication: PuntoInteres): Boolean
     fun deletePublicationById(publicationId: String): Boolean
     fun getUserPublications(userId: String): List<PuntoInteres>
-    fun getPublicationsByState(estado: com.example.triplink.domain.model.enums.EstadoPublicacion): List<PuntoInteres>
+    fun getPublicationsByState(estado: EstadoPublicacion): List<PuntoInteres>
 
     // Favorites management
     fun toggleFavorite(userId: String, publicationId: String): Boolean

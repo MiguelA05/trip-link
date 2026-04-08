@@ -15,6 +15,7 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -25,6 +26,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.example.triplink.core.components.GeneralAlertDialog
+import com.example.triplink.core.components.GeneralButton
 import com.example.triplink.core.components.profile.EmptyState
 import com.example.triplink.core.components.profile.ProfileHeader
 import com.example.triplink.core.components.profile.SectionCard
@@ -40,8 +42,13 @@ fun UserInfoScreen(
 	onLogoutClick: () -> Unit = {},
 	onEditClick: () -> Unit = {},
 	onBagdesClick: () -> Unit = {},
-	onPostCreationClick: () -> Unit = {}
+	onPostCreationClick: () -> Unit = {},
+	onEditRejectedPublication: (String) -> Unit = {}
 ) {
+	LaunchedEffect(Unit) {
+		viewModel.refreshData()
+	}
+
 	val state = viewModel.uiState
 
 	Scaffold(
@@ -124,16 +131,46 @@ fun UserInfoScreen(
 							EstadoPublicacion.VERIFICADA -> "verificadas"
 							EstadoPublicacion.RECHAZADA -> "rechazadas"
 						}
-						Text(
-							text = if (state.contributionsInSelectedTab == 0) {
-								"No tienes contribuciones\n$tabLabel"
-							} else {
-								"Tienes ${state.contributionsInSelectedTab}\ncontribuciones $tabLabel"
-							},
-							color = Color(0xFF8FA1BA),
-							style = androidx.compose.material3.MaterialTheme.typography.headlineSmall,
-							fontWeight = FontWeight.Medium
-						)
+						if (state.selectedContributionItems.isEmpty()) {
+							Text(
+								text = "No tienes contribuciones\n$tabLabel",
+								color = Color(0xFF8FA1BA),
+								style = androidx.compose.material3.MaterialTheme.typography.headlineSmall,
+								fontWeight = FontWeight.Medium
+							)
+						}
+
+						if (state.selectedContributionItems.isNotEmpty()) {
+							state.selectedContributionItems.forEach { contribution ->
+								Card(
+									modifier = Modifier.fillMaxWidth(),
+									colors = CardDefaults.cardColors(containerColor = Color.White),
+									shape = androidx.compose.foundation.shape.RoundedCornerShape(14.dp)
+								) {
+									Column(
+										modifier = Modifier
+											.fillMaxWidth()
+											.padding(12.dp),
+										verticalArrangement = Arrangement.spacedBy(6.dp)
+									) {
+										Text(contribution.title, fontWeight = FontWeight.SemiBold)
+										if (contribution.status == EstadoPublicacion.RECHAZADA && !contribution.rejectReason.isNullOrBlank()) {
+											Text(
+												text = "Motivo: ${contribution.rejectReason}",
+												color = Color(0xFFD84343),
+												style = androidx.compose.material3.MaterialTheme.typography.bodyMedium
+											)
+										}
+										if (contribution.status == EstadoPublicacion.RECHAZADA) {
+											GeneralButton(
+												onClick = { onEditRejectedPublication(contribution.id) },
+												text = "Editar y reenviar"
+											)
+										}
+									}
+								}
+							}
+						}
 
 						Button(
 							onClick = onPostCreationClick,

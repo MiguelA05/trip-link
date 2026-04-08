@@ -184,7 +184,7 @@ class CommentsViewModel @Inject constructor(
     private fun sampleReviews(publicationId: String): List<Comentario> = listOf(
         Comentario(
             id = "c1",
-            usuarioId = "u1",
+            usuarioId = "camila@email.com",
             puntoInteresId = publicationId,
             userName = "Camila Torres",
             date = 1778025600000,
@@ -193,7 +193,7 @@ class CommentsViewModel @Inject constructor(
         ),
         Comentario(
             id = "c2",
-            usuarioId = "u2",
+            usuarioId = "valentina@email.com",
             puntoInteresId = publicationId,
             userName = "Valentina Rios",
             date = 1777075200000,
@@ -202,7 +202,7 @@ class CommentsViewModel @Inject constructor(
         ),
         Comentario(
             id = "c3",
-            usuarioId = "u3",
+            usuarioId = "luis@email.com",
             puntoInteresId = publicationId,
             userName = "Luis Herrera",
             date = 1776207600000,

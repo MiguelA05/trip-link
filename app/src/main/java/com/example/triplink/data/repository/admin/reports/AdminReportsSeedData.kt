@@ -31,7 +31,7 @@ internal fun createAdminReportsSeedState(): AdminReportsSeedState {
             id = "poi-1",
             titulo = "Mercado Artesanal del Quindío",
             informacion = "Oferta gastronomica y artesanal en el centro del departamento.",
-            usuarioAutorId = "user-10",
+            usuarioAutorId = "laura@email.com",
             categoria = Categoria.GASTRONOMIA,
             ubicacion = Ubicacion(latitud = 4.533, longitud = -75.681, ciudad = "Armenia, Quindio"),
             fotos = listOf("https://images.unsplash.com/photo-1601050690597-df0568f70950?q=80&w=1200&auto=format&fit=crop"),
@@ -43,7 +43,7 @@ internal fun createAdminReportsSeedState(): AdminReportsSeedState {
             id = "poi-2",
             titulo = "Plaza Principal Filandia",
             informacion = "Recorrido patrimonial y comercial de la zona central.",
-            usuarioAutorId = "user-11",
+            usuarioAutorId = "martin@email.com",
             categoria = Categoria.CULTURA,
             ubicacion = Ubicacion(latitud = 4.668, longitud = -75.660, ciudad = "Filandia, Quindio"),
             fotos = listOf("https://images.unsplash.com/photo-1544735716-392fe2489ffa?q=80&w=1200&auto=format&fit=crop"),
@@ -55,7 +55,7 @@ internal fun createAdminReportsSeedState(): AdminReportsSeedState {
             id = "poi-3",
             titulo = "Mirador Alto de la Cruz",
             informacion = "Mirador panoramico con vista al valle del Quindio.",
-            usuarioAutorId = "user-12",
+            usuarioAutorId = "miguel@email.com",
             categoria = Categoria.NATURALEZA,
             ubicacion = Ubicacion(latitud = 4.636, longitud = -75.571, ciudad = "Salento, Quindio"),
             fotos = listOf("https://images.unsplash.com/photo-1469474968028-56623f02e42e?q=80&w=1200&auto=format&fit=crop"),
@@ -69,7 +69,7 @@ internal fun createAdminReportsSeedState(): AdminReportsSeedState {
         AdminReportSeedEntry(
             report = Reporte(
                 id = "rep-1",
-                reportadorId = "Laura Fernandez",
+                reportadorId = "camila@email.com",
                 puntoInteresId = "poi-1",
                 motivo = RazonReporte.INFORMACION_FALSA,
                 descripcion = "La direccion no coincide con el lugar real",
@@ -77,12 +77,12 @@ internal fun createAdminReportsSeedState(): AdminReportsSeedState {
                 fechaCreacion = System.currentTimeMillis() - 3L * 24L * 60L * 60L * 1000L
             ),
             pointOfInterest = publicationsById.getValue("poi-1"),
-            reporterName = "Laura Fernandez"
+            reporterName = "Camila Torres"
         ),
         AdminReportSeedEntry(
             report = Reporte(
                 id = "rep-2",
-                reportadorId = "Juan Pablo Torres",
+                reportadorId = "valentina@email.com",
                 puntoInteresId = "poi-1",
                 motivo = RazonReporte.CONTENIDO_INAPROPIADO,
                 descripcion = "Incluye publicidad no relacionada con el sitio",
@@ -90,7 +90,7 @@ internal fun createAdminReportsSeedState(): AdminReportsSeedState {
                 fechaCreacion = System.currentTimeMillis() - 5L * 60L * 60L * 1000L
             ),
             pointOfInterest = publicationsById.getValue("poi-1"),
-            reporterName = "Juan Pablo Torres"
+            reporterName = "Valentina Rios"
         )
     )
 

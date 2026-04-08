@@ -43,6 +43,7 @@ fun UserHomeScreen(
     val viewModel: UserHomeViewModel = hiltViewModel()
     val sessionViewModel: SessionViewModel = hiltViewModel()
     val favoriteResult by viewModel.favoriteToggleResult.collectAsState()
+    val publications by viewModel.publications.collectAsState()
     val snackbarHostState = remember { SnackbarHostState() }
 
     // Obtain current session to get userId
@@ -96,7 +97,7 @@ fun UserHomeScreen(
             contentPadding = PaddingValues(horizontal = 10.dp, vertical = 8.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            items(items = viewModel.puntoInteres, key = { it.id }) { publication ->
+            items(items = viewModel.toHomePublications(publications), key = { it.id }) { publication ->
                 PublicationCard(
                     puntoInteres = publication,
                     onCardClick = { onPublicationClick(publication.id) },

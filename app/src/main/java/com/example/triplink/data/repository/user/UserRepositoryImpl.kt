@@ -4,6 +4,7 @@ import com.example.triplink.data.repository.user.publications.createUserPublicat
 import com.example.triplink.domain.model.Comentario
 import com.example.triplink.domain.model.PuntoInteres
 import com.example.triplink.domain.model.Usuario
+import com.example.triplink.domain.model.enums.EstadoPublicacion
 import com.example.triplink.domain.model.enums.Rol
 import com.example.triplink.domain.repository.user.UserRepository
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -24,6 +25,48 @@ class UserRepositoryImpl @Inject constructor() : UserRepository {
                 nombre = "Carlos",
                 password = "123456",
                 puntos = 90,
+                rol = Rol.USUARIO
+            ),
+            Usuario(
+                email = "laura@email.com",
+                nombre = "Laura Gomez",
+                password = "123456",
+                puntos = 140,
+                rol = Rol.USUARIO
+            ),
+            Usuario(
+                email = "martin@email.com",
+                nombre = "Martin Ruiz",
+                password = "123456",
+                puntos = 110,
+                rol = Rol.USUARIO
+            ),
+            Usuario(
+                email = "miguel@email.com",
+                nombre = "Miguel Mira",
+                password = "123456",
+                puntos = 70,
+                rol = Rol.USUARIO
+            ),
+            Usuario(
+                email = "camila@email.com",
+                nombre = "Camila Torres",
+                password = "123456",
+                puntos = 45,
+                rol = Rol.USUARIO
+            ),
+            Usuario(
+                email = "valentina@email.com",
+                nombre = "Valentina Rios",
+                password = "123456",
+                puntos = 50,
+                rol = Rol.USUARIO
+            ),
+            Usuario(
+                email = "luis@email.com",
+                nombre = "Luis Herrera",
+                password = "123456",
+                puntos = 38,
                 rol = Rol.USUARIO
             ),
             Usuario(
@@ -76,9 +119,16 @@ class UserRepositoryImpl @Inject constructor() : UserRepository {
         return _users.value.firstOrNull { it.email.equals(userId, ignoreCase = true) }
     }
 
-    override fun homePublications(): List<PuntoInteres> = _publications.value.take(2)
+    override fun findUserNameById(userId: String): String? {
+        return getUserById(userId)?.nombre
+    }
+
+    override fun homePublications(): List<PuntoInteres> = _publications.value
+        .filter { it.estado == EstadoPublicacion.VERIFICADA }
+        .take(10)
 
     override fun explorePublications(): List<PuntoInteres> = _publications.value
+        .filter { it.estado == EstadoPublicacion.VERIFICADA }
 
     override fun getPublicationById(publicationId: String): PuntoInteres? {
         return _publications.value.firstOrNull { it.id == publicationId }
@@ -112,7 +162,7 @@ class UserRepositoryImpl @Inject constructor() : UserRepository {
         return _publications.value.size < initialSize
     }
 
-    override fun getPublicationsByState(estado: com.example.triplink.domain.model.enums.EstadoPublicacion): List<PuntoInteres> {
+    override fun getPublicationsByState(estado: EstadoPublicacion): List<PuntoInteres> {
         return _publications.value.filter { it.estado == estado }
     }
 

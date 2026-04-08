@@ -1,36 +1,35 @@
 package com.example.triplink.data.repository.admin
 
-import com.example.triplink.data.repository.admin.moderation.createAdminModerationSeedState
 import com.example.triplink.data.repository.admin.reports.AdminReportSeedEntry
 import com.example.triplink.data.repository.admin.reports.createAdminReportsSeedState
+import com.example.triplink.domain.model.PuntoInteres
 import com.example.triplink.domain.model.enums.EstadoPublicacion
 import com.example.triplink.domain.model.enums.moderator.DecisionModerador
 import com.example.triplink.domain.model.enums.moderator.ModerationFilter
 import com.example.triplink.domain.model.moderator.ModerationPublication
 import com.example.triplink.domain.repository.admin.AdminRepository
+import com.example.triplink.domain.repository.user.UserRepository
 import com.example.triplink.features.admin.reports.AdminReportUi
 import javax.inject.Inject
 import javax.inject.Singleton
+import kotlin.math.absoluteValue
 
 @Singleton
-class AdminRepositoryImpl @Inject constructor() : AdminRepository {
+class AdminRepositoryImpl @Inject constructor(
+    private val userRepository: UserRepository
+) : AdminRepository {
 
-    private val moderationSeedState = createAdminModerationSeedState()
     private val reportsSeedState = createAdminReportsSeedState()
     private val acceptedReportThreshold = 3
 
     override val pendingModerationCount: Int
-        get() = moderationSeedState.pendingPublications.size
+        get() = userRepository.publications.value.count { it.estado == EstadoPublicacion.PENDIENTE }
 
     override val verifiedModerationCount: Int
-        get() = moderationSeedState.reviewedPublications.count {
-            it.pointOfInterest.estado == EstadoPublicacion.VERIFICADA
-        }
+        get() = userRepository.publications.value.count { it.estado == EstadoPublicacion.VERIFICADA }
 
     override val rejectedModerationCount: Int
-        get() = moderationSeedState.reviewedPublications.count {
-            it.pointOfInterest.estado == EstadoPublicacion.RECHAZADA
-        }
+        get() = userRepository.publications.value.count { it.estado == EstadoPublicacion.RECHAZADA }
 
     override val pendingReportsCount: Int
         get() = reportsSeedState.pendingReports.size
@@ -41,24 +40,31 @@ class AdminRepositoryImpl @Inject constructor() : AdminRepository {
             .sortedByDescending { it.report.fechaCreacion }
 
     override fun getModerationPublicationById(publicationId: String): ModerationPublication? {
-        return moderationSeedState.pendingPublications.firstOrNull { it.id == publicationId }
-            ?: moderationSeedState.reviewedPublications.firstOrNull { it.id == publicationId }
+        return userRepository.getPublicationById(publicationId)?.toModerationPublication()
     }
 
     override fun moderationPublicationsFor(filter: ModerationFilter): List<ModerationPublication> = when (filter) {
-        ModerationFilter.ALL -> buildList {
-            addAll(moderationSeedState.pendingPublications)
-            addAll(moderationSeedState.reviewedPublications)
+        ModerationFilter.ALL -> {
+            val pending = userRepository.publications.value
+                .filter { it.estado == EstadoPublicacion.PENDIENTE }
+                .map { it.toModerationPublication() }
+            val reviewed = userRepository.publications.value
+                .filter { it.estado != EstadoPublicacion.PENDIENTE }
+                .map { it.toModerationPublication() }
+            pending + reviewed
         }
 
-        ModerationFilter.PENDING -> moderationSeedState.pendingPublications.toList()
-        ModerationFilter.VERIFIED -> moderationSeedState.reviewedPublications.filter {
-            it.pointOfInterest.estado == EstadoPublicacion.VERIFICADA
-        }
+        ModerationFilter.PENDING -> userRepository.publications.value
+            .filter { it.estado == EstadoPublicacion.PENDIENTE }
+            .map { it.toModerationPublication() }
 
-        ModerationFilter.REJECTED -> moderationSeedState.reviewedPublications.filter {
-            it.pointOfInterest.estado == EstadoPublicacion.RECHAZADA
-        }
+        ModerationFilter.VERIFIED -> userRepository.publications.value
+            .filter { it.estado == EstadoPublicacion.VERIFICADA }
+            .map { it.toModerationPublication() }
+
+        ModerationFilter.REJECTED -> userRepository.publications.value
+            .filter { it.estado == EstadoPublicacion.RECHAZADA }
+            .map { it.toModerationPublication() }
     }
 
     override fun applyModerationDecision(
@@ -66,8 +72,7 @@ class AdminRepositoryImpl @Inject constructor() : AdminRepository {
         decision: DecisionModerador,
         reason: String?
     ) {
-        val publication = moderationSeedState.pendingPublications.firstOrNull { it.id == publicationId } ?: return
-        moderationSeedState.pendingPublications.remove(publication)
+        val publication = userRepository.getPublicationById(publicationId) ?: return
 
         val updatedStatus = if (decision == DecisionModerador.APROBADA) {
             EstadoPublicacion.VERIFICADA
@@ -75,12 +80,10 @@ class AdminRepositoryImpl @Inject constructor() : AdminRepository {
             EstadoPublicacion.RECHAZADA
         }
 
-        moderationSeedState.reviewedPublications.add(
-            moderationSeedState.reviewedPublications.size,
+        userRepository.updatePuntoInteres(
             publication.copy(
-                pointOfInterest = publication.pointOfInterest.copy(estado = updatedStatus),
-                moderationReason = if (decision == DecisionModerador.RECHAZADA) reason else publication.moderationReason,
-                rejectReason = if (decision == DecisionModerador.RECHAZADA) reason else null
+                estado = updatedStatus,
+                motivoRechazo = if (decision == DecisionModerador.RECHAZADA) reason else null
             )
         )
     }
@@ -105,8 +108,15 @@ class AdminRepositoryImpl @Inject constructor() : AdminRepository {
         reportsSeedState.pendingReports.removeAt(index)
 
         if (updatedCount >= acceptedReportThreshold) {
-            reportsSeedState.publicationsById[publicationId] = reportsSeedState.publicationsById.getValue(publicationId)
-                .copy(estado = EstadoPublicacion.RECHAZADA)
+            val publication = userRepository.getPublicationById(publicationId)
+            if (publication != null) {
+                userRepository.updatePuntoInteres(
+                    publication.copy(
+                        estado = EstadoPublicacion.RECHAZADA,
+                        motivoRechazo = "Publicación rechazada por acumulación de reportes confirmados"
+                    )
+                )
+            }
             reportsSeedState.pendingReports.removeAll { it.pointOfInterest.id == publicationId }
         }
     }
@@ -124,5 +134,19 @@ class AdminRepositoryImpl @Inject constructor() : AdminRepository {
         reporterName = reporterName,
         acceptedReportsCount = acceptedReportsCount
     )
-}
 
+    private fun PuntoInteres.toModerationPublication(): ModerationPublication {
+        val authorName = userRepository.findUserNameById(usuarioAutorId)
+            ?: usuarioAutorId.substringBefore('@')
+
+        return ModerationPublication(
+            id = id,
+            pointOfInterest = this,
+            authorName = authorName,
+            createdAtMillis = System.currentTimeMillis() -
+                (id.hashCode().toLong().absoluteValue % 96L) * 60L * 60L * 1000L,
+            moderationReason = motivoRechazo,
+            rejectReason = motivoRechazo
+        )
+    }
+}

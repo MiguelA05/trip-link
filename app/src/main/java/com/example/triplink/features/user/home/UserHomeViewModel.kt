@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.triplink.core.utils.RequestResult
 import com.example.triplink.domain.model.PuntoInteres
+import com.example.triplink.domain.model.enums.EstadoPublicacion
 import com.example.triplink.domain.repository.user.UserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -20,14 +21,16 @@ class UserHomeViewModel @Inject constructor(
     private val repository: UserRepository
 ) : ViewModel() {
 
+    val publications: StateFlow<List<PuntoInteres>> = repository.publications
+
     var selectedTabIndex by mutableIntStateOf(0)
         private set
 
     private val _favoriteToggleResult = MutableStateFlow<RequestResult?>(null)
     val favoriteToggleResult: StateFlow<RequestResult?> = _favoriteToggleResult.asStateFlow()
 
-    val puntoInteres: List<PuntoInteres>
-        get() = repository.homePublications()
+    fun toHomePublications(source: List<PuntoInteres>): List<PuntoInteres> =
+        source.filter { it.estado == EstadoPublicacion.VERIFICADA }
 
     fun selectTab(index: Int) {
         selectedTabIndex = index
