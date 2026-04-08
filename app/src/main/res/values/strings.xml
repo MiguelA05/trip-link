@@ -86,6 +86,9 @@
     <string name="component_explore_map_publication_card_duration">3-4 hrs</string>
     <!-- resource: component_explore_map_publication_card_open_full_publication -->
     <string name="component_explore_map_publication_card_open_full_publication">View full publication  ></string>
+
+
+    <!-- COMPONENT: ExploreMapScreen -->
     <!-- resource: component_explore_map_category_all -->
     <string name="component_explore_map_category_all">All</string>
     <!-- resource: component_explore_map_category_gastronomia -->
