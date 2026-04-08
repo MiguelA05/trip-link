@@ -1,13 +1,14 @@
-package com.example.triplink.core.components
+package com.example.triplink.core.components.common
 
 import androidx.compose.foundation.layout.Row
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
+import com.example.triplink.R
 import com.example.triplink.ui.theme.PastelBlue
 import com.example.triplink.ui.theme.PrincipalBlue
 
@@ -15,7 +16,7 @@ import com.example.triplink.ui.theme.PrincipalBlue
 fun AppTitle(modifier: Modifier = Modifier, fontSize: Int = 28) {
     Row(modifier = modifier) {
         Text(
-            text = "Trip",
+            text = stringResource(R.string.component_app_title_trip),
             style = MaterialTheme.typography.displaySmall.copy(
                 fontSize = fontSize.sp,
                 fontWeight = FontWeight.ExtraBold,
@@ -23,7 +24,7 @@ fun AppTitle(modifier: Modifier = Modifier, fontSize: Int = 28) {
             )
         )
         Text(
-            text = "Link",
+            text = stringResource(R.string.component_app_title_link),
             style = MaterialTheme.typography.displaySmall.copy(
                 fontSize = fontSize.sp,
                 fontWeight = FontWeight.ExtraBold,

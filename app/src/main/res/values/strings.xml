@@ -50,4 +50,24 @@
     <!-- COMPONENT: ReportModerationPublicationCard -->
     <!-- resource: component_report_moderation_publication_card_swipe_hint -->
     <string name="component_report_moderation_publication_card_swipe_hint">Swipe left to confirm - Swipe right to invalidate</string>
+
+    <!-- COMPONENT: AppTitle -->
+    <!-- resource: component_app_title_trip -->
+    <string name="component_app_title_trip">Trip</string>
+    <!-- resource: component_app_title_link -->
+    <string name="component_app_title_link">Link</string>
+
+    <!-- COMPONENT: BrandHeader -->
+    <!-- resource: component_brand_header_logo_content_description -->
+    <string name="component_brand_header_logo_content_description">TripLink logo</string>
+    <!-- resource: component_brand_header_notifications_content_description -->
+    <string name="component_brand_header_notifications_content_description">Notifications</string>
+
+    <!-- COMPONENT: SearchBar -->
+    <!-- resource: component_search_bar_placeholder -->
+    <string name="component_search_bar_placeholder">Search places...</string>
+    <!-- resource: component_search_bar_search_content_description -->
+    <string name="component_search_bar_search_content_description">Search</string>
+    <!-- resource: component_search_bar_filters_content_description -->
+    <string name="component_search_bar_filters_content_description">Filters</string>
 </resources>
