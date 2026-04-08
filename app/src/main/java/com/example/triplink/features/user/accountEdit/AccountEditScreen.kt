@@ -24,7 +24,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.triplink.core.components.FormField
 import com.example.triplink.core.components.GeneralButton
 import com.example.triplink.core.components.GeneralTopBar
@@ -35,7 +35,7 @@ import com.example.triplink.ui.theme.PrincipalRed
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AccountEditScreen(
-    accountEditViewModel: AccountEditViewModel = viewModel(),
+    accountEditViewModel: AccountEditViewModel = hiltViewModel(),
     onBackClick: () -> Unit = {},
     onChangePasswordClick: () -> Unit = {},
     onAppHomeClick: () -> Unit = {}

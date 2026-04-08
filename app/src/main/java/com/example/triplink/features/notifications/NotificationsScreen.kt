@@ -23,7 +23,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.triplink.core.components.GeneralTopBar
 import com.example.triplink.ui.theme.*
 
@@ -31,8 +31,8 @@ import com.example.triplink.ui.theme.*
 
 @Composable
 fun NotificationsScreen(
-    onBackClick: () -> Unit,
-    viewModel: NotificationsViewModel = viewModel()
+    onBackClick: () -> Unit = {},
+    viewModel: NotificationsViewModel = hiltViewModel()
 ) {
 
 

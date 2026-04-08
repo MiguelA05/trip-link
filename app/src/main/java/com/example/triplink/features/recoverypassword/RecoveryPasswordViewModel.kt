@@ -7,11 +7,14 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import com.example.triplink.core.utils.RequestResult
 import com.example.triplink.core.utils.ValidatedField
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import javax.inject.Inject
 
-class RecoveryPasswordViewModel : ViewModel() {
+@HiltViewModel
+class RecoveryPasswordViewModel @Inject constructor() : ViewModel() {
 
     private val _recoveryResult = MutableStateFlow<RequestResult?>(null)
     val recoveryResult: StateFlow<RequestResult?> = _recoveryResult.asStateFlow()

@@ -1,11 +1,9 @@
 package com.example.triplink.di
 
-import com.example.triplink.data.repository.admin.moderation.AdminModerationRepositoryImpl
-import com.example.triplink.data.repository.admin.reports.AdminReportsRepositoryImpl
-import com.example.triplink.data.repository.user.publications.UserPublicationsRepositoryImpl
-import com.example.triplink.domain.repository.admin.moderation.AdminModerationRepository
-import com.example.triplink.domain.repository.admin.reports.AdminReportsRepository
-import com.example.triplink.domain.repository.user.publications.UserPublicationsRepository
+import com.example.triplink.data.repository.admin.AdminRepositoryImpl
+import com.example.triplink.data.repository.user.UserRepositoryImpl
+import com.example.triplink.domain.repository.admin.AdminRepository
+import com.example.triplink.domain.repository.user.UserRepository
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -18,20 +16,13 @@ abstract class RepositoryModule {
 
     @Binds
     @Singleton
-    abstract fun bindUserPublicationsRepository(
-        impl: UserPublicationsRepositoryImpl
-    ): UserPublicationsRepository
+    abstract fun bindUserRepository(
+        impl: UserRepositoryImpl
+    ): UserRepository
 
     @Binds
     @Singleton
-    abstract fun bindAdminModerationRepository(
-        impl: AdminModerationRepositoryImpl
-    ): AdminModerationRepository
-
-    @Binds
-    @Singleton
-    abstract fun bindAdminReportsRepository(
-        impl: AdminReportsRepositoryImpl
-    ): AdminReportsRepository
+    abstract fun bindAdminRepository(
+        impl: AdminRepositoryImpl
+    ): AdminRepository
 }
-

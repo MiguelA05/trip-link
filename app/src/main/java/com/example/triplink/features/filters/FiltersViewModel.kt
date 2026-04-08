@@ -2,11 +2,13 @@ package com.example.triplink.features.filters
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 
-class FiltersViewModel: ViewModel() {
+@HiltViewModel
+class FiltersViewModel @Inject constructor() : ViewModel() {
     var selectedCategories by mutableStateOf(setOf<String>())
     var selectedLocations by mutableStateOf(setOf<String>())
     var selectedPrices by mutableStateOf(setOf<String>())
@@ -33,7 +35,5 @@ class FiltersViewModel: ViewModel() {
             selectedCategories + opcion
         }
     }
-
-
 
 }

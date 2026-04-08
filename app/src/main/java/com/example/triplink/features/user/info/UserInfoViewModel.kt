@@ -4,7 +4,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
+import dagger.hilt.android.lifecycle.HiltViewModel
 import java.util.Locale
+import javax.inject.Inject
 
 enum class ContributionTab {
 	VERIFIED,
@@ -23,7 +25,8 @@ data class UserInfoUiState(
 	val selectedBottomTabIndex: Int
 )
 
-class UserInfoViewModel : ViewModel() {
+@HiltViewModel
+class UserInfoViewModel @Inject constructor() : ViewModel() {
 
 	var showLogoutDialog by mutableStateOf(false)
 		private set
@@ -50,13 +53,13 @@ class UserInfoViewModel : ViewModel() {
 		uiState = uiState.copy(selectedBottomTabIndex = index)
 	}
 
-			fun onLogoutRequested() {
-				showLogoutDialog = true
-			}
+	fun onLogoutRequested() {
+		showLogoutDialog = true
+	}
 
-			fun dismissLogoutDialog() {
-				showLogoutDialog = false
-			}
+	fun dismissLogoutDialog() {
+		showLogoutDialog = false
+	}
 
 	private companion object {
 		fun buildInitials(name: String): String {

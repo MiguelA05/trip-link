@@ -7,11 +7,19 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import com.example.triplink.core.utils.RequestResult
+import com.example.triplink.domain.model.Ubicacion
+import com.example.triplink.domain.model.Usuario
+import com.example.triplink.domain.repository.user.UserRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import javax.inject.Inject
 
-class RegisterViewModel : ViewModel() {
+@HiltViewModel
+class RegisterViewModel @Inject constructor(
+    private val userRepository: UserRepository
+) : ViewModel() {
 
     var name by mutableStateOf("")
     var email by mutableStateOf("")
@@ -26,11 +34,10 @@ class RegisterViewModel : ViewModel() {
     private val _registerResult = MutableStateFlow<RequestResult?>(null)
     val registerResult: StateFlow<RequestResult?> = _registerResult.asStateFlow()
 
-    // Data for Departments and Cities
-    val departments = listOf("Quindío", "Antioquia", "Valle del Cauca")
+    val departments = listOf("Quindio", "Antioquia", "Valle del Cauca")
     val citiesMap = mapOf(
-        "Quindío" to listOf("Armenia", "Calarca", "Circasia", "Filandia", "Salento"),
-        "Antioquia" to listOf("Medellín", "Envigado", "Itagüí", "Rionegro"),
+        "Quindio" to listOf("Armenia", "Calarca", "Circasia", "Filandia", "Salento"),
+        "Antioquia" to listOf("Medellin", "Envigado", "Itagui", "Rionegro"),
         "Valle del Cauca" to listOf("Cali", "Palmira", "Buga", "Tulua")
     )
 
@@ -41,10 +48,10 @@ class RegisterViewModel : ViewModel() {
 
     val isFormValid by derivedStateOf {
         validateName(name) == null &&
-                validateEmail(email) == null &&
-                validatePassword(password) == null &&
-                validateDepartment(selectedDepartment) == null &&
-                validateCity(selectedCity) == null
+            validateEmail(email) == null &&
+            validatePassword(password) == null &&
+            validateDepartment(selectedDepartment) == null &&
+            validateCity(selectedCity) == null
     }
 
     fun validateName(value: String): String? {
@@ -54,15 +61,15 @@ class RegisterViewModel : ViewModel() {
     fun validateEmail(value: String): String? {
         return when {
             value.isBlank() -> "El correo es obligatorio"
-            !Patterns.EMAIL_ADDRESS.matcher(value).matches() -> "Correo inválido"
+            !Patterns.EMAIL_ADDRESS.matcher(value).matches() -> "Correo invalido"
             else -> null
         }
     }
 
     fun validatePassword(value: String): String? {
         return when {
-            value.isBlank() -> "La contraseña es obligatoria"
-            value.length < 6 -> "Mínimo 6 caracteres"
+            value.isBlank() -> "La contrasena es obligatoria"
+            value.length < 6 -> "Minimo 6 caracteres"
             else -> null
         }
     }
@@ -95,7 +102,7 @@ class RegisterViewModel : ViewModel() {
         departmentError = validateDepartment(newDepartment)
         // Reset city when department changes
         selectedCity = ""
-        cityError = null 
+        cityError = null
     }
 
     fun onCityChange(newCity: String) {
@@ -114,10 +121,30 @@ class RegisterViewModel : ViewModel() {
     }
 
     fun register() {
-        if (validateAll()) {
-            _registerResult.value = RequestResult.Success("Registro exitoso para $name")
-        } else {
+        if (!validateAll()) {
             _registerResult.value = RequestResult.Failure("Por favor, corrige los errores en el formulario")
+            return
+        }
+
+        if (userRepository.findByEmail(email) != null) {
+            _registerResult.value = RequestResult.Failure("El correo ya se encuentra registrado")
+            return
+        }
+
+        val wasSaved = userRepository.save(
+            Usuario(
+                email = email,
+                nombre = name,
+                password = password,
+                puntos = 0,
+                ubicacion = Ubicacion(latitud = 0.0, longitud = 0.0, ciudad = selectedCity)
+            )
+        )
+
+        _registerResult.value = if (wasSaved) {
+            RequestResult.Success("Registro exitoso para $name")
+        } else {
+            RequestResult.Failure("No fue posible registrar el usuario")
         }
     }
 

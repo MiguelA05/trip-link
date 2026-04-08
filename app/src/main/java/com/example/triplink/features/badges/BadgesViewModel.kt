@@ -14,6 +14,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.lifecycle.ViewModel
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 
 data class Badge(
     val name: String,
@@ -23,7 +25,8 @@ data class Badge(
     val color: Color
 )
 
-class BadgesViewModel: ViewModel() {
+@HiltViewModel
+class BadgesViewModel @Inject constructor() : ViewModel() {
 
     var selectedBadge by  mutableStateOf<Badge?>(null)
 

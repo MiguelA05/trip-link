@@ -22,7 +22,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.Logout
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.triplink.core.components.GeneralAlertDialog
 import com.example.triplink.core.components.profile.EmptyState
 import com.example.triplink.core.components.profile.ProfileHeader
@@ -34,7 +34,7 @@ import com.example.triplink.ui.theme.PrincipalWhite
 
 @Composable
 fun UserInfoScreen(
-	viewModel: UserInfoViewModel = viewModel(),
+	viewModel: UserInfoViewModel = hiltViewModel(),
 	contentPadding: PaddingValues = PaddingValues(),
 	onLogoutClick: () -> Unit = {},
 	onEditClick: () -> Unit = {},

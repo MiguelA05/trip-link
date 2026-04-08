@@ -130,7 +130,7 @@ fun UserNavigation(
             )
         }
         composable<UserSectionRoutes.Notifications> {
-            NotificationsScreen({ navController.popBackStack() })
+            NotificationsScreen(onBackClick = { navController.popBackStack() })
         }
         composable<UserSectionRoutes.Filters> {
             FiltersScreen({ navController.popBackStack() })
@@ -147,7 +147,7 @@ fun UserNavigation(
             )
         }
         composable<MainRoutes.RecoveryPassword> {
-            RecoveryPasswordScreen({ navController.popBackStack() })
+            RecoveryPasswordScreen(onBack = { navController.popBackStack() })
         }
         composable<UserSectionRoutes.Bagdes> {
             BadgesScreen({ navController.popBackStack() })

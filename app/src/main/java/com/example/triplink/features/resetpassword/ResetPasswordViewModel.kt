@@ -6,27 +6,30 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import com.example.triplink.core.utils.RequestResult
 import com.example.triplink.core.utils.ValidatedField
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import javax.inject.Inject
 
-class ResetPasswordViewModel : ViewModel() {
+@HiltViewModel
+class ResetPasswordViewModel @Inject constructor() : ViewModel() {
 
     private val _recoveryResult = MutableStateFlow<RequestResult?>(null)
     val recoveryResult: StateFlow<RequestResult?> = _recoveryResult.asStateFlow()
 
     var password = ValidatedField("") { value ->
         when {
-            value.isEmpty() -> "La contraseña es obligatoria"
-            value.length < 6 -> "La contraseña debe tener al menos 6 caracteres"
+            value.isEmpty() -> "La contrasena es obligatoria"
+            value.length < 6 -> "La contrasena debe tener al menos 6 caracteres"
             else -> null
         }
     }
 
     var confirmPassword = ValidatedField("") { value ->
         when {
-            value.isEmpty() -> "La confirmación es obligatoria"
-            value != password.value -> "Las contraseñas no coinciden"
+            value.isEmpty() -> "La confirmacion es obligatoria"
+            value != password.value -> "Las contrasenas no coinciden"
             else -> null
         }
     }
@@ -50,11 +53,10 @@ class ResetPasswordViewModel : ViewModel() {
     }
 
     fun saveNewPassword() {
-        if (isFormValid) {
-            // Simulate password reset success
-            _recoveryResult.value = RequestResult.Success("¡Contraseña restablecida con éxito!")
+        _recoveryResult.value = if (isFormValid) {
+            RequestResult.Success("Contrasena restablecida con exito")
         } else {
-            _recoveryResult.value = RequestResult.Failure("Por favor, verifica los campos")
+            RequestResult.Failure("Por favor, verifica los campos")
         }
     }
 }

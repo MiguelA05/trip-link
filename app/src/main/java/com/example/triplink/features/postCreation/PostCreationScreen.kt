@@ -40,7 +40,7 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.triplink.core.components.FormField
 import com.example.triplink.core.components.GeneralButton
 import com.example.triplink.core.components.GeneralTopBar
@@ -58,7 +58,7 @@ data class DayScheduleData(
 @Composable
 fun PostCreationScreen(
     onBack: () -> Unit = {},
-    viewModel: PostCreationViewModel = viewModel(),
+    viewModel: PostCreationViewModel = hiltViewModel(),
     onUserHomeClick: () -> Unit = {},
     onUserInfoClick: () -> Unit = {}
 ) {

@@ -3,6 +3,8 @@ package com.example.triplink.features.comments
 import androidx.lifecycle.ViewModel
 import com.example.triplink.core.components.RatingCount
 import com.example.triplink.domain.model.Comentario
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 
 data class CommentsUiState(
     val publicationId: String,
@@ -12,7 +14,8 @@ data class CommentsUiState(
     val reviews: List<Comentario>
 )
 
-class CommentsViewModel : ViewModel() {
+@HiltViewModel
+class CommentsViewModel @Inject constructor() : ViewModel() {
 
     fun buildUiState(publicationId: String): CommentsUiState {
         val reviews = sampleReviews(publicationId)
@@ -64,4 +67,3 @@ class CommentsViewModel : ViewModel() {
         )
     )
 }
-

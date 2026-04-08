@@ -11,8 +11,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.triplink.core.components.GeneralTopBar
 import com.example.triplink.ui.theme.DarkGray
 import com.example.triplink.ui.theme.PrincipalBlue
@@ -22,7 +21,7 @@ import com.example.triplink.ui.theme.PrincipalGray
 @Composable
 fun FiltersScreen(
     onBackClick: () -> Unit,
-    viewModel:FiltersViewModel= viewModel()
+    viewModel: FiltersViewModel = hiltViewModel()
 ) {
 
     Scaffold(

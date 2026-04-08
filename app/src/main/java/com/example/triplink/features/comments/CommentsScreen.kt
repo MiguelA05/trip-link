@@ -17,7 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.triplink.core.components.CommentCard
 import com.example.triplink.core.components.GeneralTopBar
 import com.example.triplink.core.components.RatingSummaryCard
@@ -25,8 +25,8 @@ import com.example.triplink.core.components.RatingSummaryCard
 @Composable
 fun CommentsScreen(
 	publicationId: String,
-	onBackClick: () -> Unit,
-	viewModel: CommentsViewModel = viewModel()
+	viewModel: CommentsViewModel = hiltViewModel(),
+	onBackClick: () -> Unit = {}
 ) {
 	val uiState = remember(publicationId) { viewModel.buildUiState(publicationId) }
 
@@ -73,4 +73,3 @@ fun CommentsScreen(
 		}
 	}
 }
-

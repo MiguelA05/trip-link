@@ -36,7 +36,7 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.triplink.R
 import com.example.triplink.core.components.AppTitle
 import com.example.triplink.core.components.FormField
@@ -50,8 +50,7 @@ import com.example.triplink.ui.theme.PrincipalWhite
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ResetPasswordScreen(
-    onBack: () -> Unit,
-    viewModel: ResetPasswordViewModel = viewModel()
+    viewModel: ResetPasswordViewModel = hiltViewModel()
 ) {
     val snackbarHostState = remember { SnackbarHostState() }
     val recoveryResult by viewModel.recoveryResult.collectAsState()

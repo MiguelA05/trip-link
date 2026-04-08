@@ -29,7 +29,6 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.triplink.R
 import com.example.triplink.core.components.AppTitle
 import com.example.triplink.core.components.FormField
@@ -41,13 +40,14 @@ import com.example.triplink.ui.theme.PrincipalBlue
 import com.example.triplink.ui.theme.PrincipalRed
 import com.example.triplink.ui.theme.PrincipalWhite
 import kotlinx.coroutines.delay
-
+import androidx.hilt.navigation.compose.hiltViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RecoveryPasswordScreen(
-    onBack: () -> Unit,
-    viewModel: RecoveryPasswordViewModel = viewModel()
+    viewModel: RecoveryPasswordViewModel = hiltViewModel(),
+    onBack: () -> Unit = {},
+    onResetPassword: () -> Unit = {}
 ) {
     val snackbarHostState = remember { SnackbarHostState() }
     val recoveryMessage = "Introduce el correo electrónico de tu cuenta y te enviaremos un " +

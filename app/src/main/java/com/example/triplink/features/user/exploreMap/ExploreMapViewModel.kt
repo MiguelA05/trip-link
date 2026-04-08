@@ -7,6 +7,8 @@ import androidx.lifecycle.ViewModel
 import com.example.triplink.domain.model.PuntoInteres
 import com.example.triplink.domain.model.Ubicacion
 import com.example.triplink.domain.model.enums.Categoria
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 
 data class MapMarkerUi(
 	val id: String,
@@ -16,7 +18,8 @@ data class MapMarkerUi(
 	val highlighted: Boolean = false
 )
 
-class ExploreMapViewModel : ViewModel() {
+@HiltViewModel
+class ExploreMapViewModel @Inject constructor() : ViewModel() {
 
 	var query by mutableStateOf("")
 		private set

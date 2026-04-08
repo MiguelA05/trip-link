@@ -7,11 +7,14 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import com.example.triplink.core.utils.RequestResult
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import javax.inject.Inject
 
-class AccountEditViewModel : ViewModel() {
+@HiltViewModel
+class AccountEditViewModel @Inject constructor() : ViewModel() {
 
     // Información Personal
     var fullName by mutableStateOf("Carlos Andrés Ruiz")

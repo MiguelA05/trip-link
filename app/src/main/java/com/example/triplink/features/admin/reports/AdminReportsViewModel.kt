@@ -1,17 +1,17 @@
 package com.example.triplink.features.admin.reports
 
 import androidx.lifecycle.ViewModel
-import com.example.triplink.domain.repository.admin.reports.AdminReportsRepository
+import com.example.triplink.domain.repository.admin.AdminRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
 @HiltViewModel
 class AdminReportsViewModel @Inject constructor(
-    private val repository: AdminReportsRepository
+    private val repository: AdminRepository
 ) : ViewModel() {
 
     val pendingCount: Int
-        get() = repository.pendingCount
+        get() = repository.pendingReportsCount
 
     val reportCards: List<AdminReportUi>
         get() = repository.reportCards

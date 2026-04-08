@@ -23,14 +23,14 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.triplink.core.components.GeneralTopBar
 
 
 @Composable
 fun BadgesScreen(
     onBack: () -> Unit = {},
-    viewModel: BadgesViewModel = viewModel()
+    viewModel: BadgesViewModel = hiltViewModel()
 ) {
 
 

@@ -47,7 +47,7 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.IntSize
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.triplink.core.components.ExploreMapPublicationCard
 import com.example.triplink.core.components.common.CategoryChips
 import com.example.triplink.core.components.common.SearchBar
@@ -61,7 +61,7 @@ import androidx.compose.material3.rememberStandardBottomSheetState
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ExploreMapScreen(
-	viewModel: ExploreMapViewModel = viewModel(),
+	viewModel: ExploreMapViewModel = hiltViewModel(),
 	contentPadding: PaddingValues = PaddingValues(),
 	onBackToExplore: () -> Unit = {},
 	onFiltersClick: () -> Unit = {},
@@ -305,4 +305,3 @@ private fun MapPlaceholderLayer(modifier: Modifier = Modifier) {
 		)
 	}
 }
-

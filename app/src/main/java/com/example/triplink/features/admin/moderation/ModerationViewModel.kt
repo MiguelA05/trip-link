@@ -6,28 +6,28 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import com.example.triplink.domain.model.enums.moderator.DecisionModerador
 import com.example.triplink.domain.model.enums.moderator.ModerationFilter
-import com.example.triplink.domain.repository.admin.moderation.AdminModerationRepository
+import com.example.triplink.domain.repository.admin.AdminRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
 @HiltViewModel
 class ModerationViewModel @Inject constructor(
-    private val repository: AdminModerationRepository
+    private val repository: AdminRepository
 ) : ViewModel() {
 
     var selectedFilter by mutableStateOf(ModerationFilter.ALL)
         private set
 
     val pendingCount: Int
-        get() = repository.pendingCount
+        get() = repository.pendingModerationCount
 
     val verifiedCount: Int
-        get() = repository.verifiedCount
+        get() = repository.verifiedModerationCount
 
     val rejectedCount: Int
-        get() = repository.rejectedCount
+        get() = repository.rejectedModerationCount
 
-    val filteredPublications get() = repository.publicationsFor(selectedFilter)
+    val filteredPublications get() = repository.moderationPublicationsFor(selectedFilter)
 
     fun onFilterSelected(filter: ModerationFilter) {
         selectedFilter = filter
@@ -38,8 +38,8 @@ class ModerationViewModel @Inject constructor(
         decision: DecisionModerador,
         reason: String? = null
     ) {
-        repository.applyDecision(publicationId, decision, reason)
+        repository.applyModerationDecision(publicationId, decision, reason)
     }
 
-    fun getPublicationById(publicationId: String) = repository.getPublicationById(publicationId)
+    fun getPublicationById(publicationId: String) = repository.getModerationPublicationById(publicationId)
 }

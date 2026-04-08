@@ -5,8 +5,11 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import com.example.triplink.core.utils.ValidatedField
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 
-class PostCreationViewModel : ViewModel() {
+@HiltViewModel
+class PostCreationViewModel @Inject constructor() : ViewModel() {
 
     var placeName = ValidatedField("") { value ->
         if (value.isBlank()) "El nombre del lugar es obligatorio" else null
