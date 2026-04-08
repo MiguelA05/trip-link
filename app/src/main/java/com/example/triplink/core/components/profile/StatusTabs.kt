@@ -15,19 +15,19 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.example.triplink.features.user.info.ContributionTab
+import com.example.triplink.domain.model.enums.EstadoPublicacion
 import com.example.triplink.ui.theme.PrincipalBlue
 
 @Composable
 fun StatusTabs(
-    selectedTab: ContributionTab,
-    onTabSelected: (ContributionTab) -> Unit,
+    selectedTab: EstadoPublicacion,
+    onTabSelected: (EstadoPublicacion) -> Unit,
     modifier: Modifier = Modifier
 ) {
     val tabs = listOf(
-        ContributionTab.VERIFIED to "Verificados",
-        ContributionTab.PENDING to "Pendientes",
-        ContributionTab.REJECTED to "Rechazados"
+        EstadoPublicacion.VERIFICADA to "Verificados",
+        EstadoPublicacion.PENDIENTE to "Pendientes",
+        EstadoPublicacion.RECHAZADA to "Rechazados"
     )
 
     Row(

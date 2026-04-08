@@ -5,75 +5,97 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import com.example.triplink.domain.model.PuntoInteres
-import com.example.triplink.domain.model.Ubicacion
-import com.example.triplink.domain.model.enums.Categoria
+import com.example.triplink.domain.repository.user.UserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import java.util.Locale
 import javax.inject.Inject
 
 data class MapMarkerUi(
-	val id: String,
-	val xFraction: Float,
-	val yFraction: Float,
-	val ratingLabel: String,
-	val highlighted: Boolean = false
+    val id: String,
+    val xFraction: Float,
+    val yFraction: Float,
+    val ratingLabel: String,
+    val highlighted: Boolean = false
 )
 
 @HiltViewModel
-class ExploreMapViewModel @Inject constructor() : ViewModel() {
+class ExploreMapViewModel @Inject constructor(
+    private val repository: UserRepository
+) : ViewModel() {
 
-	var query by mutableStateOf("")
-		private set
+    var query by mutableStateOf("")
+        private set
 
-	var selectedCategory by mutableStateOf("Gastronomia")
-		private set
+    var selectedCategory by mutableStateOf("Todos")
+        private set
 
-	val categories = listOf("Gastronomia", "Entretenimiento", "Naturaleza", "Cultura")
+    val categories = listOf("Todos", "Gastronomia", "Entretenimiento", "Naturaleza", "Cultura")
 
-	private val _publications = listOf(
-		PuntoInteres(
-			id = "1",
-			titulo = "Valle del Cocora",
-			informacion = "El hogar de la palma de cera del Quindio, el arbol nacional de Colombia. Un paisaje surrealista de verdes montanas y niebla.",
-			usuarioAutorId = "Laura Gomez",
-			categoria = Categoria.NATURALEZA,
-			ubicacion = Ubicacion(4.6383, -75.4964, "Salento, Quindio"),
-			fotos = listOf("https://visitmycolombia.com/wp-content/uploads/2024/01/bosque-de-palmas-valle-de-cocora-1536x864.jpg")
-		)
-	)
+    private val allPublications: List<PuntoInteres>
+        get() = repository.explorePublications()
 
-	var selectedPublicationId by mutableStateOf(_publications.first().id)
-		private set
+    private val filteredPublications: List<PuntoInteres>
+        get() {
+            val normalizedQuery = query.trim().lowercase(Locale.ROOT)
+            return allPublications.filter { publication ->
+                val categoryMatches = selectedCategory == "Todos" ||
+                    publication.categoria.name.equals(selectedCategory, ignoreCase = true)
 
-	private var selectedMarkerId by mutableStateOf("m1")
+                val queryMatches = normalizedQuery.isBlank() ||
+                    publication.titulo.lowercase(Locale.ROOT).contains(normalizedQuery) ||
+                    publication.ubicacion.ciudad.lowercase(Locale.ROOT).contains(normalizedQuery) ||
+                    publication.categoria.name.lowercase(Locale.ROOT).contains(normalizedQuery)
 
-	val selectedPublication: PuntoInteres
-		get() = _publications.firstOrNull { it.id == selectedPublicationId } ?: _publications.first()
+                categoryMatches && queryMatches
+            }
+        }
 
-	private val markerCatalog = listOf(
-		MapMarkerUi(id = "m1", xFraction = 0.68f, yFraction = 0.32f, ratingLabel = "4.5"),
-		MapMarkerUi(id = "m2", xFraction = 0.18f, yFraction = 0.42f, ratingLabel = "4.8"),
-		MapMarkerUi(id = "m3", xFraction = 0.74f, yFraction = 0.58f, ratingLabel = "3.5"),
-		MapMarkerUi(id = "m4", xFraction = 0.30f, yFraction = 0.74f, ratingLabel = "4.0")
-	)
+    var selectedPublicationId by mutableStateOf(allPublications.firstOrNull()?.id.orEmpty())
+        private set
 
-	val markers: List<MapMarkerUi>
-		get() = markerCatalog.map { marker ->
-			marker.copy(highlighted = marker.id == selectedMarkerId)
-		}
+    val selectedPublication: PuntoInteres
+        get() = filteredPublications.firstOrNull { it.id == selectedPublicationId }
+            ?: filteredPublications.firstOrNull()
+            ?: allPublications.first()
 
-	val selectedMarkerRatingLabel: String
-		get() = markers.firstOrNull { it.id == selectedMarkerId }?.ratingLabel ?: "4.5"
+    val markers: List<MapMarkerUi>
+        get() = filteredPublications.mapIndexed { index, publication ->
+            val x = 0.18f + ((index % 3) * 0.26f)
+            val y = 0.28f + ((index / 3) * 0.22f)
+            MapMarkerUi(
+                id = publication.id,
+                xFraction = x.coerceIn(0.12f, 0.86f),
+                yFraction = y.coerceIn(0.20f, 0.78f),
+                ratingLabel = ratingLabelFor(index),
+                highlighted = publication.id == selectedPublicationId
+            )
+        }
 
-	fun onQueryChange(newValue: String) {
-		query = newValue
-	}
+    val selectedMarkerRatingLabel: String
+        get() = markers.firstOrNull { it.id == selectedPublicationId }?.ratingLabel ?: "4.5"
 
-	fun onCategorySelected(category: String) {
-		selectedCategory = category
-	}
+    fun onQueryChange(newValue: String) {
+        query = newValue
+        keepValidSelection()
+    }
 
-	fun onMarkerSelected(markerId: String) {
-		selectedMarkerId = markerId
-		selectedPublicationId = "1"
-	}
+    fun onCategorySelected(category: String) {
+        selectedCategory = category
+        keepValidSelection()
+    }
+
+    fun onMarkerSelected(markerId: String) {
+        selectedPublicationId = markerId
+    }
+
+    private fun keepValidSelection() {
+        if (filteredPublications.none { it.id == selectedPublicationId }) {
+            selectedPublicationId = filteredPublications.firstOrNull()?.id.orEmpty()
+        }
+    }
+
+    private fun ratingLabelFor(index: Int): String {
+        val ratings = listOf("4.5", "4.8", "4.2", "4.0", "3.9")
+        return ratings[index % ratings.size]
+    }
 }
