@@ -20,6 +20,7 @@ data class UserInfoUiState(
 	val roleLabel: String,
 	val points: Int,
 	val contributions: Int,
+	val contributionsInSelectedTab: Int,
 	val activeDays: Int,
 	val selectedContributionTab: EstadoPublicacion,
 	val selectedBottomTabIndex: Int
@@ -41,6 +42,7 @@ class UserInfoViewModel @Inject constructor(
 			roleLabel = "TURISTA",
 			points = 0,
 			contributions = 0,
+			contributionsInSelectedTab = 0,
 			activeDays = 1,
 			selectedContributionTab = EstadoPublicacion.PENDIENTE,
 			selectedBottomTabIndex = 2
@@ -48,12 +50,21 @@ class UserInfoViewModel @Inject constructor(
 	)
 		private set
 
+	private var currentUserId: String? = null
+
 	init {
 		loadUserData()
 	}
 
 	fun onContributionTabSelected(tab: EstadoPublicacion) {
-		uiState = uiState.copy(selectedContributionTab = tab)
+		val userId = currentUserId ?: return
+		val countInTab = userRepository
+			.getPublicationsByState(tab)
+			.count { it.usuarioAutorId.equals(userId, ignoreCase = true) }
+		uiState = uiState.copy(
+			selectedContributionTab = tab,
+			contributionsInSelectedTab = countInTab
+		)
 	}
 
 	fun onBottomTabSelected(index: Int) {
@@ -75,10 +86,11 @@ class UserInfoViewModel @Inject constructor(
 				?: userRepository.users.value.firstOrNull()
 
 			user?.let { mappedUser ->
-				// Filtrar publicaciones del usuario por email (userId = email)
-				val contributionsByUser = userRepository.explorePublications().filter {
-					it.usuarioAutorId.equals(mappedUser.email, ignoreCase = true)
-				}
+				currentUserId = mappedUser.email
+				val contributionsByUser = userRepository.getUserPublications(mappedUser.email)
+				val selectedTabCount = userRepository
+					.getPublicationsByState(uiState.selectedContributionTab)
+					.count { it.usuarioAutorId.equals(mappedUser.email, ignoreCase = true) }
 
 				val contributionCount = contributionsByUser.count {
 					it.estado == EstadoPublicacion.VERIFICADA ||
@@ -92,6 +104,7 @@ class UserInfoViewModel @Inject constructor(
 					roleLabel = mappedUser.rol.name,
 					points = mappedUser.puntos,
 					contributions = contributionCount,
+					contributionsInSelectedTab = selectedTabCount,
 					activeDays = maxOf(contributionCount, 1)
 				)
 			}

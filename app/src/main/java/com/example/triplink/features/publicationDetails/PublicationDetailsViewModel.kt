@@ -34,6 +34,9 @@ class PublicationDetailsViewModel @Inject constructor(
     private val _commentResult = MutableStateFlow<RequestResult?>(null)
     val commentResult: StateFlow<RequestResult?> = _commentResult.asStateFlow()
 
+    private val _publicationActionResult = MutableStateFlow<RequestResult?>(null)
+    val publicationActionResult: StateFlow<RequestResult?> = _publicationActionResult.asStateFlow()
+
     fun getPublicationById(publicationId: String): PuntoInteres? {
         return repository.getPublicationById(publicationId)
     }
@@ -94,11 +97,49 @@ class PublicationDetailsViewModel @Inject constructor(
         }
     }
 
+    fun getAverageRating(publicationId: String): Double {
+        return repository.getAverageRating(publicationId)
+    }
+
+    fun updatePublication(updatedPublication: PuntoInteres) {
+        viewModelScope.launch {
+            try {
+                val wasUpdated = repository.updatePuntoInteres(updatedPublication)
+                _publicationActionResult.value = if (wasUpdated) {
+                    RequestResult.Success("Publicación actualizada")
+                } else {
+                    RequestResult.Failure("No se pudo actualizar la publicación")
+                }
+            } catch (e: Exception) {
+                _publicationActionResult.value = RequestResult.Failure("Error al actualizar: ${e.message}")
+            }
+        }
+    }
+
+    fun deletePublication(publicationId: String) {
+        viewModelScope.launch {
+            try {
+                val wasDeleted = repository.deletePublicationById(publicationId)
+                _publicationActionResult.value = if (wasDeleted) {
+                    RequestResult.Success("Publicación eliminada")
+                } else {
+                    RequestResult.Failure("No se pudo eliminar la publicación")
+                }
+            } catch (e: Exception) {
+                _publicationActionResult.value = RequestResult.Failure("Error al eliminar: ${e.message}")
+            }
+        }
+    }
+
     fun clearFavoriteResult() {
         _favoriteToggleResult.value = null
     }
 
     fun clearCommentResult() {
         _commentResult.value = null
+    }
+
+    fun clearPublicationActionResult() {
+        _publicationActionResult.value = null
     }
 }
