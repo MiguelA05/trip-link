@@ -16,7 +16,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.example.triplink.R
 
 @Composable
 fun SearchBar(
@@ -32,12 +34,12 @@ fun SearchBar(
         OutlinedTextField(
             value = query,
             onValueChange = onQueryChange,
-            placeholder = { Text(text = "Buscar lugares...") },
+            placeholder = { Text(text = stringResource(R.string.component_search_bar_placeholder)) },
             singleLine = true,
             trailingIcon = {
                 Icon(
                     imageVector = Icons.Outlined.Search,
-                    contentDescription = "Buscar",
+                    contentDescription = stringResource(R.string.component_search_bar_search_content_description),
                     tint = Color(0xFF666666)
                 )
             },
@@ -60,7 +62,7 @@ fun SearchBar(
             IconButton(onClick = onFilterClick) {
                 Icon(
                     imageVector = Icons.Outlined.Tune,
-                    contentDescription = "Filtros",
+                    contentDescription = stringResource(R.string.component_search_bar_filters_content_description),
                     tint = Color(0xFF555555)
                 )
             }
