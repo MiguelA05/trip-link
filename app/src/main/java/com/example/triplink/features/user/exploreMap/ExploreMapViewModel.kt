@@ -5,6 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import com.example.triplink.domain.model.PuntoInteres
+import com.example.triplink.domain.model.enums.Categoria
 import com.example.triplink.domain.repository.user.UserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import java.util.Locale
@@ -26,10 +27,8 @@ class ExploreMapViewModel @Inject constructor(
     var query by mutableStateOf("")
         private set
 
-    var selectedCategory by mutableStateOf("Todos")
+    var selectedCategory by mutableStateOf<Categoria?>(null)
         private set
-
-    val categories = listOf("Todos", "Gastronomia", "Entretenimiento", "Naturaleza", "Cultura")
 
     private val allPublications: List<PuntoInteres>
         get() = repository.explorePublications()
@@ -38,8 +37,7 @@ class ExploreMapViewModel @Inject constructor(
         get() {
             val normalizedQuery = query.trim().lowercase(Locale.ROOT)
             return allPublications.filter { publication ->
-                val categoryMatches = selectedCategory == "Todos" ||
-                    publication.categoria.name.equals(selectedCategory, ignoreCase = true)
+                val categoryMatches = selectedCategory == null || publication.categoria == selectedCategory
 
                 val queryMatches = normalizedQuery.isBlank() ||
                     publication.titulo.lowercase(Locale.ROOT).contains(normalizedQuery) ||
@@ -79,7 +77,7 @@ class ExploreMapViewModel @Inject constructor(
         keepValidSelection()
     }
 
-    fun onCategorySelected(category: String) {
+    fun onCategorySelected(category: Categoria?) {
         selectedCategory = category
         keepValidSelection()
     }

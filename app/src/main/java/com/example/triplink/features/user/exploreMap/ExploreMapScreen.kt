@@ -43,14 +43,17 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.layout.onSizeChanged
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.IntSize
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import com.example.triplink.R
 import com.example.triplink.core.components.ExploreMapPublicationCard
 import com.example.triplink.core.components.common.CategoryChips
 import com.example.triplink.core.components.common.SearchBar
+import com.example.triplink.domain.model.enums.Categoria
 import com.example.triplink.ui.theme.PrincipalBlue
 import com.example.triplink.ui.theme.PrincipalWhite
 import kotlin.math.roundToInt
@@ -67,6 +70,18 @@ fun ExploreMapScreen(
 	onFiltersClick: () -> Unit = {},
 	onPublicationDetailsClick: (String) -> Unit = {}
 ) {
+	val categoryOptions = listOf<Categoria?>(null) + Categoria.entries
+	val categoryItems = categoryOptions.map { category ->
+		MapCategoryChip(
+			category = category,
+			label = stringResource(id = categoryLabelRes(category))
+		)
+	}
+	val selectedCategoryLabel = categoryItems
+		.firstOrNull { it.category == viewModel.selectedCategory }
+		?.label
+		.orEmpty()
+
 	val sheetState = rememberStandardBottomSheetState(
 		initialValue = SheetValue.PartiallyExpanded,
 		skipHiddenState = true
@@ -165,9 +180,12 @@ fun ExploreMapScreen(
 					onFilterClick = onFiltersClick
 				)
 				CategoryChips(
-					categories = viewModel.categories,
-					selectedCategory = viewModel.selectedCategory,
-					onCategorySelected = viewModel::onCategorySelected
+					categories = categoryItems.map { it.label },
+					selectedCategory = selectedCategoryLabel,
+					onCategorySelected = { selectedLabel ->
+						val selectedCategory = categoryItems.firstOrNull { it.label == selectedLabel }?.category
+						viewModel.onCategorySelected(selectedCategory)
+					}
 				)
 			}
 
@@ -196,6 +214,20 @@ fun ExploreMapScreen(
 
 		}
 	}
+}
+
+private data class MapCategoryChip(
+	val category: Categoria?,
+	val label: String
+)
+
+private fun categoryLabelRes(category: Categoria?): Int = when (category) {
+	null -> R.string.component_explore_map_category_all
+	Categoria.GASTRONOMIA -> R.string.component_explore_map_category_gastronomia
+	Categoria.CULTURA -> R.string.component_explore_map_category_cultura
+	Categoria.NATURALEZA -> R.string.component_explore_map_category_naturaleza
+	Categoria.ENTRETENIMIENTO -> R.string.component_explore_map_category_entretenimiento
+	Categoria.HISTORIA -> R.string.component_explore_map_category_historia
 }
 
 @Composable

@@ -88,6 +88,18 @@
     <string name="component_explore_map_publication_card_duration">3-4 hrs</string>
     <!-- resource: component_explore_map_publication_card_open_full_publication -->
     <string name="component_explore_map_publication_card_open_full_publication">Ver publicacion completa  ></string>
+    <!-- resource: component_explore_map_category_all -->
+    <string name="component_explore_map_category_all">Todos</string>
+    <!-- resource: component_explore_map_category_gastronomia -->
+    <string name="component_explore_map_category_gastronomia">Gastronomia</string>
+    <!-- resource: component_explore_map_category_cultura -->
+    <string name="component_explore_map_category_cultura">Cultura</string>
+    <!-- resource: component_explore_map_category_naturaleza -->
+    <string name="component_explore_map_category_naturaleza">Naturaleza</string>
+    <!-- resource: component_explore_map_category_entretenimiento -->
+    <string name="component_explore_map_category_entretenimiento">Entretenimiento</string>
+    <!-- resource: component_explore_map_category_historia -->
+    <string name="component_explore_map_category_historia">Historia</string>
 
     <!-- COMPONENT: PublicationCard -->
     <!-- resource: component_publication_card_moment_ago -->
