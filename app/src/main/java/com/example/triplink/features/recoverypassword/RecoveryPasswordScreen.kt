@@ -30,7 +30,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.triplink.R
-import com.example.triplink.core.components.AppTitle
+import com.example.triplink.core.components.common.AppTitle
 import com.example.triplink.core.components.FormField
 import com.example.triplink.core.components.GeneralAlertDialog
 import com.example.triplink.core.components.GeneralButton
