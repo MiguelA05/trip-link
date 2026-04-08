@@ -31,10 +31,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.triplink.R
 import com.example.triplink.domain.model.Comentario
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -71,7 +73,10 @@ fun CommentCard(
                     contentAlignment = Alignment.Center
                 ) {
                     Text(
-                        text = buildInitials(comment.userName),
+                        text = buildInitials(
+                            name = comment.userName,
+                            fallbackInitial = stringResource(R.string.component_comment_card_default_initial)
+                        ),
                         color = Color.White,
                         fontWeight = FontWeight.Bold,
                         fontSize = 18.sp
@@ -141,7 +146,11 @@ fun CommentCard(
                 )
                 Spacer(modifier = Modifier.width(4.dp))
                 Text(
-                    text = if (isExpanded) "Ver menos" else "Ver más",
+                    text = if (isExpanded) {
+                        stringResource(R.string.component_comment_card_show_less)
+                    } else {
+                        stringResource(R.string.component_comment_card_show_more)
+                    },
                     color = Color(0xFFFFB300),
                     fontWeight = FontWeight.Bold,
                     fontSize = 14.sp
@@ -151,9 +160,9 @@ fun CommentCard(
     }
 }
 
-private fun buildInitials(name: String): String {
+private fun buildInitials(name: String, fallbackInitial: String): String {
     val parts = name.trim().split(" ").filter { it.isNotBlank() }
-    if (parts.isEmpty()) return "U"
+    if (parts.isEmpty()) return fallbackInitial
     return parts.take(2).joinToString("") { it.first().uppercaseChar().toString() }
 }
 

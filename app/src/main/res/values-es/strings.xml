@@ -72,4 +72,41 @@
     <string name="component_search_bar_search_content_description">Buscar</string>
     <!-- resource: component_search_bar_filters_content_description -->
     <string name="component_search_bar_filters_content_description">Filtros</string>
+
+    <!-- COMPONENT: CommentCard -->
+    <!-- resource: component_comment_card_show_less -->
+    <string name="component_comment_card_show_less">Ver menos</string>
+    <!-- resource: component_comment_card_show_more -->
+    <string name="component_comment_card_show_more">Ver más</string>
+    <!-- resource: component_comment_card_default_initial -->
+    <string name="component_comment_card_default_initial">U</string>
+
+    <!-- COMPONENT: ExploreMapPublicationCard -->
+    <!-- resource: component_explore_map_publication_card_rating -->
+    <string name="component_explore_map_publication_card_rating">%1$s (%2$d)</string>
+    <!-- resource: component_explore_map_publication_card_duration -->
+    <string name="component_explore_map_publication_card_duration">3-4 hrs</string>
+    <!-- resource: component_explore_map_publication_card_open_full_publication -->
+    <string name="component_explore_map_publication_card_open_full_publication">Ver publicacion completa  ></string>
+
+    <!-- COMPONENT: PublicationCard -->
+    <!-- resource: component_publication_card_moment_ago -->
+    <string name="component_publication_card_moment_ago">Hace un momento</string>
+    <!-- resource: component_publication_card_near_you -->
+    <string name="component_publication_card_near_you">Cerca de ti</string>
+    <!-- resource: component_publication_card_comments_content_description -->
+    <string name="component_publication_card_comments_content_description">Comentarios</string>
+    <!-- resource: component_publication_card_add_to_favorites_content_description -->
+    <string name="component_publication_card_add_to_favorites_content_description">Agregar a favoritos</string>
+    <!-- resource: component_publication_card_default_initial -->
+    <string name="component_publication_card_default_initial">U</string>
+
+    <!-- COMPONENT: RatingSummaryCard -->
+    <!-- resource: component_rating_summary_card_based_on -->
+    <string name="component_rating_summary_card_based_on">Basado en</string>
+    <!-- resource: component_rating_summary_card_reviews_count -->
+    <plurals name="component_rating_summary_card_reviews_count" tools:ignore="MissingQuantity">
+        <item quantity="one">%1$d reseña</item>
+        <item quantity="other">%1$d reseñas</item>
+    </plurals>
 </resources>
