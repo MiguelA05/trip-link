@@ -28,12 +28,54 @@ class FiltersViewModel @Inject constructor() : ViewModel() {
 
     val ratings = listOf("1★", "2★", "3★", "4★", "5★")
 
-    fun cambiarOpcion(opcion: String) {
-        selectedCategories = if (selectedCategories.contains(opcion)) {
-            selectedCategories - opcion
+    fun toggleCategory(category: String) {
+        selectedCategories = if (selectedCategories.contains(category)) {
+            selectedCategories - category
         } else {
-            selectedCategories + opcion
+            selectedCategories + category
         }
     }
 
+    fun toggleLocation(location: String) {
+        selectedLocations = if (selectedLocations.contains(location)) {
+            selectedLocations - location
+        } else {
+            selectedLocations + location
+        }
+    }
+
+    fun togglePrice(price: String) {
+        selectedPrices = if (selectedPrices.contains(price)) {
+            selectedPrices - price
+        } else {
+            selectedPrices + price
+        }
+    }
+
+    fun toggleRating(rating: String) {
+        selectedRatings = if (selectedRatings.contains(rating)) {
+            selectedRatings - rating
+        } else {
+            selectedRatings + rating
+        }
+    }
+
+    fun clearFilters() {
+        selectedCategories = setOf()
+        selectedLocations = setOf()
+        selectedPrices = setOf()
+        selectedRatings = setOf()
+    }
+
+    fun hasActiveFilters(): Boolean {
+        return selectedCategories.isNotEmpty() || 
+               selectedLocations.isNotEmpty() || 
+               selectedPrices.isNotEmpty() || 
+               selectedRatings.isNotEmpty()
+    }
+
+    // Función heredada para mantener compatibilidad
+    fun cambiarOpcion(opcion: String) {
+        toggleCategory(opcion)
+    }
 }

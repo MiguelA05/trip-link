@@ -75,8 +75,9 @@ class UserInfoViewModel @Inject constructor(
 				?: userRepository.users.value.firstOrNull()
 
 			user?.let { mappedUser ->
+				// Filtrar publicaciones del usuario por email (userId = email)
 				val contributionsByUser = userRepository.explorePublications().filter {
-					it.usuarioAutorId.equals(mappedUser.nombre, ignoreCase = true)
+					it.usuarioAutorId.equals(mappedUser.email, ignoreCase = true)
 				}
 
 				val contributionCount = contributionsByUser.count {

@@ -14,13 +14,17 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.ScaffoldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel as legacyHiltViewModel
 import com.example.triplink.core.components.PublicationCard
 import com.example.triplink.core.components.common.BrandHeader
 import com.example.triplink.core.components.common.SectionTitleDivider
+import com.example.triplink.core.navigation.SessionViewModel
 import com.example.triplink.ui.theme.PrincipalBlue
 import com.example.triplink.ui.theme.PrincipalWhite
 
@@ -33,6 +37,11 @@ fun UserHomeScreen(
     onPostCreationClick: () -> Unit = {}
 ) {
     val viewModel: UserHomeViewModel = hiltViewModel()
+    val sessionViewModel: SessionViewModel = legacyHiltViewModel()
+
+    // Obtain current session to get userId
+    val currentUserId by sessionViewModel.sessionState.collectAsState()
+    val userId = (currentUserId as? com.example.triplink.core.navigation.SessionState.Authenticated)?.session?.userId ?: ""
 
     Scaffold(
         modifier = Modifier
@@ -73,7 +82,7 @@ fun UserHomeScreen(
                 PublicationCard(
                     puntoInteres = publication,
                     onCardClick = { onPublicationClick(publication.id) },
-                    onFavoriteToggle = { viewModel.toggleFavorite(publication.id) },
+                    onFavoriteToggle = { viewModel.toggleFavorite(userId, publication.id) },
                     onCommentsClick = { onCommentsClick(publication.id) }
                 )
             }
