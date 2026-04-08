@@ -32,9 +32,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.example.triplink.R
 import com.example.triplink.ui.theme.PrincipalBlue
 import com.example.triplink.ui.theme.PrincipalGreen
 import com.example.triplink.ui.theme.PrincipalRed
@@ -51,9 +53,12 @@ fun ApprovePublicationDialog(
         icon = Icons.Outlined.ThumbUp,
         iconTint = PrincipalGreen,
         iconBackground = Color(0xFFDCF2D5),
-        title = "¿Verificar publicación?",
-        message = "Esta acción no se puede deshacer. La publicación es \"$publicationTitle\"",
-        confirmText = "Verificar",
+        title = stringResource(R.string.component_moderation_decision_dialog_approve_title),
+        message = stringResource(
+            R.string.component_moderation_decision_dialog_message_publication,
+            publicationTitle
+        ),
+        confirmText = stringResource(R.string.component_moderation_decision_dialog_approve_action),
         confirmColor = PrincipalGreen,
         confirmEnabled = true,
         onConfirm = onConfirm,
@@ -74,9 +79,12 @@ fun RejectPublicationDialog(
         icon = Icons.Outlined.ThumbDown,
         iconTint = Color(0xFFB3261E),
         iconBackground = Color(0xFFF7DCDD),
-        title = "¿Rechazar publicación?",
-        message = "Esta acción no se puede deshacer. La publicación es \"$publicationTitle\"",
-        confirmText = "Rechazar",
+        title = stringResource(R.string.component_moderation_decision_dialog_reject_title),
+        message = stringResource(
+            R.string.component_moderation_decision_dialog_message_publication,
+            publicationTitle
+        ),
+        confirmText = stringResource(R.string.component_moderation_decision_dialog_reject_action),
         confirmColor = PrincipalRed,
         confirmEnabled = reason.isNotBlank(),
         onConfirm = onConfirm,
@@ -91,7 +99,7 @@ fun RejectPublicationDialog(
                     verticalArrangement = Arrangement.spacedBy(10.dp)
                 ) {
                     Text(
-                        text = "Motivo",
+                        text = stringResource(R.string.component_moderation_decision_dialog_reason_label),
                         style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.Bold,
                         color = Color(0xFF2A2C33)
@@ -101,7 +109,7 @@ fun RejectPublicationDialog(
                         onValueChange = { if (it.length <= 300) onReasonChange(it) },
                         placeholder = {
                             Text(
-                                text = "Explica el motivo por el cual la publicación fue rechazada",
+                                text = stringResource(R.string.component_moderation_decision_dialog_reason_placeholder),
                                 color = Color(0xFF9C9FA8)
                             )
                         },
@@ -117,7 +125,11 @@ fun RejectPublicationDialog(
                         modifier = Modifier.fillMaxWidth()
                     )
                     Text(
-                        text = "${reason.length}/300",
+                        text = stringResource(
+                            R.string.component_moderation_decision_dialog_reason_counter,
+                            reason.length,
+                            300
+                        ),
                         style = MaterialTheme.typography.labelMedium,
                         color = Color(0xFFA1A8B6),
                         modifier = Modifier.align(Alignment.End)
@@ -164,7 +176,7 @@ private fun BaseModerationDialog(
                 ) {
                     Icon(
                         imageVector = Icons.Outlined.Close,
-                        contentDescription = "Cerrar",
+                        contentDescription = stringResource(R.string.component_moderation_decision_dialog_close),
                         tint = Color(0xFF9EA5B2)
                     )
                 }
@@ -217,7 +229,7 @@ private fun BaseModerationDialog(
                         colors = ButtonDefaults.outlinedButtonColors(contentColor = PrincipalBlue)
                     ) {
                         Text(
-                            text = "Cancelar",
+                            text = stringResource(R.string.component_moderation_decision_dialog_cancel_action),
                             fontWeight = FontWeight.Bold,
                             style = MaterialTheme.typography.titleLarge
                         )

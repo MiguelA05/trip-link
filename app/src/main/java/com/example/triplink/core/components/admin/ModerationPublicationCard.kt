@@ -36,11 +36,14 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.pluralStringResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
 import coil3.request.crossfade
+import com.example.triplink.R
 import com.example.triplink.features.admin.moderation.ModerationPublicationCardStatus
 import com.example.triplink.features.admin.moderation.ModerationPublicationCardUi
 import com.example.triplink.ui.theme.PrincipalBlue
@@ -54,8 +57,11 @@ fun ModerationPublicationCard(
     onRejectRequested: (String) -> Unit,
     onDetailsClick: (String) -> Unit,
     modifier: Modifier = Modifier,
-    swipeHintText: String = "Desliza para rechazar o aprobar"
+    swipeHintText: String? = null
 ) {
+    val resolvedSwipeHintText = swipeHintText ?: stringResource(
+        R.string.component_moderation_publication_card_swipe_hint
+    )
     val interactionEnabled = publication.status == ModerationPublicationCardStatus.PENDING
 
     val dismissState = rememberSwipeToDismissBoxState(
@@ -180,9 +186,15 @@ fun ModerationPublicationCard(
                     ) {
                         Text(
                             text = when (publication.status) {
-                                ModerationPublicationCardStatus.PENDING -> "Pendiente"
-                                ModerationPublicationCardStatus.VERIFIED -> "Verificado"
-                                ModerationPublicationCardStatus.REJECTED -> "Rechazado"
+                                ModerationPublicationCardStatus.PENDING -> stringResource(
+                                    R.string.component_moderation_publication_card_status_pending
+                                )
+                                ModerationPublicationCardStatus.VERIFIED -> stringResource(
+                                    R.string.component_moderation_publication_card_status_verified
+                                )
+                                ModerationPublicationCardStatus.REJECTED -> stringResource(
+                                    R.string.component_moderation_publication_card_status_rejected
+                                )
                             },
                             modifier = Modifier.padding(horizontal = 10.dp, vertical = 5.dp),
                             style = MaterialTheme.typography.labelMedium,
@@ -209,10 +221,11 @@ fun ModerationPublicationCard(
                         color = Color(0xFF1E2430)
                     )
 
-                    val acceptedReportsText = when (publication.reportCount) {
-                        1 -> "1 reporte aceptado"
-                        else -> "${publication.reportCount} reportes aceptados"
-                    }
+                    val acceptedReportsText = pluralStringResource(
+                        R.plurals.component_moderation_publication_card_accepted_reports,
+                        publication.reportCount,
+                        publication.reportCount
+                    )
 
                     Row(
                         horizontalArrangement = Arrangement.spacedBy(8.dp),
@@ -323,7 +336,10 @@ fun ModerationPublicationCard(
                                     tint = Color(0xFFD84343)
                                 )
                                 Text(
-                                    text = "Motivo: $message",
+                                    text = stringResource(
+                                        R.string.component_moderation_publication_card_reason_prefix,
+                                        message
+                                    ),
                                     style = MaterialTheme.typography.bodySmall,
                                     color = Color(0xFFD84343),
                                     fontWeight = FontWeight.SemiBold
@@ -345,7 +361,9 @@ fun ModerationPublicationCard(
                                 IconButton(onClick = { onRejectRequested(publication.id) }) {
                                     Icon(
                                         imageVector = Icons.Outlined.Close,
-                                        contentDescription = "Rechazar",
+                                        contentDescription = stringResource(
+                                            R.string.component_moderation_publication_card_reject_action
+                                        ),
                                         tint = Color.White
                                     )
                                 }
@@ -363,7 +381,9 @@ fun ModerationPublicationCard(
                                 )
                                 Spacer(modifier = Modifier.size(6.dp))
                                 Text(
-                                    text = "Ver detalle",
+                                    text = stringResource(
+                                        R.string.component_moderation_publication_card_view_detail_action
+                                    ),
                                     color = PrincipalBlue,
                                     fontWeight = FontWeight.SemiBold
                                 )
@@ -376,7 +396,9 @@ fun ModerationPublicationCard(
                                 IconButton(onClick = { onApproveRequested(publication.id) }) {
                                     Icon(
                                         imageVector = Icons.Outlined.Check,
-                                        contentDescription = "Verificar",
+                                        contentDescription = stringResource(
+                                            R.string.component_moderation_publication_card_verify_action
+                                        ),
                                         tint = Color.White
                                     )
                                 }
@@ -384,7 +406,7 @@ fun ModerationPublicationCard(
                         }
 
                         Text(
-                            text = swipeHintText,
+                            text = resolvedSwipeHintText,
                             style = MaterialTheme.typography.labelSmall,
                             color = Color(0xFFB0B8C5),
                             modifier = Modifier.align(Alignment.CenterHorizontally)

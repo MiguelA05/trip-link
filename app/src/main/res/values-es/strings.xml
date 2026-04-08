@@ -1,2 +1,55 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources></resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
+
+    <!-- Nombre de la aplicación -->
+    <string name="app_name">TripLink</string>
+
+    <!-- component: ModerationDecisionDialogs -->
+    <!-- resource: component_moderation_decision_dialog_approve_title -->
+    <string name="component_moderation_decision_dialog_approve_title">¿Verificar publicación?</string>
+    <!-- resource: component_moderation_decision_dialog_reject_title -->
+    <string name="component_moderation_decision_dialog_reject_title">¿Rechazar publicación?</string>
+    <!-- resource: component_moderation_decision_dialog_message_publication -->
+    <string name="component_moderation_decision_dialog_message_publication">Esta acción no se puede deshacer. La publicación es "%1$s"</string>
+    <!-- resource: component_moderation_decision_dialog_approve_action -->
+    <string name="component_moderation_decision_dialog_approve_action">Verificar</string>
+    <!-- resource: component_moderation_decision_dialog_reject_action -->
+    <string name="component_moderation_decision_dialog_reject_action">Rechazar</string>
+    <!-- resource: component_moderation_decision_dialog_reason_label -->
+    <string name="component_moderation_decision_dialog_reason_label">Motivo</string>
+    <!-- resource: component_moderation_decision_dialog_reason_placeholder -->
+    <string name="component_moderation_decision_dialog_reason_placeholder">Explica el motivo por el cual la publicación fue rechazada</string>
+    <!-- resource: component_moderation_decision_dialog_reason_counter -->
+    <string name="component_moderation_decision_dialog_reason_counter">%1$d/%2$d</string>
+    <!-- resource: component_moderation_decision_dialog_close -->
+    <string name="component_moderation_decision_dialog_close">Cerrar</string>
+    <!-- resource: component_moderation_decision_dialog_cancel_action -->
+    <string name="component_moderation_decision_dialog_cancel_action">Cancelar</string>
+
+    <!-- COMPONENT: ModerationPublicationCard -->
+    <!-- resource: component_moderation_publication_card_swipe_hint -->
+    <string name="component_moderation_publication_card_swipe_hint">Desliza para rechazar o aprobar</string>
+    <!-- resource: component_moderation_publication_card_status_pending -->
+    <string name="component_moderation_publication_card_status_pending">Pendiente</string>
+    <!-- resource: component_moderation_publication_card_status_verified -->
+    <string name="component_moderation_publication_card_status_verified">Verificado</string>
+    <!-- resource: component_moderation_publication_card_status_rejected -->
+    <string name="component_moderation_publication_card_status_rejected">Rechazado</string>
+    <!-- resource: component_moderation_publication_card_reason_prefix -->
+    <string name="component_moderation_publication_card_reason_prefix">Motivo: %1$s</string>
+    <!-- resource: component_moderation_publication_card_reject_action -->
+    <string name="component_moderation_publication_card_reject_action">Rechazar</string>
+    <!-- resource: component_moderation_publication_card_verify_action -->
+    <string name="component_moderation_publication_card_verify_action">Verificar</string>
+    <!-- resource: component_moderation_publication_card_view_detail_action -->
+    <string name="component_moderation_publication_card_view_detail_action">Ver detalle</string>
+    <!-- resource: component_moderation_publication_card_accepted_reports -->
+    <plurals name="component_moderation_publication_card_accepted_reports" tools:ignore="MissingQuantity">
+        <item quantity="one">%1$d reporte aceptado</item>
+        <item quantity="other">%1$d reportes aceptados</item>
+    </plurals>
+
+    <!-- COMPONENT: ReportModerationPublicationCard -->
+    <!-- resource: component_report_moderation_publication_card_swipe_hint -->
+    <string name="component_report_moderation_publication_card_swipe_hint">Desliza a la izquierda para confirmar - Desliza a la derecha para invalidar</string>
+</resources>

@@ -1,3 +1,53 @@
 <resources>
+    <!-- App name -->
     <string name="app_name">TripLink</string>
+
+    <!-- COMPONENT: ModerationDecisionDialogs -->
+    <!-- resource: component_moderation_decision_dialog_approve_title -->
+    <string name="component_moderation_decision_dialog_approve_title">Verify publication?</string>
+    <!-- resource: component_moderation_decision_dialog_reject_title -->
+    <string name="component_moderation_decision_dialog_reject_title">Reject publication?</string>
+    <!-- resource: component_moderation_decision_dialog_message_publication -->
+    <string name="component_moderation_decision_dialog_message_publication">This action cannot be undone. The publication is "%1$s"</string>
+    <!-- resource: component_moderation_decision_dialog_approve_action -->
+    <string name="component_moderation_decision_dialog_approve_action">Verify</string>
+    <!-- resource: component_moderation_decision_dialog_reject_action -->
+    <string name="component_moderation_decision_dialog_reject_action">Reject</string>
+    <!-- resource: component_moderation_decision_dialog_reason_label -->
+    <string name="component_moderation_decision_dialog_reason_label">Reason</string>
+    <!-- resource: component_moderation_decision_dialog_reason_placeholder -->
+    <string name="component_moderation_decision_dialog_reason_placeholder">Explain the reason why the publication was rejected</string>
+    <!-- resource: component_moderation_decision_dialog_reason_counter -->
+    <string name="component_moderation_decision_dialog_reason_counter">%1$d/%2$d</string>
+    <!-- resource: component_moderation_decision_dialog_close -->
+    <string name="component_moderation_decision_dialog_close">Close</string>
+    <!-- resource: component_moderation_decision_dialog_cancel_action -->
+    <string name="component_moderation_decision_dialog_cancel_action">Cancel</string>
+
+    <!-- COMPONENT: ModerationPublicationCard -->
+    <!-- resource: component_moderation_publication_card_swipe_hint -->
+    <string name="component_moderation_publication_card_swipe_hint">Swipe to reject or approve</string>
+    <!-- resource: component_moderation_publication_card_status_pending -->
+    <string name="component_moderation_publication_card_status_pending">Pending</string>
+    <!-- resource: component_moderation_publication_card_status_verified -->
+    <string name="component_moderation_publication_card_status_verified">Verified</string>
+    <!-- resource: component_moderation_publication_card_status_rejected -->
+    <string name="component_moderation_publication_card_status_rejected">Rejected</string>
+    <!-- resource: component_moderation_publication_card_reason_prefix -->
+    <string name="component_moderation_publication_card_reason_prefix">Reason: %1$s</string>
+    <!-- resource: component_moderation_publication_card_reject_action -->
+    <string name="component_moderation_publication_card_reject_action">Reject</string>
+    <!-- resource: component_moderation_publication_card_verify_action -->
+    <string name="component_moderation_publication_card_verify_action">Verify</string>
+    <!-- resource: component_moderation_publication_card_view_detail_action -->
+    <string name="component_moderation_publication_card_view_detail_action">View detail</string>
+    <!-- resource: component_moderation_publication_card_accepted_reports -->
+    <plurals name="component_moderation_publication_card_accepted_reports">
+        <item quantity="one">%1$d accepted report</item>
+        <item quantity="other">%1$d accepted reports</item>
+    </plurals>
+
+    <!-- COMPONENT: ReportModerationPublicationCard -->
+    <!-- resource: component_report_moderation_publication_card_swipe_hint -->
+    <string name="component_report_moderation_publication_card_swipe_hint">Swipe left to confirm - Swipe right to invalidate</string>
 </resources>
