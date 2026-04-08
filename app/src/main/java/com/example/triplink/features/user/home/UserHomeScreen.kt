@@ -13,18 +13,22 @@ import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.ScaffoldDefaults
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel as legacyHiltViewModel
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.example.triplink.core.components.PublicationCard
 import com.example.triplink.core.components.common.BrandHeader
 import com.example.triplink.core.components.common.SectionTitleDivider
 import com.example.triplink.core.navigation.SessionViewModel
+import com.example.triplink.core.utils.RequestResult
 import com.example.triplink.ui.theme.PrincipalBlue
 import com.example.triplink.ui.theme.PrincipalWhite
 
@@ -37,17 +41,31 @@ fun UserHomeScreen(
     onPostCreationClick: () -> Unit = {}
 ) {
     val viewModel: UserHomeViewModel = hiltViewModel()
-    val sessionViewModel: SessionViewModel = legacyHiltViewModel()
+    val sessionViewModel: SessionViewModel = hiltViewModel()
+    val favoriteResult by viewModel.favoriteToggleResult.collectAsState()
+    val snackbarHostState = remember { SnackbarHostState() }
 
     // Obtain current session to get userId
     val currentUserId by sessionViewModel.sessionState.collectAsState()
     val userId = (currentUserId as? com.example.triplink.core.navigation.SessionState.Authenticated)?.session?.userId ?: ""
+
+    LaunchedEffect(favoriteResult) {
+        favoriteResult?.let { result ->
+            val message = when (result) {
+                is RequestResult.Success -> result.message
+                is RequestResult.Failure -> result.errorMessage
+            }
+            snackbarHostState.showSnackbar(message)
+            viewModel.clearFavoriteResult()
+        }
+    }
 
     Scaffold(
         modifier = Modifier
             .fillMaxSize()
             .padding(contentPadding),
         containerColor = Color(0xFFF5F6F8),
+        snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
         contentWindowInsets = ScaffoldDefaults.contentWindowInsets,
         topBar = {
             Column {

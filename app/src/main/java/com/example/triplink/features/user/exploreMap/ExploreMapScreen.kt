@@ -47,7 +47,7 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.IntSize
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.example.triplink.core.components.ExploreMapPublicationCard
 import com.example.triplink.core.components.common.CategoryChips
 import com.example.triplink.core.components.common.SearchBar

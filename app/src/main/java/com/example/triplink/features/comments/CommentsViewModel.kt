@@ -50,7 +50,7 @@ class CommentsViewModel @Inject constructor(
         selectedRating = rating
     }
 
-    fun saveComment(publicationId: String, userName: String) {
+    fun saveComment(publicationId: String, userId: String, userName: String) {
         if (commentText.isBlank()) {
             _saveCommentResult.value = RequestResult.Failure("El comentario no puede estar vacío")
             return
@@ -60,7 +60,7 @@ class CommentsViewModel @Inject constructor(
             try {
                 val comment = Comentario(
                     id = UUID.randomUUID().toString(),
-                    usuarioId = "", // Se puede obtener de sesión si es necesario
+                    usuarioId = userId,
                     puntoInteresId = publicationId,
                     userName = userName,
                     date = System.currentTimeMillis(),
@@ -84,7 +84,7 @@ class CommentsViewModel @Inject constructor(
         }
     }
 
-    fun updateComment(publicationId: String, commentId: String, newText: String) {
+    fun updateComment(publicationId: String, commentId: String, currentUserId: String, newText: String) {
         if (newText.isBlank()) {
             _saveCommentResult.value = RequestResult.Failure("El comentario no puede estar vacío")
             return
@@ -98,6 +98,11 @@ class CommentsViewModel @Inject constructor(
                         _saveCommentResult.value = RequestResult.Failure("Comentario no encontrado")
                         return@launch
                     }
+
+                if (!existing.usuarioId.equals(currentUserId, ignoreCase = true)) {
+                    _saveCommentResult.value = RequestResult.Failure("Solo puedes editar tus propios comentarios")
+                    return@launch
+                }
 
                 val wasUpdated = userRepository.updateComment(
                     publicationId = publicationId,
@@ -116,9 +121,21 @@ class CommentsViewModel @Inject constructor(
         }
     }
 
-    fun deleteComment(publicationId: String, commentId: String) {
+    fun deleteComment(publicationId: String, commentId: String, currentUserId: String) {
         viewModelScope.launch {
             try {
+                val existing = userRepository.getCommentsByPublicationId(publicationId)
+                    .firstOrNull { it.id == commentId }
+                    ?: run {
+                        _saveCommentResult.value = RequestResult.Failure("Comentario no encontrado")
+                        return@launch
+                    }
+
+                if (!existing.usuarioId.equals(currentUserId, ignoreCase = true)) {
+                    _saveCommentResult.value = RequestResult.Failure("Solo puedes eliminar tus propios comentarios")
+                    return@launch
+                }
+
                 val wasDeleted = userRepository.deleteComment(publicationId, commentId)
                 _saveCommentResult.value = if (wasDeleted) {
                     _refreshTick.value += 1
