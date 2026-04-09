@@ -60,8 +60,9 @@ data class Review(
 @Composable
 fun PublicationDetailsScreen(
     publicationId: String,
-    userType: String = "",
+    isOwnerPublicationView: Boolean = false,
     onBackClick: () -> Unit,
+    onOwnerPublicationDeleted: () -> Unit = {},
     onSeeAllReviewsClick: (String) -> Unit
 ) {
     val viewModel: PublicationDetailsViewModel = hiltViewModel()
@@ -72,7 +73,6 @@ fun PublicationDetailsScreen(
     val commentResult by viewModel.commentResult.collectAsState()
     val snackbarHostState = remember { SnackbarHostState() }
     val coroutineScope = rememberCoroutineScope()
-    var showEditModal by remember { mutableStateOf(false) }
 
     LaunchedEffect(publicationId) {
         viewModel.loadCommentsForPublication(publicationId)
@@ -82,10 +82,16 @@ fun PublicationDetailsScreen(
         publicationActionResult?.let { result ->
             when (result) {
                 is RequestResult.Success -> {
-                    snackbarHostState.showSnackbar(result.message)
                     if (result.message.contains("eliminada", ignoreCase = true)) {
-                        onBackClick()
+                        if (isOwnerPublicationView) {
+                            onOwnerPublicationDeleted()
+                        } else {
+                            onBackClick()
+                        }
+                        viewModel.clearPublicationActionResult()
+                        return@let
                     }
+                    snackbarHostState.showSnackbar(result.message)
                 }
                 is RequestResult.Failure -> snackbarHostState.showSnackbar(result.errorMessage)
             }
@@ -132,6 +138,11 @@ fun PublicationDetailsScreen(
 
     val schedules: List<DayScheduleUi> = publication.horarios.toWeeklyScheduleUi()
     val today = currentDayLabelEs()
+    val isCurrentUserOwner = (sessionState as? SessionState.Authenticated)
+        ?.session
+        ?.userId
+        ?.equals(publication.usuarioAutorId, ignoreCase = true) == true
+    val ownerViewEnabled = isOwnerPublicationView && isCurrentUserOwner
 
     val selectedPriceLevel = publication.rangoPrecios?.let {
         when (it.name) {
@@ -162,6 +173,7 @@ fun PublicationDetailsScreen(
                     categoryLabel = publication.categoria.name,
                     title = publication.titulo,
                     imageUrl = publication.fotos.firstOrNull().orEmpty(),
+                    showReportAction = !ownerViewEnabled,
                     onReportClick = { showReportModal = true },
                     onBackClick = onBackClick
                 )
@@ -169,7 +181,7 @@ fun PublicationDetailsScreen(
         },
         bottomBar = {
             BottomActionsBar(
-                userType = userType,
+                isOwnerPublicationView = ownerViewEnabled,
                 onVisitedClick = {
                     if (sessionState is SessionState.Authenticated) {
                         showRatingModal = true
@@ -179,7 +191,6 @@ fun PublicationDetailsScreen(
                         }
                     }
                 },
-                onEditClick = { showEditModal = true },
                 onDeleteClick = { showDeletePublicationDialog = true }
             )
         }
@@ -225,7 +236,7 @@ fun PublicationDetailsScreen(
         }
     }
 
-    if (showReportModal) {
+    if (!ownerViewEnabled && showReportModal) {
         ReportModal(onDismiss = { showReportModal = false })
     }
 
@@ -242,17 +253,6 @@ fun PublicationDetailsScreen(
                     rating = rating,
                     text = comment
                 )
-            }
-        )
-    }
-
-    if (showEditModal) {
-        EditPublicationModal(
-            publication = publication,
-            onDismiss = { showEditModal = false },
-            onSave = { updated ->
-                viewModel.updatePublication(updated)
-                showEditModal = false
             }
         )
     }
@@ -277,6 +277,7 @@ fun ImageHeader(
     categoryLabel: String,
     title: String,
     imageUrl: String,
+    showReportAction: Boolean,
     onReportClick: () -> Unit,
     onBackClick: () -> Unit
 ) {
@@ -348,18 +349,20 @@ fun ImageHeader(
             }
         }
 
-        IconButton(
-            onClick = onReportClick,
-            modifier = Modifier
-                .align(Alignment.TopEnd)
-                .padding(16.dp)
-        ) {
-            Icon(
-                imageVector = Icons.Outlined.ErrorOutline,
-                contentDescription = "Reportar",
-                tint = PrincipalRed,
-                modifier = Modifier.size(28.dp)
-            )
+        if (showReportAction) {
+            IconButton(
+                onClick = onReportClick,
+                modifier = Modifier
+                    .align(Alignment.TopEnd)
+                    .padding(16.dp)
+            ) {
+                Icon(
+                    imageVector = Icons.Outlined.ErrorOutline,
+                    contentDescription = "Reportar",
+                    tint = PrincipalRed,
+                    modifier = Modifier.size(28.dp)
+                )
+            }
         }
     }
 }
@@ -948,9 +951,8 @@ fun ReviewCard(review: Review) {
 
 @Composable
 fun BottomActionsBar(
-    userType: String,
+    isOwnerPublicationView: Boolean,
     onVisitedClick: () -> Unit,
-    onEditClick: () -> Unit = {},
     onDeleteClick: () -> Unit = {}
 ) {
     var isInterested by remember { mutableStateOf(false) }
@@ -966,30 +968,11 @@ fun BottomActionsBar(
                 .navigationBarsPadding(),
             horizontalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            if (userType == "user") {
-                // Botón Editar
-                Button(
-                    onClick = onEditClick,
-                    modifier = Modifier
-                        .weight(1f)
-                        .height(54.dp),
-                    shape = RoundedCornerShape(12.dp),
-                    border = BorderStroke(1.5.dp, PrincipalBlue),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = Color(0xFFE8EFFF),
-                        contentColor = PrincipalBlue
-                    )
-                ) {
-                    Icon(Icons.Outlined.Edit, contentDescription = null)
-                    Spacer(modifier = Modifier.width(8.dp))
-                    Text("Editar", fontWeight = FontWeight.Bold, fontSize = 16.sp)
-                }
-
-                // Botón Eliminar
+            if (isOwnerPublicationView) {
                 Button(
                     onClick = onDeleteClick,
                     modifier = Modifier
-                        .weight(1f)
+                        .fillMaxWidth()
                         .height(54.dp),
                     shape = RoundedCornerShape(12.dp),
                     border = BorderStroke(1.5.dp, PrincipalRed),
@@ -1000,7 +983,7 @@ fun BottomActionsBar(
                 ) {
                     Icon(Icons.Outlined.Delete, contentDescription = null)
                     Spacer(modifier = Modifier.width(8.dp))
-                    Text("Eliminar", fontWeight = FontWeight.Bold, fontSize = 16.sp)
+                    Text("Eliminar publicación", fontWeight = FontWeight.Bold, fontSize = 16.sp)
                 }
             } else {
                 // Botón Me interesa (con lógica de estado)
@@ -1051,42 +1034,4 @@ fun BottomActionsBar(
     }
 }
 
-@Composable
-private fun EditPublicationModal(
-    publication: com.example.triplink.domain.model.PuntoInteres,
-    onDismiss: () -> Unit,
-    onSave: (com.example.triplink.domain.model.PuntoInteres) -> Unit
-) {
-    var title by remember(publication.id) { mutableStateOf(publication.titulo) }
-    var description by remember(publication.id) { mutableStateOf(publication.informacion) }
-
-    AlertDialog(
-        onDismissRequest = onDismiss,
-        title = { Text("Editar publicación") },
-        text = {
-            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                OutlinedTextField(
-                    value = title,
-                    onValueChange = { title = it },
-                    label = { Text("Título") }
-                )
-                OutlinedTextField(
-                    value = description,
-                    onValueChange = { description = it },
-                    label = { Text("Descripción") }
-                )
-            }
-        },
-        confirmButton = {
-            TextButton(onClick = {
-                onSave(publication.copy(titulo = title.trim(), informacion = description.trim()))
-            }) {
-                Text("Guardar")
-            }
-        },
-        dismissButton = {
-            TextButton(onClick = onDismiss) { Text("Cancelar") }
-        }
-    )
-}
 

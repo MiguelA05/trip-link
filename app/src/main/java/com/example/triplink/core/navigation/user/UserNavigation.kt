@@ -94,6 +94,14 @@ fun UserNavigation(
                 },
                 onEditRejectedPublication = { publicationId ->
                     navController.navigate(UserSectionRoutes.PostCreation(publicationId))
+                },
+                onViewVerifiedPublication = { publicationId ->
+                    navController.navigate(
+                        UserSectionRoutes.PublicationDetails(
+                            publicationId = publicationId,
+                            ownerMode = true
+                        )
+                    )
                 }
             )
         }
@@ -118,7 +126,15 @@ fun UserNavigation(
             val route = backStackEntry.toRoute<UserSectionRoutes.PublicationDetails>()
             PublicationDetailsScreen(
                 route.publicationId,
+                isOwnerPublicationView = route.ownerMode,
                 onBackClick = { navController.popBackStack() },
+                onOwnerPublicationDeleted = {
+                    navController.navigate(UserSectionRoutes.UserInfo) {
+                        popUpTo(UserSectionRoutes.UserInfo) { inclusive = false }
+                        launchSingleTop = true
+                        restoreState = true
+                    }
+                },
                 onSeeAllReviewsClick = { publicationId ->
                     navController.navigate(UserSectionRoutes.Comments(publicationId))
                 }

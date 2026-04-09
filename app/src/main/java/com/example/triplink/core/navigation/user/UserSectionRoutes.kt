@@ -20,7 +20,10 @@ sealed class UserSectionRoutes {
     data object AccountEdit : UserSectionRoutes()
 
     @Serializable
-    data class PublicationDetails(val publicationId: String) : UserSectionRoutes()
+    data class PublicationDetails(
+        val publicationId: String,
+        val ownerMode: Boolean = false
+    ) : UserSectionRoutes()
 
     @Serializable
     data class Comments(val publicationId: String) : UserSectionRoutes()

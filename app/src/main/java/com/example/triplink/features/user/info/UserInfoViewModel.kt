@@ -11,6 +11,7 @@ import com.example.triplink.domain.model.enums.EstadoPublicacion
 import com.example.triplink.domain.repository.publication.PublicationRepository
 import com.example.triplink.domain.repository.user.UserProfileRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import java.util.Locale
@@ -67,7 +68,16 @@ class UserInfoViewModel @Inject constructor(
 	private var currentUserId: String? = null
 
 	init {
+		observePublications()
 		loadUserData()
+	}
+
+	private fun observePublications() {
+		viewModelScope.launch {
+			publicationRepository.publications.collectLatest {
+				refreshSelectedContributions()
+			}
+		}
 	}
 
 	fun onContributionTabSelected(tab: EstadoPublicacion) {
