@@ -34,8 +34,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import com.example.triplink.core.components.CompactDestructiveConfirmDialog
 import com.example.triplink.core.components.CommentCard
-import com.example.triplink.core.components.DestructiveConfirmDialog
 import com.example.triplink.core.components.GeneralTopBar
 import com.example.triplink.core.components.RatingSummaryCard
 import com.example.triplink.core.navigation.SessionState
@@ -138,7 +138,7 @@ fun CommentsScreen(
 	}
 
 	if (deletingCommentId != null) {
-		DestructiveConfirmDialog(
+		CompactDestructiveConfirmDialog(
 			title = "¿Eliminar comentario?",
 			message = "Esta acción eliminará tu comentario de forma permanente.",
 			confirmText = "Sí, eliminar",

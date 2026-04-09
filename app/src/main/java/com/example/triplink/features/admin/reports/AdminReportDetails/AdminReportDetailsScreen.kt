@@ -20,8 +20,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.ArrowBack
 import androidx.compose.material.icons.filled.AccessTime
 import androidx.compose.material.icons.filled.AttachMoney
+import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.LocationOn
-import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
@@ -29,7 +29,6 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -47,6 +46,8 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
 import coil3.request.crossfade
+import com.example.triplink.core.components.DestructiveConfirmDialog
+import com.example.triplink.core.components.GeneralAlertDialog
 import com.example.triplink.ui.theme.PrincipalBlue
 import com.example.triplink.ui.theme.PrincipalGreen
 
@@ -391,20 +392,28 @@ fun AdminReportDetailsScreen(
 
     // Diálogos de confirmación
     if (showConfirmDialog) {
-        ConfirmReportDialog(
-            reportTitle = report.title,
-            onDismiss = { showConfirmDialog = false },
+        GeneralAlertDialog(
+            onDismissRequest = { showConfirmDialog = false },
             onConfirm = {
                 viewModel.confirmReport(report.id)
                 onBackClick()
-            }
+            },
+            title = "Confirmar Reporte",
+            message = "¿Deseas confirmar el reporte de «${report.title}»? Esta acción incrementará el contador de reportes aceptados.",
+            icon = Icons.Default.CheckCircle,
+            buttonText = "Confirmar",
+            dismissButtonText = "Cancelar",
+            onDismissAction = { showConfirmDialog = false }
         )
     }
 
     if (showRejectDialog) {
-        RejectReportDialog(
-            reportTitle = report.title,
-            onDismiss = { showRejectDialog = false },
+        DestructiveConfirmDialog(
+            title = "Rechazar Reporte",
+            message = "¿Deseas rechazar el reporte de «${report.title}»? Se considerará que la publicación no incumple las reglas.",
+            confirmText = "Rechazar",
+            dismissText = "Cancelar",
+            onDismissRequest = { showRejectDialog = false },
             onConfirm = {
                 viewModel.invalidateReport(report.id)
                 onBackClick()
@@ -413,68 +422,3 @@ fun AdminReportDetailsScreen(
     }
 }
 
-@Composable
-private fun ConfirmReportDialog(
-    reportTitle: String,
-    onDismiss: () -> Unit,
-    onConfirm: () -> Unit
-) {
-    AlertDialog(
-        onDismissRequest = onDismiss,
-        title = { Text("Confirmar Reporte") },
-        text = {
-            Text(
-                text = "¿Deseas confirmar el reporte de «$reportTitle»? Esta acción incrementará el contador de reportes aceptados.",
-                style = MaterialTheme.typography.bodyMedium
-            )
-        },
-        confirmButton = {
-            TextButton(
-                onClick = onConfirm,
-                colors = ButtonDefaults.textButtonColors(
-                    contentColor = PrincipalGreen
-                )
-            ) {
-                Text("Confirmar")
-            }
-        },
-        dismissButton = {
-            TextButton(onClick = onDismiss) {
-                Text("Cancelar")
-            }
-        }
-    )
-}
-
-@Composable
-private fun RejectReportDialog(
-    reportTitle: String,
-    onDismiss: () -> Unit,
-    onConfirm: () -> Unit
-) {
-    AlertDialog(
-        onDismissRequest = onDismiss,
-        title = { Text("Rechazar Reporte") },
-        text = {
-            Text(
-                text = "¿Deseas rechazar el reporte de «$reportTitle»? Se considerará que la publicación no incumple las reglas.",
-                style = MaterialTheme.typography.bodyMedium
-            )
-        },
-        confirmButton = {
-            TextButton(
-                onClick = onConfirm,
-                colors = ButtonDefaults.textButtonColors(
-                    contentColor = Color(0xFFF35A5A)
-                )
-            ) {
-                Text("Rechazar")
-            }
-        },
-        dismissButton = {
-            TextButton(onClick = onDismiss) {
-                Text("Cancelar")
-            }
-        }
-    )
-}
