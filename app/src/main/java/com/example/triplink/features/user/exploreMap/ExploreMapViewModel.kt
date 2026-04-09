@@ -30,10 +30,12 @@ class ExploreMapViewModel @Inject constructor(
     var selectedCategory by mutableStateOf<Categoria?>(null)
         private set
 
-    val selectedCategoryLabel: String
-        get() = selectedCategory?.label ?: "Todos"
-
-    val categories = listOf("Todos") + Categoria.entries.map { it.label }
+    val categories = listOf(
+        Categoria.GASTRONOMIA,
+        Categoria.ENTRETENIMIENTO,
+        Categoria.NATURALEZA,
+        Categoria.CULTURA
+    )
 
     private val allPublications: List<PuntoInteres>
         get() = publicationRepository.explorePublications()
@@ -82,8 +84,8 @@ class ExploreMapViewModel @Inject constructor(
         keepValidSelection()
     }
 
-    fun onCategorySelected(category: String) {
-        selectedCategory = Categoria.entries.firstOrNull { it.label == category }
+    fun onCategorySelected(category: Categoria?) {
+        selectedCategory = category
         keepValidSelection()
     }
 

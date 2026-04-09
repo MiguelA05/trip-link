@@ -61,7 +61,7 @@ fun ExploreScreen(
 				)
 				CategoryChips(
 					categories = viewModel.categories,
-					selectedCategory = viewModel.selectedCategoryLabel,
+					selectedCategory = viewModel.selectedCategory,
 					onCategorySelected = viewModel::onCategorySelected
 				)
 			}

@@ -74,6 +74,7 @@ fun ExploreMapScreen(
 	val scaffoldState = rememberBottomSheetScaffoldState(bottomSheetState = sheetState)
 	val coroutineScope = rememberCoroutineScope()
 	var mapSize by remember { mutableStateOf(IntSize.Zero) }
+	val selectedCategoryLabel = viewModel.selectedCategory?.label ?: "Todos"
 
 	BottomSheetScaffold(
 		modifier = Modifier
@@ -166,7 +167,7 @@ fun ExploreMapScreen(
 				)
 				CategoryChips(
 					categories = viewModel.categories,
-					selectedCategory = viewModel.selectedCategoryLabel,
+					selectedCategory = viewModel.selectedCategory,
 					onCategorySelected = viewModel::onCategorySelected
 				)
 			}

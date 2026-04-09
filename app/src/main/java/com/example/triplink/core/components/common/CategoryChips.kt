@@ -15,6 +15,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import com.example.triplink.domain.model.enums.Categoria
 import com.example.triplink.ui.theme.PrincipalBlue
 
 @Composable
@@ -37,6 +38,44 @@ fun CategoryChips(
                 label = {
                     Text(
                         text = category,
+                        style = MaterialTheme.typography.labelMedium
+                    )
+                },
+                shape = RoundedCornerShape(8.dp),
+                colors = FilterChipDefaults.filterChipColors(
+                    containerColor = Color(0xFFEAEAEA),
+                    selectedContainerColor = Color(0xFFDCE7FF),
+                    selectedLabelColor = PrincipalBlue,
+                    labelColor = Color(0xFF4D4D4D)
+                ),
+                modifier = Modifier.padding(vertical = 2.dp)
+            )
+        }
+    }
+}
+
+@Composable
+fun CategoryChips(
+    categories: List<Categoria>,
+    selectedCategory: Categoria?,
+    onCategorySelected: (Categoria?) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    val chips = listOf<Categoria?>(null) + categories
+
+    LazyRow(
+        modifier = modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        contentPadding = PaddingValues(horizontal = 2.dp)
+    ) {
+        items(chips) { category ->
+            val isSelected = category == selectedCategory
+            FilterChip(
+                selected = isSelected,
+                onClick = { onCategorySelected(category) },
+                label = {
+                    Text(
+                        text = category?.label ?: "Todos",
                         style = MaterialTheme.typography.labelMedium
                     )
                 },

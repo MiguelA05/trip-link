@@ -27,13 +27,15 @@ class ExploreViewModel @Inject constructor(
     var selectedCategory by mutableStateOf<Categoria?>(null)
         private set
 
-    val selectedCategoryLabel: String
-        get() = selectedCategory?.label ?: "Todos"
-
     var selectedTabIndex by mutableIntStateOf(1)
         private set
 
-    val categories = listOf("Todos") + Categoria.entries.map { it.label }
+    val categories = listOf(
+        Categoria.GASTRONOMIA,
+        Categoria.ENTRETENIMIENTO,
+        Categoria.NATURALEZA,
+        Categoria.CULTURA
+    )
 
     fun filteredPuntoInteres(source: List<PuntoInteres>): List<PuntoInteres> {
         val normalizedQuery = query.trim().lowercase(Locale.ROOT)
@@ -54,8 +56,8 @@ class ExploreViewModel @Inject constructor(
         query = newValue
     }
 
-    fun onCategorySelected(category: String) {
-        selectedCategory = Categoria.entries.firstOrNull { it.label == category }
+    fun onCategorySelected(category: Categoria?) {
+        selectedCategory = category
     }
 
     fun onBottomTabSelected(index: Int) {
