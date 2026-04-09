@@ -20,7 +20,8 @@ data class UserContributionItem(
 	val id: String,
 	val title: String,
 	val status: EstadoPublicacion,
-	val rejectReason: String?
+	val rejectReason: String?,
+	val createdAt: Long
 )
 
 data class UserInfoUiState(
@@ -29,11 +30,13 @@ data class UserInfoUiState(
 	val roleLabel: String,
 	val points: Int,
 	val contributions: Int,
-	val contributionsInSelectedTab: Int,
 	val activeDays: Int,
 	val selectedContributionTab: EstadoPublicacion,
 	val selectedBottomTabIndex: Int,
-	val selectedContributionItems: List<UserContributionItem>
+	val selectedContributionItems: List<UserContributionItem>,
+	val verifiedCount: Int = 0,
+	val pendingCount: Int = 0,
+	val rejectedCount: Int = 0
 )
 
 @HiltViewModel
@@ -53,7 +56,6 @@ class UserInfoViewModel @Inject constructor(
 			roleLabel = "TURISTA",
 			points = 0,
 			contributions = 0,
-			contributionsInSelectedTab = 0,
 			activeDays = 1,
 			selectedContributionTab = EstadoPublicacion.PENDIENTE,
 			selectedBottomTabIndex = 2,
@@ -97,6 +99,7 @@ class UserInfoViewModel @Inject constructor(
 
 			user?.let { mappedUser ->
 				currentUserId = mappedUser.email
+				
 				val contributionsByUser = publicationRepository.getUserPublications(mappedUser.email)
 				val contributionCount = contributionsByUser.count {
 					it.estado == EstadoPublicacion.VERIFICADA ||
@@ -119,13 +122,17 @@ class UserInfoViewModel @Inject constructor(
 
 	private fun refreshSelectedContributions() {
 		val userId = currentUserId ?: return
-		val filtered = publicationRepository.getUserPublications(userId)
+		val allUserPublications = publicationRepository.getUserPublications(userId)
+		
+		val filtered = allUserPublications
 			.filter { it.estado == uiState.selectedContributionTab }
 			.map { it.toContributionItem() }
 
 		uiState = uiState.copy(
-			contributionsInSelectedTab = filtered.size,
-			selectedContributionItems = filtered
+			selectedContributionItems = filtered,
+			verifiedCount = allUserPublications.count { it.estado == EstadoPublicacion.VERIFICADA },
+			pendingCount = allUserPublications.count { it.estado == EstadoPublicacion.PENDIENTE },
+			rejectedCount = allUserPublications.count { it.estado == EstadoPublicacion.RECHAZADA }
 		)
 	}
 
@@ -133,7 +140,8 @@ class UserInfoViewModel @Inject constructor(
 		id = id,
 		title = titulo,
 		status = estado,
-		rejectReason = motivoRechazo
+		rejectReason = motivoRechazo,
+		createdAt = fechaCreacion
 	)
 
 	private companion object {

@@ -1,11 +1,17 @@
 package com.example.triplink.core.components.profile
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -16,6 +22,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.example.triplink.R
 import com.example.triplink.domain.model.enums.EstadoPublicacion
 import com.example.triplink.ui.theme.PrincipalBlue
@@ -24,7 +31,10 @@ import com.example.triplink.ui.theme.PrincipalBlue
 fun StatusTabs(
     selectedTab: EstadoPublicacion,
     onTabSelected: (EstadoPublicacion) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    verifiedCount: Int = 0,
+    pendingCount: Int = 0,
+    rejectedCount: Int = 0
 ) {
     val tabs = listOf(
         EstadoPublicacion.VERIFICADA,
@@ -47,6 +57,24 @@ fun StatusTabs(
                     EstadoPublicacion.RECHAZADA -> R.string.component_status_tabs_rejected
                 }
             )
+            val count = when (tab) {
+                EstadoPublicacion.VERIFICADA -> verifiedCount
+                EstadoPublicacion.PENDIENTE -> pendingCount
+                EstadoPublicacion.RECHAZADA -> rejectedCount
+            }
+            
+            val badgeBgColor = when (tab) {
+                EstadoPublicacion.VERIFICADA -> Color(0xFFE8F5E9)
+                EstadoPublicacion.PENDIENTE -> Color(0xFFFFF3E0)
+                EstadoPublicacion.RECHAZADA -> Color(0xFFFFEBEE)
+            }
+            
+            val badgeTextColor = when (tab) {
+                EstadoPublicacion.VERIFICADA -> Color(0xFF2E7D32)
+                EstadoPublicacion.PENDIENTE -> Color(0xFFE65100)
+                EstadoPublicacion.RECHAZADA -> Color(0xFFC62828)
+            }
+
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier
@@ -58,14 +86,34 @@ fun StatusTabs(
                     text = label,
                     style = MaterialTheme.typography.titleMedium.copy(
                         color = if (selected) PrincipalBlue else Color(0xFF8FA1BA),
-                        fontWeight = FontWeight.SemiBold
+                        fontWeight = FontWeight.SemiBold,
+                        fontSize = 14.sp
                     )
                 )
+                
+                Spacer(modifier = Modifier.height(6.dp))
+                
+                Box(
+                    modifier = Modifier
+                        .size(24.dp)
+                        .background(badgeBgColor, CircleShape),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        text = count.toString(),
+                        style = MaterialTheme.typography.labelSmall.copy(
+                            color = badgeTextColor,
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 12.sp
+                        )
+                    )
+                }
+
                 if (selected) {
                     HorizontalDivider(
                         modifier = Modifier
-                            .padding(top = 10.dp)
-                            .fillMaxWidth(0.9f),
+                            .padding(top = 8.dp)
+                            .fillMaxWidth(0.8f),
                         thickness = 3.dp,
                         color = PrincipalBlue
                     )
@@ -74,4 +122,3 @@ fun StatusTabs(
         }
     }
 }
-
