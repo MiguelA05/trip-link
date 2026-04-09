@@ -3,6 +3,7 @@ package com.example.triplink.features.admin.reports
 import com.example.triplink.domain.model.PuntoInteres
 import com.example.triplink.domain.model.Reporte
 import com.example.triplink.domain.model.enums.EstadoReporte
+import com.example.triplink.core.components.publicationdetails.utils.toScheduleLabel
 
 data class AdminReportUi(
     val report: Reporte,
@@ -17,7 +18,7 @@ data class AdminReportUi(
     val timeLabel: String get() = report.fechaCreacion.toRelativeTimeLabel()
     val cityLabel: String get() = pointOfInterest.ubicacion.ciudad
     val priceLabel: String get() = pointOfInterest.rangoPrecios.toLabel()
-    val scheduleLabel: String get() = pointOfInterest.horario.toLabel()
+    val scheduleLabel: String get() = pointOfInterest.horarios.toScheduleLabel()
     val imageUrl: String get() = pointOfInterest.fotos.firstOrNull().orEmpty()
     val status: EstadoReporte get() = report.estado
     val reasonMessage: String get() = report.toReasonMessage()

@@ -10,7 +10,6 @@ import com.example.triplink.domain.repository.publication.PublicationRepository
 import com.example.triplink.domain.repository.user.UserProfileRepository
 import javax.inject.Inject
 import javax.inject.Singleton
-import kotlin.math.absoluteValue
 
 @Singleton
 class ModerationRepositoryImpl @Inject constructor(
@@ -84,8 +83,7 @@ class ModerationRepositoryImpl @Inject constructor(
             id = id,
             pointOfInterest = this,
             authorName = authorName,
-            createdAtMillis = System.currentTimeMillis() -
-                (id.hashCode().toLong().absoluteValue % 96L) * 60L * 60L * 1000L,
+            createdAtMillis = fechaCreacion,
             moderationReason = motivoRechazo,
             rejectReason = motivoRechazo
         )

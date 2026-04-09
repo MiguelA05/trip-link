@@ -15,7 +15,8 @@ data class PuntoInteres(
     val ubicacion: Ubicacion,
 
     val fotos: List<String>,
-    val horario: Pair<Long, Long>? = null,
+    val horarios: List<HorarioPuntoInteres> = emptyList(),
+    val fechaCreacion: Long = System.currentTimeMillis(),
 
     val estado: EstadoPublicacion = EstadoPublicacion.PENDIENTE,
     val rangoPrecios: RangoPrecios? = null,

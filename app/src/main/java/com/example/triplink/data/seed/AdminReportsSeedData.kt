@@ -4,6 +4,7 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.runtime.snapshots.SnapshotStateMap
+import com.example.triplink.domain.model.HorarioPuntoInteres
 import com.example.triplink.domain.model.PuntoInteres
 import com.example.triplink.domain.model.Reporte
 import com.example.triplink.domain.model.Ubicacion
@@ -35,7 +36,8 @@ fun createAdminReportsSeedState(): AdminReportsSeedState {
             categoria = Categoria.GASTRONOMIA,
             ubicacion = Ubicacion(latitud = 4.533, longitud = -75.681, ciudad = "Armenia, Quindio"),
             fotos = listOf("https://images.unsplash.com/photo-1601050690597-df0568f70950?q=80&w=1200&auto=format&fit=crop"),
-            horario = 7L * 60L * 60L * 1000L to 14L * 60L * 60L * 1000L,
+            horarios = defaultFullWeekSchedule(7L, 0L, 14L, 0L),
+            fechaCreacion = System.currentTimeMillis() - 4L * 24L * 60L * 60L * 1000L,
             estado = EstadoPublicacion.PENDIENTE,
             rangoPrecios = RangoPrecios.COSTOSO
         ),
@@ -47,7 +49,8 @@ fun createAdminReportsSeedState(): AdminReportsSeedState {
             categoria = Categoria.CULTURA,
             ubicacion = Ubicacion(latitud = 4.668, longitud = -75.660, ciudad = "Filandia, Quindio"),
             fotos = listOf("https://images.unsplash.com/photo-1544735716-392fe2489ffa?q=80&w=1200&auto=format&fit=crop"),
-            horario = null,
+            horarios = emptyList(),
+            fechaCreacion = System.currentTimeMillis() - 2L * 24L * 60L * 60L * 1000L,
             estado = EstadoPublicacion.PENDIENTE,
             rangoPrecios = RangoPrecios.GRATUITO
         ),
@@ -59,7 +62,8 @@ fun createAdminReportsSeedState(): AdminReportsSeedState {
             categoria = Categoria.NATURALEZA,
             ubicacion = Ubicacion(latitud = 4.636, longitud = -75.571, ciudad = "Salento, Quindio"),
             fotos = listOf("https://images.unsplash.com/photo-1469474968028-56623f02e42e?q=80&w=1200&auto=format&fit=crop"),
-            horario = 8L * 60L * 60L * 1000L to 17L * 60L * 60L * 1000L,
+            horarios = defaultFullWeekSchedule(8L, 0L, 17L, 0L),
+            fechaCreacion = System.currentTimeMillis() - 12L * 60L * 60L * 1000L,
             estado = EstadoPublicacion.PENDIENTE,
             rangoPrecios = RangoPrecios.MODERADO
         )
@@ -101,5 +105,22 @@ fun createAdminReportsSeedState(): AdminReportsSeedState {
         pendingReports = pendingReports,
         acceptedReportsCountByPublication = acceptedReportsCountByPublication
     )
+}
+
+private fun defaultFullWeekSchedule(
+    startHour: Long,
+    startMinute: Long,
+    endHour: Long,
+    endMinute: Long
+): List<HorarioPuntoInteres> {
+    val start = (startHour * 60L + startMinute) * 60_000L
+    val end = (endHour * 60L + endMinute) * 60_000L
+    return listOf("Lun", "Mar", "Mie", "Jue", "Vie", "Sab", "Dom").map { day ->
+        HorarioPuntoInteres(
+            dia = day,
+            fechaInicio = start,
+            fechaFin = end
+        )
+    }
 }
 

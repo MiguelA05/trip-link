@@ -112,7 +112,7 @@ fun PublicationDetailsScreen(
     var showReportModal by remember { mutableStateOf(false) }
     var showRatingModal by remember { mutableStateOf(false) }
 
-    val schedules: List<DayScheduleUi> = publication.horario.toWeeklyScheduleUi()
+    val schedules: List<DayScheduleUi> = publication.horarios.toWeeklyScheduleUi()
     val today = currentDayLabelEs()
 
     val selectedPriceLevel = publication.rangoPrecios?.let {

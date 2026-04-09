@@ -93,7 +93,7 @@ fun PublicationCard(
                         color = Color.Black
                     )
                     Text(
-                        text = stringResource(R.string.component_publication_card_moment_ago),
+                        text = puntoInteres.fechaCreacion.toRelativeTimeLabelEs(),
                         fontSize = 12.sp,
                         color = Color.Gray
                     )
@@ -297,4 +297,18 @@ private fun formatAuthorName(userId: String): String =
 private fun formatCategory(category: String): String =
     category.lowercase(Locale.ROOT)
         .replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.ROOT) else it.toString() }
+
+private fun Long.toRelativeTimeLabelEs(now: Long = System.currentTimeMillis()): String {
+    val delta = (now - this).coerceAtLeast(0L)
+    val minutes = delta / 60_000L
+    val hours = minutes / 60L
+    val days = hours / 24L
+    return when {
+        minutes < 1 -> "Ahora mismo"
+        minutes < 60 -> "Hace $minutes min"
+        hours < 24 -> "Hace $hours h"
+        days < 7 -> "Hace $days d"
+        else -> "Hace ${days / 7} sem"
+    }
+}
 

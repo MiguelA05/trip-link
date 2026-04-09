@@ -1,5 +1,6 @@
 package com.example.triplink.data.seed
 
+import com.example.triplink.domain.model.HorarioPuntoInteres
 import com.example.triplink.domain.model.PuntoInteres
 import com.example.triplink.domain.model.Ubicacion
 import com.example.triplink.domain.model.enums.Categoria
@@ -15,7 +16,8 @@ fun seedPublications(): List<PuntoInteres> = listOf(
         categoria = Categoria.NATURALEZA,
         ubicacion = Ubicacion(4.6383, -75.4964, "Salento, Quindio"),
         fotos = listOf("https://visitmycolombia.com/wp-content/uploads/2024/01/bosque-de-palmas-valle-de-cocora-1536x864.jpg"),
-        horario = 8L * 60L * 60L * 1000L to 17L * 60L * 60L * 1000L,
+        horarios = defaultFullWeekSchedule(8L, 0L, 17L, 0L),
+        fechaCreacion = System.currentTimeMillis() - 2L * 60L * 60L * 1000L,
         estado = EstadoPublicacion.VERIFICADA,
         rangoPrecios = RangoPrecios.GRATUITO
     ),
@@ -27,7 +29,8 @@ fun seedPublications(): List<PuntoInteres> = listOf(
         categoria = Categoria.GASTRONOMIA,
         ubicacion = Ubicacion(4.5339, -75.6811, "Armenia, Quindio"),
         fotos = listOf("https://images.unsplash.com/photo-1509042239860-f550ce710b93?q=80&w=1200&auto=format&fit=crop"),
-        horario = 9L * 60L * 60L * 1000L to 20L * 60L * 60L * 1000L,
+        horarios = defaultFullWeekSchedule(9L, 0L, 20L, 0L),
+        fechaCreacion = System.currentTimeMillis() - 6L * 60L * 60L * 1000L,
         estado = EstadoPublicacion.VERIFICADA,
         rangoPrecios = RangoPrecios.ECONOMICO
     ),
@@ -39,7 +42,8 @@ fun seedPublications(): List<PuntoInteres> = listOf(
         categoria = Categoria.ENTRETENIMIENTO,
         ubicacion = Ubicacion(4.5666, -75.7519, "Montenegro, Quindio"),
         fotos = listOf("https://images.unsplash.com/photo-1554118811-1e0d58224f24?q=80&w=1200&auto=format&fit=crop"),
-        horario = 8L * 60L * 60L * 1000L to 18L * 60L * 60L * 1000L,
+        horarios = defaultFullWeekSchedule(8L, 0L, 18L, 0L),
+        fechaCreacion = System.currentTimeMillis() - 26L * 60L * 60L * 1000L,
         estado = EstadoPublicacion.VERIFICADA,
         rangoPrecios = RangoPrecios.MODERADO
     ),
@@ -51,7 +55,8 @@ fun seedPublications(): List<PuntoInteres> = listOf(
         categoria = Categoria.NATURALEZA,
         ubicacion = Ubicacion(4.54, -75.68, "Armenia, Quindio"),
         fotos = listOf("https://images.unsplash.com/photo-1469474968028-56623f02e42e?q=80&w=1200&auto=format&fit=crop"),
-        horario = 10L * 60L * 60L * 1000L to 18L * 60L * 60L * 1000L,
+        horarios = defaultFullWeekSchedule(10L, 0L, 18L, 0L),
+        fechaCreacion = System.currentTimeMillis() - 5L * 60L * 1000L,
         estado = EstadoPublicacion.PENDIENTE,
         rangoPrecios = RangoPrecios.GRATUITO
     ),
@@ -63,10 +68,28 @@ fun seedPublications(): List<PuntoInteres> = listOf(
         categoria = Categoria.CULTURA,
         ubicacion = Ubicacion(4.62, -75.71, "Montenegro, Quindio"),
         fotos = listOf("https://images.unsplash.com/photo-1521017432531-fbd92d768814?q=80&w=1200&auto=format&fit=crop"),
-        horario = null,
+        horarios = emptyList(),
+        fechaCreacion = System.currentTimeMillis() - 3L * 24L * 60L * 60L * 1000L,
         estado = EstadoPublicacion.RECHAZADA,
         rangoPrecios = RangoPrecios.MODERADO,
         motivoRechazo = "Falta evidencia fotografica del recorrido y puntos de encuentro."
     )
 )
+
+private fun defaultFullWeekSchedule(
+    startHour: Long,
+    startMinute: Long,
+    endHour: Long,
+    endMinute: Long
+): List<HorarioPuntoInteres> {
+    val start = (startHour * 60L + startMinute) * 60_000L
+    val end = (endHour * 60L + endMinute) * 60_000L
+    return listOf("Lun", "Mar", "Mie", "Jue", "Vie", "Sab", "Dom").map { day ->
+        HorarioPuntoInteres(
+            dia = day,
+            fechaInicio = start,
+            fechaFin = end
+        )
+    }
+}
 

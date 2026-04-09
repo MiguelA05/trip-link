@@ -9,6 +9,7 @@ import com.example.triplink.core.utils.RequestResult
 import com.example.triplink.core.utils.ValidatedField
 import com.example.triplink.data.datastore.SessionDataStore
 import com.example.triplink.data.seed.UiOptionsSeedData
+import com.example.triplink.domain.model.HorarioPuntoInteres
 import com.example.triplink.domain.model.PuntoInteres
 import com.example.triplink.domain.model.Ubicacion
 import com.example.triplink.domain.model.enums.Categoria
@@ -111,10 +112,10 @@ class PostCreationViewModel @Inject constructor(
 
         selectedPriceRange = publication.rangoPrecios.toUiLabel()
 
-        val schedule = publication.horario
+        val schedule = publication.horarios.firstOrNull()
         daySchedules = if (schedule != null) {
-            val open = schedule.first.toHHmm()
-            val close = schedule.second.toHHmm()
+            val open = schedule.fechaInicio.toHHmm()
+            val close = schedule.fechaFin.toHHmm()
             UiOptionsSeedData.weekDaysShort.map {
                 DayScheduleData(day = it, isEnabled = true, openTime = open, closeTime = close)
             }
@@ -215,7 +216,7 @@ class PostCreationViewModel @Inject constructor(
                     categoria = category,
                     ubicacion = Ubicacion(latitud = latitude, longitud = longitude, ciudad = selectedCity),
                     fotos = prefilledPhotos,
-                    horario = buildScheduleOrNull(),
+                    horarios = buildSchedules(),
                     estado = EstadoPublicacion.PENDIENTE,
                     rangoPrecios = selectedPriceRange.toDomainPriceRange(),
                     motivoRechazo = null
@@ -266,11 +267,18 @@ class PostCreationViewModel @Inject constructor(
         prefilledPhotos = emptyList()
     }
 
-    private fun buildScheduleOrNull(): Pair<Long, Long>? {
-        val firstEnabled = daySchedules.firstOrNull { it.isEnabled } ?: return null
-        val open = firstEnabled.openTime.toMillisOfDayOrNull() ?: return null
-        val close = firstEnabled.closeTime.toMillisOfDayOrNull() ?: return null
-        return open to close
+    private fun buildSchedules(): List<HorarioPuntoInteres> {
+        return daySchedules
+            .filter { it.isEnabled }
+            .mapNotNull { schedule ->
+                val open = schedule.openTime.toMillisOfDayOrNull() ?: return@mapNotNull null
+                val close = schedule.closeTime.toMillisOfDayOrNull() ?: return@mapNotNull null
+                HorarioPuntoInteres(
+                    dia = schedule.day,
+                    fechaInicio = open,
+                    fechaFin = close
+                )
+            }
     }
 
     private fun String.toDomainCategoryOrNull(): Categoria? {

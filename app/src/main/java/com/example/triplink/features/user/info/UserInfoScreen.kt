@@ -8,8 +8,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Scaffold
@@ -32,8 +30,6 @@ import com.example.triplink.core.components.profile.ProfileHeader
 import com.example.triplink.core.components.profile.SectionCard
 import com.example.triplink.core.components.profile.StatsRow
 import com.example.triplink.core.components.profile.StatusTabs
-import com.example.triplink.ui.theme.PrincipalBlue
-import com.example.triplink.ui.theme.PrincipalWhite
 
 @Composable
 fun UserInfoScreen(
@@ -56,7 +52,7 @@ fun UserInfoScreen(
 			.fillMaxSize()
 			.padding(contentPadding),
 		containerColor = Color(0xFFF0F2F5),
-		contentWindowInsets = WindowInsets(0, 0, 0, 0),
+		contentWindowInsets = WindowInsets(0, 0, 0, 0)
 	) { paddingValues ->
 		LazyColumn(
 			modifier = Modifier
@@ -70,9 +66,8 @@ fun UserInfoScreen(
 					userName = state.userName,
 					initials = state.userInitials,
 					roleLabel = state.roleLabel,
-	 				onBackClick = viewModel::onLogoutRequested,
-					onEditClick = onEditClick,
-					modifier = Modifier
+					onBackClick = viewModel::onLogoutRequested,
+					onEditClick = onEditClick
 				)
 			}
 
@@ -122,25 +117,23 @@ fun UserInfoScreen(
 					Column(
 						modifier = Modifier
 							.fillMaxWidth()
-							.padding(vertical = 42.dp, horizontal = 20.dp),
+							.padding(vertical = 24.dp, horizontal = 20.dp),
 						horizontalAlignment = Alignment.CenterHorizontally,
-						verticalArrangement = Arrangement.spacedBy(18.dp)
+						verticalArrangement = Arrangement.spacedBy(14.dp)
 					) {
-						val tabLabel = when (state.selectedContributionTab) {
-							EstadoPublicacion.PENDIENTE -> "pendientes"
-							EstadoPublicacion.VERIFICADA -> "verificadas"
-							EstadoPublicacion.RECHAZADA -> "rechazadas"
-						}
 						if (state.selectedContributionItems.isEmpty()) {
+							val tabLabel = when (state.selectedContributionTab) {
+								EstadoPublicacion.PENDIENTE -> "pendientes"
+								EstadoPublicacion.VERIFICADA -> "verificadas"
+								EstadoPublicacion.RECHAZADA -> "rechazadas"
+							}
 							Text(
 								text = "No tienes contribuciones\n$tabLabel",
 								color = Color(0xFF8FA1BA),
 								style = androidx.compose.material3.MaterialTheme.typography.headlineSmall,
 								fontWeight = FontWeight.Medium
 							)
-						}
-
-						if (state.selectedContributionItems.isNotEmpty()) {
+						} else {
 							state.selectedContributionItems.forEach { contribution ->
 								Card(
 									modifier = Modifier.fillMaxWidth(),
@@ -151,7 +144,7 @@ fun UserInfoScreen(
 										modifier = Modifier
 											.fillMaxWidth()
 											.padding(12.dp),
-										verticalArrangement = Arrangement.spacedBy(6.dp)
+										verticalArrangement = Arrangement.spacedBy(8.dp)
 									) {
 										Text(contribution.title, fontWeight = FontWeight.SemiBold)
 										if (contribution.status == EstadoPublicacion.RECHAZADA && !contribution.rejectReason.isNullOrBlank()) {
@@ -160,9 +153,8 @@ fun UserInfoScreen(
 												color = Color(0xFFD84343),
 												style = androidx.compose.material3.MaterialTheme.typography.bodyMedium
 											)
-										}
-										if (contribution.status == EstadoPublicacion.RECHAZADA) {
 											GeneralButton(
+												primary = false,
 												onClick = { onEditRejectedPublication(contribution.id) },
 												text = "Editar y reenviar"
 											)
@@ -172,42 +164,31 @@ fun UserInfoScreen(
 							}
 						}
 
-						Button(
+						GeneralButton(
 							onClick = onPostCreationClick,
-							colors = ButtonDefaults.buttonColors(
-								containerColor = PrincipalBlue,
-								contentColor = PrincipalWhite
-							)
-						) {
-							Text(
-								text = "Crear POI",
-								style = androidx.compose.material3.MaterialTheme.typography.titleLarge.copy(
-									fontWeight = FontWeight.Bold
-								),
-								modifier = Modifier.padding(horizontal = 24.dp, vertical = 4.dp)
-							)
-						}
+							text = "Crear POI"
+						)
 					}
 				}
 			}
 		}
 	}
 
-			if (viewModel.showLogoutDialog) {
-				GeneralAlertDialog(
-					onDismissRequest = viewModel::dismissLogoutDialog,
-					onConfirm = {
-						viewModel.dismissLogoutDialog()
-						onLogoutClick()
-					},
-					title = "¿Cerrar sesión?",
-					message = "Se cerrará tu sesión en este dispositivo.\nPodrás volver a ingresar en cualquier momento.",
-					icon = Icons.AutoMirrored.Outlined.Logout,
-					buttonText = "Cerrar sesión",
-					dismissButtonText = "Cancelar",
-					onDismissAction = viewModel::dismissLogoutDialog
-				)
-			}
+	if (viewModel.showLogoutDialog) {
+		GeneralAlertDialog(
+			onDismissRequest = viewModel::dismissLogoutDialog,
+			onConfirm = {
+				viewModel.dismissLogoutDialog()
+				onLogoutClick()
+			},
+			title = "¿Cerrar sesión?",
+			message = "Se cerrará tu sesión en este dispositivo.\nPodrás volver a ingresar en cualquier momento.",
+			icon = Icons.AutoMirrored.Outlined.Logout,
+			buttonText = "Cerrar sesión",
+			dismissButtonText = "Cancelar",
+			onDismissAction = viewModel::dismissLogoutDialog
+		)
+	}
 }
 
 

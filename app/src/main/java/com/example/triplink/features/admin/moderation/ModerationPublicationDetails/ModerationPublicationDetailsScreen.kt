@@ -141,7 +141,7 @@ fun ModerationPublicationDetailsScreen(
 
                 item {
                     PublicationWeeklyScheduleSection(
-                        schedules = publication.pointOfInterest.horario.toWeeklyScheduleUi(),
+                        schedules = publication.pointOfInterest.horarios.toWeeklyScheduleUi(),
                         today = currentDayLabelEs()
                     )
                 }

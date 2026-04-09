@@ -1,13 +1,13 @@
 package com.example.triplink.core.components.publicationdetails.utils
 
 import com.example.triplink.core.components.publicationdetails.sections.DayScheduleUi
+import com.example.triplink.domain.model.HorarioPuntoInteres
 import java.time.DayOfWeek
 import java.time.LocalDate
 
-fun Pair<Long, Long>?.toScheduleLabel(): String = if (this == null) {
-    "Horario no disponible"
-} else {
-    "${first.toTimeLabel()} - ${second.toTimeLabel()}"
+fun List<HorarioPuntoInteres>.toScheduleLabel(): String {
+    val first = firstOrNull() ?: return "Horario no disponible"
+    return "${first.fechaInicio.toTimeLabel()} - ${first.fechaFin.toTimeLabel()}"
 }
 
 private fun Long.toTimeLabel(): String {
@@ -21,17 +21,37 @@ private fun Long.toTimeLabel(): String {
     return "%d:%02d %s".format(normalizedHours, minutes, amPm)
 }
 
-fun Pair<Long, Long>?.toWeeklyScheduleUi(): List<DayScheduleUi> {
-    val days = listOf("Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo")
-    val hourLabel = this.toScheduleLabel()
-    val closed = this == null
-    return days.map { day ->
+fun List<HorarioPuntoInteres>.toWeeklyScheduleUi(): List<DayScheduleUi> {
+    val weekDays = listOf(
+        "Lunes" to "Lun",
+        "Martes" to "Mar",
+        "Miércoles" to "Mie",
+        "Jueves" to "Jue",
+        "Viernes" to "Vie",
+        "Sábado" to "Sab",
+        "Domingo" to "Dom"
+    )
+    val scheduleByDay = associateBy { normalizeDay(it.dia) }
+
+    return weekDays.map { (fullDay, shortDay) ->
+        val schedule = scheduleByDay[shortDay]
         DayScheduleUi(
-            day = day,
-            hours = if (closed) "Cerrado" else hourLabel,
-            isClosed = closed
+            day = fullDay,
+            hours = schedule?.let { "${it.fechaInicio.toTimeLabel()} - ${it.fechaFin.toTimeLabel()}" } ?: "Cerrado",
+            isClosed = schedule == null
         )
     }
+}
+
+private fun normalizeDay(value: String): String = when (value.trim().lowercase()) {
+    "lunes", "lun" -> "Lun"
+    "martes", "mar" -> "Mar"
+    "miercoles", "miércoles", "mie", "mié" -> "Mie"
+    "jueves", "jue" -> "Jue"
+    "viernes", "vie" -> "Vie"
+    "sabado", "sábado", "sab", "sáb" -> "Sab"
+    "domingo", "dom" -> "Dom"
+    else -> value
 }
 
 fun currentDayLabelEs(): String = when (LocalDate.now().dayOfWeek) {
