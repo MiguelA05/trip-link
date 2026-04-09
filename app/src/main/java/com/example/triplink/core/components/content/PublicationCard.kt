@@ -37,6 +37,7 @@ import java.util.Locale
 @Composable
 fun PublicationCard(
     puntoInteres: PuntoInteres,
+    ratingLabel: String = "4.8",
     modifier: Modifier = Modifier,
     showFooter: Boolean = true,
     onCardClick: (() -> Unit)? = null,
@@ -170,7 +171,7 @@ fun PublicationCard(
                             modifier = Modifier.size(16.dp)
                         )
                         Text(
-                            text = "4.8",
+                            text = ratingLabel,
                             fontWeight = FontWeight.Bold,
                             fontSize = 12.sp,
                             color = Color.Black
@@ -239,7 +240,7 @@ fun PublicationCard(
                         }
                         Spacer(modifier = Modifier.width(8.dp))
                         Text(
-                            text = "0",
+                            text = puntoInteres.commentCount.toString(),
                             color = Color.Gray,
                             fontSize = 14.sp
                         )
@@ -264,7 +265,7 @@ fun PublicationCard(
                         }
                         Spacer(modifier = Modifier.width(8.dp))
                         Text(
-                            text = "0",
+                            text = puntoInteres.favoriteCount.toString(),
                             color = Color.Gray,
                             fontSize = 14.sp
                         )

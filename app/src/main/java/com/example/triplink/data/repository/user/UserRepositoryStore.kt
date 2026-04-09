@@ -2,7 +2,6 @@ package com.example.triplink.data.repository.user
 
 import com.example.triplink.data.seed.seedPublications
 import com.example.triplink.data.seed.seedUsers
-import com.example.triplink.domain.model.Comentario
 import com.example.triplink.domain.model.PuntoInteres
 import com.example.triplink.domain.model.Usuario
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -21,7 +20,9 @@ class UserRepositoryStore @Inject constructor() {
     val publications: StateFlow<List<PuntoInteres>> = _publications.asStateFlow()
 
     val favorites = mutableMapOf<String, MutableSet<String>>()
-    val comments = mutableMapOf<String, MutableList<Comentario>>()
+    val comments = _publications.value.associate { publication ->
+        publication.id to publication.comments.toMutableList()
+    }.toMutableMap()
 
     fun setUsers(value: List<Usuario>) {
         _users.value = value
@@ -29,6 +30,10 @@ class UserRepositoryStore @Inject constructor() {
 
     fun setPublications(value: List<PuntoInteres>) {
         _publications.value = value
+        comments.clear()
+        value.forEach { publication ->
+            comments[publication.id] = publication.comments.toMutableList()
+        }
     }
 }
 

@@ -5,6 +5,7 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
+import com.example.triplink.core.utils.toRatingLabel
 import com.example.triplink.domain.model.PuntoInteres
 import com.example.triplink.domain.model.enums.Categoria
 import com.example.triplink.domain.model.enums.EstadoPublicacion
@@ -58,6 +59,11 @@ class ExploreViewModel @Inject constructor(
 
     fun onCategorySelected(category: Categoria?) {
         selectedCategory = category
+    }
+
+    fun ratingLabelForPublication(publication: PuntoInteres): String {
+        val average = publication.comments.map { it.rating }.average().takeIf { !it.isNaN() } ?: 0.0
+        return average.toRatingLabel()
     }
 
     fun onBottomTabSelected(index: Int) {

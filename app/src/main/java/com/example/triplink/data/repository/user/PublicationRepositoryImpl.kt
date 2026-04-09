@@ -27,8 +27,9 @@ class PublicationRepositoryImpl @Inject constructor(
 
     override fun savePuntoInteres(publication: PuntoInteres): Boolean {
         if (getPublicationById(publication.id) != null) return false
-        store.setPublications(store.publications.value + publication)
-        store.comments[publication.id] = mutableListOf()
+        val normalized = publication.copy(commentCount = publication.comments.size)
+        store.setPublications(store.publications.value + normalized)
+        store.comments[publication.id] = normalized.comments.toMutableList()
         return true
     }
 
@@ -37,7 +38,8 @@ class PublicationRepositoryImpl @Inject constructor(
         if (index == -1) return false
 
         val updated = store.publications.value.toMutableList()
-        updated[index] = publication
+        val normalized = publication.copy(commentCount = publication.comments.size)
+        updated[index] = normalized
         store.setPublications(updated)
         return true
     }

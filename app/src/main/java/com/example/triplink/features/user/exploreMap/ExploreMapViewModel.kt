@@ -4,6 +4,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
+import com.example.triplink.core.utils.toRatingLabel
 import com.example.triplink.domain.model.PuntoInteres
 import com.example.triplink.domain.model.enums.Categoria
 import com.example.triplink.domain.repository.publication.PublicationRepository
@@ -71,13 +72,16 @@ class ExploreMapViewModel @Inject constructor(
                 id = publication.id,
                 xFraction = x.coerceIn(0.12f, 0.86f),
                 yFraction = y.coerceIn(0.20f, 0.78f),
-                ratingLabel = ratingLabelFor(index),
+                ratingLabel = averageRatingLabelFor(publication),
                 highlighted = publication.id == selectedPublicationId
             )
         }
 
     val selectedMarkerRatingLabel: String
-        get() = markers.firstOrNull { it.id == selectedPublicationId }?.ratingLabel ?: "4.5"
+        get() = averageRatingLabelFor(selectedPublication)
+
+    val selectedPublicationReviewCount: Int
+        get() = selectedPublication.commentCount
 
     fun onQueryChange(newValue: String) {
         query = newValue
@@ -99,8 +103,8 @@ class ExploreMapViewModel @Inject constructor(
         }
     }
 
-    private fun ratingLabelFor(index: Int): String {
-        val ratings = listOf("4.5", "4.8", "4.2", "4.0", "3.9")
-        return ratings[index % ratings.size]
+    private fun averageRatingLabelFor(publication: PuntoInteres): String {
+        val average = publication.comments.map { it.rating }.average().takeIf { !it.isNaN() } ?: 0.0
+        return average.toRatingLabel()
     }
 }

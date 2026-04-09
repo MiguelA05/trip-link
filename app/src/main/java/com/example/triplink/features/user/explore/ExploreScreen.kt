@@ -89,6 +89,7 @@ fun ExploreScreen(
 			items(viewModel.filteredPuntoInteres(publications), key = { it.id }) { publication ->
 				PublicationCard(
 					puntoInteres = publication,
+					ratingLabel = viewModel.ratingLabelForPublication(publication),
 					onCardClick = { onPublicationClick(publication.id) },
 					showFooter = false
 				)

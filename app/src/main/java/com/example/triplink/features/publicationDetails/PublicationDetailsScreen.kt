@@ -43,6 +43,8 @@ import com.example.triplink.core.components.publicationdetails.sections.Publicat
 import com.example.triplink.core.components.publicationdetails.sections.PublicationWeeklyScheduleSection
 import com.example.triplink.core.components.publicationdetails.utils.currentDayLabelEs
 import com.example.triplink.core.components.publicationdetails.utils.toWeeklyScheduleUi
+import com.example.triplink.core.navigation.SessionState
+import com.example.triplink.core.navigation.SessionViewModel
 import com.example.triplink.core.utils.RequestResult
 import com.example.triplink.ui.theme.*
 
@@ -51,8 +53,6 @@ data class Review(
     val rating: Int,
     val comment: String
 )
-
-fun esInapropiado(): Boolean = (0..1).random() == 1
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -63,8 +63,11 @@ fun PublicationDetailsScreen(
     onSeeAllReviewsClick: (String) -> Unit
 ) {
     val viewModel: PublicationDetailsViewModel = hiltViewModel()
+    val sessionViewModel: SessionViewModel = hiltViewModel()
+    val sessionState by sessionViewModel.sessionState.collectAsState()
     val publication = viewModel.getPublicationById(publicationId)
     val publicationActionResult by viewModel.publicationActionResult.collectAsState()
+    val commentResult by viewModel.commentResult.collectAsState()
     val snackbarHostState = remember { SnackbarHostState() }
     var showEditModal by remember { mutableStateOf(false) }
 
@@ -84,6 +87,17 @@ fun PublicationDetailsScreen(
                 is RequestResult.Failure -> snackbarHostState.showSnackbar(result.errorMessage)
             }
             viewModel.clearPublicationActionResult()
+        }
+    }
+
+    LaunchedEffect(commentResult) {
+        commentResult?.let { result ->
+            val message = when (result) {
+                is RequestResult.Success -> result.message
+                is RequestResult.Failure -> result.errorMessage
+            }
+            snackbarHostState.showSnackbar(message)
+            viewModel.clearCommentResult()
         }
     }
 
@@ -125,16 +139,12 @@ fun PublicationDetailsScreen(
         }
     } ?: "Sin precio"
 
-    val fallbackReviews = listOf(
-        Review("carlos_montoya", 5, "¡Increíble lugar! La vista es maravillosa."),
-        Review("carlos_montoya", 4, "Me encanto la historia del lugar.")
-    )
-    val reviews = if (viewModel.comments.isNotEmpty()) {
-        viewModel.comments.map { Review(it.userName, it.rating.toInt(), it.text) }
+    val reviews = viewModel.comments.map { Review(it.userName, it.rating.toInt(), it.text) }
+    val generalRating = if (viewModel.comments.isNotEmpty()) {
+        viewModel.comments.map { it.rating }.average()
     } else {
-        fallbackReviews
+        0.0
     }
-    val generalRating = viewModel.getAverageRating(publicationId).takeIf { it > 0.0 } ?: 4.8
 
     Scaffold(
         snackbarHost = { SnackbarHost(snackbarHostState) },
@@ -208,7 +218,20 @@ fun PublicationDetailsScreen(
     }
 
     if (showRatingModal) {
-        RatingModal(onDismiss = { showRatingModal = false })
+        RatingModal(
+            onDismiss = { showRatingModal = false },
+            onSubmit = { rating, comment ->
+                val userId = (sessionState as? SessionState.Authenticated)?.session?.userId.orEmpty()
+                val userName = userId.substringBefore('@').ifBlank { "Usuario" }
+                viewModel.saveComment(
+                    publicationId = publicationId,
+                    userId = userId,
+                    userName = userName,
+                    rating = rating,
+                    text = comment
+                )
+            }
+        )
     }
 
     if (showEditModal) {
@@ -317,10 +340,12 @@ fun ImageHeader(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun RatingModal(onDismiss: () -> Unit) {
+fun RatingModal(
+    onDismiss: () -> Unit,
+    onSubmit: (rating: Float, comment: String) -> Unit
+) {
     var rating by remember { mutableIntStateOf(0) }
     var comment by remember { mutableStateOf("") }
-    var showInappropriateModal by remember { mutableStateOf(false) }
     val maxChars = 300
 
     ModalBottomSheet(
@@ -467,11 +492,8 @@ fun RatingModal(onDismiss: () -> Unit) {
             GeneralButton(
                 text = "Publicar reseña",
                 onClick = {
-                    if (esInapropiado()) {
-                        showInappropriateModal = true
-                    } else {
-                        onDismiss()
-                    }
+                    onSubmit(rating.toFloat(), comment)
+                    onDismiss()
                 },
                 icon = Icons.AutoMirrored.Filled.Send,
                 enabled = rating > 0
@@ -481,16 +503,6 @@ fun RatingModal(onDismiss: () -> Unit) {
                 Text("Cancelar", fontWeight = FontWeight.Bold, color = PrincipalBlue)
             }
         }
-    }
-
-    if (showInappropriateModal) {
-        InappropriateContentModal(
-            onDismiss = { showInappropriateModal = false },
-            onReplace = {
-                showInappropriateModal = false
-                onDismiss()
-            }
-        )
     }
 }
 

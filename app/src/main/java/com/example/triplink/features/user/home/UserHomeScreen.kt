@@ -100,6 +100,7 @@ fun UserHomeScreen(
             items(items = viewModel.toHomePublications(publications), key = { it.id }) { publication ->
                 PublicationCard(
                     puntoInteres = publication,
+                    ratingLabel = viewModel.ratingLabelForPublication(publication),
                     onCardClick = { onPublicationClick(publication.id) },
                     onFavoriteToggle = { viewModel.toggleFavorite(userId, publication.id) },
                     onCommentsClick = { onCommentsClick(publication.id) }

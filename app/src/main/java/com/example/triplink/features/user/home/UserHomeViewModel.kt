@@ -6,6 +6,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.triplink.core.utils.RequestResult
+import com.example.triplink.core.utils.toRatingLabel
 import com.example.triplink.domain.model.PuntoInteres
 import com.example.triplink.domain.model.enums.EstadoPublicacion
 import com.example.triplink.domain.repository.favorite.FavoriteRepository
@@ -57,6 +58,11 @@ class UserHomeViewModel @Inject constructor(
 
     fun isFavorite(userId: String, publicationId: String): Boolean {
         return favoriteRepository.isFavorite(userId, publicationId)
+    }
+
+    fun ratingLabelForPublication(publication: PuntoInteres): String {
+        val average = publication.comments.map { it.rating }.average().takeIf { !it.isNaN() } ?: 0.0
+        return average.toRatingLabel()
     }
 
     fun clearFavoriteResult() {

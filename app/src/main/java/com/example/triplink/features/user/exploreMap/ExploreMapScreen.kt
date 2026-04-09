@@ -74,7 +74,6 @@ fun ExploreMapScreen(
 	val scaffoldState = rememberBottomSheetScaffoldState(bottomSheetState = sheetState)
 	val coroutineScope = rememberCoroutineScope()
 	var mapSize by remember { mutableStateOf(IntSize.Zero) }
-	val selectedCategoryLabel = viewModel.selectedCategory?.label ?: "Todos"
 
 	BottomSheetScaffold(
 		modifier = Modifier
@@ -116,8 +115,9 @@ fun ExploreMapScreen(
 					ExploreMapPublicationCard(
 						publication = viewModel.selectedPublication,
 						ratingLabel = viewModel.selectedMarkerRatingLabel,
+						reviewCount = viewModel.selectedPublicationReviewCount,
 						expanded = sheetState.targetValue == SheetValue.Expanded || sheetState.currentValue == SheetValue.Expanded,
-						onOpenPublication = {onPublicationDetailsClick("")}
+						onOpenPublication = { onPublicationDetailsClick(viewModel.selectedPublication.id) }
 					)
 				}
 

@@ -11,38 +11,55 @@ class CommentRepositoryImpl @Inject constructor(
 ) : CommentRepository {
 
     override fun saveComment(publicationId: String, comment: Comentario): Boolean {
-        val publicationExists = store.publications.value.any { it.id == publicationId }
-        if (!publicationExists) return false
-
-        val comments = store.comments.getOrPut(publicationId) { mutableListOf() }
-        comments.add(comment)
+        val publication = store.publications.value.firstOrNull { it.id == publicationId } ?: return false
+        val normalizedComment = comment.copy(puntoInteresId = publicationId)
+        val updatedComments = (publication.comments + normalizedComment)
+        updatePublicationComments(publicationId, updatedComments)
         return true
     }
 
     override fun updateComment(publicationId: String, comment: Comentario): Boolean {
-        val comments = store.comments[publicationId] ?: return false
+        val comments = getCommentsByPublicationId(publicationId)
         val index = comments.indexOfFirst { it.id == comment.id }
         if (index == -1) return false
 
-        comments[index] = comment
+        val updatedComments = comments.toMutableList().apply { this[index] = comment }
+        updatePublicationComments(publicationId, updatedComments)
         return true
     }
 
     override fun deleteComment(publicationId: String, commentId: String): Boolean {
-        val comments = store.comments[publicationId] ?: return false
+        val comments = getCommentsByPublicationId(publicationId)
         val initialSize = comments.size
-        store.comments[publicationId] = comments.filter { it.id != commentId }.toMutableList()
-        return comments.size > initialSize
+        val updatedComments = comments.filter { it.id != commentId }
+        updatePublicationComments(publicationId, updatedComments)
+        return updatedComments.size < initialSize
     }
 
     override fun getCommentsByPublicationId(publicationId: String): List<Comentario> {
-        return store.comments[publicationId] ?: emptyList()
+        return store.publications.value.firstOrNull { it.id == publicationId }?.comments
+            ?: store.comments[publicationId]
+            ?: emptyList()
     }
 
     override fun getAverageRating(publicationId: String): Double {
         val comments = store.comments[publicationId] ?: return 0.0
         if (comments.isEmpty()) return 0.0
         return comments.map { it.rating }.average()
+    }
+
+    private fun updatePublicationComments(publicationId: String, comments: List<Comentario>) {
+        val updatedPublications = store.publications.value.map { publication ->
+            if (publication.id == publicationId) {
+                publication.copy(
+                    comments = comments,
+                    commentCount = comments.size
+                )
+            } else {
+                publication
+            }
+        }
+        store.setPublications(updatedPublications)
     }
 }
 

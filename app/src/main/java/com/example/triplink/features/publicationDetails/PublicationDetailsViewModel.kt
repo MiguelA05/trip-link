@@ -70,9 +70,9 @@ class PublicationDetailsViewModel @Inject constructor(
         isFavorite = favoriteRepository.isFavorite(userId, publicationId)
     }
 
-    fun saveComment(publicationId: String, userName: String, rating: Float, text: String) {
-        if (text.isBlank()) {
-            _commentResult.value = RequestResult.Failure("El comentario no puede estar vacío")
+    fun saveComment(publicationId: String, userId: String, userName: String, rating: Float, text: String) {
+        if (userId.isBlank()) {
+            _commentResult.value = RequestResult.Failure("Debes iniciar sesión para comentar")
             return
         }
 
@@ -80,12 +80,12 @@ class PublicationDetailsViewModel @Inject constructor(
             try {
                 val comment = Comentario(
                     id = UUID.randomUUID().toString(),
-                    usuarioId = "", // Se puede obtener de sesión si es necesario
+                    usuarioId = userId,
                     puntoInteresId = publicationId,
                     userName = userName,
                     date = System.currentTimeMillis(),
                     rating = rating,
-                    text = text
+                    text = text.trim()
                 )
 
                 val wasSaved = commentRepository.saveComment(publicationId, comment)
