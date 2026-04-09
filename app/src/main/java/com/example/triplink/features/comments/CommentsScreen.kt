@@ -1,24 +1,24 @@
 package com.example.triplink.features.comments
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Delete
-import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.TextButton
+import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.runtime.LaunchedEffect
@@ -35,11 +35,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.example.triplink.core.components.CommentCard
+import com.example.triplink.core.components.DestructiveConfirmDialog
 import com.example.triplink.core.components.GeneralTopBar
 import com.example.triplink.core.components.RatingSummaryCard
 import com.example.triplink.core.navigation.SessionState
 import com.example.triplink.core.navigation.SessionViewModel
 import com.example.triplink.core.utils.RequestResult
+import com.example.triplink.ui.theme.PrincipalRed
 
 @Composable
 fun CommentsScreen(
@@ -108,20 +110,26 @@ fun CommentsScreen(
 					CommentCard(comment = review)
 					val canDelete = review.usuarioId.equals(currentUserId, ignoreCase = true)
 					if (canDelete) {
-						Surface(
+						OutlinedButton(
+							onClick = { deletingCommentId = review.id },
 							modifier = Modifier
 								.align(Alignment.TopEnd)
-								.padding(top = 10.dp, end = 10.dp),
+								.padding(top = 12.dp, end = 12.dp)
+								.size(34.dp),
 							shape = CircleShape,
-							color = Color(0xFFFFEBEE)
+							border = BorderStroke(1.dp, Color(0xFFF6C6CC)),
+							colors = ButtonDefaults.outlinedButtonColors(
+								containerColor = Color(0xFFFFEBEE),
+								contentColor = PrincipalRed
+							),
+							contentPadding = PaddingValues(0.dp)
 						) {
-							IconButton(onClick = { deletingCommentId = review.id }) {
-								Icon(
-									imageVector = Icons.Outlined.Delete,
-									contentDescription = "Eliminar comentario",
-									tint = Color(0xFFD32F2F)
-								)
-							}
+							Icon(
+								imageVector = Icons.Outlined.Delete,
+								contentDescription = "Eliminar comentario",
+								tint = PrincipalRed,
+								modifier = Modifier.size(18.dp)
+							)
 						}
 					}
 				}
@@ -130,18 +138,15 @@ fun CommentsScreen(
 	}
 
 	if (deletingCommentId != null) {
-		AlertDialog(
+		DestructiveConfirmDialog(
+			title = "¿Eliminar comentario?",
+			message = "Esta acción eliminará tu comentario de forma permanente.",
+			confirmText = "Sí, eliminar",
+			dismissText = "Cancelar",
 			onDismissRequest = { deletingCommentId = null },
-			title = { Text("Eliminar comentario") },
-			text = { Text("¿Seguro que quieres eliminar este comentario?") },
-			confirmButton = {
-				TextButton(onClick = {
-					viewModel.deleteComment(publicationId, deletingCommentId!!, currentUserId)
-					deletingCommentId = null
-				}) { Text("Eliminar") }
-			},
-			dismissButton = {
-				TextButton(onClick = { deletingCommentId = null }) { Text("Cancelar") }
+			onConfirm = {
+				viewModel.deleteComment(publicationId, deletingCommentId!!, currentUserId)
+				deletingCommentId = null
 			}
 		)
 	}

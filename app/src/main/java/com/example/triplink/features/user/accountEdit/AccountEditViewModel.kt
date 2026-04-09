@@ -205,6 +205,7 @@ class AccountEditViewModel @Inject constructor(
                 session?.userId?.let { userId ->
                     val wasDeleted = userProfileRepository.deleteUser(userId)
                     _deleteResult.value = if (wasDeleted) {
+                        sessionDataStore.clearSession()
                         RequestResult.Success("Cuenta eliminada exitosamente")
                     } else {
                         RequestResult.Failure("Usuario no encontrado")

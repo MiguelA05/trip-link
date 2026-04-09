@@ -26,6 +26,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.example.triplink.core.components.FormField
+import com.example.triplink.core.components.DestructiveConfirmDialog
 import com.example.triplink.core.components.GeneralButton
 import com.example.triplink.core.components.GeneralTopBar
 import com.example.triplink.core.utils.RequestResult
@@ -64,6 +65,7 @@ fun AccountEditScreen(
             when (result) {
                 is RequestResult.Success -> {
                     snackbarHostState.showSnackbar(result.message)
+                    onAppHomeClick()
                 }
                 is RequestResult.Failure -> {
                     snackbarHostState.showSnackbar(result.errorMessage)
@@ -368,51 +370,16 @@ fun AccountEditScreen(
     }
 
     if (showDeleteConfirmation) {
-        AlertDialog(
+        DestructiveConfirmDialog(
+            title = "¿Eliminar cuenta?",
+            message = "Se borrarán permanentemente tu perfil, publicaciones y datos. Esta acción no se puede deshacer.",
+            confirmText = "Sí, eliminar",
+            dismissText = "Cancelar",
             onDismissRequest = { showDeleteConfirmation = false },
-            title = {
-                Text(
-                    text = "¿Eliminar cuenta?",
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 20.sp
-                )
-            },
-            text = {
-                Text(
-                    text = "Esta acción es irreversible y se perderán todos tus datos. ¿Deseas continuar?",
-                    fontSize = 16.sp,
-                    color = Color.Gray
-                )
-            },
-            confirmButton = {
-                Button(
-                    onClick = {
-                        showDeleteConfirmation = false
-                        accountEditViewModel.deleteAccount()
-                        onAppHomeClick()
-                    },
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = PrincipalRed,
-                        contentColor = Color.White
-                    ),
-                    shape = RoundedCornerShape(12.dp)
-                ) {
-                    Text("Eliminar", fontWeight = FontWeight.Bold)
-                }
-            },
-            dismissButton = {
-                TextButton(
-                    onClick = { showDeleteConfirmation = false }
-                ) {
-                    Text(
-                        "Cancelar",
-                        fontWeight = FontWeight.Medium,
-                        color = Color.Gray
-                    )
-                }
-            },
-            containerColor = Color.White,
-            shape = RoundedCornerShape(24.dp)
+            onConfirm = {
+                showDeleteConfirmation = false
+                accountEditViewModel.deleteAccount()
+            }
         )
     }
 }

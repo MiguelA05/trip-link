@@ -34,6 +34,7 @@ import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
 import coil3.request.crossfade
 import com.example.triplink.core.components.FormField
+import com.example.triplink.core.components.DestructiveConfirmDialog
 import com.example.triplink.core.components.GeneralButton
 import com.example.triplink.core.components.GeneralTopBar
 import com.example.triplink.core.components.publicationdetails.sections.DayScheduleUi
@@ -127,6 +128,7 @@ fun PublicationDetailsScreen(
 
     var showReportModal by remember { mutableStateOf(false) }
     var showRatingModal by remember { mutableStateOf(false) }
+    var showDeletePublicationDialog by remember { mutableStateOf(false) }
 
     val schedules: List<DayScheduleUi> = publication.horarios.toWeeklyScheduleUi()
     val today = currentDayLabelEs()
@@ -178,7 +180,7 @@ fun PublicationDetailsScreen(
                     }
                 },
                 onEditClick = { showEditModal = true },
-                onDeleteClick = { viewModel.deletePublication(publicationId) }
+                onDeleteClick = { showDeletePublicationDialog = true }
             )
         }
     ) { paddingValues ->
@@ -251,6 +253,20 @@ fun PublicationDetailsScreen(
             onSave = { updated ->
                 viewModel.updatePublication(updated)
                 showEditModal = false
+            }
+        )
+    }
+
+    if (showDeletePublicationDialog) {
+        DestructiveConfirmDialog(
+            title = "¿Eliminar publicación?",
+            message = "Esta publicación y sus datos relacionados se eliminarán de forma permanente.",
+            confirmText = "Sí, eliminar",
+            dismissText = "Cancelar",
+            onDismissRequest = { showDeletePublicationDialog = false },
+            onConfirm = {
+                showDeletePublicationDialog = false
+                viewModel.deletePublication(publicationId)
             }
         )
     }
