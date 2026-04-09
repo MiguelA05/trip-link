@@ -5,8 +5,8 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
-import com.example.triplink.data.seed.UiOptionsSeedData
 import com.example.triplink.domain.model.PuntoInteres
+import com.example.triplink.domain.model.enums.Categoria
 import com.example.triplink.domain.model.enums.EstadoPublicacion
 import com.example.triplink.domain.repository.publication.PublicationRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -24,36 +24,38 @@ class ExploreViewModel @Inject constructor(
     var query by mutableStateOf("")
         private set
 
-    var selectedCategory by mutableStateOf("Todos")
+    var selectedCategory by mutableStateOf<Categoria?>(null)
         private set
+
+    val selectedCategoryLabel: String
+        get() = selectedCategory?.label ?: "Todos"
 
     var selectedTabIndex by mutableIntStateOf(1)
         private set
 
-    val categories = UiOptionsSeedData.exploreCategories
+    val categories = listOf("Todos") + Categoria.entries.map { it.label }
 
     fun filteredPuntoInteres(source: List<PuntoInteres>): List<PuntoInteres> {
-            val normalizedQuery = query.trim().lowercase(Locale.ROOT)
-            return source.filter { publication ->
-                val isVisible = publication.estado == EstadoPublicacion.VERIFICADA
-                val categoryMatches = selectedCategory == "Todos" ||
-                    publication.categoria.name.equals(selectedCategory, ignoreCase = true)
+        val normalizedQuery = query.trim().lowercase(Locale.ROOT)
+        return source.filter { publication ->
+            val isVisible = publication.estado == EstadoPublicacion.VERIFICADA
+            val categoryMatches = selectedCategory == null || publication.categoria == selectedCategory
 
-                val queryMatches = normalizedQuery.isBlank() ||
-                    publication.titulo.lowercase(Locale.ROOT).contains(normalizedQuery) ||
-                    publication.ubicacion.ciudad.lowercase(Locale.ROOT).contains(normalizedQuery) ||
-                    publication.categoria.name.lowercase(Locale.ROOT).contains(normalizedQuery)
+            val queryMatches = normalizedQuery.isBlank() ||
+                publication.titulo.lowercase(Locale.ROOT).contains(normalizedQuery) ||
+                publication.ubicacion.ciudad.lowercase(Locale.ROOT).contains(normalizedQuery) ||
+                publication.categoria.label.lowercase(Locale.ROOT).contains(normalizedQuery)
 
-                isVisible && categoryMatches && queryMatches
-            }
+            isVisible && categoryMatches && queryMatches
         }
+    }
 
     fun onQueryChange(newValue: String) {
         query = newValue
     }
 
     fun onCategorySelected(category: String) {
-        selectedCategory = category
+        selectedCategory = Categoria.entries.firstOrNull { it.label == category }
     }
 
     fun onBottomTabSelected(index: Int) {

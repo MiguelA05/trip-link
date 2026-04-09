@@ -4,8 +4,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
-import com.example.triplink.data.seed.UiOptionsSeedData
 import com.example.triplink.domain.model.PuntoInteres
+import com.example.triplink.domain.model.enums.Categoria
 import com.example.triplink.domain.repository.publication.PublicationRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import java.util.Locale
@@ -27,10 +27,13 @@ class ExploreMapViewModel @Inject constructor(
     var query by mutableStateOf("")
         private set
 
-    var selectedCategory by mutableStateOf("Todos")
+    var selectedCategory by mutableStateOf<Categoria?>(null)
         private set
 
-    val categories = UiOptionsSeedData.exploreCategories
+    val selectedCategoryLabel: String
+        get() = selectedCategory?.label ?: "Todos"
+
+    val categories = listOf("Todos") + Categoria.entries.map { it.label }
 
     private val allPublications: List<PuntoInteres>
         get() = publicationRepository.explorePublications()
@@ -39,13 +42,12 @@ class ExploreMapViewModel @Inject constructor(
         get() {
             val normalizedQuery = query.trim().lowercase(Locale.ROOT)
             return allPublications.filter { publication ->
-                val categoryMatches = selectedCategory == "Todos" ||
-                    publication.categoria.name.equals(selectedCategory, ignoreCase = true)
+                val categoryMatches = selectedCategory == null || publication.categoria == selectedCategory
 
                 val queryMatches = normalizedQuery.isBlank() ||
                     publication.titulo.lowercase(Locale.ROOT).contains(normalizedQuery) ||
                     publication.ubicacion.ciudad.lowercase(Locale.ROOT).contains(normalizedQuery) ||
-                    publication.categoria.name.lowercase(Locale.ROOT).contains(normalizedQuery)
+                    publication.categoria.label.lowercase(Locale.ROOT).contains(normalizedQuery)
 
                 categoryMatches && queryMatches
             }
@@ -81,7 +83,7 @@ class ExploreMapViewModel @Inject constructor(
     }
 
     fun onCategorySelected(category: String) {
-        selectedCategory = category
+        selectedCategory = Categoria.entries.firstOrNull { it.label == category }
         keepValidSelection()
     }
 
@@ -96,7 +98,7 @@ class ExploreMapViewModel @Inject constructor(
     }
 
     private fun ratingLabelFor(index: Int): String {
-        val ratings = UiOptionsSeedData.mapMarkerRatings
+        val ratings = listOf("4.5", "4.8", "4.2", "4.0", "3.9")
         return ratings[index % ratings.size]
     }
 }

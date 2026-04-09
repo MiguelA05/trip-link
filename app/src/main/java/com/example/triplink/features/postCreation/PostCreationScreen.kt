@@ -43,11 +43,12 @@ import com.example.triplink.core.components.FormField
 import com.example.triplink.core.components.GeneralButton
 import com.example.triplink.core.components.GeneralTopBar
 import com.example.triplink.core.utils.RequestResult
+import com.example.triplink.domain.model.enums.DiaSemana
 import com.example.triplink.ui.theme.PrincipalBlue
 import kotlinx.coroutines.launch
 
 data class DayScheduleData(
-    val day: String,
+    val day: DiaSemana,
     val isEnabled: Boolean = false,
     val openTime: String = "",
     val closeTime: String = "",
@@ -714,7 +715,7 @@ fun DayScheduleRow(
         horizontalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         Text(
-            text = schedule.day,
+            text = schedule.day.shortLabel,
             fontWeight = FontWeight.Bold,
             color = PrincipalBlue,
             modifier = Modifier.width(35.dp)

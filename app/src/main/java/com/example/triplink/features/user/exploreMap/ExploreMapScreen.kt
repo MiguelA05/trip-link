@@ -166,7 +166,7 @@ fun ExploreMapScreen(
 				)
 				CategoryChips(
 					categories = viewModel.categories,
-					selectedCategory = viewModel.selectedCategory,
+					selectedCategory = viewModel.selectedCategoryLabel,
 					onCategorySelected = viewModel::onCategorySelected
 				)
 			}

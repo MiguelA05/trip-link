@@ -4,6 +4,7 @@ import com.example.triplink.domain.model.HorarioPuntoInteres
 import com.example.triplink.domain.model.PuntoInteres
 import com.example.triplink.domain.model.Ubicacion
 import com.example.triplink.domain.model.enums.Categoria
+import com.example.triplink.domain.model.enums.DiaSemana
 import com.example.triplink.domain.model.enums.EstadoPublicacion
 import com.example.triplink.domain.model.enums.RangoPrecios
 
@@ -84,7 +85,7 @@ private fun defaultFullWeekSchedule(
 ): List<HorarioPuntoInteres> {
     val start = (startHour * 60L + startMinute) * 60_000L
     val end = (endHour * 60L + endMinute) * 60_000L
-    return listOf("Lun", "Mar", "Mie", "Jue", "Vie", "Sab", "Dom").map { day ->
+    return DiaSemana.entries.map { day ->
         HorarioPuntoInteres(
             dia = day,
             fechaInicio = start,

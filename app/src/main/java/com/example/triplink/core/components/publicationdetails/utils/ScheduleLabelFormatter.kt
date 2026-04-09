@@ -2,6 +2,7 @@ package com.example.triplink.core.components.publicationdetails.utils
 
 import com.example.triplink.core.components.publicationdetails.sections.DayScheduleUi
 import com.example.triplink.domain.model.HorarioPuntoInteres
+import com.example.triplink.domain.model.enums.DiaSemana
 import java.time.DayOfWeek
 import java.time.LocalDate
 
@@ -22,37 +23,18 @@ private fun Long.toTimeLabel(): String {
 }
 
 fun List<HorarioPuntoInteres>.toWeeklyScheduleUi(): List<DayScheduleUi> {
-    val weekDays = listOf(
-        "Lunes" to "Lun",
-        "Martes" to "Mar",
-        "Miércoles" to "Mie",
-        "Jueves" to "Jue",
-        "Viernes" to "Vie",
-        "Sábado" to "Sab",
-        "Domingo" to "Dom"
-    )
-    val scheduleByDay = associateBy { normalizeDay(it.dia) }
+    val scheduleByDay = associateBy { it.dia }
 
-    return weekDays.map { (fullDay, shortDay) ->
-        val schedule = scheduleByDay[shortDay]
+    return DiaSemana.entries.map { day ->
+        val schedule = scheduleByDay[day]
         DayScheduleUi(
-            day = fullDay,
+            day = day.fullLabel,
             hours = schedule?.let { "${it.fechaInicio.toTimeLabel()} - ${it.fechaFin.toTimeLabel()}" } ?: "Cerrado",
             isClosed = schedule == null
         )
     }
 }
 
-private fun normalizeDay(value: String): String = when (value.trim().lowercase()) {
-    "lunes", "lun" -> "Lun"
-    "martes", "mar" -> "Mar"
-    "miercoles", "miércoles", "mie", "mié" -> "Mie"
-    "jueves", "jue" -> "Jue"
-    "viernes", "vie" -> "Vie"
-    "sabado", "sábado", "sab", "sáb" -> "Sab"
-    "domingo", "dom" -> "Dom"
-    else -> value
-}
 
 fun currentDayLabelEs(): String = when (LocalDate.now().dayOfWeek) {
     DayOfWeek.MONDAY -> "Lunes"

@@ -8,11 +8,11 @@ import androidx.lifecycle.viewModelScope
 import com.example.triplink.core.utils.RequestResult
 import com.example.triplink.core.utils.ValidatedField
 import com.example.triplink.data.datastore.SessionDataStore
-import com.example.triplink.data.seed.UiOptionsSeedData
 import com.example.triplink.domain.model.HorarioPuntoInteres
 import com.example.triplink.domain.model.PuntoInteres
 import com.example.triplink.domain.model.Ubicacion
 import com.example.triplink.domain.model.enums.Categoria
+import com.example.triplink.domain.model.enums.DiaSemana
 import com.example.triplink.domain.model.enums.EstadoPublicacion
 import com.example.triplink.domain.model.enums.RangoPrecios
 import com.example.triplink.domain.repository.publication.PublicationRepository
@@ -49,7 +49,7 @@ class PostCreationViewModel @Inject constructor(
     var longitude by mutableStateOf(0.0)
 
     var daySchedules by mutableStateOf(
-        UiOptionsSeedData.weekDaysShort.map {
+        DiaSemana.entries.map {
             DayScheduleData(it)
         }
     )
@@ -66,7 +66,7 @@ class PostCreationViewModel @Inject constructor(
     val submitButtonLabel: String
         get() = "Publicar"
 
-    val categories = UiOptionsSeedData.postCreationCategories
+    val categories = Categoria.entries.map { it.label }
 
     private val _createResult = MutableStateFlow<RequestResult?>(null)
     val createResult: StateFlow<RequestResult?> = _createResult.asStateFlow()
@@ -104,7 +104,7 @@ class PostCreationViewModel @Inject constructor(
 
         placeName.onChange(publication.titulo)
         description = publication.informacion
-        selectedCategory.onChange(publication.categoria.toUiLabel())
+        selectedCategory.onChange(publication.categoria.label)
 
         selectedCity = publication.ubicacion.ciudad
         latitude = publication.ubicacion.latitud
@@ -112,17 +112,15 @@ class PostCreationViewModel @Inject constructor(
 
         selectedPriceRange = publication.rangoPrecios.toUiLabel()
 
-        val schedule = publication.horarios.firstOrNull()
-        daySchedules = if (schedule != null) {
-            val open = schedule.fechaInicio.toHHmm()
-            val close = schedule.fechaFin.toHHmm()
-            UiOptionsSeedData.weekDaysShort.map {
-                DayScheduleData(day = it, isEnabled = true, openTime = open, closeTime = close)
-            }
-        } else {
-            UiOptionsSeedData.weekDaysShort.map {
-                DayScheduleData(it)
-            }
+        val scheduleByDay = publication.horarios.associateBy { it.dia }
+        daySchedules = DiaSemana.entries.map { day ->
+            val schedule = scheduleByDay[day]
+            DayScheduleData(
+                day = day,
+                isEnabled = schedule != null,
+                openTime = schedule?.fechaInicio?.toHHmm().orEmpty(),
+                closeTime = schedule?.fechaFin?.toHHmm().orEmpty()
+            )
         }
         isOpenEveryDay = daySchedules.all { it.isEnabled }
     }
@@ -258,7 +256,7 @@ class PostCreationViewModel @Inject constructor(
         selectedCity = ""
         latitude = 0.0
         longitude = 0.0
-        daySchedules = UiOptionsSeedData.weekDaysShort.map {
+        daySchedules = DiaSemana.entries.map {
             DayScheduleData(it)
         }
         selectedPriceRange = "Gratuito"
@@ -283,7 +281,7 @@ class PostCreationViewModel @Inject constructor(
 
     private fun String.toDomainCategoryOrNull(): Categoria? {
         val normalized = normalizeForEnum(this)
-        return Categoria.entries.firstOrNull { normalizeForEnum(it.name) == normalized }
+        return Categoria.entries.firstOrNull { normalizeForEnum(it.label) == normalized }
     }
 
     private fun String.toDomainPriceRange(): RangoPrecios = when (normalizeForEnum(this)) {
@@ -294,13 +292,6 @@ class PostCreationViewModel @Inject constructor(
         else -> RangoPrecios.GRATUITO
     }
 
-    private fun Categoria.toUiLabel(): String = when (this) {
-        Categoria.GASTRONOMIA -> "Gastronomía"
-        Categoria.CULTURA -> "Cultura"
-        Categoria.NATURALEZA -> "Naturaleza"
-        Categoria.ENTRETENIMIENTO -> "Entretenimiento"
-        Categoria.HISTORIA -> "Historia"
-    }
 
     private fun RangoPrecios?.toUiLabel(): String = when (this) {
         null -> "Gratuito"
