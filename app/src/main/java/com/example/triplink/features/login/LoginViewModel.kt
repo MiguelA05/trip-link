@@ -10,7 +10,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.triplink.core.utils.RequestResult
 import com.example.triplink.core.utils.ValidatedField
 import com.example.triplink.data.datastore.SessionDataStore
-import com.example.triplink.domain.repository.user.UserRepository
+import com.example.triplink.domain.repository.auth.AuthRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -21,7 +21,7 @@ import javax.inject.Inject
 @HiltViewModel
 class LoginViewModel @Inject constructor(
     private val sessionDataStore: SessionDataStore,
-    private val userRepository: UserRepository
+    private val authRepository: AuthRepository
 ) : ViewModel() {
     var email = ValidatedField("") { value ->
         when {
@@ -82,7 +82,7 @@ class LoginViewModel @Inject constructor(
             return
         }
 
-        val authenticatedUser = userRepository.login(email.value, password.value)
+        val authenticatedUser = authRepository.login(email.value, password.value)
         if (authenticatedUser == null) {
             _loginResult.value = RequestResult.Failure("Credenciales inválidas")
             return

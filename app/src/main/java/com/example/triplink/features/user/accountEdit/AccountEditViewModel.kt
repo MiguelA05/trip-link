@@ -9,8 +9,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.triplink.core.utils.RequestResult
 import com.example.triplink.data.datastore.SessionDataStore
+import com.example.triplink.data.seed.GeoSeedData
 import com.example.triplink.domain.model.Ubicacion
-import com.example.triplink.domain.repository.user.UserRepository
+import com.example.triplink.domain.repository.user.UserProfileRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -21,7 +22,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class AccountEditViewModel @Inject constructor(
-    private val userRepository: UserRepository,
+    private val userProfileRepository: UserProfileRepository,
     private val sessionDataStore: SessionDataStore
 ) : ViewModel() {
 
@@ -33,14 +34,10 @@ class AccountEditViewModel @Inject constructor(
     var phoneError by mutableStateOf<String?>(null)
 
     // Ubicación de Residencia
-    val departments = listOf("Quindío", "Antioquia", "Valle del Cauca")
-    val citiesMap = mapOf(
-        "Quindío" to listOf("Armenia", "Calarca", "Circasia", "Filandia", "Salento"),
-        "Antioquia" to listOf("Medellín", "Envigado", "Itagüí", "Rionegro"),
-        "Valle del Cauca" to listOf("Cali", "Palmira", "Buga", "Tulua")
-    )
+    val departments = GeoSeedData.departments
+    val citiesMap = GeoSeedData.citiesByDepartment
 
-    var selectedDepartment by mutableStateOf("Quindío")
+    var selectedDepartment by mutableStateOf("Quindio")
     var selectedCity by mutableStateOf("Armenia")
     var address by mutableStateOf("Ej. Barrio La Candelaria, Bogotá")
 
@@ -79,7 +76,7 @@ class AccountEditViewModel @Inject constructor(
             try {
                 val session = sessionDataStore.sessionFlow.first()
                 session?.userId?.let { userId ->
-                    val user = userRepository.getUserById(userId)
+                    val user = userProfileRepository.getUserById(userId)
                     user?.let {
                         fullName = it.nombre
                         email = it.email
@@ -168,7 +165,7 @@ class AccountEditViewModel @Inject constructor(
             try {
                 val session = sessionDataStore.sessionFlow.first()
                 session?.userId?.let { userId ->
-                    val user = userRepository.getUserById(userId)
+                    val user = userProfileRepository.getUserById(userId)
                     user?.let {
                         val updatedUser = it.copy(
                             nombre = fullName,
@@ -178,7 +175,7 @@ class AccountEditViewModel @Inject constructor(
                                 ciudad = selectedCity
                             )
                         )
-                        val wasUpdated = userRepository.updateUser(updatedUser)
+                        val wasUpdated = userProfileRepository.updateUser(updatedUser)
                         _updateResult.value = if (wasUpdated) {
                             RequestResult.Success("Cambios guardados exitosamente")
                         } else {
@@ -206,7 +203,7 @@ class AccountEditViewModel @Inject constructor(
             try {
                 val session = sessionDataStore.sessionFlow.first()
                 session?.userId?.let { userId ->
-                    val wasDeleted = userRepository.deleteUser(userId)
+                    val wasDeleted = userProfileRepository.deleteUser(userId)
                     _deleteResult.value = if (wasDeleted) {
                         RequestResult.Success("Cuenta eliminada exitosamente")
                     } else {

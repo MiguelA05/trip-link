@@ -6,13 +6,13 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import com.example.triplink.domain.model.enums.moderator.DecisionModerador
 import com.example.triplink.domain.model.enums.moderator.ModerationFilter
-import com.example.triplink.domain.repository.admin.AdminRepository
+import com.example.triplink.domain.repository.admin.ModerationRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
 @HiltViewModel
 class ModerationViewModel @Inject constructor(
-    private val repository: AdminRepository
+    private val repository: ModerationRepository
 ) : ViewModel() {
 
     var selectedFilter by mutableStateOf(ModerationFilter.ALL)

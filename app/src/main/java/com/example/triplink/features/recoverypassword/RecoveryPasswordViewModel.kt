@@ -7,7 +7,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import com.example.triplink.core.utils.RequestResult
 import com.example.triplink.core.utils.ValidatedField
-import com.example.triplink.domain.repository.user.UserRepository
+import com.example.triplink.domain.repository.auth.AuthRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -16,7 +16,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class RecoveryPasswordViewModel @Inject constructor(
-    private val userRepository: UserRepository
+    private val authRepository: AuthRepository
 ) : ViewModel() {
 
     private val _recoveryResult = MutableStateFlow<RequestResult?>(null)
@@ -56,7 +56,7 @@ class RecoveryPasswordViewModel @Inject constructor(
         }
 
         // Validar que el email existe en el sistema
-        val userExists = userRepository.findByEmail(email.value) != null
+        val userExists = authRepository.findByEmail(email.value) != null
         if (!userExists) {
             _recoveryResult.value = RequestResult.Failure("Este email no está registrado en el sistema")
             return

@@ -1,12 +1,20 @@
 package com.example.triplink.features.admin.reports
 
 import com.example.triplink.domain.model.Reporte
+import com.example.triplink.domain.model.admin.AdminReportCase
 import com.example.triplink.domain.model.enums.Categoria
 import com.example.triplink.domain.model.enums.EstadoReporte
 import com.example.triplink.domain.model.enums.RangoPrecios
 import com.example.triplink.domain.model.enums.RazonReporte
 import com.example.triplink.features.admin.moderation.ModerationPublicationCardStatus
 import com.example.triplink.features.admin.moderation.ModerationPublicationCardUi
+
+fun AdminReportCase.toUi(): AdminReportUi = AdminReportUi(
+    report = report,
+    pointOfInterest = pointOfInterest,
+    reporterName = reporterName,
+    acceptedReportsCount = acceptedReportsCount
+)
 
 fun AdminReportUi.toCardUi(): ModerationPublicationCardUi = ModerationPublicationCardUi(
     id = id,

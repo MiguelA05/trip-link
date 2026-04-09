@@ -7,8 +7,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.triplink.core.components.RatingCount
 import com.example.triplink.core.utils.RequestResult
+import com.example.triplink.data.seed.seedCommentsFor
 import com.example.triplink.domain.model.Comentario
-import com.example.triplink.domain.repository.user.UserRepository
+import com.example.triplink.domain.repository.comment.CommentRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -27,7 +28,7 @@ data class CommentsUiState(
 
 @HiltViewModel
 class CommentsViewModel @Inject constructor(
-    private val userRepository: UserRepository
+    private val commentRepository: CommentRepository
 ) : ViewModel() {
 
     var commentText by mutableStateOf("")
@@ -68,7 +69,7 @@ class CommentsViewModel @Inject constructor(
                     text = commentText
                 )
 
-                val wasSaved = userRepository.saveComment(publicationId, comment)
+                val wasSaved = commentRepository.saveComment(publicationId, comment)
                 if (wasSaved) {
                     _saveCommentResult.value = RequestResult.Success("Comentario guardado exitosamente")
                     // Limpiar campos después de guardar exitosamente
@@ -92,7 +93,7 @@ class CommentsViewModel @Inject constructor(
 
         viewModelScope.launch {
             try {
-                val existing = userRepository.getCommentsByPublicationId(publicationId)
+                val existing = commentRepository.getCommentsByPublicationId(publicationId)
                     .firstOrNull { it.id == commentId }
                     ?: run {
                         _saveCommentResult.value = RequestResult.Failure("Comentario no encontrado")
@@ -104,7 +105,7 @@ class CommentsViewModel @Inject constructor(
                     return@launch
                 }
 
-                val wasUpdated = userRepository.updateComment(
+                val wasUpdated = commentRepository.updateComment(
                     publicationId = publicationId,
                     comment = existing.copy(text = newText)
                 )
@@ -124,7 +125,7 @@ class CommentsViewModel @Inject constructor(
     fun deleteComment(publicationId: String, commentId: String, currentUserId: String) {
         viewModelScope.launch {
             try {
-                val existing = userRepository.getCommentsByPublicationId(publicationId)
+                val existing = commentRepository.getCommentsByPublicationId(publicationId)
                     .firstOrNull { it.id == commentId }
                     ?: run {
                         _saveCommentResult.value = RequestResult.Failure("Comentario no encontrado")
@@ -136,7 +137,7 @@ class CommentsViewModel @Inject constructor(
                     return@launch
                 }
 
-                val wasDeleted = userRepository.deleteComment(publicationId, commentId)
+                val wasDeleted = commentRepository.deleteComment(publicationId, commentId)
                 _saveCommentResult.value = if (wasDeleted) {
                     _refreshTick.value += 1
                     RequestResult.Success("Comentario eliminado")
@@ -150,12 +151,12 @@ class CommentsViewModel @Inject constructor(
     }
 
     fun buildUiState(publicationId: String): CommentsUiState {
-        val reviews = userRepository.getCommentsByPublicationId(publicationId)
+        val reviews = commentRepository.getCommentsByPublicationId(publicationId)
             .takeIf { it.isNotEmpty() }
-            ?: sampleReviews(publicationId)
+            ?: seedCommentsFor(publicationId)
 
         val totalReviews = reviews.size
-        val averageRating = userRepository.getAverageRating(publicationId)
+        val averageRating = commentRepository.getAverageRating(publicationId)
             .takeIf { it > 0.0 }
             ?: if (reviews.isNotEmpty()) reviews.map { it.rating }.average() else 0.0
 
@@ -179,35 +180,4 @@ class CommentsViewModel @Inject constructor(
     fun clearSaveResult() {
         _saveCommentResult.value = null
     }
-
-    // Estado visual mock mientras se conecta la data real de reseñas.
-    private fun sampleReviews(publicationId: String): List<Comentario> = listOf(
-        Comentario(
-            id = "c1",
-            usuarioId = "camila@email.com",
-            puntoInteresId = publicationId,
-            userName = "Camila Torres",
-            date = 1778025600000,
-            rating = 5f,
-            text = "Un lugar con mucha magia, supera todas las expectativas y te hace emocionar por su belleza y tranquilidad. Sus altas palmeras de cera y el paisaje te transportan a otra dimension."
-        ),
-        Comentario(
-            id = "c2",
-            usuarioId = "valentina@email.com",
-            puntoInteresId = publicationId,
-            userName = "Valentina Rios",
-            date = 1777075200000,
-            rating = 5f,
-            text = "Para llegar al valle es mas facil desde el pueblo Salento, desde alli salen los famosos jeep camino al Valle. Hay varios senderos o trekking con diferentes precios, depende del recorrido que desees hacer."
-        ),
-        Comentario(
-            id = "c3",
-            usuarioId = "luis@email.com",
-            puntoInteresId = publicationId,
-            userName = "Luis Herrera",
-            date = 1776207600000,
-            rating = 4f,
-            text = "Muy recomendado para ir con tiempo y disfrutar del recorrido completo. Lleva hidratacion y bloqueador porque el sol puede pegar fuerte en algunas horas."
-        )
-    )
 }

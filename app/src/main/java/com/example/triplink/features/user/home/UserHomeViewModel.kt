@@ -8,7 +8,8 @@ import androidx.lifecycle.viewModelScope
 import com.example.triplink.core.utils.RequestResult
 import com.example.triplink.domain.model.PuntoInteres
 import com.example.triplink.domain.model.enums.EstadoPublicacion
-import com.example.triplink.domain.repository.user.UserRepository
+import com.example.triplink.domain.repository.favorite.FavoriteRepository
+import com.example.triplink.domain.repository.publication.PublicationRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -18,10 +19,11 @@ import javax.inject.Inject
 
 @HiltViewModel
 class UserHomeViewModel @Inject constructor(
-    private val repository: UserRepository
+    private val publicationRepository: PublicationRepository,
+    private val favoriteRepository: FavoriteRepository
 ) : ViewModel() {
 
-    val publications: StateFlow<List<PuntoInteres>> = repository.publications
+    val publications: StateFlow<List<PuntoInteres>> = publicationRepository.publications
 
     var selectedTabIndex by mutableIntStateOf(0)
         private set
@@ -39,9 +41,9 @@ class UserHomeViewModel @Inject constructor(
     fun toggleFavorite(userId: String, publicationId: String) {
         viewModelScope.launch {
             try {
-                val wasSaved = repository.toggleFavorite(userId, publicationId)
+                val wasSaved = favoriteRepository.toggleFavorite(userId, publicationId)
                 if (wasSaved) {
-                    val isFavorite = repository.isFavorite(userId, publicationId)
+                    val isFavorite = favoriteRepository.isFavorite(userId, publicationId)
                     val message = if (isFavorite) "Añadido a favoritos" else "Removido de favoritos"
                     _favoriteToggleResult.value = RequestResult.Success(message)
                 } else {
@@ -54,7 +56,7 @@ class UserHomeViewModel @Inject constructor(
     }
 
     fun isFavorite(userId: String, publicationId: String): Boolean {
-        return repository.isFavorite(userId, publicationId)
+        return favoriteRepository.isFavorite(userId, publicationId)
     }
 
     fun clearFavoriteResult() {

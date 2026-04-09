@@ -1,4 +1,4 @@
-package com.example.triplink.data.repository.admin.reports
+package com.example.triplink.data.seed
 
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateMapOf
@@ -13,23 +13,23 @@ import com.example.triplink.domain.model.enums.EstadoReporte
 import com.example.triplink.domain.model.enums.RangoPrecios
 import com.example.triplink.domain.model.enums.RazonReporte
 
-internal data class AdminReportsSeedState(
+data class AdminReportsSeedState(
     val publicationsById: SnapshotStateMap<String, PuntoInteres>,
     val pendingReports: SnapshotStateList<AdminReportSeedEntry>,
     val acceptedReportsCountByPublication: SnapshotStateMap<String, Int>
 )
 
-internal data class AdminReportSeedEntry(
+data class AdminReportSeedEntry(
     val report: Reporte,
     val pointOfInterest: PuntoInteres,
     val reporterName: String
 )
 
-internal fun createAdminReportsSeedState(): AdminReportsSeedState {
+fun createAdminReportsSeedState(): AdminReportsSeedState {
     val publicationsById = mutableStateMapOf(
         "poi-1" to PuntoInteres(
             id = "poi-1",
-            titulo = "Mercado Artesanal del Quindío",
+            titulo = "Mercado Artesanal del Quindio",
             informacion = "Oferta gastronomica y artesanal en el centro del departamento.",
             usuarioAutorId = "laura@email.com",
             categoria = Categoria.GASTRONOMIA,

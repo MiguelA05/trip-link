@@ -7,9 +7,10 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import com.example.triplink.core.utils.RequestResult
+import com.example.triplink.data.seed.GeoSeedData
 import com.example.triplink.domain.model.Ubicacion
 import com.example.triplink.domain.model.Usuario
-import com.example.triplink.domain.repository.user.UserRepository
+import com.example.triplink.domain.repository.auth.AuthRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -18,7 +19,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class RegisterViewModel @Inject constructor(
-    private val userRepository: UserRepository
+    private val authRepository: AuthRepository
 ) : ViewModel() {
 
     var name by mutableStateOf("")
@@ -34,12 +35,8 @@ class RegisterViewModel @Inject constructor(
     private val _registerResult = MutableStateFlow<RequestResult?>(null)
     val registerResult: StateFlow<RequestResult?> = _registerResult.asStateFlow()
 
-    val departments = listOf("Quindio", "Antioquia", "Valle del Cauca")
-    val citiesMap = mapOf(
-        "Quindio" to listOf("Armenia", "Calarca", "Circasia", "Filandia", "Salento"),
-        "Antioquia" to listOf("Medellin", "Envigado", "Itagui", "Rionegro"),
-        "Valle del Cauca" to listOf("Cali", "Palmira", "Buga", "Tulua")
-    )
+    val departments = GeoSeedData.departments
+    val citiesMap = GeoSeedData.citiesByDepartment
 
     var selectedDepartment by mutableStateOf("")
     var selectedCity by mutableStateOf("")
@@ -126,12 +123,12 @@ class RegisterViewModel @Inject constructor(
             return
         }
 
-        if (userRepository.findByEmail(email) != null) {
+        if (authRepository.findByEmail(email) != null) {
             _registerResult.value = RequestResult.Failure("El correo ya se encuentra registrado")
             return
         }
 
-        val wasSaved = userRepository.save(
+        val wasSaved = authRepository.save(
             Usuario(
                 email = email,
                 nombre = name,

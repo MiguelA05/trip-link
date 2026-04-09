@@ -8,7 +8,9 @@ import androidx.lifecycle.viewModelScope
 import com.example.triplink.core.utils.RequestResult
 import com.example.triplink.domain.model.Comentario
 import com.example.triplink.domain.model.PuntoInteres
-import com.example.triplink.domain.repository.user.UserRepository
+import com.example.triplink.domain.repository.comment.CommentRepository
+import com.example.triplink.domain.repository.favorite.FavoriteRepository
+import com.example.triplink.domain.repository.publication.PublicationRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -19,7 +21,9 @@ import java.util.UUID
 
 @HiltViewModel
 class PublicationDetailsViewModel @Inject constructor(
-    private val repository: UserRepository
+    private val publicationRepository: PublicationRepository,
+    private val favoriteRepository: FavoriteRepository,
+    private val commentRepository: CommentRepository
 ) : ViewModel() {
 
     var isFavorite by mutableStateOf(false)
@@ -38,17 +42,17 @@ class PublicationDetailsViewModel @Inject constructor(
     val publicationActionResult: StateFlow<RequestResult?> = _publicationActionResult.asStateFlow()
 
     fun getPublicationById(publicationId: String): PuntoInteres? {
-        return repository.getPublicationById(publicationId)
+        return publicationRepository.getPublicationById(publicationId)
     }
 
     fun loadCommentsForPublication(publicationId: String) {
-        comments = repository.getCommentsByPublicationId(publicationId)
+        comments = commentRepository.getCommentsByPublicationId(publicationId)
     }
 
     fun toggleFavorite(userId: String, publicationId: String) {
         viewModelScope.launch {
             try {
-                val wasToggled = repository.toggleFavorite(userId, publicationId)
+                val wasToggled = favoriteRepository.toggleFavorite(userId, publicationId)
                 if (wasToggled) {
                     isFavorite = !isFavorite
                     val message = if (isFavorite) "Añadido a favoritos" else "Removido de favoritos"
@@ -63,7 +67,7 @@ class PublicationDetailsViewModel @Inject constructor(
     }
 
     fun checkIsFavorite(userId: String, publicationId: String) {
-        isFavorite = repository.isFavorite(userId, publicationId)
+        isFavorite = favoriteRepository.isFavorite(userId, publicationId)
     }
 
     fun saveComment(publicationId: String, userName: String, rating: Float, text: String) {
@@ -84,9 +88,9 @@ class PublicationDetailsViewModel @Inject constructor(
                     text = text
                 )
 
-                val wasSaved = repository.saveComment(publicationId, comment)
+                val wasSaved = commentRepository.saveComment(publicationId, comment)
                 if (wasSaved) {
-                    comments = repository.getCommentsByPublicationId(publicationId)
+                    comments = commentRepository.getCommentsByPublicationId(publicationId)
                     _commentResult.value = RequestResult.Success("Comentario guardado exitosamente")
                 } else {
                     _commentResult.value = RequestResult.Failure("No se pudo guardar el comentario")
@@ -98,13 +102,13 @@ class PublicationDetailsViewModel @Inject constructor(
     }
 
     fun getAverageRating(publicationId: String): Double {
-        return repository.getAverageRating(publicationId)
+        return commentRepository.getAverageRating(publicationId)
     }
 
     fun updatePublication(updatedPublication: PuntoInteres) {
         viewModelScope.launch {
             try {
-                val wasUpdated = repository.updatePuntoInteres(updatedPublication)
+                val wasUpdated = publicationRepository.updatePuntoInteres(updatedPublication)
                 _publicationActionResult.value = if (wasUpdated) {
                     RequestResult.Success("Publicación actualizada")
                 } else {
@@ -119,7 +123,7 @@ class PublicationDetailsViewModel @Inject constructor(
     fun deletePublication(publicationId: String) {
         viewModelScope.launch {
             try {
-                val wasDeleted = repository.deletePublicationById(publicationId)
+                val wasDeleted = publicationRepository.deletePublicationById(publicationId)
                 _publicationActionResult.value = if (wasDeleted) {
                     RequestResult.Success("Publicación eliminada")
                 } else {

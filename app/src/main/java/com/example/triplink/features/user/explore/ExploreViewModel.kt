@@ -5,9 +5,10 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
+import com.example.triplink.data.seed.UiOptionsSeedData
 import com.example.triplink.domain.model.PuntoInteres
 import com.example.triplink.domain.model.enums.EstadoPublicacion
-import com.example.triplink.domain.repository.user.UserRepository
+import com.example.triplink.domain.repository.publication.PublicationRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.StateFlow
 import java.util.Locale
@@ -15,10 +16,10 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ExploreViewModel @Inject constructor(
-    private val repository: UserRepository
+    private val publicationRepository: PublicationRepository
 ) : ViewModel() {
 
-    val publications: StateFlow<List<PuntoInteres>> = repository.publications
+    val publications: StateFlow<List<PuntoInteres>> = publicationRepository.publications
 
     var query by mutableStateOf("")
         private set
@@ -29,13 +30,7 @@ class ExploreViewModel @Inject constructor(
     var selectedTabIndex by mutableIntStateOf(1)
         private set
 
-    val categories = listOf(
-        "Todos",
-        "Gastronomia",
-        "Entretenimiento",
-        "Naturaleza",
-        "Cultura"
-    )
+    val categories = UiOptionsSeedData.exploreCategories
 
     fun filteredPuntoInteres(source: List<PuntoInteres>): List<PuntoInteres> {
             val normalizedQuery = query.trim().lowercase(Locale.ROOT)

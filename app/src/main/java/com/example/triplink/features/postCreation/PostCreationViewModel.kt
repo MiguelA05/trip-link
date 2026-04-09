@@ -8,12 +8,13 @@ import androidx.lifecycle.viewModelScope
 import com.example.triplink.core.utils.RequestResult
 import com.example.triplink.core.utils.ValidatedField
 import com.example.triplink.data.datastore.SessionDataStore
+import com.example.triplink.data.seed.UiOptionsSeedData
 import com.example.triplink.domain.model.PuntoInteres
 import com.example.triplink.domain.model.Ubicacion
 import com.example.triplink.domain.model.enums.Categoria
 import com.example.triplink.domain.model.enums.EstadoPublicacion
 import com.example.triplink.domain.model.enums.RangoPrecios
-import com.example.triplink.domain.repository.user.UserRepository
+import com.example.triplink.domain.repository.publication.PublicationRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -26,7 +27,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class PostCreationViewModel @Inject constructor(
-    private val userRepository: UserRepository,
+    private val publicationRepository: PublicationRepository,
     private val sessionDataStore: SessionDataStore
 ) : ViewModel() {
 
@@ -47,7 +48,7 @@ class PostCreationViewModel @Inject constructor(
     var longitude by mutableStateOf(0.0)
 
     var daySchedules by mutableStateOf(
-        listOf("Lun", "Mar", "Mié", "Jue", "Vie", "Sáb", "Dom").map {
+        UiOptionsSeedData.weekDaysShort.map {
             DayScheduleData(it)
         }
     )
@@ -64,7 +65,7 @@ class PostCreationViewModel @Inject constructor(
     val submitButtonLabel: String
         get() = "Publicar"
 
-    val categories = listOf("Gastronomía", "Cultura", "Naturaleza", "Entretenimiento", "Historia")
+    val categories = UiOptionsSeedData.postCreationCategories
 
     private val _createResult = MutableStateFlow<RequestResult?>(null)
     val createResult: StateFlow<RequestResult?> = _createResult.asStateFlow()
@@ -96,7 +97,7 @@ class PostCreationViewModel @Inject constructor(
         }
         if (prefilledFromPublicationId == publicationId) return
 
-        val publication = userRepository.getPublicationById(publicationId) ?: return
+        val publication = publicationRepository.getPublicationById(publicationId) ?: return
         prefilledFromPublicationId = publication.id
         prefilledPhotos = publication.fotos
 
@@ -114,11 +115,11 @@ class PostCreationViewModel @Inject constructor(
         daySchedules = if (schedule != null) {
             val open = schedule.first.toHHmm()
             val close = schedule.second.toHHmm()
-            listOf("Lun", "Mar", "Mié", "Jue", "Vie", "Sáb", "Dom").map {
+            UiOptionsSeedData.weekDaysShort.map {
                 DayScheduleData(day = it, isEnabled = true, openTime = open, closeTime = close)
             }
         } else {
-            listOf("Lun", "Mar", "Mié", "Jue", "Vie", "Sáb", "Dom").map {
+            UiOptionsSeedData.weekDaysShort.map {
                 DayScheduleData(it)
             }
         }
@@ -220,7 +221,7 @@ class PostCreationViewModel @Inject constructor(
                     motivoRechazo = null
                 )
 
-                val wasSaved = userRepository.savePuntoInteres(publication)
+                val wasSaved = publicationRepository.savePuntoInteres(publication)
 
                 if (wasSaved) {
                     showSuccessModal = true
@@ -256,7 +257,7 @@ class PostCreationViewModel @Inject constructor(
         selectedCity = ""
         latitude = 0.0
         longitude = 0.0
-        daySchedules = listOf("Lun", "Mar", "Mié", "Jue", "Vie", "Sáb", "Dom").map {
+        daySchedules = UiOptionsSeedData.weekDaysShort.map {
             DayScheduleData(it)
         }
         selectedPriceRange = "Gratuito"

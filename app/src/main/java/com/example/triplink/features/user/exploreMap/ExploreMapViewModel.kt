@@ -4,8 +4,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
+import com.example.triplink.data.seed.UiOptionsSeedData
 import com.example.triplink.domain.model.PuntoInteres
-import com.example.triplink.domain.repository.user.UserRepository
+import com.example.triplink.domain.repository.publication.PublicationRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import java.util.Locale
 import javax.inject.Inject
@@ -20,7 +21,7 @@ data class MapMarkerUi(
 
 @HiltViewModel
 class ExploreMapViewModel @Inject constructor(
-    private val repository: UserRepository
+    private val publicationRepository: PublicationRepository
 ) : ViewModel() {
 
     var query by mutableStateOf("")
@@ -29,10 +30,10 @@ class ExploreMapViewModel @Inject constructor(
     var selectedCategory by mutableStateOf("Todos")
         private set
 
-    val categories = listOf("Todos", "Gastronomia", "Entretenimiento", "Naturaleza", "Cultura")
+    val categories = UiOptionsSeedData.exploreCategories
 
     private val allPublications: List<PuntoInteres>
-        get() = repository.explorePublications()
+        get() = publicationRepository.explorePublications()
 
     private val filteredPublications: List<PuntoInteres>
         get() {
@@ -95,7 +96,7 @@ class ExploreMapViewModel @Inject constructor(
     }
 
     private fun ratingLabelFor(index: Int): String {
-        val ratings = listOf("4.5", "4.8", "4.2", "4.0", "3.9")
+        val ratings = UiOptionsSeedData.mapMarkerRatings
         return ratings[index % ratings.size]
     }
 }

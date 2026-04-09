@@ -3,13 +3,13 @@ package com.example.triplink.features.admin.moderation.ModerationPublicationDeta
 import androidx.lifecycle.ViewModel
 import com.example.triplink.domain.model.enums.moderator.DecisionModerador
 import com.example.triplink.domain.model.moderator.ModerationPublication
-import com.example.triplink.domain.repository.admin.AdminRepository
+import com.example.triplink.domain.repository.admin.ModerationRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
 @HiltViewModel
 class ModerationPublicationDetailsViewModel @Inject constructor(
-    private val repository: AdminRepository
+    private val repository: ModerationRepository
 ) : ViewModel() {
 
     fun getPublicationById(publicationId: String): ModerationPublication? =

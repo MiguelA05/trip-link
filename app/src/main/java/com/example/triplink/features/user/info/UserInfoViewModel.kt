@@ -8,7 +8,8 @@ import androidx.lifecycle.viewModelScope
 import com.example.triplink.data.datastore.SessionDataStore
 import com.example.triplink.domain.model.PuntoInteres
 import com.example.triplink.domain.model.enums.EstadoPublicacion
-import com.example.triplink.domain.repository.user.UserRepository
+import com.example.triplink.domain.repository.publication.PublicationRepository
+import com.example.triplink.domain.repository.user.UserProfileRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
@@ -37,7 +38,8 @@ data class UserInfoUiState(
 
 @HiltViewModel
 class UserInfoViewModel @Inject constructor(
-	private val userRepository: UserRepository,
+	private val userProfileRepository: UserProfileRepository,
+	private val publicationRepository: PublicationRepository,
 	private val sessionDataStore: SessionDataStore
 ) : ViewModel() {
 
@@ -90,12 +92,12 @@ class UserInfoViewModel @Inject constructor(
 	private fun loadUserData() {
 		viewModelScope.launch {
 			val session = sessionDataStore.sessionFlow.first()
-			val user = session?.userId?.let { userRepository.findByEmail(it) }
-				?: userRepository.users.value.firstOrNull()
+			val user = session?.userId?.let { userProfileRepository.getUserById(it) }
+				?: userProfileRepository.users.value.firstOrNull()
 
 			user?.let { mappedUser ->
 				currentUserId = mappedUser.email
-				val contributionsByUser = userRepository.getUserPublications(mappedUser.email)
+				val contributionsByUser = publicationRepository.getUserPublications(mappedUser.email)
 				val contributionCount = contributionsByUser.count {
 					it.estado == EstadoPublicacion.VERIFICADA ||
 						it.estado == EstadoPublicacion.PENDIENTE ||
@@ -117,7 +119,7 @@ class UserInfoViewModel @Inject constructor(
 
 	private fun refreshSelectedContributions() {
 		val userId = currentUserId ?: return
-		val filtered = userRepository.getUserPublications(userId)
+		val filtered = publicationRepository.getUserPublications(userId)
 			.filter { it.estado == uiState.selectedContributionTab }
 			.map { it.toContributionItem() }
 
