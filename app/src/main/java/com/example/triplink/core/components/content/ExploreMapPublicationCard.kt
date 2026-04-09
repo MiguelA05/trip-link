@@ -41,6 +41,7 @@ import com.example.triplink.ui.theme.PrincipalOrange
 fun ExploreMapPublicationCard(
     publication: PuntoInteres,
     ratingLabel: String,
+    reviewCount: Int,
     expanded: Boolean,
     modifier: Modifier = Modifier,
     onOpenPublication: (() -> Unit)? = null
@@ -127,7 +128,7 @@ fun ExploreMapPublicationCard(
                             text = stringResource(
                                 R.string.component_explore_map_publication_card_rating,
                                 ratingLabel,
-                                2
+                                reviewCount
                             ),
                             style = MaterialTheme.typography.labelLarge,
                             fontWeight = FontWeight.Bold,

@@ -47,6 +47,7 @@ import com.example.triplink.core.navigation.SessionState
 import com.example.triplink.core.navigation.SessionViewModel
 import com.example.triplink.core.utils.RequestResult
 import com.example.triplink.ui.theme.*
+import kotlinx.coroutines.launch
 
 data class Review(
     val username: String,
@@ -69,6 +70,7 @@ fun PublicationDetailsScreen(
     val publicationActionResult by viewModel.publicationActionResult.collectAsState()
     val commentResult by viewModel.commentResult.collectAsState()
     val snackbarHostState = remember { SnackbarHostState() }
+    val coroutineScope = rememberCoroutineScope()
     var showEditModal by remember { mutableStateOf(false) }
 
     LaunchedEffect(publicationId) {
@@ -166,7 +168,15 @@ fun PublicationDetailsScreen(
         bottomBar = {
             BottomActionsBar(
                 userType = userType,
-                onVisitedClick = { showRatingModal = true },
+                onVisitedClick = {
+                    if (sessionState is SessionState.Authenticated) {
+                        showRatingModal = true
+                    } else {
+                        coroutineScope.launch {
+                            snackbarHostState.showSnackbar("Debes iniciar sesión para publicar una reseña")
+                        }
+                    }
+                },
                 onEditClick = { showEditModal = true },
                 onDeleteClick = { viewModel.deletePublication(publicationId) }
             )

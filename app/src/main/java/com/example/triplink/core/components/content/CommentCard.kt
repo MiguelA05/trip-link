@@ -48,6 +48,7 @@ fun CommentCard(
     modifier: Modifier = Modifier
 ) {
     var isExpanded by remember { mutableStateOf(false) }
+    var hasOverflow by remember(comment.id) { mutableStateOf(false) }
 
     Card(
         modifier = modifier.fillMaxWidth(),
@@ -127,34 +128,41 @@ fun CommentCard(
                 color = Color.DarkGray,
                 maxLines = if (isExpanded) Int.MAX_VALUE else 3,
                 overflow = TextOverflow.Ellipsis,
-                lineHeight = 20.sp
+                lineHeight = 20.sp,
+                onTextLayout = { textLayoutResult ->
+                    if (!isExpanded) {
+                        hasOverflow = textLayoutResult.hasVisualOverflow
+                    }
+                }
             )
 
-            Spacer(modifier = Modifier.height(8.dp))
+            if (hasOverflow || isExpanded) {
+                Spacer(modifier = Modifier.height(8.dp))
 
-            Row(
-                modifier = Modifier
-                    .clickable { isExpanded = !isExpanded }
-                    .padding(vertical = 4.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Icon(
-                    imageVector = if (isExpanded) Icons.Default.KeyboardArrowUp else Icons.Default.KeyboardArrowDown,
-                    contentDescription = null,
-                    tint = Color(0xFFFFB300),
-                    modifier = Modifier.size(20.dp)
-                )
-                Spacer(modifier = Modifier.width(4.dp))
-                Text(
-                    text = if (isExpanded) {
-                        stringResource(R.string.component_comment_card_show_less)
-                    } else {
-                        stringResource(R.string.component_comment_card_show_more)
-                    },
-                    color = Color(0xFFFFB300),
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 14.sp
-                )
+                Row(
+                    modifier = Modifier
+                        .clickable { isExpanded = !isExpanded }
+                        .padding(vertical = 4.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Icon(
+                        imageVector = if (isExpanded) Icons.Default.KeyboardArrowUp else Icons.Default.KeyboardArrowDown,
+                        contentDescription = null,
+                        tint = Color(0xFFFFB300),
+                        modifier = Modifier.size(20.dp)
+                    )
+                    Spacer(modifier = Modifier.width(4.dp))
+                    Text(
+                        text = if (isExpanded) {
+                            stringResource(R.string.component_comment_card_show_less)
+                        } else {
+                            stringResource(R.string.component_comment_card_show_more)
+                        },
+                        color = Color(0xFFFFB300),
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 14.sp
+                    )
+                }
             }
         }
     }
