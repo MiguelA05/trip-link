@@ -45,6 +45,8 @@ import com.example.triplink.core.components.GeneralButton
 import com.example.triplink.core.components.GeneralTopBar
 import com.example.triplink.R
 import com.example.triplink.core.utils.RequestResult
+import com.example.triplink.core.localization.localizedLabel
+import com.example.triplink.core.localization.localizedShortLabel
 import com.example.triplink.domain.model.enums.Categoria
 import com.example.triplink.domain.model.enums.DiaSemana
 import com.example.triplink.domain.model.enums.RangoPrecios
@@ -744,7 +746,7 @@ fun DayScheduleRow(
         horizontalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         Text(
-            text = schedule.day.shortLabel,
+            text = schedule.day.localizedShortLabel(),
             style = MaterialTheme.typography.bodyMedium,
             fontWeight = FontWeight.Bold,
             color = PrincipalBlue,
@@ -888,22 +890,6 @@ fun buildRequiredLabel(text: String) = buildAnnotatedString {
     }
 }
 
-@Composable
-private fun Categoria.localizedLabel(): String = when (this) {
-    Categoria.GASTRONOMIA -> stringResource(R.string.enum_categoria_gastronomia)
-    Categoria.CULTURA -> stringResource(R.string.enum_categoria_cultura)
-    Categoria.NATURALEZA -> stringResource(R.string.enum_categoria_naturaleza)
-    Categoria.ENTRETENIMIENTO -> stringResource(R.string.enum_categoria_entretenimiento)
-    Categoria.HISTORIA -> stringResource(R.string.enum_categoria_historia)
-}
-
-@Composable
-private fun RangoPrecios.localizedLabel(): String = when (this) {
-    RangoPrecios.GRATUITO -> stringResource(R.string.component_publication_price_range_free)
-    RangoPrecios.ECONOMICO -> stringResource(R.string.component_publication_price_range_economic)
-    RangoPrecios.MODERADO -> stringResource(R.string.component_publication_price_range_moderate)
-    RangoPrecios.COSTOSO -> stringResource(R.string.component_publication_price_range_expensive)
-}
 
 @Preview(showBackground = true)
 @Composable

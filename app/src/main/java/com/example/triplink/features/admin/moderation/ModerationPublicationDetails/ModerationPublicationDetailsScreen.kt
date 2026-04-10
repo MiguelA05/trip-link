@@ -42,8 +42,10 @@ import com.example.triplink.core.components.publicationdetails.sections.Publicat
 import com.example.triplink.core.components.publicationdetails.sections.PublicationPriceRangeSection
 import com.example.triplink.core.components.publicationdetails.sections.PublicationTextSection
 import com.example.triplink.core.components.publicationdetails.sections.PublicationWeeklyScheduleSection
-import com.example.triplink.core.components.publicationdetails.utils.currentDayLabelEs
+import com.example.triplink.core.components.publicationdetails.utils.currentDayLocalizedLabel
 import com.example.triplink.core.components.publicationdetails.utils.toWeeklyScheduleUi
+import com.example.triplink.core.localization.localizedLabel
+import com.example.triplink.core.localization.localizedLabelOrNoPrice
 import com.example.triplink.domain.model.enums.EstadoPublicacion
 import com.example.triplink.domain.model.enums.moderator.DecisionModerador
 import com.example.triplink.ui.theme.PrincipalGreen
@@ -108,7 +110,7 @@ fun ModerationPublicationDetailsScreen(
                 item {
                     PublicationPreviewHero(
                         imageUrl = publication.pointOfInterest.fotos.firstOrNull().orEmpty(),
-                        categoryLabel = publication.pointOfInterest.categoria.name,
+                        categoryLabel = publication.pointOfInterest.categoria.localizedLabel(),
                         title = publication.pointOfInterest.titulo
                     )
                 }
@@ -122,15 +124,7 @@ fun ModerationPublicationDetailsScreen(
 
                 item {
                     PublicationPriceRangeSection(
-                        selectedLevel = publication.pointOfInterest.rangoPrecios?.let {
-                            when (it.name) {
-                                "GRATUITO" -> stringResource(R.string.component_publication_price_range_free)
-                                "ECONOMICO" -> stringResource(R.string.component_publication_price_range_economic)
-                                "MODERADO" -> stringResource(R.string.component_publication_price_range_moderate)
-                                "COSTOSO" -> stringResource(R.string.component_publication_price_range_expensive)
-                                else -> stringResource(R.string.component_publication_price_range_no_price)
-                            }
-                        } ?: stringResource(R.string.component_publication_price_range_no_price)
+                        selectedLevel = publication.pointOfInterest.rangoPrecios.localizedLabelOrNoPrice()
                     )
                 }
 
@@ -144,7 +138,7 @@ fun ModerationPublicationDetailsScreen(
                 item {
                     PublicationWeeklyScheduleSection(
                         schedules = publication.pointOfInterest.horarios.toWeeklyScheduleUi(),
-                        today = currentDayLabelEs()
+                        today = currentDayLocalizedLabel()
                     )
                 }
 

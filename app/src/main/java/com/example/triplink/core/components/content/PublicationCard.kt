@@ -30,6 +30,7 @@ import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
 import coil3.request.crossfade
 import com.example.triplink.R
+import com.example.triplink.core.localization.localizedLabel
 import com.example.triplink.domain.model.PuntoInteres
 import com.example.triplink.ui.theme.TextColors
 import com.example.triplink.ui.theme.TextTokens
@@ -141,7 +142,7 @@ fun PublicationCard(
                     shape = RoundedCornerShape(8.dp)
                 ) {
                     Text(
-                        text = formatCategory(puntoInteres.categoria.name),
+                        text = puntoInteres.categoria.localizedLabel(),
                         modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp),
                         color = TextColors.OnImage,
                         style = TextTokens.chipLabel()
@@ -292,9 +293,6 @@ private fun formatAuthorName(userId: String): String =
             }
         }
 
-private fun formatCategory(category: String): String =
-    category.lowercase(Locale.ROOT)
-        .replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.ROOT) else it.toString() }
 
 private fun Long.toRelativeTimeLabelEs(now: Long = System.currentTimeMillis()): String {
     val delta = (now - this).coerceAtLeast(0L)

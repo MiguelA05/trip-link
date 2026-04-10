@@ -15,6 +15,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import com.example.triplink.core.localization.localizedLabelOrAll
 import com.example.triplink.domain.model.enums.Categoria
 import com.example.triplink.ui.theme.PrincipalBlue
 
@@ -77,7 +78,7 @@ fun CategoryChips(
                 onClick = { onCategorySelected(category) },
                 label = {
                     Text(
-                        text = category?.label ?: "Todos",
+                        text = category.localizedLabelOrAll(),
                         style = MaterialTheme.typography.labelMedium
                     )
                 },

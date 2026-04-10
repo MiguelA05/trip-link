@@ -7,6 +7,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.triplink.R
+import com.example.triplink.core.localization.localizedLabel
 import com.example.triplink.data.datastore.SessionDataStore
 import com.example.triplink.domain.model.PuntoInteres
 import com.example.triplink.domain.model.enums.EstadoPublicacion
@@ -124,7 +125,7 @@ class UserInfoViewModel @Inject constructor(
 				uiState = uiState.copy(
 					userName = mappedUser.nombre,
 					userInitials = buildInitials(mappedUser.nombre),
-					roleLabel = mappedUser.rol.name,
+					roleLabel = mappedUser.rol.localizedLabel(appContext),
 					points = mappedUser.puntos,
 					contributions = contributionCount,
 					activeDays = maxOf(contributionCount, 1)

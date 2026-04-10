@@ -1,6 +1,10 @@
 package com.example.triplink.core.components.publicationdetails.utils
 
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.res.stringResource
+import com.example.triplink.R
 import com.example.triplink.core.components.publicationdetails.sections.DayScheduleUi
+import com.example.triplink.core.localization.localizedFullLabel
 import com.example.triplink.domain.model.HorarioPuntoInteres
 import com.example.triplink.domain.model.enums.DiaSemana
 import java.time.DayOfWeek
@@ -22,28 +26,31 @@ private fun Long.toTimeLabel(): String {
     return "%d:%02d %s".format(normalizedHours, minutes, amPm)
 }
 
+@Composable
 fun List<HorarioPuntoInteres>.toWeeklyScheduleUi(): List<DayScheduleUi> {
     val scheduleByDay = associateBy { it.dia }
 
     return DiaSemana.entries.map { day ->
         val schedule = scheduleByDay[day]
         DayScheduleUi(
-            day = day.fullLabel,
-            hours = schedule?.let { "${it.fechaInicio.toTimeLabel()} - ${it.fechaFin.toTimeLabel()}" } ?: "Cerrado",
+            day = day.localizedFullLabel(),
+            hours = schedule?.let { "${it.fechaInicio.toTimeLabel()} - ${it.fechaFin.toTimeLabel()}" }
+                ?: stringResource(R.string.component_publication_weekly_schedule_closed),
             isClosed = schedule == null
         )
     }
 }
 
 
-fun currentDayLabelEs(): String = when (LocalDate.now().dayOfWeek) {
-    DayOfWeek.MONDAY -> "Lunes"
-    DayOfWeek.TUESDAY -> "Martes"
-    DayOfWeek.WEDNESDAY -> "Miércoles"
-    DayOfWeek.THURSDAY -> "Jueves"
-    DayOfWeek.FRIDAY -> "Viernes"
-    DayOfWeek.SATURDAY -> "Sábado"
-    DayOfWeek.SUNDAY -> "Domingo"
+@Composable
+fun currentDayLocalizedLabel(): String = when (LocalDate.now().dayOfWeek) {
+    DayOfWeek.MONDAY -> DiaSemana.LUNES.localizedFullLabel()
+    DayOfWeek.TUESDAY -> DiaSemana.MARTES.localizedFullLabel()
+    DayOfWeek.WEDNESDAY -> DiaSemana.MIERCOLES.localizedFullLabel()
+    DayOfWeek.THURSDAY -> DiaSemana.JUEVES.localizedFullLabel()
+    DayOfWeek.FRIDAY -> DiaSemana.VIERNES.localizedFullLabel()
+    DayOfWeek.SATURDAY -> DiaSemana.SABADO.localizedFullLabel()
+    DayOfWeek.SUNDAY -> DiaSemana.DOMINGO.localizedFullLabel()
 }
 
 

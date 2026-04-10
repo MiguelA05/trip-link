@@ -34,6 +34,7 @@ import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
 import coil3.request.crossfade
 import com.example.triplink.R
+import com.example.triplink.core.localization.localizedLabel
 import com.example.triplink.domain.model.PuntoInteres
 import com.example.triplink.ui.theme.PrincipalOrange
 import com.example.triplink.ui.theme.TextColors
@@ -78,7 +79,7 @@ fun ExploreMapPublicationCard(
                     color = Color(0xFFCDE8CF)
                 ) {
                     Text(
-                        text = publication.categoria.name,
+                        text = publication.categoria.localizedLabel(),
                         modifier = Modifier.padding(horizontal = 10.dp, vertical = 5.dp),
                         style = TextTokens.chipLabel(),
                         color = Color(0xFF3B6E3E),

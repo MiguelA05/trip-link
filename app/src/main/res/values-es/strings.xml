@@ -73,6 +73,9 @@
     <!-- resource: component_search_bar_filters_content_description -->
     <string name="component_search_bar_filters_content_description">Filtros</string>
 
+    <!-- COMPONENT: CategoryChips -->
+    <string name="component_category_chips_all">Todos</string>
+
     <!-- COMPONENT: CommentCard -->
     <!-- resource: component_comment_card_show_less -->
     <string name="component_comment_card_show_less">Ver menos</string>
@@ -186,6 +189,8 @@
     <string name="enum_categoria_naturaleza">Naturaleza</string>
     <string name="enum_categoria_entretenimiento">Entretenimiento</string>
     <string name="enum_categoria_historia">Historia</string>
+    <string name="enum_rol_usuario">Turista</string>
+    <string name="enum_rol_moderador">Moderador</string>
 
     <!-- FEATURE: PublicationDetails -->
     <!-- resource: feature_publication_details_rating_label -->
@@ -230,6 +235,21 @@
     <string name="component_publication_weekly_schedule_title">Horarios</string>
     <!-- resource: component_publication_weekly_schedule_today -->
     <string name="component_publication_weekly_schedule_today">Hoy</string>
+    <string name="component_publication_weekly_schedule_closed">Cerrado</string>
+    <string name="enum_dia_semana_lunes_short">Lun</string>
+    <string name="enum_dia_semana_martes_short">Mar</string>
+    <string name="enum_dia_semana_miercoles_short">Mie</string>
+    <string name="enum_dia_semana_jueves_short">Jue</string>
+    <string name="enum_dia_semana_viernes_short">Vie</string>
+    <string name="enum_dia_semana_sabado_short">Sab</string>
+    <string name="enum_dia_semana_domingo_short">Dom</string>
+    <string name="enum_dia_semana_lunes_full">Lunes</string>
+    <string name="enum_dia_semana_martes_full">Martes</string>
+    <string name="enum_dia_semana_miercoles_full">Miercoles</string>
+    <string name="enum_dia_semana_jueves_full">Jueves</string>
+    <string name="enum_dia_semana_viernes_full">Viernes</string>
+    <string name="enum_dia_semana_sabado_full">Sabado</string>
+    <string name="enum_dia_semana_domingo_full">Domingo</string>
     <!-- resource: component_publication_location_title -->
     <string name="component_publication_location_title">Ubicación</string>
     <!-- resource: component_publication_price_range_title -->

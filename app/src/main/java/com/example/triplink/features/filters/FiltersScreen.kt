@@ -14,6 +14,8 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.compose.ui.res.stringResource
 import com.example.triplink.R
 import com.example.triplink.core.components.GeneralTopBar
+import com.example.triplink.core.localization.localizedLabel
+import com.example.triplink.domain.model.enums.Categoria
 import com.example.triplink.domain.model.enums.RangoPrecios
 import com.example.triplink.domain.model.enums.UbicacionFiltro
 import com.example.triplink.ui.theme.DarkGray
@@ -50,7 +52,7 @@ fun FiltersScreen(
                     options = viewModel.categories,
                     selectedOptions = viewModel.selectedCategories,
                     onOptionToggle = viewModel::toggleCategory,
-                    optionLabel = { it.label }
+                    optionLabel = { category -> category.localizedLabel() }
                 )
             }
 

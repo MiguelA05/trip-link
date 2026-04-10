@@ -43,8 +43,10 @@ import com.example.triplink.core.components.publicationdetails.sections.Publicat
 import com.example.triplink.core.components.publicationdetails.sections.PublicationPriceRangeSection
 import com.example.triplink.core.components.publicationdetails.sections.PublicationTextSection
 import com.example.triplink.core.components.publicationdetails.sections.PublicationWeeklyScheduleSection
-import com.example.triplink.core.components.publicationdetails.utils.currentDayLabelEs
+import com.example.triplink.core.components.publicationdetails.utils.currentDayLocalizedLabel
 import com.example.triplink.core.components.publicationdetails.utils.toWeeklyScheduleUi
+import com.example.triplink.core.localization.localizedLabel
+import com.example.triplink.core.localization.localizedLabelOrNoPrice
 import com.example.triplink.core.navigation.SessionState
 import com.example.triplink.core.navigation.SessionViewModel
 import com.example.triplink.core.utils.RequestResult
@@ -139,7 +141,7 @@ fun PublicationDetailsScreen(
     var showDeletePublicationDialog by remember { mutableStateOf(false) }
 
     val schedules: List<DayScheduleUi> = publication.horarios.toWeeklyScheduleUi()
-    val today = currentDayLabelEs()
+    val today = currentDayLocalizedLabel()
     val loginRequiredForReviewMessage = stringResource(R.string.feature_publication_details_login_required_for_review)
     val isCurrentUserOwner = (sessionState as? SessionState.Authenticated)
         ?.session
@@ -147,15 +149,7 @@ fun PublicationDetailsScreen(
         ?.equals(publication.usuarioAutorId, ignoreCase = true) == true
     val ownerViewEnabled = isOwnerPublicationView && isCurrentUserOwner
 
-    val selectedPriceLevel = publication.rangoPrecios?.let {
-        when (it.name) {
-            "GRATUITO" -> stringResource(R.string.component_publication_price_range_free)
-            "ECONOMICO" -> stringResource(R.string.component_publication_price_range_economic)
-            "MODERADO" -> stringResource(R.string.component_publication_price_range_moderate)
-            "COSTOSO" -> stringResource(R.string.component_publication_price_range_expensive)
-            else -> stringResource(R.string.component_publication_price_range_no_price)
-        }
-    } ?: stringResource(R.string.component_publication_price_range_no_price)
+    val selectedPriceLevel = publication.rangoPrecios.localizedLabelOrNoPrice()
 
     val reviews = viewModel.comments.map { Review(it.userName, it.rating.toInt(), it.text) }
     val generalRating = if (viewModel.comments.isNotEmpty()) {
@@ -173,7 +167,7 @@ fun PublicationDetailsScreen(
                     onBack = onBackClick
                 )
                 ImageHeader(
-                    categoryLabel = publication.categoria.name,
+                    categoryLabel = publication.categoria.localizedLabel(),
                     title = publication.titulo,
                     imageUrl = publication.fotos.firstOrNull().orEmpty(),
                     showReportAction = !ownerViewEnabled,
