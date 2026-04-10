@@ -103,6 +103,23 @@
     <string name="component_publication_card_add_to_favorites_content_description">Agregar a favoritos</string>
     <!-- resource: component_publication_card_default_initial -->
     <string name="component_publication_card_default_initial">U</string>
+    <string name="component_publication_card_time_just_now">Ahora mismo</string>
+    <plurals name="component_publication_card_time_minutes_ago" tools:ignore="MissingQuantity">
+        <item quantity="one">Hace %1$d min</item>
+        <item quantity="other">Hace %1$d min</item>
+    </plurals>
+    <plurals name="component_publication_card_time_hours_ago" tools:ignore="MissingQuantity">
+        <item quantity="one">Hace %1$d h</item>
+        <item quantity="other">Hace %1$d h</item>
+    </plurals>
+    <plurals name="component_publication_card_time_days_ago" tools:ignore="MissingQuantity">
+        <item quantity="one">Hace %1$d d</item>
+        <item quantity="other">Hace %1$d d</item>
+    </plurals>
+    <plurals name="component_publication_card_time_weeks_ago" tools:ignore="MissingQuantity">
+        <item quantity="one">Hace %1$d sem</item>
+        <item quantity="other">Hace %1$d sem</item>
+    </plurals>
 
     <!-- COMPONENT: RatingSummaryCard -->
     <!-- resource: component_rating_summary_card_based_on -->
@@ -191,6 +208,12 @@
     <string name="enum_categoria_historia">Historia</string>
     <string name="enum_rol_usuario">Turista</string>
     <string name="enum_rol_moderador">Moderador</string>
+    <string name="enum_razon_reporte_spam">Spam</string>
+    <string name="enum_razon_reporte_contenido_inapropiado">Contenido inapropiado</string>
+    <string name="enum_razon_reporte_informacion_falsa">Informacion falsa</string>
+    <string name="enum_razon_reporte_lenguaje_ofensivo">Lenguaje ofensivo</string>
+    <string name="enum_razon_reporte_violencia">Violencia</string>
+    <string name="enum_razon_reporte_otro">Otro</string>
 
     <!-- FEATURE: PublicationDetails -->
     <!-- resource: feature_publication_details_rating_label -->
@@ -235,6 +258,7 @@
     <string name="component_publication_weekly_schedule_title">Horarios</string>
     <!-- resource: component_publication_weekly_schedule_today -->
     <string name="component_publication_weekly_schedule_today">Hoy</string>
+    <string name="component_publication_schedule_unavailable">Horario no disponible</string>
     <string name="component_publication_weekly_schedule_closed">Cerrado</string>
     <string name="enum_dia_semana_lunes_short">Lun</string>
     <string name="enum_dia_semana_martes_short">Mar</string>

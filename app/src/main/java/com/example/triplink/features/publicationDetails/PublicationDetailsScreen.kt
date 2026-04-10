@@ -143,6 +143,7 @@ fun PublicationDetailsScreen(
     val schedules: List<DayScheduleUi> = publication.horarios.toWeeklyScheduleUi()
     val today = currentDayLocalizedLabel()
     val loginRequiredForReviewMessage = stringResource(R.string.feature_publication_details_login_required_for_review)
+    val defaultUserName = stringResource(R.string.vm_user_info_default_user_name)
     val isCurrentUserOwner = (sessionState as? SessionState.Authenticated)
         ?.session
         ?.userId
@@ -242,7 +243,7 @@ fun PublicationDetailsScreen(
             onDismiss = { showRatingModal = false },
             onSubmit = { rating, comment ->
                 val userId = (sessionState as? SessionState.Authenticated)?.session?.userId.orEmpty()
-                val userName = userId.substringBefore('@').ifBlank { "Usuario" }
+                val userName = userId.substringBefore('@').ifBlank { defaultUserName }
                 viewModel.saveComment(
                     publicationId = publicationId,
                     userId = userId,

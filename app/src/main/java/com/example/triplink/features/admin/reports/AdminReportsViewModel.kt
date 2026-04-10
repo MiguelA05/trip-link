@@ -1,13 +1,16 @@
 package com.example.triplink.features.admin.reports
 
+import android.content.Context
 import androidx.lifecycle.ViewModel
 import com.example.triplink.domain.model.admin.AdminReportCase
 import com.example.triplink.domain.repository.admin.ReportRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 
 @HiltViewModel
 class AdminReportsViewModel @Inject constructor(
+    @param:ApplicationContext private val appContext: Context,
     private val repository: ReportRepository
 ) : ViewModel() {
 
@@ -27,10 +30,5 @@ class AdminReportsViewModel @Inject constructor(
         repository.invalidateReport(reportId)
     }
 
-    private fun AdminReportCase.toUiModel(): AdminReportUi = AdminReportUi(
-        report = report,
-        pointOfInterest = pointOfInterest,
-        reporterName = reporterName,
-        acceptedReportsCount = acceptedReportsCount
-    )
+    private fun AdminReportCase.toUiModel(): AdminReportUi = toUi(appContext)
 }

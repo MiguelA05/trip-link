@@ -101,6 +101,23 @@
     <string name="component_publication_card_add_to_favorites_content_description">Add to favorites</string>
     <!-- resource: component_publication_card_default_initial -->
     <string name="component_publication_card_default_initial">U</string>
+    <string name="component_publication_card_time_just_now">Just now</string>
+    <plurals name="component_publication_card_time_minutes_ago">
+        <item quantity="one">%1$d min ago</item>
+        <item quantity="other">%1$d min ago</item>
+    </plurals>
+    <plurals name="component_publication_card_time_hours_ago">
+        <item quantity="one">%1$d h ago</item>
+        <item quantity="other">%1$d h ago</item>
+    </plurals>
+    <plurals name="component_publication_card_time_days_ago">
+        <item quantity="one">%1$d d ago</item>
+        <item quantity="other">%1$d d ago</item>
+    </plurals>
+    <plurals name="component_publication_card_time_weeks_ago">
+        <item quantity="one">%1$d wk ago</item>
+        <item quantity="other">%1$d wks ago</item>
+    </plurals>
 
     <!-- COMPONENT: RatingSummaryCard -->
     <!-- resource: component_rating_summary_card_based_on -->
@@ -189,6 +206,12 @@
     <string name="enum_categoria_historia">History</string>
     <string name="enum_rol_usuario">Traveler</string>
     <string name="enum_rol_moderador">Moderator</string>
+    <string name="enum_razon_reporte_spam">Spam</string>
+    <string name="enum_razon_reporte_contenido_inapropiado">Inappropriate content</string>
+    <string name="enum_razon_reporte_informacion_falsa">False information</string>
+    <string name="enum_razon_reporte_lenguaje_ofensivo">Offensive language</string>
+    <string name="enum_razon_reporte_violencia">Violence</string>
+    <string name="enum_razon_reporte_otro">Other</string>
 
     <!-- FEATURE: PublicationDetails -->
     <!-- resource: feature_publication_details_rating_label -->
@@ -233,6 +256,7 @@
     <string name="component_publication_weekly_schedule_title">Schedule</string>
     <!-- resource: component_publication_weekly_schedule_today -->
     <string name="component_publication_weekly_schedule_today">Today</string>
+    <string name="component_publication_schedule_unavailable">Schedule unavailable</string>
     <string name="component_publication_weekly_schedule_closed">Closed</string>
     <string name="enum_dia_semana_lunes_short">Mon</string>
     <string name="enum_dia_semana_martes_short">Tue</string>

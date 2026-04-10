@@ -23,6 +23,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -94,7 +95,7 @@ fun PublicationCard(
                         color = TextColors.Primary
                     )
                     Text(
-                        text = puntoInteres.fechaCreacion.toRelativeTimeLabelEs(),
+                        text = puntoInteres.fechaCreacion.toRelativeTimeLabel(),
                         style = TextTokens.cardSubtitle(),
                         color = TextColors.Secondary
                     )
@@ -294,17 +295,37 @@ private fun formatAuthorName(userId: String): String =
         }
 
 
-private fun Long.toRelativeTimeLabelEs(now: Long = System.currentTimeMillis()): String {
+@Composable
+private fun Long.toRelativeTimeLabel(now: Long = System.currentTimeMillis()): String {
     val delta = (now - this).coerceAtLeast(0L)
     val minutes = delta / 60_000L
     val hours = minutes / 60L
     val days = hours / 24L
     return when {
-        minutes < 1 -> "Ahora mismo"
-        minutes < 60 -> "Hace $minutes min"
-        hours < 24 -> "Hace $hours h"
-        days < 7 -> "Hace $days d"
-        else -> "Hace ${days / 7} sem"
+        minutes < 1 -> stringResource(R.string.component_publication_card_time_just_now)
+        minutes < 60 -> pluralStringResource(
+            R.plurals.component_publication_card_time_minutes_ago,
+            minutes.toInt(),
+            minutes.toInt()
+        )
+        hours < 24 -> pluralStringResource(
+            R.plurals.component_publication_card_time_hours_ago,
+            hours.toInt(),
+            hours.toInt()
+        )
+        days < 7 -> pluralStringResource(
+            R.plurals.component_publication_card_time_days_ago,
+            days.toInt(),
+            days.toInt()
+        )
+        else -> {
+            val weeks = (days / 7L).toInt()
+            pluralStringResource(
+                R.plurals.component_publication_card_time_weeks_ago,
+                weeks,
+                weeks
+            )
+        }
     }
 }
 

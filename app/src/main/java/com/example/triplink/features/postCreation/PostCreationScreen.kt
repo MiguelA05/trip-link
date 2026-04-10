@@ -125,7 +125,11 @@ fun PostCreationScreen(
                     errorText = viewModel.placeName.error,
                     trailingIcon = {
                         Text(
-                            text = "${viewModel.placeName.value.length}/80",
+                            text = stringResource(
+                                R.string.feature_publication_details_comment_counter,
+                                viewModel.placeName.value.length,
+                                80
+                            ),
                             style = MaterialTheme.typography.bodySmall,
                             color = TextColors.Muted,
                             modifier = Modifier.padding(end = 8.dp)
@@ -164,7 +168,11 @@ fun PostCreationScreen(
                         supportingText = {
                             Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.CenterEnd) {
                                 Text(
-                                    text = "${viewModel.description.length}/300",
+                                    text = stringResource(
+                                        R.string.feature_publication_details_comment_counter,
+                                        viewModel.description.length,
+                                        300
+                                    ),
                                     style = MaterialTheme.typography.bodySmall,
                                     color = TextColors.Muted
                                 )

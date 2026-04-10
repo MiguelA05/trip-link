@@ -303,7 +303,11 @@ fun AdminReportDetailsScreen(
                             fontWeight = FontWeight.SemiBold
                         )
                         Text(
-                            text = "${report.acceptedReportsCount} / 3",
+                            text = stringResource(
+                                R.string.feature_publication_details_comment_counter,
+                                report.acceptedReportsCount,
+                                3
+                            ),
                             style = MaterialTheme.typography.bodyMedium,
                             color = TextColors.Primary,
                             fontWeight = FontWeight.Bold

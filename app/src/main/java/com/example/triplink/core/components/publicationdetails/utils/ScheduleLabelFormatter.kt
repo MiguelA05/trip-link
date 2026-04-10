@@ -1,5 +1,6 @@
 package com.example.triplink.core.components.publicationdetails.utils
 
+import android.content.Context
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
 import com.example.triplink.R
@@ -10,8 +11,8 @@ import com.example.triplink.domain.model.enums.DiaSemana
 import java.time.DayOfWeek
 import java.time.LocalDate
 
-fun List<HorarioPuntoInteres>.toScheduleLabel(): String {
-    val first = firstOrNull() ?: return "Horario no disponible"
+fun List<HorarioPuntoInteres>.toScheduleLabel(context: Context): String {
+    val first = firstOrNull() ?: return context.getString(R.string.component_publication_schedule_unavailable)
     return "${first.fechaInicio.toTimeLabel()} - ${first.fechaFin.toTimeLabel()}"
 }
 

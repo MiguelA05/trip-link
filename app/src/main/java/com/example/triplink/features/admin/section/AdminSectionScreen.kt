@@ -11,10 +11,12 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.example.triplink.R
 import com.example.triplink.core.components.GeneralAlertDialog
 import com.example.triplink.core.components.navigation.BottomBar
 import com.example.triplink.core.components.navigation.adminNavItems
@@ -81,11 +83,11 @@ fun AdminSectionScreen(
                 showLogoutDialog = false
                 onLogout()
             },
-            title = "¿Cerrar sesión?",
-            message = "Se cerrará tu sesión en este dispositivo.\nPodrás volver a ingresar en cualquier momento.",
+            title = stringResource(R.string.feature_user_info_logout_title),
+            message = stringResource(R.string.feature_user_info_logout_message),
             icon = Icons.AutoMirrored.Outlined.Logout,
-            buttonText = "Cerrar sesión",
-            dismissButtonText = "Cancelar",
+            buttonText = stringResource(R.string.feature_user_info_logout_confirm),
+            dismissButtonText = stringResource(R.string.feature_user_info_logout_cancel),
             onDismissAction = { showLogoutDialog = false }
         )
     }

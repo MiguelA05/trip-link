@@ -72,7 +72,7 @@ fun AdminReportsScreen(
                 border = androidx.compose.foundation.BorderStroke(1.dp, Color(0xFFB7D7FF))
             ) {
                 Text(
-                    text = "MOD",
+                    text = stringResource(R.string.feature_admin_moderation_badge),
                     modifier = Modifier.padding(horizontal = 12.dp, vertical = 7.dp),
                     color = PrincipalBlue,
                     style = MaterialTheme.typography.labelLarge,
