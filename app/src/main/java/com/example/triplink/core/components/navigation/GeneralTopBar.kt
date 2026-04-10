@@ -11,12 +11,12 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import com.example.triplink.R
 import com.example.triplink.ui.theme.PrincipalBlue
 import com.example.triplink.ui.theme.SoftBlue
+import com.example.triplink.ui.theme.TextColors
+import com.example.triplink.ui.theme.TextTokens
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -31,10 +31,8 @@ fun GeneralTopBar(
         title = {
             Text(
                 text = title,
-                style = MaterialTheme.typography.titleLarge.copy(
-                    fontWeight = FontWeight.Bold,
-                    color = Color.Black
-                )
+                style = TextTokens.screenTitle(),
+                color = TextColors.Primary
             )
         },
         navigationIcon = {

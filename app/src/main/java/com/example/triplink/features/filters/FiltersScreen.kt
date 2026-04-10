@@ -10,12 +10,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.compose.ui.res.stringResource
+import com.example.triplink.R
 import com.example.triplink.core.components.GeneralTopBar
 import com.example.triplink.ui.theme.DarkGray
 import com.example.triplink.ui.theme.PrincipalBlue
-import com.example.triplink.ui.theme.PrincipalGray
+import com.example.triplink.ui.theme.TextTokens
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
@@ -27,7 +28,7 @@ fun FiltersScreen(
     Scaffold(
         topBar = {
             GeneralTopBar(
-                title = "Filtros",
+                title = stringResource(R.string.feature_filters_title),
                 onBack = onBackClick
             )
         }
@@ -43,7 +44,7 @@ fun FiltersScreen(
 
             item {
                 FilterSection(
-                    title = "Categorías",
+                    title = stringResource(R.string.feature_filters_categories),
                     options = viewModel.categories,
                     selectedOptions = viewModel.selectedCategories,
                     onOptionToggle = { option -> viewModel.cambiarOpcion(option)}
@@ -54,7 +55,7 @@ fun FiltersScreen(
 
             item {
                 FilterSection(
-                    title = "Ubicación",
+                    title = stringResource(R.string.feature_filters_location),
                     options = viewModel.locations,
                     selectedOptions = viewModel.selectedLocations,
                     onOptionToggle = { option -> viewModel.cambiarOpcion(option)
@@ -66,7 +67,7 @@ fun FiltersScreen(
 
             item {
                 FilterSection(
-                    title = "Rango de Precios",
+                    title = stringResource(R.string.feature_filters_price_range),
                     options = viewModel.priceRanges,
                     selectedOptions = viewModel.selectedPrices,
                     onOptionToggle = { option -> viewModel.cambiarOpcion(option) }
@@ -77,7 +78,7 @@ fun FiltersScreen(
 
             item {
                 FilterSection(
-                    title = "Calificación Mínima",
+                    title = stringResource(R.string.feature_filters_minimum_rating),
                     options = viewModel.ratings,
                     selectedOptions = viewModel.selectedRatings,
                     onOptionToggle = { option ->viewModel.cambiarOpcion(option) }
@@ -100,10 +101,7 @@ fun FilterSection(
     Column {
         Text(
             text = title,
-            style = MaterialTheme.typography.titleLarge.copy(
-                fontWeight = FontWeight.Bold,
-                fontSize = 20.sp
-            ),
+            style = TextTokens.sectionTitle(),
             color = Color.Black
         )
         Spacer(modifier = Modifier.height(16.dp))
@@ -142,10 +140,8 @@ fun FilterChipItem(
         Text(
             text = text,
             modifier = Modifier.padding(horizontal = 16.dp, vertical = 10.dp),
-            style = MaterialTheme.typography.bodyLarge.copy(
-                fontWeight = FontWeight.Medium,
-                color = if (isSelected) PrincipalBlue else DarkGray
-            )
+            style = TextTokens.inputText().copy(fontWeight = FontWeight.Medium),
+            color = if (isSelected) PrincipalBlue else DarkGray
         )
     }
 }

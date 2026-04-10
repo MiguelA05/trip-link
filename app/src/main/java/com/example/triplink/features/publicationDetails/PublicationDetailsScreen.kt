@@ -25,6 +25,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
@@ -47,6 +48,7 @@ import com.example.triplink.core.components.publicationdetails.utils.toWeeklySch
 import com.example.triplink.core.navigation.SessionState
 import com.example.triplink.core.navigation.SessionViewModel
 import com.example.triplink.core.utils.RequestResult
+import com.example.triplink.R
 import com.example.triplink.ui.theme.*
 import kotlinx.coroutines.launch
 
@@ -119,14 +121,13 @@ fun PublicationDetailsScreen(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
-                text = "Publicacion no encontrada",
-                style = MaterialTheme.typography.headlineSmall,
-                fontWeight = FontWeight.Bold,
-                color = Color(0xFF1E2430)
+                text = stringResource(R.string.feature_publication_details_not_found),
+                style = TextTokens.sectionTitle(),
+                color = TextColors.Primary
             )
             Spacer(modifier = Modifier.height(8.dp))
             TextButton(onClick = onBackClick) {
-                Text("Volver")
+                Text(stringResource(R.string.feature_publication_details_back))
             }
         }
         return
@@ -166,7 +167,7 @@ fun PublicationDetailsScreen(
         topBar = {
             Column {
                 GeneralTopBar(
-                    title = "Detalle del Lugar",
+                    title = stringResource(R.string.feature_publication_details_title),
                     onBack = onBackClick
                 )
                 ImageHeader(
@@ -203,7 +204,7 @@ fun PublicationDetailsScreen(
         ) {
             item {
                 PublicationTextSection(
-                    title = "Descripción",
+                    title = stringResource(R.string.feature_publication_details_description),
                     body = publication.informacion
                 )
             }
@@ -312,14 +313,14 @@ fun ImageHeader(
             Text(
                 text = categoryLabel.uppercase(),
                 color = PrincipalGreen,
-                fontWeight = FontWeight.Bold,
-                fontSize = 16.sp
+                style = TextTokens.chipLabel(),
+                fontWeight = FontWeight.Bold
             )
             Text(
                 text = title,
-                color = Color.White,
-                fontWeight = FontWeight.Bold,
-                fontSize = 28.sp
+                color = TextColors.OnImage,
+                style = MaterialTheme.typography.headlineMedium,
+                fontWeight = FontWeight.Bold
             )
         }
 
@@ -419,9 +420,8 @@ fun RatingModal(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = "CALIFICACIÓN",
-                    style = MaterialTheme.typography.labelLarge,
-                    fontWeight = FontWeight.Bold
+                    text = stringResource(R.string.feature_publication_details_rating_label),
+                    style = TextTokens.chipLabel()
                 )
                 Spacer(modifier = Modifier.width(8.dp))
                 Surface(
@@ -429,11 +429,10 @@ fun RatingModal(
                     shape = RoundedCornerShape(4.dp)
                 ) {
                     Text(
-                        text = "REQUERIDA",
+                        text = stringResource(R.string.feature_publication_details_required_label),
                         modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp),
                         color = Color(0xFFEF5350),
-                        fontSize = 10.sp,
-                        fontWeight = FontWeight.Bold
+                        style = TextTokens.counterLabel()
                     )
                 }
             }
@@ -459,8 +458,8 @@ fun RatingModal(
 
             Spacer(modifier = Modifier.height(8.dp))
             Text(
-                text = "Toca para calificar",
-                fontSize = 14.sp,
+                text = stringResource(R.string.feature_publication_details_review_rating_note),
+                style = TextTokens.helperText(),
                 color = Color.LightGray
             )
 
@@ -473,9 +472,8 @@ fun RatingModal(
             ) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Text(
-                        text = "COMENTARIO",
-                        style = MaterialTheme.typography.labelLarge,
-                        fontWeight = FontWeight.Bold
+                        text = stringResource(R.string.feature_publication_details_comment_label),
+                        style = TextTokens.chipLabel()
                     )
                     Spacer(modifier = Modifier.width(8.dp))
                     Surface(
@@ -483,17 +481,16 @@ fun RatingModal(
                         shape = RoundedCornerShape(4.dp)
                     ) {
                         Text(
-                            text = "OPCIONAL",
+                            text = stringResource(R.string.feature_publication_details_comment_optional_label),
                             modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp),
                             color = Color.Gray,
-                            fontSize = 10.sp,
-                            fontWeight = FontWeight.Bold
+                            style = TextTokens.counterLabel()
                         )
                     }
                 }
                 Text(
                     text = "${comment.length}/$maxChars",
-                    fontSize = 12.sp,
+                    style = TextTokens.helperText(),
                     color = Color.LightGray
                 )
             }
@@ -503,7 +500,12 @@ fun RatingModal(
             OutlinedTextField(
                 value = comment,
                 onValueChange = { if (it.length <= maxChars) comment = it },
-                placeholder = { Text("Cuéntanos más sobre tu experiencia...", color = Color.LightGray) },
+                placeholder = {
+                    Text(
+                        stringResource(R.string.feature_publication_details_comment_placeholder),
+                        color = Color.LightGray
+                    )
+                },
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(120.dp),
@@ -519,7 +521,7 @@ fun RatingModal(
             Spacer(modifier = Modifier.height(32.dp))
 
             GeneralButton(
-                text = "Publicar reseña",
+                text = stringResource(R.string.feature_publication_details_publish_review),
                 onClick = {
                     onSubmit(rating.toFloat(), comment)
                     onDismiss()
@@ -529,7 +531,11 @@ fun RatingModal(
             )
 
             TextButton(onClick = onDismiss) {
-                Text("Cancelar", fontWeight = FontWeight.Bold, color = PrincipalBlue)
+                Text(
+                    text = stringResource(R.string.feature_publication_details_cancel),
+                    style = TextTokens.buttonLabel(),
+                    color = PrincipalBlue
+                )
             }
         }
     }
@@ -596,9 +602,8 @@ fun InappropriateContentModal(onDismiss: () -> Unit, onReplace: () -> Unit) {
                     Spacer(modifier = Modifier.height(24.dp))
 
                     Text(
-                        text = "¡Se ha detectado contenido inapropiado!",
-                        style = MaterialTheme.typography.headlineSmall,
-                        fontWeight = FontWeight.Bold,
+                        text = stringResource(R.string.feature_publication_details_inappropriate_title),
+                        style = TextTokens.sectionTitle(),
                         textAlign = TextAlign.Center,
                         lineHeight = 28.sp
                     )
@@ -606,8 +611,8 @@ fun InappropriateContentModal(onDismiss: () -> Unit, onReplace: () -> Unit) {
                     Spacer(modifier = Modifier.height(16.dp))
 
                     Text(
-                        text = "El comentario que estas realizando contiene lenguaje obseno. Si quieres crear un comentario puedes reemplazarlo por:",
-                        style = MaterialTheme.typography.bodyMedium,
+                        text = stringResource(R.string.feature_publication_details_inappropriate_message),
+                        style = TextTokens.cardSubtitle(),
                         color = Color.Gray,
                         textAlign = TextAlign.Center
                     )
@@ -622,10 +627,10 @@ fun InappropriateContentModal(onDismiss: () -> Unit, onReplace: () -> Unit) {
                         modifier = Modifier.fillMaxWidth()
                     ) {
                         Text(
-                            text = "El lugar no fue de mi agrado, mi expeciencia fue mala.",
+                            text = "El lugar no fue de mi agrado, mi experiencia fue mala.",
                             modifier = Modifier.padding(16.dp),
                             color = Color.Gray,
-                            fontSize = 14.sp
+                            style = TextTokens.inputText()
                         )
                     }
 
@@ -641,7 +646,11 @@ fun InappropriateContentModal(onDismiss: () -> Unit, onReplace: () -> Unit) {
                             shape = RoundedCornerShape(24.dp),
                             border = BorderStroke(1.dp, PrincipalBlue)
                         ) {
-                            Text("Cancelar", color = PrincipalBlue, fontWeight = FontWeight.Bold)
+                            Text(
+                                text = stringResource(R.string.feature_publication_details_cancel),
+                                style = TextTokens.buttonLabel(),
+                                color = PrincipalBlue
+                            )
                         }
 
                         Button(
@@ -650,7 +659,11 @@ fun InappropriateContentModal(onDismiss: () -> Unit, onReplace: () -> Unit) {
                             shape = RoundedCornerShape(24.dp),
                             colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFB3261E))
                         ) {
-                            Text("Reemplazar", color = Color.White, fontWeight = FontWeight.Bold)
+                            Text(
+                                text = stringResource(R.string.feature_publication_details_replace),
+                                style = TextTokens.buttonLabel(),
+                                color = Color.White
+                            )
                         }
                     }
                 }
@@ -766,8 +779,8 @@ fun ReportModal(onDismiss: () -> Unit) {
                         Icon(Icons.Outlined.VerifiedUser, contentDescription = null, tint = Color.LightGray, modifier = Modifier.size(18.dp))
                         Spacer(modifier = Modifier.width(12.dp))
                         Text(
-                            text = "Tu reporte será revisado por el equipo de moderación.",
-                            fontSize = 12.sp,
+                                text = stringResource(R.string.feature_publication_details_report_reviewed_by_moderation),
+                                style = TextTokens.helperText(),
                             color = Color.Gray,
                             lineHeight = 16.sp
                         )
@@ -777,14 +790,18 @@ fun ReportModal(onDismiss: () -> Unit) {
                 Spacer(modifier = Modifier.height(24.dp))
 
                 GeneralButton(
-                    text = "Enviar reporte",
+                    text = stringResource(R.string.feature_publication_details_send_report),
                     onClick = { /* Enviar */ },
                     icon = Icons.AutoMirrored.Filled.Send,
                     enabled = selectedOption.isNotEmpty()
                 )
 
                 TextButton(onClick = onDismiss) {
-                    Text("Cancelar", fontWeight = FontWeight.Bold, color = PrincipalBlue)
+                    Text(
+                        text = stringResource(R.string.feature_publication_details_cancel),
+                        style = TextTokens.buttonLabel(),
+                        color = PrincipalBlue
+                    )
                 }
             }
         }
@@ -816,13 +833,12 @@ fun ReportOptionItem(option: ReportOptionData, isSelected: Boolean, onClick: () 
             Column(modifier = Modifier.weight(1f)) {
                 Text(
                     text = option.title,
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 15.sp,
+                    style = TextTokens.cardTitle(),
                     color = if (isSelected) PrincipalBlue else Color.Black
                 )
                 Text(
                     text = option.subtitle,
-                    fontSize = 12.sp,
+                    style = TextTokens.helperText(),
                     color = Color.Gray,
                     lineHeight = 14.sp
                 )
@@ -857,8 +873,7 @@ fun ReviewsSection(
         ) {
             Text(
                 text = "Reseñas",
-                style = MaterialTheme.typography.headlineSmall,
-                fontWeight = FontWeight.Bold,
+                style = TextTokens.sectionTitle(),
                 color = Color.Black
             )
             Spacer(modifier = Modifier.width(12.dp))
@@ -880,8 +895,7 @@ fun ReviewsSection(
                     Spacer(modifier = Modifier.width(4.dp))
                     Text(
                         text = generalRating.toString(),
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 16.sp,
+                        style = TextTokens.cardTitle(),
                         color = Color.Black
                     )
                 }
@@ -899,7 +913,7 @@ fun ReviewsSection(
 
         GeneralButton(
             onClick = { onSeeAllReviewsClick(publicationId) },
-            text = "Ver todas las reseñas"
+            text = stringResource(R.string.feature_publication_details_see_all_reviews)
         )
     }
 }
@@ -923,8 +937,7 @@ fun ReviewCard(review: Review) {
             ) {
                 Text(
                     text = review.username,
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 18.sp,
+                    style = TextTokens.sectionAction(),
                     color = Color.Black
                 )
                 Row {
@@ -942,7 +955,7 @@ fun ReviewCard(review: Review) {
             Text(
                 text = review.comment,
                 color = DarkGray,
-                fontSize = 16.sp,
+                style = TextTokens.inputText(),
                 lineHeight = 22.sp
             )
         }
@@ -983,7 +996,10 @@ fun BottomActionsBar(
                 ) {
                     Icon(Icons.Outlined.Delete, contentDescription = null)
                     Spacer(modifier = Modifier.width(8.dp))
-                    Text("Eliminar publicación", fontWeight = FontWeight.Bold, fontSize = 16.sp)
+                    Text(
+                        text = stringResource(R.string.feature_publication_details_delete_publication),
+                        style = TextTokens.buttonLabel()
+                    )
                 }
             } else {
                 // Botón Me interesa (con lógica de estado)
@@ -1006,8 +1022,7 @@ fun BottomActionsBar(
                     Spacer(modifier = Modifier.width(8.dp))
                     Text(
                         "Me interesa",
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 16.sp
+                        style = TextTokens.buttonLabel()
                     )
                 }
 
@@ -1025,8 +1040,7 @@ fun BottomActionsBar(
                     Spacer(modifier = Modifier.width(8.dp))
                     Text(
                         "Visitado",
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 16.sp
+                        style = TextTokens.buttonLabel()
                     )
                 }
             }

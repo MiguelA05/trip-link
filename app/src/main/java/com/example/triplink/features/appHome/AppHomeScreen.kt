@@ -28,6 +28,8 @@ import com.example.triplink.core.components.GeneralButton
 import com.example.triplink.R
 import com.example.triplink.core.components.common.AppTitle
 import com.example.triplink.core.components.LinkTextRow
+import com.example.triplink.ui.theme.AppTitleVariant
+import com.example.triplink.ui.theme.TextTokens
 
 
 @Composable
@@ -70,7 +72,7 @@ fun HomeScreen(
                 contentDescription = "Logo",
                 modifier = Modifier.width(300.dp).size(150.dp)
             )
-            AppTitle(fontSize = 40)
+            AppTitle(variant = AppTitleVariant.Hero)
             Column(
                 modifier = Modifier.padding(16.dp),
                 verticalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterVertically),
@@ -78,14 +80,12 @@ fun HomeScreen(
             ) {
                 Text(
                     text = "Encuentra lugares únicos,",
-                    fontSize = 24.sp,
-                    fontWeight = FontWeight.Medium,
+                    style = TextTokens.sectionTitle(),
                     color = Color.White
                 )
                 Text(
                     text = "conecta con tu comunidad",
-                    fontSize = 24.sp,
-                    fontWeight = FontWeight.Medium,
+                    style = TextTokens.sectionTitle(),
                     color = Color.White
                 )
             }

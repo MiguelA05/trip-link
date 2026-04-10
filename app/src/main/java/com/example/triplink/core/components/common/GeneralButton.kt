@@ -21,6 +21,7 @@ import com.example.triplink.ui.theme.PrincipalBlue
 import com.example.triplink.ui.theme.PrincipalBlueBlocked
 import com.example.triplink.ui.theme.PrincipalGray
 import com.example.triplink.ui.theme.PrincipalWhite
+import com.example.triplink.ui.theme.TextTokens
 
 @Composable
 fun GeneralButton(
@@ -43,9 +44,7 @@ fun GeneralButton(
         }
         Text(
             text = text,
-            style = MaterialTheme.typography.titleMedium.copy(
-                fontWeight = FontWeight.Bold
-            )
+            style = TextTokens.buttonLabel()
         )
     }
 

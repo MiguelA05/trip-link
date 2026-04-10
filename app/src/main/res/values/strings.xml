@@ -65,7 +65,7 @@
 
     <!-- COMPONENT: SearchBar -->
     <!-- resource: component_search_bar_placeholder -->
-    <string name="component_search_bar_placeholder">Search places...</string>
+    <string name="component_search_bar_placeholder">Search places…</string>
     <!-- resource: component_search_bar_search_content_description -->
     <string name="component_search_bar_search_content_description">Search</string>
     <!-- resource: component_search_bar_filters_content_description -->
@@ -83,7 +83,7 @@
     <!-- resource: component_explore_map_publication_card_rating -->
     <string name="component_explore_map_publication_card_rating">%1$s (%2$d)</string>
     <!-- resource: component_explore_map_publication_card_duration -->
-    <string name="component_explore_map_publication_card_duration">3-4 hrs</string>
+    <string name="component_explore_map_publication_card_duration">3–4 hrs</string>
     <!-- resource: component_explore_map_publication_card_open_full_publication -->
     <string name="component_explore_map_publication_card_open_full_publication">View full publication  ></string>
 
@@ -153,4 +153,166 @@
     <string name="component_status_tabs_pending">Pending</string>
     <!-- resource: component_status_tabs_rejected -->
     <string name="component_status_tabs_rejected">Rejected</string>
+
+    <!-- FEATURE: AccountEdit -->
+    <!-- resource: feature_account_edit_email_helper -->
+    <string name="feature_account_edit_email_helper">The email address cannot be changed for security reasons.</string>
+
+    <!-- FEATURE: PostCreation -->
+    <!-- resource: feature_post_creation_required_fields_warning -->
+    <string name="feature_post_creation_required_fields_warning">Required fields: Name, Category and map location are needed to publish.</string>
+    <!-- resource: feature_post_creation_required_fields_warning_prefix -->
+    <string name="feature_post_creation_required_fields_warning_prefix">Required fields:</string>
+    <!-- resource: feature_post_creation_required_fields_warning_body -->
+    <string name="feature_post_creation_required_fields_warning_body">Name, Category and map location are needed to publish.</string>
+
+    <!-- FEATURE: Filters -->
+    <!-- resource: feature_filters_title -->
+    <string name="feature_filters_title">Filters</string>
+    <!-- resource: feature_filters_categories -->
+    <string name="feature_filters_categories">Categories</string>
+    <!-- resource: feature_filters_location -->
+    <string name="feature_filters_location">Location</string>
+    <!-- resource: feature_filters_price_range -->
+    <string name="feature_filters_price_range">Price range</string>
+    <!-- resource: feature_filters_minimum_rating -->
+    <string name="feature_filters_minimum_rating">Minimum rating</string>
+
+    <!-- FEATURE: PublicationDetails -->
+    <!-- resource: feature_publication_details_rating_label -->
+    <string name="feature_publication_details_rating_label">RATING</string>
+    <!-- resource: feature_publication_details_required_label -->
+    <string name="feature_publication_details_required_label">REQUIRED</string>
+    <!-- resource: feature_publication_details_delete_publication -->
+    <string name="feature_publication_details_delete_publication">Delete publication</string>
+    <!-- resource: feature_publication_details_title -->
+    <string name="feature_publication_details_title">Publication details</string>
+    <!-- resource: feature_publication_details_description -->
+    <string name="feature_publication_details_description">Description</string>
+    <!-- resource: feature_publication_details_not_found -->
+    <string name="feature_publication_details_not_found">Publication not found</string>
+    <!-- resource: feature_publication_details_back -->
+    <string name="feature_publication_details_back">Back</string>
+    <!-- resource: feature_publication_details_rate_hint -->
+    <string name="feature_publication_details_rate_hint">Tap to rate</string>
+    <!-- resource: feature_publication_details_publish_review -->
+    <string name="feature_publication_details_publish_review">Publish review</string>
+    <!-- resource: feature_publication_details_cancel -->
+    <string name="feature_publication_details_cancel">Cancel</string>
+    <!-- resource: feature_publication_details_replace -->
+    <string name="feature_publication_details_replace">Replace</string>
+    <!-- resource: feature_publication_details_report_reviewed_by_moderation -->
+    <string name="feature_publication_details_report_reviewed_by_moderation">Your report will be reviewed by the moderation team.</string>
+    <!-- resource: feature_publication_details_send_report -->
+    <string name="feature_publication_details_send_report">Send report</string>
+    <!-- resource: feature_publication_details_comment_label -->
+    <string name="feature_publication_details_comment_label">COMMENT</string>
+    <!-- resource: feature_publication_details_comment_optional_label -->
+    <string name="feature_publication_details_comment_optional_label">OPTIONAL</string>
+    <!-- resource: feature_publication_details_comment_placeholder -->
+    <string name="feature_publication_details_comment_placeholder">Tell us more about your experience…</string>
+    <!-- resource: feature_publication_details_review_rating_note -->
+    <string name="feature_publication_details_review_rating_note">Tap to rate</string>
+    <!-- resource: feature_publication_details_reviews_title -->
+    <string name="feature_publication_details_reviews_title">Reviews</string>
+    <!-- resource: feature_publication_details_see_all_reviews -->
+    <string name="feature_publication_details_see_all_reviews">See all reviews</string>
+    <!-- resource: component_publication_weekly_schedule_title -->
+    <string name="component_publication_weekly_schedule_title">Schedule</string>
+    <!-- resource: component_publication_weekly_schedule_today -->
+    <string name="component_publication_weekly_schedule_today">Today</string>
+    <!-- resource: component_publication_location_title -->
+    <string name="component_publication_location_title">Location</string>
+    <!-- resource: component_publication_price_range_title -->
+    <string name="component_publication_price_range_title">Price range</string>
+    <!-- resource: component_publication_price_range_estimated -->
+    <string name="component_publication_price_range_estimated">Estimated price range</string>
+    <!-- resource: component_publication_price_range_free -->
+    <string name="component_publication_price_range_free">Free</string>
+    <!-- resource: component_publication_price_range_economic -->
+    <string name="component_publication_price_range_economic">Economical</string>
+    <!-- resource: component_publication_price_range_moderate -->
+    <string name="component_publication_price_range_moderate">Moderate</string>
+    <!-- resource: component_publication_price_range_expensive -->
+    <string name="component_publication_price_range_expensive">Expensive</string>
+    <!-- resource: component_publication_price_range_no_price -->
+    <string name="component_publication_price_range_no_price">No price</string>
+    <!-- resource: feature_post_creation_category_label -->
+    <string name="feature_post_creation_category_label">Category</string>
+    <!-- resource: feature_post_creation_category_placeholder -->
+    <string name="feature_post_creation_category_placeholder">Select category</string>
+    <!-- resource: feature_post_creation_time_separator -->
+    <string name="feature_post_creation_time_separator">–</string>
+    <!-- resource: feature_moderation_reject_action -->
+    <string name="feature_moderation_reject_action">Reject</string>
+    <!-- resource: feature_moderation_approve_action -->
+    <string name="feature_moderation_approve_action">Approve</string>
+    <!-- resource: feature_post_creation_title -->
+    <string name="feature_post_creation_title">New publication</string>
+    <!-- resource: feature_post_creation_name_label -->
+    <string name="feature_post_creation_name_label">Place name</string>
+    <!-- resource: feature_post_creation_name_placeholder -->
+    <string name="feature_post_creation_name_placeholder">Ex. Valle del Cocora</string>
+    <!-- resource: feature_post_creation_description_label -->
+    <string name="feature_post_creation_description_label">Description</string>
+    <!-- resource: feature_post_creation_description_placeholder -->
+    <string name="feature_post_creation_description_placeholder">Describe this place, what makes it special…</string>
+    <!-- resource: feature_post_creation_photos_label -->
+    <string name="feature_post_creation_photos_label">Photos</string>
+    <!-- resource: feature_post_creation_photos_helper -->
+    <string name="feature_post_creation_photos_helper">Add up to 5 photos to showcase your publication</string>
+    <!-- resource: feature_post_creation_photos_add_content_description -->
+    <string name="feature_post_creation_photos_add_content_description">Add photo</string>
+    <!-- resource: feature_moderation_publication_details_title -->
+    <string name="feature_moderation_publication_details_title">Publication details</string>
+    <!-- resource: feature_moderation_publication_details_already_reviewed -->
+    <string name="feature_moderation_publication_details_already_reviewed">This publication has already been reviewed</string>
+    <!-- resource: feature_moderation_publication_details_reject_action -->
+    <string name="feature_moderation_publication_details_reject_action">Reject</string>
+    <!-- resource: feature_moderation_publication_details_approve_action -->
+    <string name="feature_moderation_publication_details_approve_action">Approve</string>
+    <!-- resource: feature_post_creation_location_label -->
+    <string name="feature_post_creation_location_label">Exact location</string>
+    <!-- resource: feature_post_creation_location_helper -->
+    <string name="feature_post_creation_location_helper">Tap the map to mark the exact location of the place</string>
+    <!-- resource: feature_post_creation_location_city -->
+    <string name="feature_post_creation_location_city">Armenia, Quindío</string>
+    <!-- resource: feature_post_creation_location_mark_action -->
+    <string name="feature_post_creation_location_mark_action">Tap to mark</string>
+    <!-- resource: feature_post_creation_location_address_placeholder -->
+    <string name="feature_post_creation_location_address_placeholder">The address will appear here</string>
+    <!-- resource: feature_post_creation_schedule_title -->
+    <string name="feature_post_creation_schedule_title">Opening hours</string>
+    <!-- resource: feature_post_creation_open_every_day -->
+    <string name="feature_post_creation_open_every_day">Open every day</string>
+    <!-- resource: feature_post_creation_day_disabled_snackbar -->
+    <string name="feature_post_creation_day_disabled_snackbar">Enable the day switch to edit this schedule</string>
+    <!-- resource: feature_post_creation_success_title -->
+    <string name="feature_post_creation_success_title">Publication sent!</string>
+    <!-- resource: feature_post_creation_success_subtitle -->
+    <string name="feature_post_creation_success_subtitle">It is now in the moderation team’s hands</string>
+    <!-- resource: feature_post_creation_process_title -->
+    <string name="feature_post_creation_process_title">PUBLICATION PROCESS</string>
+    <!-- resource: feature_post_creation_step_sent_title -->
+    <string name="feature_post_creation_step_sent_title">Publication sent</string>
+    <!-- resource: feature_post_creation_step_sent_subtitle -->
+    <string name="feature_post_creation_step_sent_subtitle">Received successfully</string>
+    <!-- resource: feature_post_creation_step_review_title -->
+    <string name="feature_post_creation_step_review_title">Under review</string>
+    <!-- resource: feature_post_creation_step_review_subtitle -->
+    <string name="feature_post_creation_step_review_subtitle">Moderators will review it in ~24 h</string>
+    <!-- resource: feature_post_creation_step_published_title -->
+    <string name="feature_post_creation_step_published_title">Published</string>
+    <!-- resource: feature_post_creation_step_published_subtitle -->
+    <string name="feature_post_creation_step_published_subtitle">Visible to the community</string>
+    <!-- resource: feature_post_creation_accept_action -->
+    <string name="feature_post_creation_accept_action">Accept</string>
+    <!-- resource: feature_post_creation_view_publications_action -->
+    <string name="feature_post_creation_view_publications_action">View my publications</string>
+    <!-- resource: feature_post_creation_time_placeholder -->
+    <string name="feature_post_creation_time_placeholder">00:00</string>
+    <!-- resource: feature_publication_details_inappropriate_title -->
+    <string name="feature_publication_details_inappropriate_title">Inappropriate content detected</string>
+    <!-- resource: feature_publication_details_inappropriate_message -->
+    <string name="feature_publication_details_inappropriate_message">The comment you are writing contains obscene language. If you want to create a comment, you can replace it with:</string>
 </resources>

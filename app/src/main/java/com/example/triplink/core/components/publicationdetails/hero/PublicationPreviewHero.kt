@@ -19,10 +19,10 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
 import coil3.request.crossfade
+import com.example.triplink.ui.theme.TextTokens
 
 @Composable
 fun PublicationPreviewHero(
@@ -74,15 +74,13 @@ fun PublicationPreviewHero(
             androidx.compose.material3.Text(
                 text = categoryLabel.uppercase(),
                 color = Color(0xFF3CE36D),
-                fontWeight = FontWeight.Bold,
-                fontSize = 14.sp
+                style = TextTokens.chipLabel()
             )
             androidx.compose.material3.Text(
                 text = title,
                 color = Color.White,
-                fontWeight = FontWeight.Bold,
-                fontSize = 28.sp,
-                lineHeight = 30.sp
+                style = TextTokens.heroTitle(),
+                lineHeight = TextTokens.heroTitle().lineHeight
             )
         }
     }

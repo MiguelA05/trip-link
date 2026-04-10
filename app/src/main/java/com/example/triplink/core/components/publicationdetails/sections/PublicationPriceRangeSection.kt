@@ -8,25 +8,30 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
+import androidx.compose.ui.res.stringResource
+import com.example.triplink.R
 import com.example.triplink.ui.theme.PrincipalBlue
 import com.example.triplink.ui.theme.PrincipalGray
+import com.example.triplink.ui.theme.TextTokens
 
 @Composable
 fun PublicationPriceRangeSection(
     selectedLevel: String,
     modifier: Modifier = Modifier
 ) {
-    val levels = listOf("Gratuito", "Económico", "Moderado", "Costoso")
+    val levels = listOf(
+        stringResource(R.string.component_publication_price_range_free),
+        stringResource(R.string.component_publication_price_range_economic),
+        stringResource(R.string.component_publication_price_range_moderate),
+        stringResource(R.string.component_publication_price_range_expensive)
+    )
     val selectedIndex = levels.indexOf(selectedLevel).coerceAtLeast(0)
 
     Column(
@@ -36,9 +41,8 @@ fun PublicationPriceRangeSection(
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
         Text(
-            text = "Rango de precios",
-            style = MaterialTheme.typography.titleLarge,
-            fontWeight = FontWeight.Bold,
+            text = stringResource(R.string.component_publication_price_range_title),
+            style = TextTokens.sectionTitle(),
             color = Color(0xFF121826)
         )
 
@@ -64,14 +68,12 @@ fun PublicationPriceRangeSection(
                     Text(
                         text = selectedLevel,
                         color = PrincipalBlue,
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 15.sp
+                        style = TextTokens.cardTitle()
                     )
                     Text(
-                        text = "Rango de precio\nestimado",
+                        text = stringResource(R.string.component_publication_price_range_estimated),
                         color = PrincipalGray,
-                        fontSize = 12.sp,
-                        lineHeight = 14.sp
+                        style = TextTokens.helperText()
                     )
                 }
             }
@@ -90,8 +92,7 @@ private fun PriceTag(text: String, isSelected: Boolean) {
             Text(
                 text = text,
                 color = if (isSelected) Color.White else PrincipalGray,
-                fontWeight = FontWeight.Bold,
-                fontSize = 18.sp
+                style = TextTokens.cardTitle()
             )
         }
     }

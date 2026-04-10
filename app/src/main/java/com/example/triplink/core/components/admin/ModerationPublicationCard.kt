@@ -49,6 +49,7 @@ import com.example.triplink.features.admin.moderation.ModerationPublicationCardU
 import com.example.triplink.ui.theme.PrincipalBlue
 import com.example.triplink.ui.theme.PrincipalGreen
 import com.example.triplink.ui.theme.PrincipalRed
+import com.example.triplink.ui.theme.TextColors
 
 @Composable
 fun ModerationPublicationCard(
@@ -218,7 +219,7 @@ fun ModerationPublicationCard(
                         text = publication.title,
                         style = MaterialTheme.typography.titleLarge,
                         fontWeight = FontWeight.Bold,
-                        color = Color(0xFF1E2430)
+                        color = TextColors.Primary
                     )
 
                     val acceptedReportsText = pluralStringResource(
@@ -271,7 +272,7 @@ fun ModerationPublicationCard(
                         Text(
                             text = publication.cityLabel,
                             style = MaterialTheme.typography.bodyLarge,
-                            color = Color(0xFF6A7688)
+                            color = TextColors.Secondary
                         )
                     }
 
@@ -314,7 +315,7 @@ fun ModerationPublicationCard(
                             Text(
                                 text = publication.scheduleLabel,
                                 style = MaterialTheme.typography.bodyMedium,
-                                color = Color(0xFF677487),
+                                color = TextColors.Secondary,
                                 fontWeight = FontWeight.Medium
                             )
                         }
@@ -408,7 +409,7 @@ fun ModerationPublicationCard(
                         Text(
                             text = resolvedSwipeHintText,
                             style = MaterialTheme.typography.labelSmall,
-                            color = Color(0xFFB0B8C5),
+                            color = TextColors.Muted,
                             modifier = Modifier.align(Alignment.CenterHorizontally)
                         )
                     }

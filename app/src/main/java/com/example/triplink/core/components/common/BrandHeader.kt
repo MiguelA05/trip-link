@@ -15,7 +15,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.NotificationsNone
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -25,6 +24,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.triplink.R
+import com.example.triplink.ui.theme.AppTitleVariant
+import com.example.triplink.ui.theme.TextTokens
 
 @Composable
 fun BrandHeader(
@@ -49,10 +50,10 @@ fun BrandHeader(
             )
             Spacer(modifier = Modifier.width(8.dp))
             Column {
-                AppTitle(fontSize = 26)
+                AppTitle(variant = AppTitleVariant.Compact)
                 Text(
                     text = locationText,
-                    style = MaterialTheme.typography.bodySmall,
+                    style = TextTokens.cardSubtitle(),
                     color = Color.Gray
                 )
             }

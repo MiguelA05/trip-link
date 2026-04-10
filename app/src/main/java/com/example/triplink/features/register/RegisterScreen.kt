@@ -20,14 +20,17 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.example.triplink.core.components.common.AppTitle
+import com.example.triplink.ui.theme.AppTitleVariant
 
 import com.example.triplink.core.components.FormField
 import com.example.triplink.core.components.GeneralButton
 import com.example.triplink.core.components.LinkTextRow
 import com.example.triplink.core.utils.RequestResult
+import com.example.triplink.ui.theme.PrincipalBlue
+import com.example.triplink.ui.theme.TextColors
+import com.example.triplink.ui.theme.TextTokens
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -62,8 +65,7 @@ fun RegisterScreen(
                 title = {
                     Text(
                         text = "Registrarse",
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 20.sp
+                        style = TextTokens.screenTitle()
                     )
                 },
                 navigationIcon = {
@@ -71,7 +73,7 @@ fun RegisterScreen(
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                             contentDescription = "Back",
-                            tint = Color(0xFF2563EB)
+                            tint = PrincipalBlue
                         )
                     }
                 },
@@ -92,19 +94,19 @@ fun RegisterScreen(
         ) {
             Spacer(modifier = Modifier.height(20.dp))
 
-            AppTitle(fontSize = 40, modifier = Modifier.padding(bottom = 0.dp))
+            AppTitle(variant = AppTitleVariant.Hero, modifier = Modifier.padding(bottom = 0.dp))
 
             Text(
                 text = "Crear Cuenta",
-                fontSize = 22.sp,
+                style = MaterialTheme.typography.headlineSmall,
                 fontWeight = FontWeight.Bold,
-                color = Color.Black
+                color = TextColors.Primary
             )
 
             Text(
                 text = "Encuentra lugares únicos, conecta con tu comunidad.",
-                fontSize = 14.sp,
-                color = Color.Gray,
+                style = MaterialTheme.typography.bodyMedium,
+                color = TextColors.Secondary,
                 textAlign = TextAlign.Center,
                 modifier = Modifier.padding(top = 8.dp, bottom = 24.dp)
             )
@@ -150,7 +152,7 @@ fun RegisterScreen(
             Text(
                 text = "Ubicación de Residencia",
                 fontWeight = FontWeight.SemiBold,
-                fontSize = 18.sp,
+                style = MaterialTheme.typography.titleMedium,
                 modifier = Modifier.fillMaxWidth(),
                 textAlign = TextAlign.Start
             )
@@ -187,12 +189,12 @@ fun RegisterScreen(
                 Checkbox(
                     checked = registerViewModel.addExactLocation,
                     onCheckedChange = { registerViewModel.addExactLocation = it },
-                    colors = CheckboxDefaults.colors(checkedColor = Color(0xFF2563EB))
+                    colors = CheckboxDefaults.colors(checkedColor = PrincipalBlue)
                 )
                 Text(
                     text = "¿Desea añadir ubicacion exacta?",
-                    fontSize = 14.sp,
-                    color = Color.Gray
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = TextColors.Secondary
                 )
             }
 
@@ -227,7 +229,7 @@ fun RegisterScreen(
                         Text(
                             text = result.message,
                             color = Color(0xFF4CAF50),
-                            fontSize = 14.sp,
+                            style = MaterialTheme.typography.bodyMedium,
                             modifier = Modifier.padding(bottom = 8.dp)
                         )
                     }
@@ -235,7 +237,7 @@ fun RegisterScreen(
                         Text(
                             text = result.errorMessage,
                             color = Color.Red,
-                            fontSize = 14.sp,
+                            style = MaterialTheme.typography.bodyMedium,
                             modifier = Modifier.padding(bottom = 8.dp)
                         )
                     }
@@ -283,14 +285,14 @@ fun SelectableDropdown(
         ) {
             Text(
                 text = selectedValue.ifEmpty { label },
-                color = if (selectedValue.isEmpty()) Color(0xFF9E9E9E) else Color.Black,
-                fontSize = 14.sp,
+                color = if (selectedValue.isEmpty()) TextColors.Muted else TextColors.Primary,
+                style = MaterialTheme.typography.bodyMedium,
                 maxLines = 1
             )
             Icon(
                 imageVector = Icons.Default.KeyboardArrowDown,
                 contentDescription = null,
-                tint = Color(0xFF2563EB),
+                tint = PrincipalBlue,
                 modifier = Modifier.size(20.dp)
             )
         }

@@ -32,6 +32,8 @@ import com.example.triplink.core.components.GeneralTopBar
 import com.example.triplink.core.utils.RequestResult
 import com.example.triplink.ui.theme.PrincipalBlue
 import com.example.triplink.ui.theme.PrincipalRed
+import com.example.triplink.ui.theme.TextColors
+import com.example.triplink.ui.theme.TextTokens
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -106,7 +108,7 @@ fun AccountEditScreen(
             ) {
                 Text(
                     text = accountEditViewModel.getUserInitials(),
-                    fontSize = 40.sp,
+                    style = MaterialTheme.typography.displaySmall,
                     fontWeight = FontWeight.Bold,
                     color = Color(0xFF7B9BDB),
                     textAlign = TextAlign.Center
@@ -193,8 +195,8 @@ fun AccountEditScreen(
                     )
                     Text(
                         text = "¿Desea añadir ubicación exacta?",
-                        fontSize = 14.sp,
-                        color = Color.Gray
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = TextColors.Secondary
                     )
                 }
 
@@ -233,8 +235,8 @@ fun AccountEditScreen(
                 Text(
                     text = "Correo electrónico",
                     fontWeight = FontWeight.SemiBold,
-                    fontSize = 16.sp,
-                    color = Color(0xFF5F6166),
+                    style = MaterialTheme.typography.titleMedium,
+                    color = TextColors.Secondary,
                     modifier = Modifier.fillMaxWidth()
                 )
 
@@ -260,7 +262,10 @@ fun AccountEditScreen(
                             tint = Color(0xFFB1B4C1)
                         )
                     },
-                    textStyle = LocalTextStyle.current.copy(color = Color(0xFFA0A3B1), fontSize = 18.sp),
+                    textStyle = LocalTextStyle.current.copy(
+                        color = Color(0xFFA0A3B1),
+                        fontSize = TextTokens.inputText().fontSize
+                    ),
                     shape = RoundedCornerShape(18.dp),
                     colors = OutlinedTextFieldDefaults.colors(
                         focusedContainerColor = Color(0xFFEEF0F5),
@@ -278,7 +283,7 @@ fun AccountEditScreen(
 
                 Text(
                     text = "El correo electrónico no se puede modificar por seguridad.",
-                    fontSize = 15.sp,
+                    style = MaterialTheme.typography.bodyMedium,
                     color = Color(0xFF9C9EA5),
                     modifier = Modifier.fillMaxWidth(),
                     textAlign = TextAlign.Start
@@ -289,8 +294,8 @@ fun AccountEditScreen(
                 Text(
                     text = "Contraseña",
                     fontWeight = FontWeight.SemiBold,
-                    fontSize = 16.sp,
-                    color = Color(0xFF5F6166),
+                    style = MaterialTheme.typography.titleMedium,
+                    color = TextColors.Secondary,
                     modifier = Modifier.fillMaxWidth()
                 )
 
@@ -313,8 +318,7 @@ fun AccountEditScreen(
                 ) {
                     Text(
                         text = "Cambiar contraseña",
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 33.sp * 0.5f
+                        style = TextTokens.buttonLabel()
                     )
                 }
 
@@ -322,7 +326,7 @@ fun AccountEditScreen(
 
                 Text(
                     text = "La contraseña se gestiona mediante el proceso de recuperación.",
-                    fontSize = 15.sp,
+                    style = MaterialTheme.typography.bodyMedium,
                     color = Color(0xFF9C9EA5),
                     modifier = Modifier.fillMaxWidth(),
                     textAlign = TextAlign.Start
@@ -360,7 +364,7 @@ fun AccountEditScreen(
             ) {
                 Text(
                     text = "Eliminar cuenta",
-                    fontSize = 16.sp,
+                    style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Medium
                 )
             }
@@ -404,7 +408,7 @@ private fun AccountSectionContainer(
             Text(
                 text = title,
                 fontWeight = FontWeight.SemiBold,
-                fontSize = 14.sp,
+                style = MaterialTheme.typography.labelLarge,
                 color = PrincipalBlue,
                 modifier = Modifier.fillMaxWidth(),
                 textAlign = TextAlign.Start
@@ -440,7 +444,7 @@ fun SelectableDropdown(
             Text(
                 text = selectedValue.ifEmpty { label },
                 color = if (selectedValue.isEmpty()) Color(0xFF9E9E9E) else Color.Black,
-                fontSize = 14.sp,
+                style = TextTokens.inputText(),
                 maxLines = 1
             )
             Icon(

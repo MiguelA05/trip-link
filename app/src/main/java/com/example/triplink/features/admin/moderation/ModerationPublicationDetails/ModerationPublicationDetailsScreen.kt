@@ -30,8 +30,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import com.example.triplink.R
 import com.example.triplink.core.components.ApprovePublicationDialog
 import com.example.triplink.core.components.GeneralTopBar
 import com.example.triplink.core.components.RejectPublicationDialog
@@ -66,7 +68,7 @@ fun ModerationPublicationDetailsScreen(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
-                text = "Publicación no encontrada",
+                text = stringResource(R.string.feature_publication_details_not_found),
                 style = MaterialTheme.typography.headlineSmall,
                 fontWeight = FontWeight.Bold,
                 color = Color(0xFF1E2430)
@@ -86,7 +88,7 @@ fun ModerationPublicationDetailsScreen(
             .background(Color(0xFFF4F5F7)),
         topBar = {
             GeneralTopBar(
-                title = "Detalle del Lugar",
+                title = stringResource(R.string.feature_moderation_publication_details_title),
                 onBack = onBackClick
             )
         }
@@ -113,7 +115,7 @@ fun ModerationPublicationDetailsScreen(
 
                 item {
                     PublicationTextSection(
-                        title = "Descripción",
+                        title = stringResource(R.string.feature_publication_details_description),
                         body = publication.pointOfInterest.informacion
                     )
                 }
@@ -122,13 +124,13 @@ fun ModerationPublicationDetailsScreen(
                     PublicationPriceRangeSection(
                         selectedLevel = publication.pointOfInterest.rangoPrecios?.let {
                             when (it.name) {
-                                "GRATUITO" -> "Gratuito"
-                                "ECONOMICO" -> "Económico"
-                                "MODERADO" -> "Moderado"
-                                "COSTOSO" -> "Costoso"
-                                else -> "Sin precio"
+                                "GRATUITO" -> stringResource(R.string.component_publication_price_range_free)
+                                "ECONOMICO" -> stringResource(R.string.component_publication_price_range_economic)
+                                "MODERADO" -> stringResource(R.string.component_publication_price_range_moderate)
+                                "COSTOSO" -> stringResource(R.string.component_publication_price_range_expensive)
+                                else -> stringResource(R.string.component_publication_price_range_no_price)
                             }
-                        } ?: "Sin precio"
+                        } ?: stringResource(R.string.component_publication_price_range_no_price)
                     )
                 }
 
@@ -164,7 +166,7 @@ fun ModerationPublicationDetailsScreen(
                 ) {
                     if (!interactionEnabled) {
                         Text(
-                            text = "Esta publicación ya fue revisada",
+                            text = stringResource(R.string.feature_moderation_publication_details_already_reviewed),
                             style = MaterialTheme.typography.bodyMedium,
                             color = Color(0xFF7C889B),
                             fontWeight = FontWeight.SemiBold
@@ -188,7 +190,10 @@ fun ModerationPublicationDetailsScreen(
                                 disabledContentColor = PrincipalRed.copy(alpha = 0.45f)
                             )
                         ) {
-                            Text("Rechazar", fontWeight = FontWeight.Bold)
+                            Text(
+                                text = stringResource(R.string.feature_moderation_publication_details_reject_action),
+                                fontWeight = FontWeight.Bold
+                            )
                         }
 
                         Button(
@@ -203,7 +208,11 @@ fun ModerationPublicationDetailsScreen(
                                 disabledContainerColor = PrincipalGreen.copy(alpha = 0.35f)
                             )
                         ) {
-                            Text("Aprobar", color = Color.White, fontWeight = FontWeight.Bold)
+                            Text(
+                                text = stringResource(R.string.feature_moderation_publication_details_approve_action),
+                                color = Color.White,
+                                fontWeight = FontWeight.Bold
+                            )
                         }
                     }
                 }
@@ -214,7 +223,9 @@ fun ModerationPublicationDetailsScreen(
     if (showApproveDialog) {
         ApprovePublicationDialog(
             publicationTitle = publication.pointOfInterest.titulo,
-            onDismiss = { showApproveDialog = false },
+            onDismiss = {
+                showApproveDialog = false
+            },
             onConfirm = {
                 viewModel.applyDecision(publication.id, DecisionModerador.APROBADA)
                 onBackClick()
@@ -226,8 +237,12 @@ fun ModerationPublicationDetailsScreen(
         RejectPublicationDialog(
             publicationTitle = publication.pointOfInterest.titulo,
             reason = rejectionReason,
-            onReasonChange = { rejectionReason = it },
-            onDismiss = { showRejectDialog = false },
+            onReasonChange = {
+                rejectionReason = it
+            },
+            onDismiss = {
+                showRejectDialog = false
+            },
             onConfirm = {
                 if (rejectionReason.isBlank()) return@RejectPublicationDialog
                 viewModel.applyDecision(

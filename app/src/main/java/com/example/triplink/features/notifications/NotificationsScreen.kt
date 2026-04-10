@@ -17,7 +17,6 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -26,6 +25,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.example.triplink.core.components.GeneralTopBar
 import com.example.triplink.ui.theme.*
+import com.example.triplink.ui.theme.TextTokens
 
 
 
@@ -191,8 +191,7 @@ fun NotificationCard(
                 ) {
                     Text(
                         text = notification.title,
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 16.sp,
+                        style = TextTokens.cardTitle(),
                         color = Color.Black
                     )
                     // Punto azul de no leído
@@ -207,16 +206,15 @@ fun NotificationCard(
 
                 Text(
                     text = notification.description,
-                    style = MaterialTheme.typography.bodyMedium,
+                    style = TextTokens.cardSubtitle(),
                     color = DarkGray,
-                    lineHeight = 18.sp
                 )
 
                 Spacer(modifier = Modifier.height(8.dp))
 
                 Text(
                     text = notification.time,
-                    fontSize = 12.sp,
+                    style = TextTokens.helperText(),
                     color = PrincipalGray
                 )
             }

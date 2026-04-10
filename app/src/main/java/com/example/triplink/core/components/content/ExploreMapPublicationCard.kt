@@ -36,6 +36,8 @@ import coil3.request.crossfade
 import com.example.triplink.R
 import com.example.triplink.domain.model.PuntoInteres
 import com.example.triplink.ui.theme.PrincipalOrange
+import com.example.triplink.ui.theme.TextColors
+import com.example.triplink.ui.theme.TextTokens
 
 @Composable
 fun ExploreMapPublicationCard(
@@ -78,9 +80,8 @@ fun ExploreMapPublicationCard(
                     Text(
                         text = publication.categoria.name,
                         modifier = Modifier.padding(horizontal = 10.dp, vertical = 5.dp),
-                        style = MaterialTheme.typography.labelSmall,
+                        style = TextTokens.chipLabel(),
                         color = Color(0xFF3B6E3E),
-                        fontWeight = FontWeight.SemiBold
                     )
                 }
 
@@ -104,9 +105,8 @@ fun ExploreMapPublicationCard(
             ) {
                 Text(
                     text = publication.titulo,
-                    style = MaterialTheme.typography.titleLarge,
-                    fontWeight = FontWeight.Bold,
-                    color = Color(0xFF1B2430)
+                    style = TextTokens.cardTitle(),
+                    color = TextColors.Primary
                 )
 
                 Surface(
@@ -130,9 +130,8 @@ fun ExploreMapPublicationCard(
                                 ratingLabel,
                                 reviewCount
                             ),
-                            style = MaterialTheme.typography.labelLarge,
-                            fontWeight = FontWeight.Bold,
-                            color = Color(0xFF5B4A1A)
+                            style = TextTokens.chipLabel(),
+                            color = TextColors.Primary
                         )
                     }
                 }
@@ -150,8 +149,8 @@ fun ExploreMapPublicationCard(
                 )
                 Text(
                     text = publication.ubicacion.ciudad,
-                    color = Color(0xFF9BA5B3),
-                    style = MaterialTheme.typography.bodySmall
+                    color = TextColors.Secondary,
+                    style = TextTokens.cardSubtitle()
                 )
             }
 
@@ -168,16 +167,15 @@ fun ExploreMapPublicationCard(
                     )
                     Text(
                         text = stringResource(R.string.component_explore_map_publication_card_duration),
-                        color = Color(0xFF808A99),
-                        style = MaterialTheme.typography.bodyMedium,
-                        fontWeight = FontWeight.SemiBold
+                        color = TextColors.Secondary,
+                        style = TextTokens.chipLabel()
                     )
                 }
 
                 Text(
                     text = publication.informacion,
-                    style = MaterialTheme.typography.bodyLarge,
-                    color = Color(0xFF5D6675)
+                    style = TextTokens.cardTitle(),
+                    color = TextColors.Secondary
                 )
 
                 GeneralButton(

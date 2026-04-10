@@ -10,15 +10,14 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.triplink.ui.theme.PrincipalBlue
+import com.example.triplink.ui.theme.TextTokens
 
 @Composable
 fun SectionCard(
@@ -46,12 +45,12 @@ fun SectionCard(
             ) {
                 Text(
                     text = title,
-                    style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.Bold)
+                    style = TextTokens.sectionTitle()
                 )
                 Text(
                     text = actionLabel,
                     color = PrincipalBlue,
-                    style = MaterialTheme.typography.titleLarge,
+                    style = TextTokens.sectionAction(),
                     modifier = Modifier.clickable(onClick = onActionClick)
                 )
             }

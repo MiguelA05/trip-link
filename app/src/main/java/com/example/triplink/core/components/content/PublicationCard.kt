@@ -26,12 +26,13 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
 import coil3.request.crossfade
 import com.example.triplink.R
 import com.example.triplink.domain.model.PuntoInteres
+import com.example.triplink.ui.theme.TextColors
+import com.example.triplink.ui.theme.TextTokens
 import java.util.Locale
 
 @Composable
@@ -78,9 +79,8 @@ fun PublicationCard(
                             value = puntoInteres.usuarioAutorId,
                             fallbackInitial = stringResource(R.string.component_publication_card_default_initial)
                         ),
-                        color = Color(0xFF1967D2),
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 16.sp
+                        color = TextColors.Accent,
+                        style = TextTokens.avatarInitial()
                     )
                 }
 
@@ -89,14 +89,13 @@ fun PublicationCard(
                 Column(modifier = Modifier.weight(1f)) {
                     Text(
                         text = formatAuthorName(puntoInteres.usuarioAutorId),
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 16.sp,
-                        color = Color.Black
+                        style = TextTokens.cardTitle(),
+                        color = TextColors.Primary
                     )
                     Text(
                         text = puntoInteres.fechaCreacion.toRelativeTimeLabelEs(),
-                        fontSize = 12.sp,
-                        color = Color.Gray
+                        style = TextTokens.cardSubtitle(),
+                        color = TextColors.Secondary
                     )
                 }
 
@@ -108,9 +107,8 @@ fun PublicationCard(
                     Text(
                         text = stringResource(R.string.component_publication_card_near_you),
                         modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp),
-                        color = Color(0xFF1967D2),
-                        fontSize = 12.sp,
-                        fontWeight = FontWeight.Medium
+                        color = TextColors.Accent,
+                        style = TextTokens.chipLabel()
                     )
                 }
             }
@@ -145,9 +143,8 @@ fun PublicationCard(
                     Text(
                         text = formatCategory(puntoInteres.categoria.name),
                         modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp),
-                        color = Color.White,
-                        fontSize = 12.sp,
-                        fontWeight = FontWeight.Bold
+                        color = TextColors.OnImage,
+                        style = TextTokens.chipLabel()
                     )
                 }
 
@@ -172,9 +169,8 @@ fun PublicationCard(
                         )
                         Text(
                             text = ratingLabel,
-                            fontWeight = FontWeight.Bold,
-                            fontSize = 12.sp,
-                            color = Color.Black
+                            style = TextTokens.chipLabel(),
+                            color = TextColors.Primary
                         )
                     }
                 }
@@ -194,9 +190,9 @@ fun PublicationCard(
                     Column {
                         Text(
                             text = puntoInteres.titulo,
-                            color = Color.White,
-                            fontSize = 20.sp,
-                            fontWeight = FontWeight.Bold
+                            color = TextColors.OnImage,
+                            style = TextTokens.cardTitle(),
+                            maxLines = 1
                         )
                         Row(verticalAlignment = Alignment.CenterVertically) {
                             Icon(
@@ -208,8 +204,9 @@ fun PublicationCard(
                             Spacer(modifier = Modifier.width(4.dp))
                             Text(
                                 text = puntoInteres.ubicacion.ciudad,
-                                color = Color.White,
-                                fontSize = 12.sp
+                                color = TextColors.OnImage,
+                                style = TextTokens.cardSubtitle(),
+                                maxLines = 1
                             )
                         }
                     }
@@ -241,8 +238,8 @@ fun PublicationCard(
                         Spacer(modifier = Modifier.width(8.dp))
                         Text(
                             text = puntoInteres.commentCount.toString(),
-                            color = Color.Gray,
-                            fontSize = 14.sp
+                            color = TextColors.Secondary,
+                            style = MaterialTheme.typography.bodyMedium
                         )
                     }
 
@@ -266,8 +263,8 @@ fun PublicationCard(
                         Spacer(modifier = Modifier.width(8.dp))
                         Text(
                             text = puntoInteres.favoriteCount.toString(),
-                            color = Color.Gray,
-                            fontSize = 14.sp
+                            color = TextColors.Secondary,
+                            style = MaterialTheme.typography.bodyMedium
                         )
                     }
                 }

@@ -30,6 +30,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SheetValue
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.rememberBottomSheetScaffoldState
+import androidx.compose.material3.rememberStandardBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -43,20 +45,19 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.layout.onSizeChanged
-import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.IntSize
+import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.example.triplink.core.components.ExploreMapPublicationCard
 import com.example.triplink.core.components.common.CategoryChips
 import com.example.triplink.core.components.common.SearchBar
 import com.example.triplink.ui.theme.PrincipalBlue
 import com.example.triplink.ui.theme.PrincipalWhite
+import com.example.triplink.ui.theme.TextColors
 import kotlin.math.roundToInt
 import kotlinx.coroutines.launch
-import androidx.compose.material3.rememberBottomSheetScaffoldState
-import androidx.compose.material3.rememberStandardBottomSheetState
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -77,7 +78,8 @@ fun ExploreMapScreen(
 
 	BottomSheetScaffold(
 		modifier = Modifier
-			.fillMaxSize(),
+			.fillMaxSize()
+			.padding(contentPadding),
 		scaffoldState = scaffoldState,
 		sheetPeekHeight = 170.dp,
 		sheetContainerColor = Color(0xFFF4F5F7),
@@ -231,7 +233,7 @@ private fun MarkerPin(
 					text = marker.ratingLabel,
 					style = MaterialTheme.typography.bodyMedium,
 					fontWeight = FontWeight.Bold,
-					color = Color(0xFF2B3748)
+					color = TextColors.Primary
 				)
 			}
 		}

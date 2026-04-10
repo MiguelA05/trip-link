@@ -13,19 +13,17 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.example.triplink.R
 import com.example.triplink.domain.model.enums.EstadoPublicacion
 import com.example.triplink.ui.theme.PrincipalBlue
+import com.example.triplink.ui.theme.TextTokens
 
 @Composable
 fun StatusTabs(
@@ -84,11 +82,8 @@ fun StatusTabs(
             ) {
                 Text(
                     text = label,
-                    style = MaterialTheme.typography.titleMedium.copy(
-                        color = if (selected) PrincipalBlue else Color(0xFF8FA1BA),
-                        fontWeight = FontWeight.SemiBold,
-                        fontSize = 14.sp
-                    )
+                    style = TextTokens.chipLabel(),
+                    color = if (selected) PrincipalBlue else Color(0xFF8FA1BA)
                 )
                 
                 Spacer(modifier = Modifier.height(6.dp))
@@ -101,11 +96,8 @@ fun StatusTabs(
                 ) {
                     Text(
                         text = count.toString(),
-                        style = MaterialTheme.typography.labelSmall.copy(
-                            color = badgeTextColor,
-                            fontWeight = FontWeight.Bold,
-                            fontSize = 12.sp
-                        )
+                        style = TextTokens.counterLabel(),
+                        color = badgeTextColor
                     )
                 }
 

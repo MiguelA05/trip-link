@@ -50,6 +50,8 @@ import com.example.triplink.core.components.DestructiveConfirmDialog
 import com.example.triplink.core.components.GeneralAlertDialog
 import com.example.triplink.ui.theme.PrincipalBlue
 import com.example.triplink.ui.theme.PrincipalGreen
+import com.example.triplink.ui.theme.TextColors
+import com.example.triplink.ui.theme.TextTokens
 
 @Composable
 fun AdminReportDetailsScreen(
@@ -72,9 +74,8 @@ fun AdminReportDetailsScreen(
         ) {
             Text(
                 text = "Reporte no encontrado",
-                style = MaterialTheme.typography.headlineMedium,
-                fontWeight = FontWeight.Bold,
-                color = Color(0xFF1E2430)
+                style = TextTokens.sectionTitle(),
+                color = TextColors.Primary
             )
         }
         return
@@ -102,26 +103,26 @@ fun AdminReportDetailsScreen(
                 Icon(
                     imageVector = Icons.AutoMirrored.Outlined.ArrowBack,
                     contentDescription = "Volver",
-                    tint = Color(0xFF1E2430)
+                    tint = TextColors.Primary
                 )
             }
+
             Text(
-                text = "Detalle del Reporte",
-                style = MaterialTheme.typography.titleLarge,
-                fontWeight = FontWeight.Bold,
-                color = Color(0xFF1E2430)
+                text = "Detalles del reporte",
+                style = TextTokens.screenTitle(),
+                color = TextColors.Primary
             )
+
             Spacer(modifier = Modifier.size(48.dp))
         }
 
-        // Imagen de la publicación
         if (report.imageUrl.isNotEmpty()) {
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(240.dp)
-                    .clip(RoundedCornerShape(24.dp))
                     .padding(horizontal = 14.dp)
+                    .clip(RoundedCornerShape(24.dp))
             ) {
                 AsyncImage(
                     model = ImageRequest.Builder(LocalContext.current)
@@ -137,7 +138,6 @@ fun AdminReportDetailsScreen(
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Información de la Publicación
         Column(
             modifier = Modifier
                 .fillMaxWidth()
@@ -155,35 +155,25 @@ fun AdminReportDetailsScreen(
                     verticalArrangement = Arrangement.spacedBy(10.dp)
                 ) {
                     Text(
-                        text = "Información de la Publicación",
-                        style = MaterialTheme.typography.titleMedium,
-                        fontWeight = FontWeight.Bold,
-                        color = Color(0xFF1E2430)
+                        text = "Información de la publicación",
+                        style = TextTokens.cardTitle(),
+                        color = TextColors.Primary
                     )
 
                     Text(
                         text = report.title,
                         style = MaterialTheme.typography.titleLarge,
                         fontWeight = FontWeight.Bold,
-                        color = Color(0xFF1E2430)
+                        color = TextColors.Primary
                     )
 
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(6.dp)
-                    ) {
-                        Surface(
-                            shape = RoundedCornerShape(8.dp),
-                            color = Color(0xFFFFE9D6)
-                        ) {
-                            Text(
-                                text = report.categoryLabel,
-                                modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
-                                style = MaterialTheme.typography.labelMedium,
-                                color = Color(0xFFF07A17),
-                                fontWeight = FontWeight.SemiBold
-                            )
-                        }
+                    Surface(shape = RoundedCornerShape(8.dp), color = Color(0xFFFFE9D6)) {
+                        Text(
+                            text = report.categoryLabel,
+                            modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
+                            style = TextTokens.chipLabel(),
+                            color = Color(0xFFF07A17)
+                        )
                     }
 
                     Row(
@@ -240,9 +230,6 @@ fun AdminReportDetailsScreen(
                 }
             }
 
-            Spacer(modifier = Modifier.height(8.dp))
-
-            // Información del Reporte
             Surface(
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(16.dp),
@@ -254,22 +241,18 @@ fun AdminReportDetailsScreen(
                     verticalArrangement = Arrangement.spacedBy(10.dp)
                 ) {
                     Text(
-                        text = "Detalles del Reporte",
-                        style = MaterialTheme.typography.titleMedium,
-                        fontWeight = FontWeight.Bold,
-                        color = Color(0xFF1E2430)
+                        text = "Detalles del reporte",
+                        style = TextTokens.cardTitle(),
+                        color = TextColors.Primary
                     )
 
-                    Surface(
-                        shape = RoundedCornerShape(10.dp),
-                        color = Color(0xFFFFF2F2)
-                    ) {
+                    Surface(shape = RoundedCornerShape(10.dp), color = Color(0xFFFFF2F2)) {
                         Column(
                             modifier = Modifier.padding(12.dp),
                             verticalArrangement = Arrangement.spacedBy(6.dp)
                         ) {
                             Text(
-                                text = "Motivo del Reporte",
+                                text = "Motivo del reporte",
                                 style = MaterialTheme.typography.labelMedium,
                                 color = Color(0xFFD84343),
                                 fontWeight = FontWeight.SemiBold
@@ -277,57 +260,50 @@ fun AdminReportDetailsScreen(
                             Text(
                                 text = report.reasonMessage,
                                 style = MaterialTheme.typography.bodyMedium,
-                                color = Color(0xFF1E2430)
+                                color = TextColors.Primary
                             )
                         }
                     }
 
-                    Column(
-                        verticalArrangement = Arrangement.spacedBy(4.dp)
-                    ) {
+                    Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
                         Text(
                             text = "Reportado por",
                             style = MaterialTheme.typography.labelMedium,
-                            color = Color(0xFF8A93A3),
+                            color = TextColors.Secondary,
                             fontWeight = FontWeight.SemiBold
                         )
                         Text(
                             text = report.authorName,
                             style = MaterialTheme.typography.bodyMedium,
-                            color = Color(0xFF1E2430),
-                            fontWeight = FontWeight.Bold
+                            color = TextColors.Primary
                         )
                     }
 
-                    Column(
-                        verticalArrangement = Arrangement.spacedBy(4.dp)
-                    ) {
+                    Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
                         Text(
-                            text = "Fecha del Reporte",
+                            text = "Fecha del reporte",
                             style = MaterialTheme.typography.labelMedium,
-                            color = Color(0xFF8A93A3),
+                            color = TextColors.Secondary,
                             fontWeight = FontWeight.SemiBold
                         )
                         Text(
                             text = report.timeLabel,
                             style = MaterialTheme.typography.bodyMedium,
-                            color = Color(0xFF1E2430)
+                            color = TextColors.Primary
                         )
                     }
 
-                    Column(
-                        verticalArrangement = Arrangement.spacedBy(4.dp)
-                    ) {
+                    Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
                         Text(
-                            text = "Reportes Aceptados",
+                            text = "Reportes aceptados",
                             style = MaterialTheme.typography.labelMedium,
-                            color = Color(0xFF8A93A3),
+                            color = TextColors.Secondary,
                             fontWeight = FontWeight.SemiBold
                         )
                         Text(
                             text = "${report.acceptedReportsCount} / 3",
                             style = MaterialTheme.typography.bodyMedium,
-                            color = Color(0xFF1E2430),
+                            color = TextColors.Primary,
                             fontWeight = FontWeight.Bold
                         )
                     }
@@ -336,7 +312,6 @@ fun AdminReportDetailsScreen(
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Botones de acción
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -353,15 +328,9 @@ fun AdminReportDetailsScreen(
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(12.dp),
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = Color.Transparent
-                        )
+                        colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent)
                     ) {
-                        Text(
-                            text = "Rechazar",
-                            color = Color.White,
-                            fontWeight = FontWeight.Bold
-                        )
+                        Text(text = "Rechazar", color = Color.White, fontWeight = FontWeight.Bold)
                     }
                 }
 
@@ -375,22 +344,15 @@ fun AdminReportDetailsScreen(
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(12.dp),
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = Color.Transparent
-                        )
+                        colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent)
                     ) {
-                        Text(
-                            text = "Confirmar",
-                            color = Color.White,
-                            fontWeight = FontWeight.Bold
-                        )
+                        Text(text = "Confirmar", color = Color.White, fontWeight = FontWeight.Bold)
                     }
                 }
             }
         }
     }
 
-    // Diálogos de confirmación
     if (showConfirmDialog) {
         GeneralAlertDialog(
             onDismissRequest = { showConfirmDialog = false },
@@ -398,7 +360,7 @@ fun AdminReportDetailsScreen(
                 viewModel.confirmReport(report.id)
                 onBackClick()
             },
-            title = "Confirmar Reporte",
+            title = "Confirmar reporte",
             message = "¿Deseas confirmar el reporte de «${report.title}»? Esta acción incrementará el contador de reportes aceptados.",
             icon = Icons.Default.CheckCircle,
             buttonText = "Confirmar",
@@ -409,7 +371,7 @@ fun AdminReportDetailsScreen(
 
     if (showRejectDialog) {
         DestructiveConfirmDialog(
-            title = "Rechazar Reporte",
+            title = "Rechazar reporte",
             message = "¿Deseas rechazar el reporte de «${report.title}»? Se considerará que la publicación no incumple las reglas.",
             confirmText = "Rechazar",
             dismissText = "Cancelar",
@@ -421,4 +383,3 @@ fun AdminReportDetailsScreen(
         )
     }
 }
-

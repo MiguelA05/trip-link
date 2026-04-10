@@ -35,6 +35,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -42,9 +43,12 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.example.triplink.core.components.FormField
 import com.example.triplink.core.components.GeneralButton
 import com.example.triplink.core.components.GeneralTopBar
+import com.example.triplink.R
 import com.example.triplink.core.utils.RequestResult
 import com.example.triplink.domain.model.enums.DiaSemana
 import com.example.triplink.ui.theme.PrincipalBlue
+import com.example.triplink.ui.theme.TextColors
+import com.example.triplink.ui.theme.TextTokens
 import kotlinx.coroutines.launch
 
 data class DayScheduleData(
@@ -66,6 +70,7 @@ fun PostCreationScreen(
     val snackbarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
     val createResult by viewModel.createResult.collectAsState()
+    val dayDisabledSnackbar = stringResource(R.string.feature_post_creation_day_disabled_snackbar)
 
     LaunchedEffect(publicationIdToEdit) {
         viewModel.loadPublicationForEdit(publicationIdToEdit)
@@ -89,12 +94,12 @@ fun PostCreationScreen(
     Scaffold(
         topBar = {
             GeneralTopBar(
-                title = "Nueva Publicación",
+                title = stringResource(R.string.feature_post_creation_title),
                 onBack = onBack
             )
         },
         snackbarHost = { SnackbarHost(snackbarHostState) },
-        containerColor = Color(0xFFF8F9FA)
+        containerColor = MaterialTheme.colorScheme.background
     ) { paddingValues ->
         Column(
             modifier = Modifier
@@ -107,10 +112,10 @@ fun PostCreationScreen(
             // Nombre del lugar
             PostCreationCard {
                 FormField(
-                    label = buildRequiredLabel("Nombre del lugar").toString(),
+                    label = buildRequiredLabel(stringResource(R.string.feature_post_creation_name_label)).toString(),
                     value = viewModel.placeName.value,
                     onValueChange = { viewModel.placeName.onChange(it) },
-                    placeholder = "Ej. Valle del Cocora",
+                    placeholder = stringResource(R.string.feature_post_creation_name_placeholder),
                     modifier = Modifier.fillMaxWidth(),
                     isError = viewModel.placeName.error != null,
                     errorText = viewModel.placeName.error,
@@ -118,7 +123,7 @@ fun PostCreationScreen(
                         Text(
                             text = "${viewModel.placeName.value.length}/80",
                             style = MaterialTheme.typography.bodySmall,
-                            color = Color.LightGray,
+                            color = TextColors.Muted,
                             modifier = Modifier.padding(end = 8.dp)
                         )
                     }
@@ -129,7 +134,7 @@ fun PostCreationScreen(
             PostCreationCard {
                 Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                     Text(
-                        text = "Descripción",
+                        text = stringResource(R.string.feature_post_creation_description_label),
                         style = MaterialTheme.typography.labelLarge,
                         fontWeight = FontWeight.SemiBold
                     )
@@ -138,8 +143,8 @@ fun PostCreationScreen(
                         onValueChange = { if (it.length <= 300) viewModel.description = it },
                         placeholder = {
                             Text(
-                                "Describe este lugar, qué lo hace especial...",
-                                color = Color.LightGray
+                                stringResource(R.string.feature_post_creation_description_placeholder),
+                                color = TextColors.Muted
                             )
                         },
                         modifier = Modifier
@@ -157,7 +162,7 @@ fun PostCreationScreen(
                                 Text(
                                     text = "${viewModel.description.length}/300",
                                     style = MaterialTheme.typography.bodySmall,
-                                    color = Color.LightGray
+                                    color = TextColors.Muted
                                 )
                             }
                         }
@@ -170,7 +175,7 @@ fun PostCreationScreen(
                 var expanded by remember { mutableStateOf(false) }
                 Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                     Text(
-                        text = buildRequiredLabel("Categoría"),
+                        text = buildRequiredLabel(stringResource(R.string.feature_post_creation_category_label)),
                         style = MaterialTheme.typography.labelLarge,
                         fontWeight = FontWeight.SemiBold
                     )
@@ -184,7 +189,7 @@ fun PostCreationScreen(
                                 value = viewModel.selectedCategory.value,
                                 onValueChange = {},
                                 readOnly = true,
-                                placeholder = { Text("Seleccionar categoría", color = Color.LightGray) },
+                                placeholder = { Text(stringResource(R.string.feature_post_creation_category_placeholder), color = TextColors.Muted) },
                                 modifier = Modifier
                                     .menuAnchor(type = MenuAnchorType.PrimaryNotEditable, enabled = true)
                                     .fillMaxWidth(),
@@ -232,9 +237,14 @@ fun PostCreationScreen(
             PostCreationCard {
                 Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                     Text(
-                        text = buildRequiredLabel("Fotos"),
+                        text = buildRequiredLabel(stringResource(R.string.feature_post_creation_photos_label)),
                         style = MaterialTheme.typography.labelLarge,
                         fontWeight = FontWeight.SemiBold
+                    )
+                    Text(
+                        text = stringResource(R.string.feature_post_creation_photos_helper),
+                        style = TextTokens.helperText(),
+                        color = TextColors.Muted
                     )
                     Row(
                         horizontalArrangement = Arrangement.spacedBy(8.dp),
@@ -250,7 +260,7 @@ fun PostCreationScreen(
                         ) {
                             Icon(
                                 imageVector = Icons.Default.Add,
-                                contentDescription = "Añadir foto",
+                                contentDescription = stringResource(R.string.feature_post_creation_photos_add_content_description),
                                 tint = Color.White,
                                 modifier = Modifier.padding(16.dp)
                             )
@@ -273,9 +283,9 @@ fun PostCreationScreen(
                         }
                     }
                     Text(
-                        text = "Añade hasta 5 fotografías para mostrar en tu publicación",
-                        style = MaterialTheme.typography.bodySmall,
-                        color = Color.Gray
+                        text = stringResource(R.string.feature_post_creation_photos_helper),
+                        style = TextTokens.helperText(),
+                        color = TextColors.Secondary
                     )
                 }
             }
@@ -284,14 +294,14 @@ fun PostCreationScreen(
             PostCreationCard {
                 Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
                     Text(
-                        text = buildRequiredLabel("Ubicación exacta"),
+                        text = buildRequiredLabel(stringResource(R.string.feature_post_creation_location_label)),
                         style = MaterialTheme.typography.labelLarge,
                         fontWeight = FontWeight.SemiBold
                     )
                     Text(
-                        text = "Toca el mapa para marcar la ubicación exacta del lugar",
-                        style = MaterialTheme.typography.bodySmall,
-                        color = Color.Gray
+                        text = stringResource(R.string.feature_post_creation_location_helper),
+                        style = TextTokens.helperText(),
+                        color = TextColors.Secondary
                     )
                     // Placeholder mapa
                     Box(
@@ -319,12 +329,12 @@ fun PostCreationScreen(
                             }
                         }
 
-                        // Label "Armenia, Quindío"
+                        // Label externo
                         Text(
-                            text = "Armenia, Quindío",
+                            text = stringResource(R.string.feature_post_creation_location_city),
                             modifier = Modifier.padding(8.dp),
-                            color = Color.Gray,
-                            fontSize = 12.sp
+                            color = TextColors.Secondary,
+                            style = TextTokens.helperText()
                         )
 
                         // Button Overlay
@@ -344,7 +354,7 @@ fun PostCreationScreen(
                                 modifier = Modifier.size(18.dp)
                             )
                             ClarifierSpacer(Modifier.width(8.dp))
-                            Text("Toca para marcar", fontWeight = FontWeight.SemiBold)
+                                Text(text = stringResource(R.string.feature_post_creation_location_mark_action), style = TextTokens.buttonLabel())
                         }
                     }
 
@@ -364,7 +374,11 @@ fun PostCreationScreen(
                                 modifier = Modifier.size(18.dp)
                             )
                             ClarifierSpacer(Modifier.width(8.dp))
-                            Text("La dirección aparecerá aquí", color = Color.LightGray, fontSize = 14.sp)
+                            Text(
+                                text = stringResource(R.string.feature_post_creation_location_address_placeholder),
+                                color = TextColors.Muted,
+                                style = TextTokens.inputText()
+                            )
                         }
                     }
                 }
@@ -372,9 +386,8 @@ fun PostCreationScreen(
 
             // Horarios de atención
             Text(
-                text = "Horarios de atención",
-                style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.Bold,
+                text = stringResource(R.string.feature_post_creation_schedule_title),
+                style = TextTokens.sectionAction(),
                 modifier = Modifier.padding(top = 8.dp)
             )
 
@@ -393,7 +406,10 @@ fun PostCreationScreen(
                         Row(verticalAlignment = Alignment.CenterVertically) {
                             Icon(Icons.Default.AccessTime, contentDescription = null, tint = PrincipalBlue)
                             ClarifierSpacer(Modifier.width(8.dp))
-                            Text("Abierto todos los días", fontWeight = FontWeight.Medium)
+                            Text(
+                                text = stringResource(R.string.feature_post_creation_open_every_day),
+                                style = TextTokens.inputText()
+                            )
                         }
                         Switch(
                             checked = viewModel.isOpenEveryDay,
@@ -416,7 +432,7 @@ fun PostCreationScreen(
                             onCloseTimeChange = { viewModel.onCloseTimeChange(index, it) },
                             onDisabledClick = {
                                 scope.launch {
-                                    snackbarHostState.showSnackbar("Se debe activar el switch del día para poder hacerlo")
+                                    snackbarHostState.showSnackbar(dayDisabledSnackbar)
                                 }
                             }
                         )
@@ -428,25 +444,28 @@ fun PostCreationScreen(
             PostCreationCard {
                 Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
                     Text(
-                        text = "Rango de precios",
-                        style = MaterialTheme.typography.labelLarge,
-                        fontWeight = FontWeight.SemiBold
+                        text = stringResource(R.string.component_publication_price_range_title),
+                        style = TextTokens.sectionTitle()
                     )
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
-                        PriceOption(icon = "$", label = "Gratuito", isSelected = viewModel.selectedPriceRange == "Gratuito") {
-                            viewModel.selectedPriceRange = "Gratuito"
+                        val free = stringResource(R.string.component_publication_price_range_free)
+                        val economical = stringResource(R.string.component_publication_price_range_economic)
+                        val moderate = stringResource(R.string.component_publication_price_range_moderate)
+                        val expensive = stringResource(R.string.component_publication_price_range_expensive)
+                        PriceOption(icon = "$", label = free, isSelected = viewModel.selectedPriceRange == free) {
+                            viewModel.selectedPriceRange = free
                         }
-                        PriceOption(icon = "$$", label = "Economico", isSelected = viewModel.selectedPriceRange == "Economico") {
-                            viewModel.selectedPriceRange = "Economico"
+                        PriceOption(icon = "$$", label = economical, isSelected = viewModel.selectedPriceRange == economical) {
+                            viewModel.selectedPriceRange = economical
                         }
-                        PriceOption(icon = "$$$", label = "Moderado", isSelected = viewModel.selectedPriceRange == "Moderado") {
-                            viewModel.selectedPriceRange = "Moderado"
+                        PriceOption(icon = "$$$", label = moderate, isSelected = viewModel.selectedPriceRange == moderate) {
+                            viewModel.selectedPriceRange = moderate
                         }
-                        PriceOption(icon = "$$$$", label = "Costoso", isSelected = viewModel.selectedPriceRange == "Costoso") {
-                            viewModel.selectedPriceRange = "Costoso"
+                        PriceOption(icon = "$$$$", label = expensive, isSelected = viewModel.selectedPriceRange == expensive) {
+                            viewModel.selectedPriceRange = expensive
                         }
                     }
                 }
@@ -472,9 +491,10 @@ fun PostCreationScreen(
                     Text(
                         text = buildAnnotatedString {
                             withStyle(SpanStyle(fontWeight = FontWeight.Bold)) {
-                                append("Campos obligatorios: ")
+                                append(stringResource(R.string.feature_post_creation_required_fields_warning_prefix))
                             }
-                            append("Nombre, Categoría y Ubicación en mapa para poder publicar.")
+                            append(" ")
+                            append(stringResource(R.string.feature_post_creation_required_fields_warning_body))
                         },
                         style = MaterialTheme.typography.bodySmall,
                         color = Color(0xFF5D4037)
@@ -551,15 +571,14 @@ fun PostSuccessBottomSheet(
                     }
                     Spacer(modifier = Modifier.height(16.dp))
                     Text(
-                        text = "¡Publicación enviada!",
+                                text = stringResource(R.string.feature_post_creation_success_title),
                         color = Color.White,
-                        fontSize = 22.sp,
-                        fontWeight = FontWeight.Bold
+                                style = TextTokens.sectionTitle()
                     )
                     Text(
-                        text = "Está en manos del equipo de moderación",
+                                text = stringResource(R.string.feature_post_creation_success_subtitle),
                         color = Color.White.copy(alpha = 0.9f),
-                        fontSize = 14.sp
+                                style = TextTokens.inputText()
                     )
                 }
             }
@@ -571,33 +590,33 @@ fun PostSuccessBottomSheet(
                 verticalArrangement = Arrangement.spacedBy(24.dp)
             ) {
                 Text(
-                    text = "PROCESO DE PUBLICACIÓN",
-                    style = MaterialTheme.typography.labelMedium,
-                    color = Color.Gray,
+                    text = stringResource(R.string.feature_post_creation_process_title),
+                    style = TextTokens.counterLabel(),
+                    color = TextColors.Secondary,
                     letterSpacing = 1.sp
                 )
 
                 // Paso 1: Enviada
                 StepRow(
                     icon = Icons.Default.Check,
-                    title = "Publicación enviada",
-                    subtitle = "Recibida correctamente",
+                    title = stringResource(R.string.feature_post_creation_step_sent_title),
+                    subtitle = stringResource(R.string.feature_post_creation_step_sent_subtitle),
                     status = StepStatus.COMPLETED
                 )
 
                 // Paso 2: En revisión
                 StepRow(
                     icon = Icons.Default.AccessTime,
-                    title = "En revisión",
-                    subtitle = "Moderadores revisarán en ~24 h",
+                    title = stringResource(R.string.feature_post_creation_step_review_title),
+                    subtitle = stringResource(R.string.feature_post_creation_step_review_subtitle),
                     status = StepStatus.ACTIVE
                 )
 
                 // Paso 3: Publicada
                 StepRow(
                     icon = Icons.Default.Circle,
-                    title = "Publicada",
-                    subtitle = "Visible para la comunidad",
+                    title = stringResource(R.string.feature_post_creation_step_published_title),
+                    subtitle = stringResource(R.string.feature_post_creation_step_published_subtitle),
                     status = StepStatus.INACTIVE
                 )
 
@@ -612,7 +631,11 @@ fun PostSuccessBottomSheet(
                     colors = ButtonDefaults.buttonColors(containerColor = PrincipalBlue),
                     shape = RoundedCornerShape(16.dp)
                 ) {
-                    Text("Aceptar", fontWeight = FontWeight.Bold, fontSize = 16.sp)
+                    Text(
+                        text = stringResource(R.string.feature_post_creation_accept_action),
+                        style = TextTokens.buttonLabel(),
+                        fontWeight = FontWeight.Bold
+                    )
                 }
 
                 OutlinedButton(
@@ -630,7 +653,11 @@ fun PostSuccessBottomSheet(
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Icon(Icons.AutoMirrored.Filled.MenuBook, contentDescription = null, modifier = Modifier.size(18.dp))
                         Spacer(Modifier.width(8.dp))
-                        Text("Ver mis publicaciones", fontWeight = FontWeight.Bold, fontSize = 16.sp)
+                        Text(
+                            text = stringResource(R.string.feature_post_creation_view_publications_action),
+                            style = TextTokens.buttonLabel(),
+                            fontWeight = FontWeight.Bold
+                        )
                     }
                 }
             }
@@ -684,14 +711,14 @@ fun StepRow(
         Column {
             Text(
                 text = title,
+                style = MaterialTheme.typography.titleSmall,
                 fontWeight = FontWeight.Bold,
-                fontSize = 15.sp,
-                color = if (status == StepStatus.INACTIVE) Color.LightGray else Color.Black
+                color = if (status == StepStatus.INACTIVE) TextColors.Muted else TextColors.Primary
             )
             Text(
                 text = subtitle,
-                fontSize = 13.sp,
-                color = if (status == StepStatus.ACTIVE) Color(0xFFFF9800) else Color.Gray
+                style = MaterialTheme.typography.bodySmall,
+                color = if (status == StepStatus.ACTIVE) Color(0xFFFF9800) else TextColors.Secondary
             )
         }
     }
@@ -716,6 +743,7 @@ fun DayScheduleRow(
     ) {
         Text(
             text = schedule.day.shortLabel,
+            style = MaterialTheme.typography.bodyMedium,
             fontWeight = FontWeight.Bold,
             color = PrincipalBlue,
             modifier = Modifier.width(35.dp)
@@ -727,7 +755,7 @@ fun DayScheduleRow(
             enabled = schedule.isEnabled,
             onDisabledClick = onDisabledClick
         )
-        Text("-", color = Color.Gray)
+        Text(stringResource(R.string.feature_post_creation_time_separator), color = TextColors.Secondary)
         TimeInputBox(
             value = schedule.closeTime,
             onValueChange = onCloseTimeChange,
@@ -777,18 +805,17 @@ fun TimeInputBox(
             singleLine = true,
             textStyle = TextStyle(
                 textAlign = TextAlign.Center,
-                fontSize = 14.sp,
                 fontWeight = FontWeight.Medium,
-                color = if (enabled) Color.Black else Color.Gray
+                color = if (enabled) TextColors.Primary else TextColors.Secondary
             ),
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
             cursorBrush = SolidColor(PrincipalBlue),
             decorationBox = { innerTextField ->
                 if (value.isEmpty()) {
                     Text(
-                        "00:00",
-                        fontSize = 14.sp,
-                        color = Color.LightGray,
+                        stringResource(R.string.feature_post_creation_time_placeholder),
+                        style = TextTokens.inputText(),
+                        color = TextColors.Muted,
                         textAlign = TextAlign.Center,
                         modifier = Modifier.fillMaxWidth()
                     )
@@ -818,15 +845,15 @@ fun PriceOption(icon: String, label: String, isSelected: Boolean, onClick: () ->
             Box(contentAlignment = Alignment.Center) {
                 Text(
                     text = icon,
+                    style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold,
-                    fontSize = 18.sp,
                     color = if (isSelected) PrincipalBlue else Color.Black
                 )
             }
         }
         Text(
             text = label,
-            fontSize = 12.sp,
+            style = MaterialTheme.typography.labelMedium,
             color = if (isSelected) PrincipalBlue else Color.Gray
         )
     }
