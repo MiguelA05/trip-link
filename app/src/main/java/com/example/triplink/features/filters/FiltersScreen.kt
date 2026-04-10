@@ -14,6 +14,8 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.compose.ui.res.stringResource
 import com.example.triplink.R
 import com.example.triplink.core.components.GeneralTopBar
+import com.example.triplink.domain.model.enums.RangoPrecios
+import com.example.triplink.domain.model.enums.UbicacionFiltro
 import com.example.triplink.ui.theme.DarkGray
 import com.example.triplink.ui.theme.PrincipalBlue
 import com.example.triplink.ui.theme.TextTokens
@@ -47,7 +49,8 @@ fun FiltersScreen(
                     title = stringResource(R.string.feature_filters_categories),
                     options = viewModel.categories,
                     selectedOptions = viewModel.selectedCategories,
-                    onOptionToggle = { option -> viewModel.cambiarOpcion(option)}
+                    onOptionToggle = viewModel::toggleCategory,
+                    optionLabel = { it.label }
                 )
             }
 
@@ -58,7 +61,14 @@ fun FiltersScreen(
                     title = stringResource(R.string.feature_filters_location),
                     options = viewModel.locations,
                     selectedOptions = viewModel.selectedLocations,
-                    onOptionToggle = { option -> viewModel.cambiarOpcion(option)
+                    onOptionToggle = viewModel::toggleLocation,
+                    optionLabel = { option ->
+                        when (option) {
+                            UbicacionFiltro.CERCANOS -> stringResource(R.string.vm_filters_location_nearby)
+                            UbicacionFiltro.CIUDAD -> stringResource(R.string.vm_filters_location_city)
+                            UbicacionFiltro.DEPARTAMENTO -> stringResource(R.string.vm_filters_location_department)
+                            UbicacionFiltro.PAIS -> stringResource(R.string.vm_filters_location_country)
+                        }
                     }
                 )
             }
@@ -70,7 +80,15 @@ fun FiltersScreen(
                     title = stringResource(R.string.feature_filters_price_range),
                     options = viewModel.priceRanges,
                     selectedOptions = viewModel.selectedPrices,
-                    onOptionToggle = { option -> viewModel.cambiarOpcion(option) }
+                    onOptionToggle = viewModel::togglePrice,
+                    optionLabel = { option ->
+                        when (option) {
+                            RangoPrecios.GRATUITO -> stringResource(R.string.component_publication_price_range_free)
+                            RangoPrecios.ECONOMICO -> stringResource(R.string.component_publication_price_range_economic)
+                            RangoPrecios.MODERADO -> stringResource(R.string.component_publication_price_range_moderate)
+                            RangoPrecios.COSTOSO -> stringResource(R.string.component_publication_price_range_expensive)
+                        }
+                    }
                 )
             }
 
@@ -81,7 +99,8 @@ fun FiltersScreen(
                     title = stringResource(R.string.feature_filters_minimum_rating),
                     options = viewModel.ratings,
                     selectedOptions = viewModel.selectedRatings,
-                    onOptionToggle = { option ->viewModel.cambiarOpcion(option) }
+                    onOptionToggle = viewModel::toggleRating,
+                    optionLabel = { "$it★" }
                 )
             }
 
@@ -92,11 +111,12 @@ fun FiltersScreen(
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
-fun FilterSection(
+fun <T> FilterSection(
     title: String,
-    options: List<String>,
-    selectedOptions: Set<String>,
-    onOptionToggle: (String) -> Unit
+    options: List<T>,
+    selectedOptions: Set<T>,
+    onOptionToggle: (T) -> Unit,
+    optionLabel: @Composable (T) -> String
 ) {
     Column {
         Text(
@@ -113,7 +133,7 @@ fun FilterSection(
             options.forEach { option ->
                 val isSelected = selectedOptions.contains(option)
                 FilterChipItem(
-                    text = option,
+                    text = optionLabel(option),
                     isSelected = isSelected,
                     onClick = { onOptionToggle(option) }
                 )

@@ -46,12 +46,7 @@ fun ModerationScreen(
     onPublicationDetailsClick: (String) -> Unit = {}
 ) {
     val viewModel: ModerationViewModel = hiltViewModel()
-    val moderationChipFilters = listOf(
-        ModerationFilter.ALL,
-        ModerationFilter.PENDING,
-        ModerationFilter.VERIFIED,
-        ModerationFilter.REJECTED
-    )
+    val moderationChipFilters = ModerationFilter.entries
     val listState = rememberLazyListState()
     val coroutineScope = rememberCoroutineScope()
 
@@ -150,36 +145,17 @@ fun ModerationScreen(
             )
         }
 
-        val allLabel = stringResource(R.string.feature_admin_moderation_filter_all)
-        val pendingLabel = stringResource(R.string.feature_admin_moderation_filter_pending)
-        val verifiedLabel = stringResource(R.string.feature_admin_moderation_filter_verified)
-        val rejectedLabel = stringResource(R.string.feature_admin_moderation_filter_rejected)
-
         CategoryChips(
-            categories = moderationChipFilters.map { filter ->
-                filter.toChipLabel(
-                    allLabel = allLabel,
-                    pendingLabel = pendingLabel,
-                    verifiedLabel = verifiedLabel,
-                    rejectedLabel = rejectedLabel
-                )
-            },
-            selectedCategory = viewModel.selectedFilter.toChipLabel(
-                allLabel = allLabel,
-                pendingLabel = pendingLabel,
-                verifiedLabel = verifiedLabel,
-                rejectedLabel = rejectedLabel
-            ),
-            onCategorySelected = { selectedLabel ->
-                val selectedFilter = moderationChipFilters.firstOrNull { filter ->
-                    filter.toChipLabel(
-                        allLabel = allLabel,
-                        pendingLabel = pendingLabel,
-                        verifiedLabel = verifiedLabel,
-                        rejectedLabel = rejectedLabel
-                    ) == selectedLabel
-                } ?: ModerationFilter.ALL
-                viewModel.onFilterSelected(selectedFilter)
+            categories = moderationChipFilters,
+            selectedCategory = viewModel.selectedFilter,
+            onCategorySelected = viewModel::onFilterSelected,
+            label = { filter ->
+                when (filter) {
+                    ModerationFilter.ALL -> stringResource(R.string.feature_admin_moderation_filter_all)
+                    ModerationFilter.PENDING -> stringResource(R.string.feature_admin_moderation_filter_pending)
+                    ModerationFilter.VERIFIED -> stringResource(R.string.feature_admin_moderation_filter_verified)
+                    ModerationFilter.REJECTED -> stringResource(R.string.feature_admin_moderation_filter_rejected)
+                }
             }
         )
 
@@ -258,17 +234,6 @@ fun ModerationScreen(
     }
 }
 
-private fun ModerationFilter.toChipLabel(
-    allLabel: String,
-    pendingLabel: String,
-    verifiedLabel: String,
-    rejectedLabel: String
-): String = when (this) {
-    ModerationFilter.ALL -> allLabel
-    ModerationFilter.PENDING -> pendingLabel
-    ModerationFilter.VERIFIED -> verifiedLabel
-    ModerationFilter.REJECTED -> rejectedLabel
-}
 
 @Composable
 private fun StatItem(

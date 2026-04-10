@@ -180,6 +180,13 @@
     <!-- resource: feature_filters_minimum_rating -->
     <string name="feature_filters_minimum_rating">Calificación mínima</string>
 
+    <!-- ENUM: Categoria -->
+    <string name="enum_categoria_gastronomia">Gastronomía</string>
+    <string name="enum_categoria_cultura">Cultura</string>
+    <string name="enum_categoria_naturaleza">Naturaleza</string>
+    <string name="enum_categoria_entretenimiento">Entretenimiento</string>
+    <string name="enum_categoria_historia">Historia</string>
+
     <!-- FEATURE: PublicationDetails -->
     <!-- resource: feature_publication_details_rating_label -->
     <string name="feature_publication_details_rating_label">CALIFICACIÓN</string>

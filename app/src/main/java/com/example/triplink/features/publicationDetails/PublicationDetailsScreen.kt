@@ -48,6 +48,7 @@ import com.example.triplink.core.components.publicationdetails.utils.toWeeklySch
 import com.example.triplink.core.navigation.SessionState
 import com.example.triplink.core.navigation.SessionViewModel
 import com.example.triplink.core.utils.RequestResult
+import com.example.triplink.domain.model.enums.RazonReporte
 import com.example.triplink.R
 import com.example.triplink.ui.theme.*
 import kotlinx.coroutines.launch
@@ -680,26 +681,30 @@ fun InappropriateContentModal(onDismiss: () -> Unit, onReplace: () -> Unit) {
 
 @Composable
 fun ReportModal(onDismiss: () -> Unit) {
-    var selectedOption by remember { mutableStateOf("") }
+    var selectedOption by remember { mutableStateOf<RazonReporte?>(null) }
     var otherReason by remember { mutableStateOf("") }
 
     val options = listOf(
         ReportOptionData(
+            reason = RazonReporte.INFORMACION_FALSA,
             stringResource(R.string.feature_publication_details_report_option_incorrect_info_title),
             stringResource(R.string.feature_publication_details_report_option_incorrect_info_subtitle),
             Icons.AutoMirrored.Outlined.LibraryBooks
         ),
         ReportOptionData(
+            reason = RazonReporte.SPAM,
             stringResource(R.string.feature_publication_details_report_option_wrong_location_title),
             stringResource(R.string.feature_publication_details_report_option_wrong_location_subtitle),
             Icons.Outlined.LocationOn
         ),
         ReportOptionData(
+            reason = RazonReporte.CONTENIDO_INAPROPIADO,
             stringResource(R.string.feature_publication_details_report_option_inappropriate_title),
             stringResource(R.string.feature_publication_details_report_option_inappropriate_subtitle),
             Icons.Outlined.Block
         ),
         ReportOptionData(
+            reason = RazonReporte.OTRO,
             stringResource(R.string.feature_publication_details_report_option_other_title),
             stringResource(R.string.feature_publication_details_report_option_other_subtitle),
             Icons.Outlined.Edit
@@ -772,16 +777,16 @@ fun ReportModal(onDismiss: () -> Unit) {
 
                 Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
                     options.forEach { option ->
-                        val isSelected = selectedOption == option.title
+                        val isSelected = selectedOption == option.reason
                         ReportOptionItem(
                             option = option,
                             isSelected = isSelected,
-                            onClick = { selectedOption = option.title }
+                            onClick = { selectedOption = option.reason }
                         )
                     }
                 }
 
-                if (selectedOption == stringResource(R.string.feature_publication_details_report_option_other_title)) {
+                if (selectedOption == RazonReporte.OTRO) {
                     Spacer(modifier = Modifier.height(16.dp))
                     FormField(
                         label = stringResource(R.string.feature_publication_details_report_reason_label),
@@ -820,7 +825,7 @@ fun ReportModal(onDismiss: () -> Unit) {
                     text = stringResource(R.string.feature_publication_details_send_report),
                     onClick = { /* Enviar */ },
                     icon = Icons.AutoMirrored.Filled.Send,
-                    enabled = selectedOption.isNotEmpty()
+                    enabled = selectedOption != null
                 )
 
                 TextButton(onClick = onDismiss) {
@@ -835,7 +840,12 @@ fun ReportModal(onDismiss: () -> Unit) {
     }
 }
 
-data class ReportOptionData(val title: String, val subtitle: String, val icon: ImageVector)
+data class ReportOptionData(
+    val reason: RazonReporte,
+    val title: String,
+    val subtitle: String,
+    val icon: ImageVector
+)
 
 @Composable
 fun ReportOptionItem(option: ReportOptionData, isSelected: Boolean, onClick: () -> Unit) {

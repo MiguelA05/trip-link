@@ -25,7 +25,6 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
-import java.text.Normalizer
 import java.util.UUID
 import javax.inject.Inject
 
@@ -42,8 +41,8 @@ class PostCreationViewModel @Inject constructor(
 
     var description by mutableStateOf("")
 
-    var selectedCategory = ValidatedField("") { value ->
-        if (value.isBlank()) appContext.getString(R.string.vm_post_creation_category_required) else null
+    var selectedCategory = ValidatedField<Categoria?>(null) { value ->
+        if (value == null) appContext.getString(R.string.vm_post_creation_category_required) else null
     }
 
     var isOpenEveryDay by mutableStateOf(false)
@@ -58,7 +57,7 @@ class PostCreationViewModel @Inject constructor(
         }
     )
 
-    var selectedPriceRange by mutableStateOf(appContext.getString(R.string.vm_post_creation_price_free))
+    var selectedPriceRange by mutableStateOf(RangoPrecios.GRATUITO)
     var showSuccessModal by mutableStateOf(false)
         private set
 
@@ -70,7 +69,7 @@ class PostCreationViewModel @Inject constructor(
     val submitButtonLabel: String
         get() = appContext.getString(R.string.vm_post_creation_submit_action)
 
-    val categories = Categoria.entries.map { it.label }
+    val categories = Categoria.entries
 
     private val _createResult = MutableStateFlow<RequestResult?>(null)
     val createResult: StateFlow<RequestResult?> = _createResult.asStateFlow()
@@ -80,7 +79,7 @@ class PostCreationViewModel @Inject constructor(
             val areMandatoryFieldsValid = placeName.isValid &&
                 placeName.value.isNotBlank() &&
                 selectedCategory.isValid &&
-                selectedCategory.value.isNotBlank()
+                selectedCategory.value != null
 
             val areSchedulesValid = daySchedules.all { schedule ->
                 if (schedule.isEnabled) {
@@ -108,13 +107,13 @@ class PostCreationViewModel @Inject constructor(
 
         placeName.onChange(publication.titulo)
         description = publication.informacion
-        selectedCategory.onChange(publication.categoria.label)
+        selectedCategory.onChange(publication.categoria)
 
         selectedCity = publication.ubicacion.ciudad
         latitude = publication.ubicacion.latitud
         longitude = publication.ubicacion.longitud
 
-        selectedPriceRange = publication.rangoPrecios.toUiLabel()
+        selectedPriceRange = publication.rangoPrecios ?: RangoPrecios.GRATUITO
 
         val scheduleByDay = publication.horarios.associateBy { it.dia }
         daySchedules = DiaSemana.entries.map { day ->
@@ -204,7 +203,7 @@ class PostCreationViewModel @Inject constructor(
                     return@launch
                 }
 
-                val category = selectedCategory.value.toDomainCategoryOrNull()
+                val category = selectedCategory.value
                 if (category == null) {
                     _createResult.value = RequestResult.Failure(appContext.getString(R.string.vm_post_creation_invalid_category))
                     return@launch
@@ -220,7 +219,7 @@ class PostCreationViewModel @Inject constructor(
                     fotos = prefilledPhotos,
                     horarios = buildSchedules(),
                     estado = EstadoPublicacion.PENDIENTE,
-                    rangoPrecios = selectedPriceRange.toDomainPriceRange(),
+                    rangoPrecios = selectedPriceRange,
                     motivoRechazo = null
                 )
 
@@ -265,7 +264,7 @@ class PostCreationViewModel @Inject constructor(
         daySchedules = DiaSemana.entries.map {
             DayScheduleData(it)
         }
-        selectedPriceRange = appContext.getString(R.string.vm_post_creation_price_free)
+        selectedPriceRange = RangoPrecios.GRATUITO
         showSuccessModal = false
         prefilledFromPublicationId = null
         prefilledPhotos = emptyList()
@@ -283,28 +282,6 @@ class PostCreationViewModel @Inject constructor(
                     fechaFin = close
                 )
             }
-    }
-
-    private fun String.toDomainCategoryOrNull(): Categoria? {
-        val normalized = normalizeForEnum(this)
-        return Categoria.entries.firstOrNull { normalizeForEnum(it.label) == normalized }
-    }
-
-    private fun String.toDomainPriceRange(): RangoPrecios = when (normalizeForEnum(this)) {
-        normalizeForEnum(appContext.getString(R.string.vm_post_creation_price_free)) -> RangoPrecios.GRATUITO
-        normalizeForEnum(appContext.getString(R.string.vm_post_creation_price_economic)) -> RangoPrecios.ECONOMICO
-        normalizeForEnum(appContext.getString(R.string.vm_post_creation_price_moderate)) -> RangoPrecios.MODERADO
-        normalizeForEnum(appContext.getString(R.string.vm_post_creation_price_expensive)) -> RangoPrecios.COSTOSO
-        else -> RangoPrecios.GRATUITO
-    }
-
-
-    private fun RangoPrecios?.toUiLabel(): String = when (this) {
-        null -> appContext.getString(R.string.vm_post_creation_price_free)
-        RangoPrecios.GRATUITO -> appContext.getString(R.string.vm_post_creation_price_free)
-        RangoPrecios.ECONOMICO -> appContext.getString(R.string.vm_post_creation_price_economic)
-        RangoPrecios.MODERADO -> appContext.getString(R.string.vm_post_creation_price_moderate)
-        RangoPrecios.COSTOSO -> appContext.getString(R.string.vm_post_creation_price_expensive)
     }
 
     private fun Long.toHHmm(): String {
@@ -327,9 +304,4 @@ class PostCreationViewModel @Inject constructor(
         }
     }
 
-    private fun normalizeForEnum(value: String): String {
-        val normalized = Normalizer.normalize(value.trim(), Normalizer.Form.NFD)
-            .replace("\\p{M}+".toRegex(), "")
-        return normalized.uppercase()
-    }
 }

@@ -18,11 +18,13 @@ import androidx.compose.ui.unit.dp
 import com.example.triplink.domain.model.enums.Categoria
 import com.example.triplink.ui.theme.PrincipalBlue
 
+
 @Composable
-fun CategoryChips(
-    categories: List<String>,
-    selectedCategory: String,
-    onCategorySelected: (String) -> Unit,
+fun <T> CategoryChips(
+    categories: List<T>,
+    selectedCategory: T,
+    onCategorySelected: (T) -> Unit,
+    label: @Composable (T) -> String,
     modifier: Modifier = Modifier
 ) {
     LazyRow(
@@ -37,7 +39,7 @@ fun CategoryChips(
                 onClick = { onCategorySelected(category) },
                 label = {
                     Text(
-                        text = category,
+                        text = label(category),
                         style = MaterialTheme.typography.labelMedium
                     )
                 },

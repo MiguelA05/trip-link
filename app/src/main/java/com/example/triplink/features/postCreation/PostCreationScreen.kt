@@ -45,7 +45,9 @@ import com.example.triplink.core.components.GeneralButton
 import com.example.triplink.core.components.GeneralTopBar
 import com.example.triplink.R
 import com.example.triplink.core.utils.RequestResult
+import com.example.triplink.domain.model.enums.Categoria
 import com.example.triplink.domain.model.enums.DiaSemana
+import com.example.triplink.domain.model.enums.RangoPrecios
 import com.example.triplink.ui.theme.PrincipalBlue
 import com.example.triplink.ui.theme.TextColors
 import com.example.triplink.ui.theme.TextTokens
@@ -186,7 +188,7 @@ fun PostCreationScreen(
                             onExpandedChange = { expanded = !expanded }
                         ) {
                             OutlinedTextField(
-                                value = viewModel.selectedCategory.value,
+                                value = viewModel.selectedCategory.value?.localizedLabel() ?: "",
                                 onValueChange = {},
                                 readOnly = true,
                                 placeholder = { Text(stringResource(R.string.feature_post_creation_category_placeholder), color = TextColors.Muted) },
@@ -212,7 +214,7 @@ fun PostCreationScreen(
                             ) {
                                 viewModel.categories.forEach { category ->
                                     DropdownMenuItem(
-                                        text = { Text(text = category) },
+                                        text = { Text(text = category.localizedLabel()) },
                                         onClick = {
                                             viewModel.selectedCategory.onChange(category)
                                             expanded = false
@@ -451,20 +453,20 @@ fun PostCreationScreen(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
-                        val free = stringResource(R.string.component_publication_price_range_free)
-                        val economical = stringResource(R.string.component_publication_price_range_economic)
-                        val moderate = stringResource(R.string.component_publication_price_range_moderate)
-                        val expensive = stringResource(R.string.component_publication_price_range_expensive)
-                        PriceOption(icon = "$", label = free, isSelected = viewModel.selectedPriceRange == free) {
+                        val free = RangoPrecios.GRATUITO
+                        val economical = RangoPrecios.ECONOMICO
+                        val moderate = RangoPrecios.MODERADO
+                        val expensive = RangoPrecios.COSTOSO
+                        PriceOption(icon = "$", label = free.localizedLabel(), isSelected = viewModel.selectedPriceRange == free) {
                             viewModel.selectedPriceRange = free
                         }
-                        PriceOption(icon = "$$", label = economical, isSelected = viewModel.selectedPriceRange == economical) {
+                        PriceOption(icon = "$$", label = economical.localizedLabel(), isSelected = viewModel.selectedPriceRange == economical) {
                             viewModel.selectedPriceRange = economical
                         }
-                        PriceOption(icon = "$$$", label = moderate, isSelected = viewModel.selectedPriceRange == moderate) {
+                        PriceOption(icon = "$$$", label = moderate.localizedLabel(), isSelected = viewModel.selectedPriceRange == moderate) {
                             viewModel.selectedPriceRange = moderate
                         }
-                        PriceOption(icon = "$$$$", label = expensive, isSelected = viewModel.selectedPriceRange == expensive) {
+                        PriceOption(icon = "$$$$", label = expensive.localizedLabel(), isSelected = viewModel.selectedPriceRange == expensive) {
                             viewModel.selectedPriceRange = expensive
                         }
                     }
@@ -884,6 +886,23 @@ fun buildRequiredLabel(text: String) = buildAnnotatedString {
     withStyle(style = SpanStyle(color = Color.Red)) {
         append(" *")
     }
+}
+
+@Composable
+private fun Categoria.localizedLabel(): String = when (this) {
+    Categoria.GASTRONOMIA -> stringResource(R.string.enum_categoria_gastronomia)
+    Categoria.CULTURA -> stringResource(R.string.enum_categoria_cultura)
+    Categoria.NATURALEZA -> stringResource(R.string.enum_categoria_naturaleza)
+    Categoria.ENTRETENIMIENTO -> stringResource(R.string.enum_categoria_entretenimiento)
+    Categoria.HISTORIA -> stringResource(R.string.enum_categoria_historia)
+}
+
+@Composable
+private fun RangoPrecios.localizedLabel(): String = when (this) {
+    RangoPrecios.GRATUITO -> stringResource(R.string.component_publication_price_range_free)
+    RangoPrecios.ECONOMICO -> stringResource(R.string.component_publication_price_range_economic)
+    RangoPrecios.MODERADO -> stringResource(R.string.component_publication_price_range_moderate)
+    RangoPrecios.COSTOSO -> stringResource(R.string.component_publication_price_range_expensive)
 }
 
 @Preview(showBackground = true)

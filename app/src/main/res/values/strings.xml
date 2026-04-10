@@ -178,6 +178,13 @@
     <!-- resource: feature_filters_minimum_rating -->
     <string name="feature_filters_minimum_rating">Minimum rating</string>
 
+    <!-- ENUM: Categoria -->
+    <string name="enum_categoria_gastronomia">Gastronomy</string>
+    <string name="enum_categoria_cultura">Culture</string>
+    <string name="enum_categoria_naturaleza">Nature</string>
+    <string name="enum_categoria_entretenimiento">Entertainment</string>
+    <string name="enum_categoria_historia">History</string>
+
     <!-- FEATURE: PublicationDetails -->
     <!-- resource: feature_publication_details_rating_label -->
     <string name="feature_publication_details_rating_label">RATING</string>
