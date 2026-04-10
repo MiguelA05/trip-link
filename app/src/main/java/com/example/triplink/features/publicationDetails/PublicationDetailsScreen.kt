@@ -139,6 +139,7 @@ fun PublicationDetailsScreen(
 
     val schedules: List<DayScheduleUi> = publication.horarios.toWeeklyScheduleUi()
     val today = currentDayLabelEs()
+    val loginRequiredForReviewMessage = stringResource(R.string.feature_publication_details_login_required_for_review)
     val isCurrentUserOwner = (sessionState as? SessionState.Authenticated)
         ?.session
         ?.userId
@@ -147,13 +148,13 @@ fun PublicationDetailsScreen(
 
     val selectedPriceLevel = publication.rangoPrecios?.let {
         when (it.name) {
-            "GRATUITO" -> "Gratuito"
-            "ECONOMICO" -> "Económico"
-            "MODERADO" -> "Moderado"
-            "COSTOSO" -> "Costoso"
-            else -> "Sin precio"
+            "GRATUITO" -> stringResource(R.string.component_publication_price_range_free)
+            "ECONOMICO" -> stringResource(R.string.component_publication_price_range_economic)
+            "MODERADO" -> stringResource(R.string.component_publication_price_range_moderate)
+            "COSTOSO" -> stringResource(R.string.component_publication_price_range_expensive)
+            else -> stringResource(R.string.component_publication_price_range_no_price)
         }
-    } ?: "Sin precio"
+    } ?: stringResource(R.string.component_publication_price_range_no_price)
 
     val reviews = viewModel.comments.map { Review(it.userName, it.rating.toInt(), it.text) }
     val generalRating = if (viewModel.comments.isNotEmpty()) {
@@ -188,7 +189,7 @@ fun PublicationDetailsScreen(
                         showRatingModal = true
                     } else {
                         coroutineScope.launch {
-                            snackbarHostState.showSnackbar("Debes iniciar sesión para publicar una reseña")
+                            snackbarHostState.showSnackbar(loginRequiredForReviewMessage)
                         }
                     }
                 },
@@ -260,10 +261,10 @@ fun PublicationDetailsScreen(
 
     if (showDeletePublicationDialog) {
         DestructiveConfirmDialog(
-            title = "¿Eliminar publicación?",
-            message = "Esta publicación y sus datos relacionados se eliminarán de forma permanente.",
-            confirmText = "Sí, eliminar",
-            dismissText = "Cancelar",
+            title = stringResource(R.string.feature_publication_details_delete_dialog_title),
+            message = stringResource(R.string.feature_publication_details_delete_dialog_message),
+            confirmText = stringResource(R.string.feature_publication_details_delete_dialog_confirm),
+            dismissText = stringResource(R.string.feature_publication_details_delete_dialog_cancel),
             onDismissRequest = { showDeletePublicationDialog = false },
             onConfirm = {
                 showDeletePublicationDialog = false
@@ -359,7 +360,7 @@ fun ImageHeader(
             ) {
                 Icon(
                     imageVector = Icons.Outlined.ErrorOutline,
-                    contentDescription = "Reportar",
+                    contentDescription = stringResource(R.string.feature_publication_details_report_content_description),
                     tint = PrincipalRed,
                     modifier = Modifier.size(28.dp)
                 )
@@ -401,13 +402,13 @@ fun RatingModal(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
-                text = "¿Qué te pareció este lugar?",
+                text = stringResource(R.string.feature_publication_details_rating_modal_title),
                 style = MaterialTheme.typography.headlineSmall,
                 fontWeight = FontWeight.Bold,
                 textAlign = TextAlign.Center
             )
             Text(
-                text = "Tu opinión ayuda a otros usuarios",
+                text = stringResource(R.string.feature_publication_details_rating_modal_subtitle),
                 style = MaterialTheme.typography.bodyMedium,
                 color = Color.Gray,
                 textAlign = TextAlign.Center
@@ -489,7 +490,7 @@ fun RatingModal(
                     }
                 }
                 Text(
-                    text = "${comment.length}/$maxChars",
+                    text = stringResource(R.string.feature_publication_details_comment_counter, comment.length, maxChars),
                     style = TextTokens.helperText(),
                     color = Color.LightGray
                 )
@@ -579,7 +580,12 @@ fun InappropriateContentModal(onDismiss: () -> Unit, onReplace: () -> Unit) {
                                 .background(Color(0xFFF1F5F9), CircleShape)
                                 .size(32.dp)
                         ) {
-                            Icon(Icons.Default.Close, contentDescription = "Cerrar", modifier = Modifier.size(18.dp), tint = Color.Gray)
+                            Icon(
+                                Icons.Default.Close,
+                                contentDescription = stringResource(R.string.component_general_alert_dialog_close_content_description),
+                                modifier = Modifier.size(18.dp),
+                                tint = Color.Gray
+                            )
                         }
                     }
 
@@ -627,7 +633,7 @@ fun InappropriateContentModal(onDismiss: () -> Unit, onReplace: () -> Unit) {
                         modifier = Modifier.fillMaxWidth()
                     ) {
                         Text(
-                            text = "El lugar no fue de mi agrado, mi experiencia fue mala.",
+                            text = stringResource(R.string.feature_publication_details_inappropriate_suggestion),
                             modifier = Modifier.padding(16.dp),
                             color = Color.Gray,
                             style = TextTokens.inputText()
@@ -678,10 +684,26 @@ fun ReportModal(onDismiss: () -> Unit) {
     var otherReason by remember { mutableStateOf("") }
 
     val options = listOf(
-        ReportOptionData("Información incorrecta", "Datos desactualizados o inexactos", Icons.AutoMirrored.Outlined.LibraryBooks),
-        ReportOptionData("Ubicación errónea", "El punto en el mapa no coincide con el lugar real", Icons.Outlined.LocationOn),
-        ReportOptionData("Contenido inapropiado", "Lenguaje ofensivo, imágenes inadecuadas o spam", Icons.Outlined.Block),
-        ReportOptionData("Otro", "Describe el motivo específico a continuación", Icons.Outlined.Edit)
+        ReportOptionData(
+            stringResource(R.string.feature_publication_details_report_option_incorrect_info_title),
+            stringResource(R.string.feature_publication_details_report_option_incorrect_info_subtitle),
+            Icons.AutoMirrored.Outlined.LibraryBooks
+        ),
+        ReportOptionData(
+            stringResource(R.string.feature_publication_details_report_option_wrong_location_title),
+            stringResource(R.string.feature_publication_details_report_option_wrong_location_subtitle),
+            Icons.Outlined.LocationOn
+        ),
+        ReportOptionData(
+            stringResource(R.string.feature_publication_details_report_option_inappropriate_title),
+            stringResource(R.string.feature_publication_details_report_option_inappropriate_subtitle),
+            Icons.Outlined.Block
+        ),
+        ReportOptionData(
+            stringResource(R.string.feature_publication_details_report_option_other_title),
+            stringResource(R.string.feature_publication_details_report_option_other_subtitle),
+            Icons.Outlined.Edit
+        )
     )
 
     Dialog(
@@ -718,7 +740,7 @@ fun ReportModal(onDismiss: () -> Unit) {
                         }
                         Spacer(modifier = Modifier.width(12.dp))
                         Text(
-                            text = "Reportar contenido",
+                            text = stringResource(R.string.feature_publication_details_report_modal_title),
                             style = MaterialTheme.typography.titleLarge,
                             fontWeight = FontWeight.Bold
                         )
@@ -729,13 +751,18 @@ fun ReportModal(onDismiss: () -> Unit) {
                             .background(Color(0xFFF1F5F9), CircleShape)
                             .size(32.dp)
                     ) {
-                        Icon(Icons.Default.Close, contentDescription = "Cerrar", modifier = Modifier.size(18.dp), tint = Color.Gray)
+                        Icon(
+                            Icons.Default.Close,
+                            contentDescription = stringResource(R.string.component_general_alert_dialog_close_content_description),
+                            modifier = Modifier.size(18.dp),
+                            tint = Color.Gray
+                        )
                     }
                 }
 
                 Spacer(modifier = Modifier.height(8.dp))
                 Text(
-                    text = "Selecciona el motivo del reporte",
+                    text = stringResource(R.string.feature_publication_details_report_modal_subtitle),
                     style = MaterialTheme.typography.bodyMedium,
                     color = Color.Gray,
                     modifier = Modifier.fillMaxWidth()
@@ -754,13 +781,13 @@ fun ReportModal(onDismiss: () -> Unit) {
                     }
                 }
 
-                if (selectedOption == "Otro") {
+                if (selectedOption == stringResource(R.string.feature_publication_details_report_option_other_title)) {
                     Spacer(modifier = Modifier.height(16.dp))
                     FormField(
-                        label = "Descripción del motivo",
+                        label = stringResource(R.string.feature_publication_details_report_reason_label),
                         value = otherReason,
                         onValueChange = { otherReason = it },
-                        placeholder = "Escribe aquí el motivo..."
+                        placeholder = stringResource(R.string.feature_publication_details_report_reason_placeholder)
                     )
                 }
 
@@ -872,7 +899,7 @@ fun ReviewsSection(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                text = "Reseñas",
+                text = stringResource(R.string.feature_publication_details_reviews_title),
                 style = TextTokens.sectionTitle(),
                 color = Color.Black
             )
@@ -1021,7 +1048,7 @@ fun BottomActionsBar(
                     )
                     Spacer(modifier = Modifier.width(8.dp))
                     Text(
-                        "Me interesa",
+                        stringResource(R.string.feature_publication_details_interested_action),
                         style = TextTokens.buttonLabel()
                     )
                 }
@@ -1039,7 +1066,7 @@ fun BottomActionsBar(
                     Icon(Icons.Outlined.CheckCircle, contentDescription = null)
                     Spacer(modifier = Modifier.width(8.dp))
                     Text(
-                        "Visitado",
+                        stringResource(R.string.feature_publication_details_visited_action),
                         style = TextTokens.buttonLabel()
                     )
                 }

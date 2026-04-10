@@ -30,6 +30,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -80,7 +81,7 @@ fun ResetPasswordScreen(
         },
         topBar = {
             GeneralTopBar(
-                title = "Restablecer Contraseña",
+                title = stringResource(R.string.feature_reset_password_title),
                 onBack = {}
             )
         }
@@ -98,20 +99,20 @@ fun ResetPasswordScreen(
             Image(
                 modifier = Modifier.width(74.dp),
                 painter = painterResource(R.drawable.logo),
-                contentDescription = "Icono de la aplicacion"
+                contentDescription = stringResource(R.string.feature_reset_password_logo_content_description)
             )
             AppTitle()
             Text(
                 textAlign = TextAlign.Center,
-                text = "Es momento de restablecer tu contraseña! Introduce una nueva contraseña para tu cuenta",
+                text = stringResource(R.string.feature_reset_password_message),
                 style = MaterialTheme.typography.bodyLarge
             )
 
             FormField(
-                label = "Contraseña",
+                label = stringResource(R.string.feature_reset_password_new_password_label),
                 value = viewModel.password.value,
                 onValueChange = { viewModel.password.onChange(it) },
-                placeholder = "Escribe tu nueva contraseña",
+                placeholder = stringResource(R.string.feature_reset_password_new_password_placeholder),
                 modifier = Modifier.fillMaxWidth(),
                 visualTransformation = if (viewModel.passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
@@ -119,7 +120,11 @@ fun ResetPasswordScreen(
                 errorText = viewModel.password.error,
                 trailingIcon = {
                     val icon = if (viewModel.passwordVisible) Icons.Filled.Visibility else Icons.Filled.VisibilityOff
-                    val description = if (viewModel.passwordVisible) "Ocultar contraseña" else "Mostrar contraseña"
+                    val description = if (viewModel.passwordVisible) {
+                        stringResource(R.string.feature_login_hide_password)
+                    } else {
+                        stringResource(R.string.feature_login_show_password)
+                    }
 
                     IconButton(onClick = { viewModel.togglePasswordVisibility() }) {
                         Icon(imageVector = icon, contentDescription = description)
@@ -128,10 +133,10 @@ fun ResetPasswordScreen(
             )
 
             FormField(
-                label = "Confirmar nueva contraseña",
+                label = stringResource(R.string.feature_reset_password_confirm_password_label),
                 value = viewModel.confirmPassword.value,
                 onValueChange = { viewModel.confirmPassword.onChange(it) },
-                placeholder = "Escribe tu nueva contraseña",
+                placeholder = stringResource(R.string.feature_reset_password_new_password_placeholder),
                 modifier = Modifier.fillMaxWidth(),
                 visualTransformation = if (viewModel.confirmPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
@@ -139,7 +144,11 @@ fun ResetPasswordScreen(
                 errorText = viewModel.confirmPassword.error,
                 trailingIcon = {
                     val icon = if (viewModel.confirmPasswordVisible) Icons.Filled.Visibility else Icons.Filled.VisibilityOff
-                    val description = if (viewModel.confirmPasswordVisible) "Ocultar contraseña" else "Mostrar contraseña"
+                    val description = if (viewModel.confirmPasswordVisible) {
+                        stringResource(R.string.feature_login_hide_password)
+                    } else {
+                        stringResource(R.string.feature_login_show_password)
+                    }
 
                     IconButton(onClick = { viewModel.toggleConfirmPasswordVisibility() }) {
                         Icon(imageVector = icon, contentDescription = description)
@@ -153,7 +162,7 @@ fun ResetPasswordScreen(
                     viewModel.saveNewPassword()
                 },
                 enabled = viewModel.isFormValid,
-                text = "Restablecer Contraseña"
+                text = stringResource(R.string.feature_reset_password_submit_action)
             )
         }
     }

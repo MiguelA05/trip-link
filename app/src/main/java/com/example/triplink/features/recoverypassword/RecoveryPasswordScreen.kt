@@ -25,6 +25,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -50,10 +51,8 @@ fun RecoveryPasswordScreen(
     onResetPassword: () -> Unit = {}
 ) {
     val snackbarHostState = remember { SnackbarHostState() }
-    val recoveryMessage = "Introduce el correo electrónico de tu cuenta y te enviaremos un " +
-            "correo electrónico con un enlace para recuperar tu contraseña"
-    val recoveryResendMessage = "¿No recibiste el correo electrónico o el enlace ya ha caducado? " +
-            "Revisa el correo electrónico que introdujiste y te reenviaremos el correo de recuperación"
+    val recoveryMessage = stringResource(R.string.feature_recovery_password_message)
+    val recoveryResendMessage = stringResource(R.string.feature_recovery_password_resend_message)
     val recoveryResult by viewModel.recoveryResult.collectAsState()
 
     LaunchedEffect(recoveryResult) {
@@ -88,7 +87,7 @@ fun RecoveryPasswordScreen(
         },
         topBar = {
             GeneralTopBar(
-                title = "Recuperar Contraseña",
+                title = stringResource(R.string.feature_recovery_password_title),
                 onBack = onBack
             )
         }
@@ -107,7 +106,7 @@ fun RecoveryPasswordScreen(
             Image(
                 modifier = Modifier.width(74.dp),
                 painter = painterResource(R.drawable.logo),
-                contentDescription = "Icono de la aplicacion"
+                contentDescription = stringResource(R.string.feature_recovery_password_logo_content_description)
             )
             AppTitle()
             Text(
@@ -117,10 +116,10 @@ fun RecoveryPasswordScreen(
             )
 
             FormField(
-                label = "Correo Electrónico",
+                label = stringResource(R.string.feature_recovery_password_email_label),
                 value = viewModel.email.value,
                 onValueChange = { viewModel.email.onChange(it) },
-                placeholder = "tu@email.com",
+                placeholder = stringResource(R.string.feature_recovery_password_email_placeholder),
                 modifier = Modifier.fillMaxWidth(),
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
                 isError = viewModel.email.error != null,
@@ -133,7 +132,11 @@ fun RecoveryPasswordScreen(
                     viewModel.sendPasswordResetEmail()
                 },
                 enabled = viewModel.isFormValid,
-                text = if (!viewModel.isEmailSent) "Enviar Correo" else "Reenviar Correo"
+                text = if (!viewModel.isEmailSent) {
+                    stringResource(R.string.feature_recovery_password_send_email_action)
+                } else {
+                    stringResource(R.string.feature_recovery_password_resend_email_action)
+                }
             )
         }
     }
@@ -142,8 +145,8 @@ fun RecoveryPasswordScreen(
         GeneralAlertDialog(
             onDismissRequest = { viewModel.dismissDialog() },
             onConfirm = { viewModel.dismissDialog() },
-            title = "Revisa tu correo",
-            message = "Comprueba tu bandeja de entrada y sigue el enlace para reestablecer tu contraseña de forma segura",
+            title = stringResource(R.string.feature_recovery_password_success_title),
+            message = stringResource(R.string.feature_recovery_password_success_message),
             icon = Icons.Default.Email
         )
     }

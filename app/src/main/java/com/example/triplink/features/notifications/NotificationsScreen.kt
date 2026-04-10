@@ -18,11 +18,13 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import com.example.triplink.R
 import com.example.triplink.core.components.GeneralTopBar
 import com.example.triplink.ui.theme.*
 import com.example.triplink.ui.theme.TextTokens
@@ -39,7 +41,7 @@ fun NotificationsScreen(
     Scaffold(
         topBar = {
             GeneralTopBar(
-                title = "Notificaciones",
+                title = stringResource(R.string.feature_notifications_title),
                 onBack = onBackClick
             )
         }
@@ -82,7 +84,7 @@ fun EmptyNotificationsView() {
         )
         Spacer(modifier = Modifier.height(24.dp))
         Text(
-            text = "No tienes notificaciones",
+            text = stringResource(R.string.feature_notifications_empty_title),
             style = MaterialTheme.typography.headlineSmall,
             fontWeight = FontWeight.Bold,
             color = DarkGray,
@@ -90,7 +92,7 @@ fun EmptyNotificationsView() {
         )
         Spacer(modifier = Modifier.height(12.dp))
         Text(
-            text = "Te avisaremos cuando haya novedades importantes para ti",
+            text = stringResource(R.string.feature_notifications_empty_subtitle),
             style = MaterialTheme.typography.bodyLarge,
             color = PrincipalGray,
             textAlign = TextAlign.Center,
@@ -127,7 +129,7 @@ fun NotificationsList(
                     )
                     Spacer(modifier = Modifier.width(8.dp))
                     Text(
-                        text = "Marcar todas como leídas",
+                        text = stringResource(R.string.feature_notifications_mark_all_as_read_action),
                         style = MaterialTheme.typography.labelLarge,
                         color = PrincipalBlue,
                         fontWeight = FontWeight.Bold

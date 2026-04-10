@@ -34,6 +34,7 @@ import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -99,7 +100,7 @@ fun LoginScreen(
         },
         topBar = {
             GeneralTopBar(
-                title = "Iniciar Sesión",
+                title = stringResource(R.string.feature_login_title),
                 onBack = onBackClick
             )
         }
@@ -114,14 +115,14 @@ fun LoginScreen(
         ) {
             Image(
                 painter = painterResource(R.drawable.logo),
-                contentDescription = "Icono de la aplicacion",
+                contentDescription = stringResource(R.string.feature_login_logo_content_description),
                 Modifier.size(100.dp)
             )
 
             AppTitle()
 
             Text(
-                text = "Bienvenido de nuevo",
+                text = stringResource(R.string.feature_login_welcome_back),
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(bottom = 26.dp),
@@ -132,10 +133,10 @@ fun LoginScreen(
             )
 
             FormField(
-                label = "Email",
+                label = stringResource(R.string.feature_login_email_label),
                 value = viewModel.email.value,
                 onValueChange = { viewModel.email.onChange(it) },
-                placeholder = "ejemplo@correo.com",
+                placeholder = stringResource(R.string.feature_login_email_placeholder),
                 modifier = Modifier.fillMaxWidth(),
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
                 isError = viewModel.email.error != null,
@@ -143,10 +144,10 @@ fun LoginScreen(
             )
 
             FormField(
-                label = "Password",
+                label = stringResource(R.string.feature_login_password_label),
                 value = viewModel.password.value,
                 onValueChange = { viewModel.password.onChange(it) },
-                placeholder = "********",
+                placeholder = stringResource(R.string.feature_login_password_placeholder),
                 modifier = Modifier.fillMaxWidth(),
                 visualTransformation = if (viewModel.passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
@@ -156,7 +157,7 @@ fun LoginScreen(
                     val icon =
                         if (viewModel.passwordVisible) Icons.Filled.Visibility else Icons.Filled.VisibilityOff
                     val description =
-                        if (viewModel.passwordVisible) "Ocultar contraseña" else "Mostrar contraseña"
+                        if (viewModel.passwordVisible) stringResource(R.string.feature_login_hide_password) else stringResource(R.string.feature_login_show_password)
 
                     IconButton(onClick = { viewModel.togglePasswordVisibility() }) {
                         Icon(imageVector = icon, contentDescription = description)
@@ -177,7 +178,7 @@ fun LoginScreen(
                     )
             ) {
                 Text(
-                    text = "¿Olvidaste tu contraseña?",
+                    text = stringResource(R.string.feature_login_forgot_password),
                     style = MaterialTheme.typography.bodyLarge.copy(
                         color = PrincipalBlue
                     )
@@ -190,12 +191,12 @@ fun LoginScreen(
                     viewModel.login()
                 },
                 enabled = viewModel.isFormValid,
-                text = "Iniciar Sesión"
+                text = stringResource(R.string.feature_login_primary_action)
             )
 
             LinkTextRow(
-                text = "¿No tienes una cuenta?",
-                buttonText = "Crea tu cuenta",
+                text = stringResource(R.string.feature_login_no_account),
+                buttonText = stringResource(R.string.feature_login_create_account),
                 onClick = onNavigateToRegister
 
             )

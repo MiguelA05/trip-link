@@ -315,4 +315,211 @@
     <string name="feature_publication_details_inappropriate_title">Inappropriate content detected</string>
     <!-- resource: feature_publication_details_inappropriate_message -->
     <string name="feature_publication_details_inappropriate_message">The comment you are writing contains obscene language. If you want to create a comment, you can replace it with:</string>
+
+    <!-- COMPONENT: BadgeDetailModal -->
+    <string name="component_badge_detail_modal_unlocked_label">NEW BADGE UNLOCKED!</string>
+    <string name="component_badge_detail_modal_view_badges_action">View my badges</string>
+
+    <!-- FEATURE: UserInfo -->
+    <string name="feature_user_info_badges_title">My badges</string>
+    <string name="feature_user_info_badges_action">View all</string>
+    <string name="feature_user_info_badges_empty">You have no earned badges yet</string>
+    <string name="feature_user_info_empty_verified">You have no\nverified contributions</string>
+    <string name="feature_user_info_empty_pending">You have no\npending contributions</string>
+    <string name="feature_user_info_empty_rejected">You have no\nrejected contributions</string>
+    <string name="feature_user_info_create_poi_action">Create POI</string>
+    <string name="feature_user_info_logout_title">Log out?</string>
+    <string name="feature_user_info_logout_message">Your session will be closed on this device.\nYou can sign in again at any time.</string>
+    <string name="feature_user_info_logout_confirm">Log out</string>
+    <string name="feature_user_info_logout_cancel">Cancel</string>
+    <string name="feature_user_info_status_verified">Verified</string>
+    <string name="feature_user_info_status_pending">Pending</string>
+    <string name="feature_user_info_status_rejected">Rejected</string>
+    <string name="feature_user_info_reject_reason_prefix">Reason: %1$s</string>
+    <string name="feature_user_info_edit_resend_action">Edit and resend</string>
+    <string name="feature_user_info_view_publication_action">View publication</string>
+
+    <!-- FEATURE: UserHome -->
+    <string name="feature_user_home_location">Armenia, Quindio</string>
+    <string name="feature_user_home_recommended_title">RECOMMENDED</string>
+    <string name="feature_user_home_create_publication_content_description">Create publication</string>
+
+    <!-- FEATURE: Explore -->
+    <string name="feature_explore_view_map_content_description">View map</string>
+
+    <!-- FEATURE: ExploreMap -->
+    <string name="feature_explore_map_back_to_list_content_description">Back to list</string>
+
+    <!-- FEATURE: AccountEdit -->
+    <string name="feature_account_edit_title">Account management</string>
+    <string name="feature_account_edit_personal_info_section">PERSONAL INFORMATION</string>
+    <string name="feature_account_edit_full_name_label">Full name</string>
+    <string name="feature_account_edit_full_name_placeholder">John Doe</string>
+    <string name="feature_account_edit_phone_label">Phone</string>
+    <string name="feature_account_edit_phone_placeholder">Enter your phone number</string>
+    <string name="feature_account_edit_residence_section">RESIDENCE LOCATION</string>
+    <string name="feature_account_edit_address_label">Neighborhood, city or reference</string>
+    <string name="feature_account_edit_address_placeholder">Ex. La Candelaria, Bogota</string>
+    <string name="feature_account_edit_department_label">Department</string>
+    <string name="feature_account_edit_city_label">City</string>
+    <string name="feature_account_edit_add_exact_location">Add exact location?</string>
+    <string name="feature_account_edit_map_placeholder_content_description">Map placeholder</string>
+    <string name="feature_account_edit_map_placeholder_label">Map (Coming soon)</string>
+    <string name="feature_account_edit_access_data_section">ACCESS DATA</string>
+    <string name="feature_account_edit_email_label">Email</string>
+    <string name="feature_account_edit_password_label">Password</string>
+    <string name="feature_account_edit_change_password_action">Change password</string>
+    <string name="feature_account_edit_password_helper">Password is managed through the recovery process.</string>
+    <string name="feature_account_edit_save_changes_action">Save changes</string>
+    <string name="feature_account_edit_delete_account_action">Delete account</string>
+    <string name="feature_account_edit_delete_account_dialog_title">Delete account?</string>
+    <string name="feature_account_edit_delete_account_dialog_message">Your profile, publications and data will be permanently deleted. This action cannot be undone.</string>
+    <string name="feature_account_edit_delete_account_dialog_confirm">Yes, delete</string>
+    <string name="feature_account_edit_delete_account_dialog_cancel">Cancel</string>
+
+    <!-- FEATURE: Login -->
+    <string name="feature_login_title">Sign in</string>
+    <string name="feature_login_logo_content_description">App icon</string>
+    <string name="feature_login_welcome_back">Welcome back</string>
+    <string name="feature_login_email_label">Email</string>
+    <string name="feature_login_email_placeholder">example@mail.com</string>
+    <string name="feature_login_password_label">Password</string>
+    <string name="feature_login_password_placeholder">********</string>
+    <string name="feature_login_hide_password">Hide password</string>
+    <string name="feature_login_show_password">Show password</string>
+    <string name="feature_login_forgot_password">Forgot your password?</string>
+    <string name="feature_login_primary_action">Sign in</string>
+    <string name="feature_login_no_account">Don\'t have an account?</string>
+    <string name="feature_login_create_account">Create your account</string>
+
+    <!-- FEATURE: Register -->
+    <string name="feature_register_title">Register</string>
+    <string name="feature_register_create_account_heading">Create account</string>
+    <string name="feature_register_subtitle">Find unique places and connect with your community.</string>
+    <string name="feature_register_full_name_label">Full name</string>
+    <string name="feature_register_full_name_placeholder">John Doe</string>
+    <string name="feature_register_email_label">Email</string>
+    <string name="feature_register_email_placeholder">you@mail.com</string>
+    <string name="feature_register_password_label">Password</string>
+    <string name="feature_register_password_placeholder">••••••••••••</string>
+    <string name="feature_register_residence_title">Residence location</string>
+    <string name="feature_register_department_label">Department</string>
+    <string name="feature_register_city_label">City</string>
+    <string name="feature_register_add_exact_location">Add exact location?</string>
+    <string name="feature_register_map_placeholder_content_description">Map placeholder</string>
+    <string name="feature_register_map_placeholder_label">Map (Coming soon)</string>
+    <string name="feature_register_have_account">Already have an account?</string>
+    <string name="feature_register_login_action">Sign in</string>
+
+    <!-- FEATURE: RecoveryPassword -->
+    <string name="feature_recovery_password_title">Recover password</string>
+    <string name="feature_recovery_password_logo_content_description">App icon</string>
+    <string name="feature_recovery_password_message">Enter your account email and we will send a recovery link to reset your password.</string>
+    <string name="feature_recovery_password_resend_message">Didn\'t receive the email or has the link expired? Check your email and we\'ll resend the recovery message.</string>
+    <string name="feature_recovery_password_email_label">Email</string>
+    <string name="feature_recovery_password_email_placeholder">you@mail.com</string>
+    <string name="feature_recovery_password_send_email_action">Send email</string>
+    <string name="feature_recovery_password_resend_email_action">Resend email</string>
+    <string name="feature_recovery_password_success_title">Check your email</string>
+    <string name="feature_recovery_password_success_message">Check your inbox and follow the link to safely reset your password.</string>
+
+    <!-- FEATURE: ResetPassword -->
+    <string name="feature_reset_password_title">Reset password</string>
+    <string name="feature_reset_password_logo_content_description">App icon</string>
+    <string name="feature_reset_password_message">It\'s time to reset your password! Enter a new password for your account.</string>
+    <string name="feature_reset_password_new_password_label">Password</string>
+    <string name="feature_reset_password_confirm_password_label">Confirm new password</string>
+    <string name="feature_reset_password_new_password_placeholder">Type your new password</string>
+    <string name="feature_reset_password_submit_action">Reset password</string>
+
+    <!-- FEATURE: AppHome -->
+    <string name="feature_app_home_hero_line_1">Find unique places,</string>
+    <string name="feature_app_home_hero_line_2">connect with your community</string>
+    <string name="feature_app_home_create_account_content_description">Create account</string>
+    <string name="feature_app_home_register_action">Register</string>
+    <string name="feature_app_home_have_account">Do you have an account?</string>
+    <string name="feature_app_home_login_action">Sign in</string>
+
+    <!-- FEATURE: Comments -->
+    <string name="feature_comments_title">Reviews and ratings</string>
+    <string name="feature_comments_total_reviews">%1$d reviews</string>
+    <string name="feature_comments_delete_content_description">Delete comment</string>
+    <string name="feature_comments_delete_dialog_title">Delete comment?</string>
+    <string name="feature_comments_delete_dialog_message">This action will permanently remove your comment.</string>
+    <string name="feature_comments_delete_dialog_confirm">Yes, delete</string>
+    <string name="feature_comments_delete_dialog_cancel">Cancel</string>
+
+    <!-- FEATURE: AdminReports -->
+    <string name="feature_admin_reports_title">Moderation</string>
+    <string name="feature_admin_reports_subtitle">Submitted reports</string>
+    <string name="feature_admin_reports_counter_label">Reports</string>
+    <string name="feature_admin_reports_empty_state">There are no active reports at this moment</string>
+
+    <!-- FEATURE: AdminReportDetails -->
+    <string name="feature_admin_report_details_not_found">Report not found</string>
+    <string name="feature_admin_report_details_title">Report details</string>
+    <string name="feature_admin_report_details_publication_info_title">Publication information</string>
+    <string name="feature_admin_report_details_report_info_title">Report details</string>
+    <string name="feature_admin_report_details_report_reason_label">Report reason</string>
+    <string name="feature_admin_report_details_reported_by_label">Reported by</string>
+    <string name="feature_admin_report_details_report_date_label">Report date</string>
+    <string name="feature_admin_report_details_accepted_reports_label">Accepted reports</string>
+    <string name="feature_admin_report_details_reject_action">Reject</string>
+    <string name="feature_admin_report_details_confirm_action">Confirm</string>
+    <string name="feature_admin_report_details_cancel_action">Cancel</string>
+    <string name="feature_admin_report_details_confirm_dialog_title">Confirm report</string>
+    <string name="feature_admin_report_details_confirm_dialog_message">Do you want to confirm the report for "%1$s"? This action increases accepted reports count.</string>
+    <string name="feature_admin_report_details_reject_dialog_title">Reject report</string>
+    <string name="feature_admin_report_details_reject_dialog_message">Do you want to reject the report for "%1$s"? This means the publication does not violate rules.</string>
+
+    <!-- FEATURE: PublicationDetails (extended) -->
+    <string name="feature_publication_details_login_required_for_review">You must sign in to publish a review</string>
+    <string name="feature_publication_details_delete_dialog_title">Delete publication?</string>
+    <string name="feature_publication_details_delete_dialog_message">This publication and related data will be permanently deleted.</string>
+    <string name="feature_publication_details_delete_dialog_confirm">Yes, delete</string>
+    <string name="feature_publication_details_delete_dialog_cancel">Cancel</string>
+    <string name="feature_publication_details_report_content_description">Report</string>
+    <string name="feature_publication_details_rating_modal_title">What did you think about this place?</string>
+    <string name="feature_publication_details_rating_modal_subtitle">Your opinion helps other users</string>
+    <string name="feature_publication_details_comment_counter">%1$d/%2$d</string>
+    <string name="feature_publication_details_inappropriate_suggestion">I did not like the place, my experience was bad.</string>
+    <string name="feature_publication_details_report_modal_title">Report content</string>
+    <string name="feature_publication_details_report_modal_subtitle">Select the reason for the report</string>
+    <string name="feature_publication_details_report_reason_label">Reason description</string>
+    <string name="feature_publication_details_report_reason_placeholder">Write the reason here...</string>
+    <string name="feature_publication_details_report_option_incorrect_info_title">Incorrect information</string>
+    <string name="feature_publication_details_report_option_incorrect_info_subtitle">Outdated or inaccurate data</string>
+    <string name="feature_publication_details_report_option_wrong_location_title">Wrong location</string>
+    <string name="feature_publication_details_report_option_wrong_location_subtitle">The map point does not match the real place</string>
+    <string name="feature_publication_details_report_option_inappropriate_title">Inappropriate content</string>
+    <string name="feature_publication_details_report_option_inappropriate_subtitle">Offensive language, inappropriate images or spam</string>
+    <string name="feature_publication_details_report_option_other_title">Other</string>
+    <string name="feature_publication_details_report_option_other_subtitle">Describe the specific reason below</string>
+    <string name="feature_publication_details_interested_action">I\'m interested</string>
+    <string name="feature_publication_details_visited_action">Visited</string>
+
+    <!-- FEATURE: Notifications -->
+    <string name="feature_notifications_title">Notifications</string>
+    <string name="feature_notifications_empty_title">You have no notifications</string>
+    <string name="feature_notifications_empty_subtitle">We will let you know when there are important updates for you</string>
+    <string name="feature_notifications_mark_all_as_read_action">Mark all as read</string>
+
+    <!-- FEATURE: Badges -->
+    <string name="feature_badges_title">My badges</string>
+    <string name="feature_badges_current_level_name">Traveler</string>
+    <string name="feature_badges_current_level_label">CURRENT LEVEL</string>
+    <string name="feature_badges_total_points_label">Total points</string>
+    <string name="feature_badges_contributions_label">Contributions</string>
+    <string name="feature_badges_last_activity">Last activity: %1$s</string>
+
+    <!-- FEATURE: AdminModeration -->
+    <string name="feature_admin_moderation_title">Moderation</string>
+    <string name="feature_admin_moderation_subtitle">Recent publications</string>
+    <string name="feature_admin_moderation_badge">MOD</string>
+    <string name="feature_admin_moderation_filter_all">All</string>
+    <string name="feature_admin_moderation_filter_pending">Pending</string>
+    <string name="feature_admin_moderation_filter_verified">Verified</string>
+    <string name="feature_admin_moderation_filter_rejected">Rejected</string>
+    <string name="feature_admin_moderation_empty_state">There are no publications to display for this filter</string>
+
 </resources>

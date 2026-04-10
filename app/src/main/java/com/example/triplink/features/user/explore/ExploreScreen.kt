@@ -21,8 +21,10 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import com.example.triplink.R
 import com.example.triplink.core.components.PublicationCard
 import com.example.triplink.core.components.common.CategoryChips
 import com.example.triplink.core.components.common.SearchBar
@@ -74,7 +76,7 @@ fun ExploreScreen(
 			) {
 				Icon(
 					imageVector = Icons.Outlined.Map,
-					contentDescription = "Ver mapa"
+					contentDescription = stringResource(R.string.feature_explore_view_map_content_description)
 				)
 			}
 		}
@@ -97,4 +99,3 @@ fun ExploreScreen(
 		}
 	}
 }
-

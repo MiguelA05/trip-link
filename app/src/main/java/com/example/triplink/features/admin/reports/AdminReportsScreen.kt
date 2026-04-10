@@ -20,10 +20,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import com.example.triplink.R
 import com.example.triplink.core.components.admin.ReportModerationPublicationCard
 import com.example.triplink.ui.theme.PrincipalBlue
 
@@ -51,13 +53,13 @@ fun AdminReportsScreen(
         ) {
             Column {
                 Text(
-                    text = "Moderación",
+                    text = stringResource(R.string.feature_admin_reports_title),
                     style = MaterialTheme.typography.headlineSmall,
                     fontWeight = FontWeight.Bold,
                     color = Color(0xFF1E1F26)
                 )
                 Text(
-                    text = "Reportes realizados",
+                    text = stringResource(R.string.feature_admin_reports_subtitle),
                     style = MaterialTheme.typography.bodyLarge,
                     color = Color(0xFF9AA3B2),
                     modifier = Modifier.padding(top = 4.dp)
@@ -97,7 +99,7 @@ fun AdminReportsScreen(
                     color = Color(0xFFF98A1F)
                 )
                 Text(
-                    text = "Reportes",
+                    text = stringResource(R.string.feature_admin_reports_counter_label),
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold,
                     color = Color(0xFFF98A1F),
@@ -129,7 +131,7 @@ fun AdminReportsScreen(
                         border = androidx.compose.foundation.BorderStroke(1.dp, Color(0xFFE1E6EF))
                     ) {
                         Text(
-                            text = "No hay reportes activos en este momento",
+                            text = stringResource(R.string.feature_admin_reports_empty_state),
                             modifier = Modifier.padding(20.dp),
                             style = MaterialTheme.typography.bodyLarge,
                             color = Color(0xFF7C889B),
@@ -141,4 +143,3 @@ fun AdminReportsScreen(
         }
     }
 }
-

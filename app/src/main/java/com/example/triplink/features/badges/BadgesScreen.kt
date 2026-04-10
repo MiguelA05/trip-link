@@ -16,16 +16,16 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.window.Dialog
-import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import com.example.triplink.R
 import com.example.triplink.core.components.GeneralTopBar
 import com.example.triplink.core.components.feedback.BadgeDetailModal
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 
 
 @Composable
@@ -38,7 +38,7 @@ fun BadgesScreen(
     Scaffold(
         topBar = {
             GeneralTopBar(
-                title = "Mis Insignias",
+                title = stringResource(R.string.feature_badges_title),
                 onBack = onBack
             )
         },
@@ -58,7 +58,7 @@ fun BadgesScreen(
                 Spacer(modifier = Modifier.height(32.dp))
 
                 Text(
-                    text = "Mis Insignias",
+                    text = stringResource(R.string.feature_badges_title),
                     style = MaterialTheme.typography.titleLarge,
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier.fillMaxWidth()
@@ -121,13 +121,13 @@ fun UserStatusCard() {
             Spacer(modifier = Modifier.height(12.dp))
 
             Text(
-                text = "Turista",
+                text = stringResource(R.string.feature_badges_current_level_name),
                 style = MaterialTheme.typography.headlineMedium,
                 fontWeight = FontWeight.Bold
             )
 
             Text(
-                text = "NIVEL ACTUAL",
+                text = stringResource(R.string.feature_badges_current_level_label),
                 style = MaterialTheme.typography.labelSmall,
                 color = Color.Gray,
                 letterSpacing = 1.sp
@@ -151,7 +151,7 @@ fun UserStatusCard() {
                         color = Color(0xFF1E88E5)
                     )
                     Text(
-                        text = "Puntos Totales",
+                        text = stringResource(R.string.feature_badges_total_points_label),
                         style = MaterialTheme.typography.bodySmall,
                         color = Color.Gray
                     )
@@ -170,7 +170,7 @@ fun UserStatusCard() {
                         color = Color(0xFF1E88E5)
                     )
                     Text(
-                        text = "Aportes",
+                        text = stringResource(R.string.feature_badges_contributions_label),
                         style = MaterialTheme.typography.bodySmall,
                         color = Color.Gray
                     )
@@ -194,7 +194,10 @@ fun UserStatusCard() {
                     )
                     Spacer(modifier = Modifier.width(8.dp))
                     Text(
-                        text = "Última actividad: 22/02/2026",
+                        text = stringResource(
+                            R.string.feature_badges_last_activity,
+                            "22/02/2026"
+                        ),
                         style = MaterialTheme.typography.bodySmall,
                         color = Color.DarkGray
                     )

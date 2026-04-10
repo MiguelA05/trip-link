@@ -29,10 +29,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
+import com.example.triplink.R
 import com.example.triplink.features.badges.Badge
 
 @Composable
@@ -61,7 +63,7 @@ fun BadgeDetailModal(badge: Badge, onDismiss: () -> Unit) {
                     ) {
                         Icon(
                             imageVector = Icons.Default.Close,
-                            contentDescription = "Cerrar",
+                            contentDescription = stringResource(R.string.component_general_alert_dialog_close_content_description),
                             tint = Color.Gray,
                             modifier = Modifier.size(18.dp)
                         )
@@ -124,7 +126,7 @@ fun BadgeDetailModal(badge: Badge, onDismiss: () -> Unit) {
                         )
                         Spacer(modifier = Modifier.width(8.dp))
                         Text(
-                            text = "¡NUEVA INSIGNIA DESBLOQUEADA!",
+                            text = stringResource(R.string.component_badge_detail_modal_unlocked_label),
                             style = MaterialTheme.typography.labelLarge,
                             fontWeight = FontWeight.Bold,
                             color = badge.color
@@ -187,7 +189,7 @@ fun BadgeDetailModal(badge: Badge, onDismiss: () -> Unit) {
                         )
                         Spacer(modifier = Modifier.width(8.dp))
                         Text(
-                            text = "Ver mis insignias",
+                            text = stringResource(R.string.component_badge_detail_modal_view_badges_action),
                             style = MaterialTheme.typography.titleMedium,
                             fontWeight = FontWeight.Bold
                         )

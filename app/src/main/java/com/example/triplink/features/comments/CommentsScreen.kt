@@ -31,9 +31,11 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import com.example.triplink.R
 import com.example.triplink.core.components.CompactDestructiveConfirmDialog
 import com.example.triplink.core.components.CommentCard
 import com.example.triplink.core.components.GeneralTopBar
@@ -75,7 +77,7 @@ fun CommentsScreen(
 		snackbarHost = { SnackbarHost(snackbarHostState) },
 		topBar = {
 			GeneralTopBar(
-				title = "Reseñas y calificaciones",
+				title = stringResource(R.string.feature_comments_title),
 				onBack = onBackClick
 			)
 		}
@@ -98,7 +100,7 @@ fun CommentsScreen(
 
 			item {
 				Text(
-					text = "${uiState.totalReviews} reseñas",
+					text = stringResource(R.string.feature_comments_total_reviews, uiState.totalReviews),
 					modifier = Modifier.fillMaxWidth(),
 					color = Color(0xFF63758E),
 					fontWeight = FontWeight.SemiBold
@@ -126,7 +128,7 @@ fun CommentsScreen(
 						) {
 							Icon(
 								imageVector = Icons.Outlined.Delete,
-								contentDescription = "Eliminar comentario",
+								contentDescription = stringResource(R.string.feature_comments_delete_content_description),
 								tint = PrincipalRed,
 								modifier = Modifier.size(18.dp)
 							)
@@ -139,10 +141,10 @@ fun CommentsScreen(
 
 	if (deletingCommentId != null) {
 		CompactDestructiveConfirmDialog(
-			title = "¿Eliminar comentario?",
-			message = "Esta acción eliminará tu comentario de forma permanente.",
-			confirmText = "Sí, eliminar",
-			dismissText = "Cancelar",
+			title = stringResource(R.string.feature_comments_delete_dialog_title),
+			message = stringResource(R.string.feature_comments_delete_dialog_message),
+			confirmText = stringResource(R.string.feature_comments_delete_dialog_confirm),
+			dismissText = stringResource(R.string.feature_comments_delete_dialog_cancel),
 			onDismissRequest = { deletingCommentId = null },
 			onConfirm = {
 				viewModel.deleteComment(publicationId, deletingCommentId!!, currentUserId)

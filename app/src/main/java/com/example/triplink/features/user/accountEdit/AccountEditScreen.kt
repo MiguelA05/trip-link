@@ -19,12 +19,14 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import com.example.triplink.R
 import com.example.triplink.core.components.FormField
 import com.example.triplink.core.components.DestructiveConfirmDialog
 import com.example.triplink.core.components.GeneralButton
@@ -81,7 +83,7 @@ fun AccountEditScreen(
         snackbarHost = { SnackbarHost(snackbarHostState) },
         topBar = {
             GeneralTopBar(
-                title = "Gestión de Cuenta",
+                title = stringResource(R.string.feature_account_edit_title),
                 onBack = onBackClick,
                 showBackButton = true
             )
@@ -118,13 +120,13 @@ fun AccountEditScreen(
             Spacer(modifier = Modifier.height(28.dp))
 
             AccountSectionContainer(
-                title = "INFORMACIÓN PERSONAL"
+                title = stringResource(R.string.feature_account_edit_personal_info_section)
             ) {
                 FormField(
-                    label = "Nombre completo",
+                    label = stringResource(R.string.feature_account_edit_full_name_label),
                     value = accountEditViewModel.fullName,
                     onValueChange = { accountEditViewModel.onFullNameChange(it) },
-                    placeholder = "John Doe",
+                    placeholder = stringResource(R.string.feature_account_edit_full_name_placeholder),
                     modifier = Modifier.fillMaxWidth(),
                     isError = accountEditViewModel.fullNameError != null,
                     errorText = accountEditViewModel.fullNameError
@@ -133,10 +135,10 @@ fun AccountEditScreen(
                 Spacer(modifier = Modifier.height(16.dp))
 
                 FormField(
-                    label = "Teléfono",
+                    label = stringResource(R.string.feature_account_edit_phone_label),
                     value = accountEditViewModel.phone,
                     onValueChange = { accountEditViewModel.onPhoneChange(it) },
-                    placeholder = "Ingresa tu número de teléfono",
+                    placeholder = stringResource(R.string.feature_account_edit_phone_placeholder),
                     modifier = Modifier.fillMaxWidth(),
                     isError = accountEditViewModel.phoneError != null,
                     errorText = accountEditViewModel.phoneError
@@ -146,13 +148,13 @@ fun AccountEditScreen(
             Spacer(modifier = Modifier.height(16.dp))
 
             AccountSectionContainer(
-                title = "UBICACIÓN DE RESIDENCIA"
+                title = stringResource(R.string.feature_account_edit_residence_section)
             ) {
                 FormField(
-                    label = "Barrio, ciudad o referencia",
+                    label = stringResource(R.string.feature_account_edit_address_label),
                     value = accountEditViewModel.address,
                     onValueChange = { accountEditViewModel.onAddressChange(it) },
-                    placeholder = "Ej. Barrio La Candelaria, Bogotá",
+                    placeholder = stringResource(R.string.feature_account_edit_address_placeholder),
                     modifier = Modifier.fillMaxWidth(),
                     isError = accountEditViewModel.addressError != null,
                     errorText = accountEditViewModel.addressError
@@ -165,7 +167,7 @@ fun AccountEditScreen(
                     horizontalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
                     SelectableDropdown(
-                        label = "Dpto",
+                        label = stringResource(R.string.feature_account_edit_department_label),
                         selectedValue = accountEditViewModel.selectedDepartment,
                         options = accountEditViewModel.departments,
                         onOptionSelected = { accountEditViewModel.onDepartmentChange(it) },
@@ -173,7 +175,7 @@ fun AccountEditScreen(
                     )
 
                     SelectableDropdown(
-                        label = "Ciudad",
+                        label = stringResource(R.string.feature_account_edit_city_label),
                         selectedValue = accountEditViewModel.selectedCity,
                         options = accountEditViewModel.citiesMap[accountEditViewModel.selectedDepartment]
                             ?: emptyList(),
@@ -194,7 +196,7 @@ fun AccountEditScreen(
                         colors = CheckboxDefaults.colors(checkedColor = PrincipalBlue)
                     )
                     Text(
-                        text = "¿Desea añadir ubicación exacta?",
+                        text = stringResource(R.string.feature_account_edit_add_exact_location),
                         style = MaterialTheme.typography.bodyMedium,
                         color = TextColors.Secondary
                     )
@@ -216,12 +218,15 @@ fun AccountEditScreen(
                         ) {
                             Icon(
                                 imageVector = Icons.Default.LocationOn,
-                                contentDescription = "Map Placeholder",
+                                contentDescription = stringResource(R.string.feature_account_edit_map_placeholder_content_description),
                                 tint = Color.LightGray,
                                 modifier = Modifier.size(48.dp)
                             )
                             Spacer(modifier = Modifier.height(8.dp))
-                            Text(text = "Mapa (Próximamente)", color = Color.LightGray)
+                            Text(
+                                text = stringResource(R.string.feature_account_edit_map_placeholder_label),
+                                color = Color.LightGray
+                            )
                         }
                     }
                 }
@@ -230,10 +235,10 @@ fun AccountEditScreen(
             Spacer(modifier = Modifier.height(16.dp))
 
             AccountSectionContainer(
-                title = "DATOS DE ACCESO"
+                title = stringResource(R.string.feature_account_edit_access_data_section)
             ) {
                 Text(
-                    text = "Correo electrónico",
+                    text = stringResource(R.string.feature_account_edit_email_label),
                     fontWeight = FontWeight.SemiBold,
                     style = MaterialTheme.typography.titleMedium,
                     color = TextColors.Secondary,
@@ -282,7 +287,7 @@ fun AccountEditScreen(
                 Spacer(modifier = Modifier.height(8.dp))
 
                 Text(
-                    text = "El correo electrónico no se puede modificar por seguridad.",
+                    text = stringResource(R.string.feature_account_edit_email_helper),
                     style = MaterialTheme.typography.bodyMedium,
                     color = Color(0xFF9C9EA5),
                     modifier = Modifier.fillMaxWidth(),
@@ -292,7 +297,7 @@ fun AccountEditScreen(
                 Spacer(modifier = Modifier.height(18.dp))
 
                 Text(
-                    text = "Contraseña",
+                    text = stringResource(R.string.feature_account_edit_password_label),
                     fontWeight = FontWeight.SemiBold,
                     style = MaterialTheme.typography.titleMedium,
                     color = TextColors.Secondary,
@@ -317,7 +322,7 @@ fun AccountEditScreen(
                     )
                 ) {
                     Text(
-                        text = "Cambiar contraseña",
+                        text = stringResource(R.string.feature_account_edit_change_password_action),
                         style = TextTokens.buttonLabel()
                     )
                 }
@@ -325,7 +330,7 @@ fun AccountEditScreen(
                 Spacer(modifier = Modifier.height(10.dp))
 
                 Text(
-                    text = "La contraseña se gestiona mediante el proceso de recuperación.",
+                    text = stringResource(R.string.feature_account_edit_password_helper),
                     style = MaterialTheme.typography.bodyMedium,
                     color = Color(0xFF9C9EA5),
                     modifier = Modifier.fillMaxWidth(),
@@ -338,7 +343,7 @@ fun AccountEditScreen(
             // Save Changes Button
             Box(modifier = Modifier.fillMaxWidth()) {
                 GeneralButton(
-                    text = "Guardar cambios",
+                    text = stringResource(R.string.feature_account_edit_save_changes_action),
                     primary = true,
                     onClick = {
                         accountEditViewModel.saveChanges()
@@ -363,7 +368,7 @@ fun AccountEditScreen(
                     .height(48.dp)
             ) {
                 Text(
-                    text = "Eliminar cuenta",
+                    text = stringResource(R.string.feature_account_edit_delete_account_action),
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Medium
                 )
@@ -375,10 +380,10 @@ fun AccountEditScreen(
 
     if (showDeleteConfirmation) {
         DestructiveConfirmDialog(
-            title = "¿Eliminar cuenta?",
-            message = "Se borrarán permanentemente tu perfil, publicaciones y datos. Esta acción no se puede deshacer.",
-            confirmText = "Sí, eliminar",
-            dismissText = "Cancelar",
+            title = stringResource(R.string.feature_account_edit_delete_account_dialog_title),
+            message = stringResource(R.string.feature_account_edit_delete_account_dialog_message),
+            confirmText = stringResource(R.string.feature_account_edit_delete_account_dialog_confirm),
+            dismissText = stringResource(R.string.feature_account_edit_delete_account_dialog_cancel),
             onDismissRequest = { showDeleteConfirmation = false },
             onConfirm = {
                 showDeleteConfirmation = false

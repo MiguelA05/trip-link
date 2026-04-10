@@ -31,9 +31,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.example.triplink.R
 import com.example.triplink.ui.theme.PrincipalBlue
 import com.example.triplink.ui.theme.PrincipalRed
 import com.example.triplink.ui.theme.PrincipalWhite
@@ -68,7 +70,7 @@ fun CompactDestructiveConfirmDialog(
                 ) {
                     Icon(
                         imageVector = Icons.Default.Close,
-                        contentDescription = "Cerrar",
+                        contentDescription = stringResource(R.string.component_general_alert_dialog_close_content_description),
                         tint = Color(0xFF9AA0A6)
                     )
                 }
@@ -152,4 +154,3 @@ fun CompactDestructiveConfirmDialog(
         }
     }
 }
-

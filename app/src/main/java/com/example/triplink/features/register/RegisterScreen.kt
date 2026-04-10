@@ -16,11 +16,13 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import com.example.triplink.R
 import com.example.triplink.core.components.common.AppTitle
 import com.example.triplink.ui.theme.AppTitleVariant
 
@@ -64,7 +66,7 @@ fun RegisterScreen(
             CenterAlignedTopAppBar(
                 title = {
                     Text(
-                        text = "Registrarse",
+                        text = stringResource(R.string.feature_register_title),
                         style = TextTokens.screenTitle()
                     )
                 },
@@ -72,7 +74,7 @@ fun RegisterScreen(
                     IconButton(onClick = onBackClick) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = "Back",
+                            contentDescription = stringResource(R.string.component_general_top_bar_back_content_description),
                             tint = PrincipalBlue
                         )
                     }
@@ -97,14 +99,14 @@ fun RegisterScreen(
             AppTitle(variant = AppTitleVariant.Hero, modifier = Modifier.padding(bottom = 0.dp))
 
             Text(
-                text = "Crear Cuenta",
+                text = stringResource(R.string.feature_register_create_account_heading),
                 style = MaterialTheme.typography.headlineSmall,
                 fontWeight = FontWeight.Bold,
                 color = TextColors.Primary
             )
 
             Text(
-                text = "Encuentra lugares únicos, conecta con tu comunidad.",
+                text = stringResource(R.string.feature_register_subtitle),
                 style = MaterialTheme.typography.bodyMedium,
                 color = TextColors.Secondary,
                 textAlign = TextAlign.Center,
@@ -114,10 +116,10 @@ fun RegisterScreen(
             HorizontalDivider(modifier = Modifier.padding(bottom = 24.dp), thickness = 1.dp, color = Color(0xFFEEEEEE))
 
             FormField(
-                label = "Nombre Completo",
+                label = stringResource(R.string.feature_register_full_name_label),
                 value = registerViewModel.name,
                 onValueChange = { registerViewModel.onNameChange(it) },
-                placeholder = "John Doe",
+                placeholder = stringResource(R.string.feature_register_full_name_placeholder),
                 modifier = Modifier.fillMaxWidth(),
                 isError = registerViewModel.nameError != null,
                 errorText = registerViewModel.nameError
@@ -126,10 +128,10 @@ fun RegisterScreen(
             Spacer(modifier = Modifier.height(16.dp))
 
             FormField(
-                label = "Correo electrónico",
+                label = stringResource(R.string.feature_register_email_label),
                 value = registerViewModel.email,
                 onValueChange = { registerViewModel.onEmailChange(it) },
-                placeholder = "tu@email.com",
+                placeholder = stringResource(R.string.feature_register_email_placeholder),
                 modifier = Modifier.fillMaxWidth(),
                 isError = registerViewModel.emailError != null,
                 errorText = registerViewModel.emailError
@@ -138,10 +140,10 @@ fun RegisterScreen(
             Spacer(modifier = Modifier.height(16.dp))
 
             FormField(
-                label = "Contraseña",
+                label = stringResource(R.string.feature_register_password_label),
                 value = registerViewModel.password,
                 onValueChange = { registerViewModel.onPasswordChange(it) },
-                placeholder = "••••••••••••",
+                placeholder = stringResource(R.string.feature_register_password_placeholder),
                 modifier = Modifier.fillMaxWidth(),
                 isError = registerViewModel.passwordError != null,
                 errorText = registerViewModel.passwordError
@@ -150,7 +152,7 @@ fun RegisterScreen(
             Spacer(modifier = Modifier.height(24.dp))
 
             Text(
-                text = "Ubicación de Residencia",
+                text = stringResource(R.string.feature_register_residence_title),
                 fontWeight = FontWeight.SemiBold,
                 style = MaterialTheme.typography.titleMedium,
                 modifier = Modifier.fillMaxWidth(),
@@ -164,7 +166,7 @@ fun RegisterScreen(
                 horizontalArrangement = Arrangement.spacedBy(12.dp)
             ) {
                 SelectableDropdown(
-                    label = "Dpto",
+                    label = stringResource(R.string.feature_register_department_label),
                     selectedValue = registerViewModel.selectedDepartment,
                     options = registerViewModel.departments,
                     onOptionSelected = { registerViewModel.onDepartmentChange(it) },
@@ -172,7 +174,7 @@ fun RegisterScreen(
                 )
 
                 SelectableDropdown(
-                    label = "Ciudad",
+                    label = stringResource(R.string.feature_register_city_label),
                     selectedValue = registerViewModel.selectedCity,
                     options = registerViewModel.citiesMap[registerViewModel.selectedDepartment] ?: emptyList(),
                     onOptionSelected = { registerViewModel.onCityChange(it) },
@@ -192,7 +194,7 @@ fun RegisterScreen(
                     colors = CheckboxDefaults.colors(checkedColor = PrincipalBlue)
                 )
                 Text(
-                    text = "¿Desea añadir ubicacion exacta?",
+                    text = stringResource(R.string.feature_register_add_exact_location),
                     style = MaterialTheme.typography.bodyMedium,
                     color = TextColors.Secondary
                 )
@@ -211,11 +213,14 @@ fun RegisterScreen(
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
                         Icon(
                             imageVector = Icons.Default.LocationOn,
-                            contentDescription = "Map Placeholder",
+                            contentDescription = stringResource(R.string.feature_register_map_placeholder_content_description),
                             tint = Color.LightGray,
                             modifier = Modifier.size(48.dp)
                         )
-                        Text(text = "Mapa (Próximamente)", color = Color.LightGray)
+                        Text(
+                            text = stringResource(R.string.feature_register_map_placeholder_label),
+                            color = Color.LightGray
+                        )
                     }
                 }
             }
@@ -245,7 +250,7 @@ fun RegisterScreen(
             }
 
             GeneralButton(
-                text = "Crear Cuenta",
+                text = stringResource(R.string.feature_register_create_account_heading),
                 enabled = registerViewModel.isFormValid,
                 onClick = {
                     registerViewModel.register()
@@ -253,8 +258,8 @@ fun RegisterScreen(
             )
 
             LinkTextRow(
-                text = "¿Tienes una cuenta?",
-                buttonText = "Iniciar sesión",
+                text = stringResource(R.string.feature_register_have_account),
+                buttonText = stringResource(R.string.feature_register_login_action),
                 onClick = onLoginClick,
                 modifier = Modifier.padding(vertical = 16.dp)
             )

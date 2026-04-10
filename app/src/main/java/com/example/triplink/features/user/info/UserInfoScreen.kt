@@ -31,10 +31,12 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import com.example.triplink.R
 import com.example.triplink.core.components.GeneralAlertDialog
 import com.example.triplink.core.components.GeneralButton
 import com.example.triplink.core.components.profile.EmptyState
@@ -101,12 +103,12 @@ fun UserInfoScreen(
 
 			item {
 				SectionCard(
-					title = "Mis insignias",
-					actionLabel = "Ver todas",
+					title = stringResource(R.string.feature_user_info_badges_title),
+					actionLabel = stringResource(R.string.feature_user_info_badges_action),
 					onActionClick = onBagdesClick,
 					modifier = Modifier.padding(horizontal = 10.dp)
 				) {
-					EmptyState(message = "Aun no tienes insignias ganadas")
+					EmptyState(message = stringResource(R.string.feature_user_info_badges_empty))
 				}
 			}
 
@@ -130,9 +132,9 @@ fun UserInfoScreen(
 			if (state.selectedContributionItems.isEmpty()) {
 				item {
 					val emptyMessage = when (state.selectedContributionTab) {
-						EstadoPublicacion.VERIFICADA -> "No tienes contribuciones\nverificadas"
-						EstadoPublicacion.PENDIENTE -> "No tienes contribuciones\npendientes"
-						EstadoPublicacion.RECHAZADA -> "No tienes contribuciones\nrechazadas"
+						EstadoPublicacion.VERIFICADA -> stringResource(R.string.feature_user_info_empty_verified)
+						EstadoPublicacion.PENDIENTE -> stringResource(R.string.feature_user_info_empty_pending)
+						EstadoPublicacion.RECHAZADA -> stringResource(R.string.feature_user_info_empty_rejected)
 					}
 
 					Card(
@@ -160,7 +162,7 @@ fun UserInfoScreen(
 
 							GeneralButton(
 								onClick = onPostCreationClick,
-								text = "Crear POI"
+								text = stringResource(R.string.feature_user_info_create_poi_action)
 							)
 						}
 					}
@@ -189,11 +191,11 @@ fun UserInfoScreen(
 				viewModel.dismissLogoutDialog()
 				onLogoutClick()
 			},
-			title = "¿Cerrar sesión?",
-			message = "Se cerrará tu sesión en este dispositivo.\nPodrás volver a ingresar en cualquier momento.",
+			title = stringResource(R.string.feature_user_info_logout_title),
+			message = stringResource(R.string.feature_user_info_logout_message),
 			icon = Icons.AutoMirrored.Outlined.Logout,
-			buttonText = "Cerrar sesión",
-			dismissButtonText = "Cancelar",
+			buttonText = stringResource(R.string.feature_user_info_logout_confirm),
+			dismissButtonText = stringResource(R.string.feature_user_info_logout_cancel),
 			onDismissAction = viewModel::dismissLogoutDialog
 		)
 	}
@@ -223,9 +225,9 @@ fun ContributionCard(
 	}
 
 	val statusLabel = when (contribution.status) {
-		EstadoPublicacion.VERIFICADA -> "Verificado"
-		EstadoPublicacion.PENDIENTE -> "Pendiente"
-		EstadoPublicacion.RECHAZADA -> "Rechazado"
+		EstadoPublicacion.VERIFICADA -> stringResource(R.string.feature_user_info_status_verified)
+		EstadoPublicacion.PENDIENTE -> stringResource(R.string.feature_user_info_status_pending)
+		EstadoPublicacion.RECHAZADA -> stringResource(R.string.feature_user_info_status_rejected)
 	}
 
 	val dateFormatter = SimpleDateFormat("d MMM yyyy", Locale.forLanguageTag("es-ES"))
@@ -290,7 +292,7 @@ fun ContributionCard(
 
 				if (contribution.status == EstadoPublicacion.RECHAZADA && !contribution.rejectReason.isNullOrBlank()) {
 					Text(
-						text = "Motivo: ${contribution.rejectReason}",
+						text = stringResource(R.string.feature_user_info_reject_reason_prefix, contribution.rejectReason.orEmpty()),
 						color = TextColors.Secondary,
 						style = MaterialTheme.typography.bodyMedium
 					)
@@ -300,7 +302,11 @@ fun ContributionCard(
 					Spacer(modifier = Modifier.height(16.dp))
 					GeneralButton(
 						onClick = onActionClick,
-						text = if (contribution.status == EstadoPublicacion.RECHAZADA) "Editar y reenviar" else "Ver publicación"
+						text = if (contribution.status == EstadoPublicacion.RECHAZADA) {
+							stringResource(R.string.feature_user_info_edit_resend_action)
+						} else {
+							stringResource(R.string.feature_user_info_view_publication_action)
+						}
 					)
 				}
 			}

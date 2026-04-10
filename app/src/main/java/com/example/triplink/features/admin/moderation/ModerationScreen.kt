@@ -24,9 +24,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import com.example.triplink.R
 import com.example.triplink.core.components.ApprovePublicationDialog
 import com.example.triplink.core.components.ModerationPublicationCard
 import com.example.triplink.core.components.RejectPublicationDialog
@@ -44,7 +46,12 @@ fun ModerationScreen(
     onPublicationDetailsClick: (String) -> Unit = {}
 ) {
     val viewModel: ModerationViewModel = hiltViewModel()
-    val moderationChipLabels = listOf("Todas", "Pendientes", "Verificadas", "Rechazadas")
+    val moderationChipFilters = listOf(
+        ModerationFilter.ALL,
+        ModerationFilter.PENDING,
+        ModerationFilter.VERIFIED,
+        ModerationFilter.REJECTED
+    )
     val listState = rememberLazyListState()
     val coroutineScope = rememberCoroutineScope()
 
@@ -94,12 +101,12 @@ fun ModerationScreen(
         ) {
             Column {
                 Text(
-                    text = "Moderación",
+                    text = stringResource(R.string.feature_admin_moderation_title),
                     style = MaterialTheme.typography.headlineSmall,
                     fontWeight = FontWeight.Bold
                 )
                 Text(
-                    text = "Publicaciones recientes",
+                    text = stringResource(R.string.feature_admin_moderation_subtitle),
                     style = MaterialTheme.typography.bodyMedium,
                     color = Color(0xFF97A0AF)
                 )
@@ -110,7 +117,7 @@ fun ModerationScreen(
                 color = Color(0xFFE8F2FF)
             ) {
                 Text(
-                    text = "MOD",
+                    text = stringResource(R.string.feature_admin_moderation_badge),
                     modifier = Modifier.padding(horizontal = 12.dp, vertical = 7.dp),
                     color = PrincipalBlue,
                     style = MaterialTheme.typography.labelLarge,
@@ -125,29 +132,54 @@ fun ModerationScreen(
         ) {
             StatItem(
                 value = viewModel.pendingCount.toString(),
-                label = "Pendientes",
+                label = stringResource(R.string.feature_admin_moderation_filter_pending),
                 color = Color(0xFFF58C1E),
                 modifier = Modifier.weight(1f)
             )
             StatItem(
                 value = viewModel.verifiedCount.toString(),
-                label = "Verificadas",
+                label = stringResource(R.string.feature_admin_moderation_filter_verified),
                 color = Color(0xFF3AA454),
                 modifier = Modifier.weight(1f)
             )
             StatItem(
                 value = viewModel.rejectedCount.toString(),
-                label = "Rechazadas",
+                label = stringResource(R.string.feature_admin_moderation_filter_rejected),
                 color = Color(0xFFE24A4A),
                 modifier = Modifier.weight(1f)
             )
         }
 
+        val allLabel = stringResource(R.string.feature_admin_moderation_filter_all)
+        val pendingLabel = stringResource(R.string.feature_admin_moderation_filter_pending)
+        val verifiedLabel = stringResource(R.string.feature_admin_moderation_filter_verified)
+        val rejectedLabel = stringResource(R.string.feature_admin_moderation_filter_rejected)
+
         CategoryChips(
-            categories = moderationChipLabels,
-            selectedCategory = viewModel.selectedFilter.toChipLabel(),
+            categories = moderationChipFilters.map { filter ->
+                filter.toChipLabel(
+                    allLabel = allLabel,
+                    pendingLabel = pendingLabel,
+                    verifiedLabel = verifiedLabel,
+                    rejectedLabel = rejectedLabel
+                )
+            },
+            selectedCategory = viewModel.selectedFilter.toChipLabel(
+                allLabel = allLabel,
+                pendingLabel = pendingLabel,
+                verifiedLabel = verifiedLabel,
+                rejectedLabel = rejectedLabel
+            ),
             onCategorySelected = { selectedLabel ->
-                viewModel.onFilterSelected(selectedLabel.toModerationFilter())
+                val selectedFilter = moderationChipFilters.firstOrNull { filter ->
+                    filter.toChipLabel(
+                        allLabel = allLabel,
+                        pendingLabel = pendingLabel,
+                        verifiedLabel = verifiedLabel,
+                        rejectedLabel = rejectedLabel
+                    ) == selectedLabel
+                } ?: ModerationFilter.ALL
+                viewModel.onFilterSelected(selectedFilter)
             }
         )
 
@@ -175,7 +207,7 @@ fun ModerationScreen(
                         shape = RoundedCornerShape(18.dp)
                     ) {
                         Text(
-                            text = "No hay publicaciones para mostrar en este filtro",
+                            text = stringResource(R.string.feature_admin_moderation_empty_state),
                             modifier = Modifier.padding(20.dp),
                             style = MaterialTheme.typography.bodyLarge,
                             color = Color(0xFF7C889B)
@@ -226,18 +258,16 @@ fun ModerationScreen(
     }
 }
 
-private fun ModerationFilter.toChipLabel(): String = when (this) {
-    ModerationFilter.ALL -> "Todas"
-    ModerationFilter.PENDING -> "Pendientes"
-    ModerationFilter.VERIFIED -> "Verificadas"
-    ModerationFilter.REJECTED -> "Rechazadas"
-}
-
-private fun String.toModerationFilter(): ModerationFilter = when (this) {
-    "Pendientes" -> ModerationFilter.PENDING
-    "Verificadas" -> ModerationFilter.VERIFIED
-    "Rechazadas" -> ModerationFilter.REJECTED
-    else -> ModerationFilter.ALL
+private fun ModerationFilter.toChipLabel(
+    allLabel: String,
+    pendingLabel: String,
+    verifiedLabel: String,
+    rejectedLabel: String
+): String = when (this) {
+    ModerationFilter.ALL -> allLabel
+    ModerationFilter.PENDING -> pendingLabel
+    ModerationFilter.VERIFIED -> verifiedLabel
+    ModerationFilter.REJECTED -> rejectedLabel
 }
 
 @Composable

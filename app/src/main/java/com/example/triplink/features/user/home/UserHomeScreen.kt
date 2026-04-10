@@ -22,8 +22,10 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import com.example.triplink.R
 import com.example.triplink.core.components.PublicationCard
 import com.example.triplink.core.components.common.BrandHeader
 import com.example.triplink.core.components.common.SectionTitleDivider
@@ -71,10 +73,10 @@ fun UserHomeScreen(
         topBar = {
             Column {
                 BrandHeader(
-                    locationText = "Armenia, Quindio",
+                    locationText = stringResource(R.string.feature_user_home_location),
                     onNotificationsClick = onNotificationsClick
                 )
-                SectionTitleDivider(title = "RECOMENDADOS")
+                SectionTitleDivider(title = stringResource(R.string.feature_user_home_recommended_title))
             }
         },
         floatingActionButton = {
@@ -85,7 +87,7 @@ fun UserHomeScreen(
             ) {
                 Icon(
                     imageVector = Icons.Filled.Add,
-                    contentDescription = "Crear publicacion"
+                    contentDescription = stringResource(R.string.feature_user_home_create_publication_content_description)
                 )
             }
         }
@@ -109,4 +111,3 @@ fun UserHomeScreen(
         }
     }
 }
-

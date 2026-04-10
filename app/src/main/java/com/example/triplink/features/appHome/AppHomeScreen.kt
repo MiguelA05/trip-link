@@ -21,6 +21,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -69,7 +70,7 @@ fun HomeScreen(
         ) {
             Image(
                 painter = painterResource(id = R.drawable.logo),
-                contentDescription = "Logo",
+                contentDescription = stringResource(R.string.component_brand_header_logo_content_description),
                 modifier = Modifier.width(300.dp).size(150.dp)
             )
             AppTitle(variant = AppTitleVariant.Hero)
@@ -79,12 +80,12 @@ fun HomeScreen(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
-                    text = "Encuentra lugares únicos,",
+                    text = stringResource(R.string.feature_app_home_hero_line_1),
                     style = TextTokens.sectionTitle(),
                     color = Color.White
                 )
                 Text(
-                    text = "conecta con tu comunidad",
+                    text = stringResource(R.string.feature_app_home_hero_line_2),
                     style = TextTokens.sectionTitle(),
                     color = Color.White
                 )
@@ -104,14 +105,14 @@ fun HomeScreen(
         ) {
             GeneralButton(
                 icon = Icons.Filled.Add,
-                contentDescription = "Crear cuenta",
-                onClick = onNavigateToRegister  ,
-                text = "Register"
+                contentDescription = stringResource(R.string.feature_app_home_create_account_content_description),
+                onClick = onNavigateToRegister,
+                text = stringResource(R.string.feature_app_home_register_action)
             )
 
             LinkTextRow(
-                text = "¿Tienes una cuenta?",
-                buttonText = "Inicia sesión",
+                text = stringResource(R.string.feature_app_home_have_account),
+                buttonText = stringResource(R.string.feature_app_home_login_action),
                 textColor = Color.White,
                 onClick = onNavigateToLogin
 
