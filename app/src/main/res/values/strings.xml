@@ -1,4 +1,4 @@
-<resources>
+﻿<resources>
     <!-- App name -->
     <string name="app_name">TripLink</string>
 
@@ -65,7 +65,7 @@
 
     <!-- COMPONENT: SearchBar -->
     <!-- resource: component_search_bar_placeholder -->
-    <string name="component_search_bar_placeholder">Search places…</string>
+    <string name="component_search_bar_placeholder">Search placesâ€¦</string>
     <!-- resource: component_search_bar_search_content_description -->
     <string name="component_search_bar_search_content_description">Search</string>
     <!-- resource: component_search_bar_filters_content_description -->
@@ -86,13 +86,12 @@
     <!-- resource: component_explore_map_publication_card_rating -->
     <string name="component_explore_map_publication_card_rating">%1$s (%2$d)</string>
     <!-- resource: component_explore_map_publication_card_duration -->
-    <string name="component_explore_map_publication_card_duration">3–4 hrs</string>
+    <string name="component_explore_map_publication_card_duration">3â€“4 hrs</string>
     <!-- resource: component_explore_map_publication_card_open_full_publication -->
     <string name="component_explore_map_publication_card_open_full_publication">View full publication  ></string>
 
     <!-- COMPONENT: PublicationCard -->
     <!-- resource: component_publication_card_moment_ago -->
-    <string name="component_publication_card_moment_ago">A moment ago</string>
     <!-- resource: component_publication_card_near_you -->
     <string name="component_publication_card_near_you">Near you</string>
     <!-- resource: component_publication_card_comments_content_description -->
@@ -180,7 +179,6 @@
 
     <!-- FEATURE: PostCreation -->
     <!-- resource: feature_post_creation_required_fields_warning -->
-    <string name="feature_post_creation_required_fields_warning">Required fields: Name, Category and map location are needed to publish.</string>
     <!-- resource: feature_post_creation_required_fields_warning_prefix -->
     <string name="feature_post_creation_required_fields_warning_prefix">Required fields:</string>
     <!-- resource: feature_post_creation_required_fields_warning_body -->
@@ -229,7 +227,6 @@
     <!-- resource: feature_publication_details_back -->
     <string name="feature_publication_details_back">Back</string>
     <!-- resource: feature_publication_details_rate_hint -->
-    <string name="feature_publication_details_rate_hint">Tap to rate</string>
     <!-- resource: feature_publication_details_publish_review -->
     <string name="feature_publication_details_publish_review">Publish review</string>
     <!-- resource: feature_publication_details_cancel -->
@@ -245,7 +242,7 @@
     <!-- resource: feature_publication_details_comment_optional_label -->
     <string name="feature_publication_details_comment_optional_label">OPTIONAL</string>
     <!-- resource: feature_publication_details_comment_placeholder -->
-    <string name="feature_publication_details_comment_placeholder">Tell us more about your experience…</string>
+    <string name="feature_publication_details_comment_placeholder">Tell us more about your experienceâ€¦</string>
     <!-- resource: feature_publication_details_review_rating_note -->
     <string name="feature_publication_details_review_rating_note">Tap to rate</string>
     <!-- resource: feature_publication_details_reviews_title -->
@@ -293,11 +290,9 @@
     <!-- resource: feature_post_creation_category_placeholder -->
     <string name="feature_post_creation_category_placeholder">Select category</string>
     <!-- resource: feature_post_creation_time_separator -->
-    <string name="feature_post_creation_time_separator">–</string>
+    <string name="feature_post_creation_time_separator">â€“</string>
     <!-- resource: feature_moderation_reject_action -->
-    <string name="feature_moderation_reject_action">Reject</string>
     <!-- resource: feature_moderation_approve_action -->
-    <string name="feature_moderation_approve_action">Approve</string>
     <!-- resource: feature_post_creation_title -->
     <string name="feature_post_creation_title">New publication</string>
     <!-- resource: feature_post_creation_name_label -->
@@ -307,7 +302,7 @@
     <!-- resource: feature_post_creation_description_label -->
     <string name="feature_post_creation_description_label">Description</string>
     <!-- resource: feature_post_creation_description_placeholder -->
-    <string name="feature_post_creation_description_placeholder">Describe this place, what makes it special…</string>
+    <string name="feature_post_creation_description_placeholder">Describe this place, what makes it specialâ€¦</string>
     <!-- resource: feature_post_creation_photos_label -->
     <string name="feature_post_creation_photos_label">Photos</string>
     <!-- resource: feature_post_creation_photos_helper -->
@@ -327,7 +322,7 @@
     <!-- resource: feature_post_creation_location_helper -->
     <string name="feature_post_creation_location_helper">Tap the map to mark the exact location of the place</string>
     <!-- resource: feature_post_creation_location_city -->
-    <string name="feature_post_creation_location_city">Armenia, Quindío</string>
+    <string name="feature_post_creation_location_city">Armenia, QuindÃ­o</string>
     <!-- resource: feature_post_creation_location_mark_action -->
     <string name="feature_post_creation_location_mark_action">Tap to mark</string>
     <!-- resource: feature_post_creation_location_address_placeholder -->
@@ -341,7 +336,7 @@
     <!-- resource: feature_post_creation_success_title -->
     <string name="feature_post_creation_success_title">Publication sent!</string>
     <!-- resource: feature_post_creation_success_subtitle -->
-    <string name="feature_post_creation_success_subtitle">It is now in the moderation team’s hands</string>
+    <string name="feature_post_creation_success_subtitle">It is now in the moderation teamâ€™s hands</string>
     <!-- resource: feature_post_creation_process_title -->
     <string name="feature_post_creation_process_title">PUBLICATION PROCESS</string>
     <!-- resource: feature_post_creation_step_sent_title -->
@@ -452,7 +447,7 @@
     <string name="feature_register_email_label">Email</string>
     <string name="feature_register_email_placeholder">you@mail.com</string>
     <string name="feature_register_password_label">Password</string>
-    <string name="feature_register_password_placeholder">••••••••••••</string>
+    <string name="feature_register_password_placeholder">â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢</string>
     <string name="feature_register_residence_title">Residence location</string>
     <string name="feature_register_department_label">Department</string>
     <string name="feature_register_city_label">City</string>
@@ -633,10 +628,6 @@
     <!-- VIEWMODEL: PostCreation -->
     <string name="vm_post_creation_place_name_required">Place name is required</string>
     <string name="vm_post_creation_category_required">Category is required</string>
-    <string name="vm_post_creation_price_free">Free</string>
-    <string name="vm_post_creation_price_economic">Economic</string>
-    <string name="vm_post_creation_price_moderate">Moderate</string>
-    <string name="vm_post_creation_price_expensive">Expensive</string>
     <string name="vm_post_creation_submit_action">Publish</string>
     <string name="vm_post_creation_required_fields">Please complete all required fields</string>
     <string name="vm_post_creation_session_expired">Session expired</string>
@@ -704,22 +695,10 @@
     <string name="vm_badges_item_6_category">Tradition</string>
 
     <!-- VIEWMODEL: Filters -->
-    <string name="vm_filters_category_nature_parks">Nature and Parks</string>
-    <string name="vm_filters_category_specialty_coffee">Specialty Coffee</string>
-    <string name="vm_filters_category_museums_culture">Museums and Culture</string>
-    <string name="vm_filters_category_viewpoints">Viewpoints</string>
-    <string name="vm_filters_category_colonial_architecture">Colonial Architecture</string>
-    <string name="vm_filters_category_typical_restaurants">Traditional Restaurants</string>
-    <string name="vm_filters_category_nightlife">Nightlife</string>
-    <string name="vm_filters_category_adventure_sports">Adventure and Sports</string>
     <string name="vm_filters_location_nearby">Nearby</string>
     <string name="vm_filters_location_city">In the city</string>
     <string name="vm_filters_location_department">In the department</string>
     <string name="vm_filters_location_country">In the country</string>
-    <string name="vm_filters_price_free">Free</string>
-    <string name="vm_filters_price_economic">Economic</string>
-    <string name="vm_filters_price_moderate">Moderate</string>
-    <string name="vm_filters_price_expensive">Expensive</string>
 
     <!-- FEATURE: AdminModeration -->
     <string name="feature_admin_moderation_title">Moderation</string>

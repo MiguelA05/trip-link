@@ -1,16 +1,16 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
 
-    <!-- Nombre de la aplicación -->
+    <!-- Nombre de la aplicaciÃ³n -->
     <string name="app_name">TripLink</string>
 
     <!-- component: ModerationDecisionDialogs -->
     <!-- resource: component_moderation_decision_dialog_approve_title -->
-    <string name="component_moderation_decision_dialog_approve_title">¿Verificar publicación?</string>
+    <string name="component_moderation_decision_dialog_approve_title">Â¿Verificar publicaciÃ³n?</string>
     <!-- resource: component_moderation_decision_dialog_reject_title -->
-    <string name="component_moderation_decision_dialog_reject_title">¿Rechazar publicación?</string>
+    <string name="component_moderation_decision_dialog_reject_title">Â¿Rechazar publicaciÃ³n?</string>
     <!-- resource: component_moderation_decision_dialog_message_publication -->
-    <string name="component_moderation_decision_dialog_message_publication">Esta acción no se puede deshacer. La publicación es "%1$s"</string>
+    <string name="component_moderation_decision_dialog_message_publication">Esta acciÃ³n no se puede deshacer. La publicaciÃ³n es "%1$s"</string>
     <!-- resource: component_moderation_decision_dialog_approve_action -->
     <string name="component_moderation_decision_dialog_approve_action">Verificar</string>
     <!-- resource: component_moderation_decision_dialog_reject_action -->
@@ -18,7 +18,7 @@
     <!-- resource: component_moderation_decision_dialog_reason_label -->
     <string name="component_moderation_decision_dialog_reason_label">Motivo</string>
     <!-- resource: component_moderation_decision_dialog_reason_placeholder -->
-    <string name="component_moderation_decision_dialog_reason_placeholder">Explica el motivo por el cual la publicación fue rechazada</string>
+    <string name="component_moderation_decision_dialog_reason_placeholder">Explica el motivo por el cual la publicaciÃ³n fue rechazada</string>
     <!-- resource: component_moderation_decision_dialog_reason_counter -->
     <string name="component_moderation_decision_dialog_reason_counter">%1$d/%2$d</string>
     <!-- resource: component_moderation_decision_dialog_close -->
@@ -67,7 +67,7 @@
 
     <!-- COMPONENT: SearchBar -->
     <!-- resource: component_search_bar_placeholder -->
-    <string name="component_search_bar_placeholder">Buscar lugares…</string>
+    <string name="component_search_bar_placeholder">Buscar lugaresâ€¦</string>
     <!-- resource: component_search_bar_search_content_description -->
     <string name="component_search_bar_search_content_description">Buscar</string>
     <!-- resource: component_search_bar_filters_content_description -->
@@ -80,7 +80,7 @@
     <!-- resource: component_comment_card_show_less -->
     <string name="component_comment_card_show_less">Ver menos</string>
     <!-- resource: component_comment_card_show_more -->
-    <string name="component_comment_card_show_more">Ver más</string>
+    <string name="component_comment_card_show_more">Ver mÃ¡s</string>
     <!-- resource: component_comment_card_default_initial -->
     <string name="component_comment_card_default_initial">U</string>
 
@@ -88,13 +88,12 @@
     <!-- resource: component_explore_map_publication_card_rating -->
     <string name="component_explore_map_publication_card_rating">%1$s (%2$d)</string>
     <!-- resource: component_explore_map_publication_card_duration -->
-    <string name="component_explore_map_publication_card_duration">3–4 hrs</string>
+    <string name="component_explore_map_publication_card_duration">3â€“4 hrs</string>
     <!-- resource: component_explore_map_publication_card_open_full_publication -->
     <string name="component_explore_map_publication_card_open_full_publication">Ver publicacion completa  ></string>
 
     <!-- COMPONENT: PublicationCard -->
     <!-- resource: component_publication_card_moment_ago -->
-    <string name="component_publication_card_moment_ago">Hace un momento</string>
     <!-- resource: component_publication_card_near_you -->
     <string name="component_publication_card_near_you">Cerca de ti</string>
     <!-- resource: component_publication_card_comments_content_description -->
@@ -126,8 +125,8 @@
     <string name="component_rating_summary_card_based_on">Basado en</string>
     <!-- resource: component_rating_summary_card_reviews_count -->
     <plurals name="component_rating_summary_card_reviews_count" tools:ignore="MissingQuantity">
-        <item quantity="one">%1$d reseña</item>
-        <item quantity="other">%1$d reseñas</item>
+        <item quantity="one">%1$d reseÃ±a</item>
+        <item quantity="other">%1$d reseÃ±as</item>
     </plurals>
 
     <!-- COMPONENT: GeneralAlertDialog -->
@@ -148,7 +147,7 @@
     <!-- resource: component_nav_item_my_profile -->
     <string name="component_nav_item_my_profile">Mi Perfil</string>
     <!-- resource: component_nav_item_logout -->
-    <string name="component_nav_item_logout">Cerrar sesión</string>
+    <string name="component_nav_item_logout">Cerrar sesiÃ³n</string>
     <!-- resource: component_nav_item_publications -->
     <string name="component_nav_item_publications">Publicaciones</string>
     <!-- resource: component_nav_item_reports -->
@@ -178,30 +177,29 @@
 
     <!-- FEATURE: AccountEdit -->
     <!-- resource: feature_account_edit_email_helper -->
-    <string name="feature_account_edit_email_helper">El correo electrónico no se puede modificar por seguridad.</string>
+    <string name="feature_account_edit_email_helper">El correo electrÃ³nico no se puede modificar por seguridad.</string>
 
     <!-- FEATURE: PostCreation -->
     <!-- resource: feature_post_creation_required_fields_warning -->
-    <string name="feature_post_creation_required_fields_warning">Campos obligatorios: Nombre, Categoría y Ubicación en mapa para poder publicar.</string>
     <!-- resource: feature_post_creation_required_fields_warning_prefix -->
     <string name="feature_post_creation_required_fields_warning_prefix">Campos obligatorios:</string>
     <!-- resource: feature_post_creation_required_fields_warning_body -->
-    <string name="feature_post_creation_required_fields_warning_body">Nombre, Categoría y Ubicación en mapa para poder publicar.</string>
+    <string name="feature_post_creation_required_fields_warning_body">Nombre, CategorÃ­a y UbicaciÃ³n en mapa para poder publicar.</string>
 
     <!-- FEATURE: Filters -->
     <!-- resource: feature_filters_title -->
     <string name="feature_filters_title">Filtros</string>
     <!-- resource: feature_filters_categories -->
-    <string name="feature_filters_categories">Categorías</string>
+    <string name="feature_filters_categories">CategorÃ­as</string>
     <!-- resource: feature_filters_location -->
-    <string name="feature_filters_location">Ubicación</string>
+    <string name="feature_filters_location">UbicaciÃ³n</string>
     <!-- resource: feature_filters_price_range -->
     <string name="feature_filters_price_range">Rango de precios</string>
     <!-- resource: feature_filters_minimum_rating -->
-    <string name="feature_filters_minimum_rating">Calificación mínima</string>
+    <string name="feature_filters_minimum_rating">CalificaciÃ³n mÃ­nima</string>
 
     <!-- ENUM: Categoria -->
-    <string name="enum_categoria_gastronomia">Gastronomía</string>
+    <string name="enum_categoria_gastronomia">GastronomÃ­a</string>
     <string name="enum_categoria_cultura">Cultura</string>
     <string name="enum_categoria_naturaleza">Naturaleza</string>
     <string name="enum_categoria_entretenimiento">Entretenimiento</string>
@@ -217,29 +215,28 @@
 
     <!-- FEATURE: PublicationDetails -->
     <!-- resource: feature_publication_details_rating_label -->
-    <string name="feature_publication_details_rating_label">CALIFICACIÓN</string>
+    <string name="feature_publication_details_rating_label">CALIFICACIÃ“N</string>
     <!-- resource: feature_publication_details_required_label -->
     <string name="feature_publication_details_required_label">REQUERIDA</string>
     <!-- resource: feature_publication_details_delete_publication -->
-    <string name="feature_publication_details_delete_publication">Eliminar publicación</string>
+    <string name="feature_publication_details_delete_publication">Eliminar publicaciÃ³n</string>
     <!-- resource: feature_publication_details_title -->
-    <string name="feature_publication_details_title">Detalles de la publicación</string>
+    <string name="feature_publication_details_title">Detalles de la publicaciÃ³n</string>
     <!-- resource: feature_publication_details_description -->
-    <string name="feature_publication_details_description">Descripción</string>
+    <string name="feature_publication_details_description">DescripciÃ³n</string>
     <!-- resource: feature_publication_details_not_found -->
-    <string name="feature_publication_details_not_found">Publicación no encontrada</string>
+    <string name="feature_publication_details_not_found">PublicaciÃ³n no encontrada</string>
     <!-- resource: feature_publication_details_back -->
     <string name="feature_publication_details_back">Volver</string>
     <!-- resource: feature_publication_details_rate_hint -->
-    <string name="feature_publication_details_rate_hint">Toca para calificar</string>
     <!-- resource: feature_publication_details_publish_review -->
-    <string name="feature_publication_details_publish_review">Publicar reseña</string>
+    <string name="feature_publication_details_publish_review">Publicar reseÃ±a</string>
     <!-- resource: feature_publication_details_cancel -->
     <string name="feature_publication_details_cancel">Cancelar</string>
     <!-- resource: feature_publication_details_replace -->
     <string name="feature_publication_details_replace">Reemplazar</string>
     <!-- resource: feature_publication_details_report_reviewed_by_moderation -->
-    <string name="feature_publication_details_report_reviewed_by_moderation">Tu reporte será revisado por el equipo de moderación.</string>
+    <string name="feature_publication_details_report_reviewed_by_moderation">Tu reporte serÃ¡ revisado por el equipo de moderaciÃ³n.</string>
     <!-- resource: feature_publication_details_send_report -->
     <string name="feature_publication_details_send_report">Enviar reporte</string>
     <!-- resource: feature_publication_details_comment_label -->
@@ -247,13 +244,13 @@
     <!-- resource: feature_publication_details_comment_optional_label -->
     <string name="feature_publication_details_comment_optional_label">OPCIONAL</string>
     <!-- resource: feature_publication_details_comment_placeholder -->
-    <string name="feature_publication_details_comment_placeholder">Cuéntanos más sobre tu experiencia…</string>
+    <string name="feature_publication_details_comment_placeholder">CuÃ©ntanos mÃ¡s sobre tu experienciaâ€¦</string>
     <!-- resource: feature_publication_details_review_rating_note -->
     <string name="feature_publication_details_review_rating_note">Toca para calificar</string>
     <!-- resource: feature_publication_details_reviews_title -->
-    <string name="feature_publication_details_reviews_title">Reseñas</string>
+    <string name="feature_publication_details_reviews_title">ReseÃ±as</string>
     <!-- resource: feature_publication_details_see_all_reviews -->
-    <string name="feature_publication_details_see_all_reviews">Ver todas las reseñas</string>
+    <string name="feature_publication_details_see_all_reviews">Ver todas las reseÃ±as</string>
     <!-- resource: component_publication_weekly_schedule_title -->
     <string name="component_publication_weekly_schedule_title">Horarios</string>
     <!-- resource: component_publication_weekly_schedule_today -->
@@ -275,7 +272,7 @@
     <string name="enum_dia_semana_sabado_full">Sabado</string>
     <string name="enum_dia_semana_domingo_full">Domingo</string>
     <!-- resource: component_publication_location_title -->
-    <string name="component_publication_location_title">Ubicación</string>
+    <string name="component_publication_location_title">UbicaciÃ³n</string>
     <!-- resource: component_publication_price_range_title -->
     <string name="component_publication_price_range_title">Rango de precios</string>
     <!-- resource: component_publication_price_range_estimated -->
@@ -283,7 +280,7 @@
     <!-- resource: component_publication_price_range_free -->
     <string name="component_publication_price_range_free">Gratuito</string>
     <!-- resource: component_publication_price_range_economic -->
-    <string name="component_publication_price_range_economic">Económico</string>
+    <string name="component_publication_price_range_economic">EconÃ³mico</string>
     <!-- resource: component_publication_price_range_moderate -->
     <string name="component_publication_price_range_moderate">Moderado</string>
     <!-- resource: component_publication_price_range_expensive -->
@@ -291,69 +288,67 @@
     <!-- resource: component_publication_price_range_no_price -->
     <string name="component_publication_price_range_no_price">Sin precio</string>
     <!-- resource: feature_post_creation_category_label -->
-    <string name="feature_post_creation_category_label">Categoría</string>
+    <string name="feature_post_creation_category_label">CategorÃ­a</string>
     <!-- resource: feature_post_creation_category_placeholder -->
-    <string name="feature_post_creation_category_placeholder">Seleccionar categoría</string>
+    <string name="feature_post_creation_category_placeholder">Seleccionar categorÃ­a</string>
     <!-- resource: feature_post_creation_time_separator -->
-    <string name="feature_post_creation_time_separator">–</string>
+    <string name="feature_post_creation_time_separator">â€“</string>
     <!-- resource: feature_moderation_reject_action -->
-    <string name="feature_moderation_reject_action">Rechazar</string>
     <!-- resource: feature_moderation_approve_action -->
-    <string name="feature_moderation_approve_action">Aprobar</string>
     <!-- resource: feature_post_creation_title -->
-    <string name="feature_post_creation_title">Nueva publicación</string>
+    <string name="feature_post_creation_title">Nueva publicaciÃ³n</string>
     <!-- resource: feature_post_creation_name_label -->
     <string name="feature_post_creation_name_label">Nombre del lugar</string>
     <!-- resource: feature_post_creation_name_placeholder -->
     <string name="feature_post_creation_name_placeholder">Ej. Valle del Cocora</string>
     <!-- resource: feature_post_creation_description_label -->
-    <string name="feature_post_creation_description_label">Descripción</string>
+    <string name="feature_post_creation_description_label">DescripciÃ³n</string>
     <!-- resource: feature_post_creation_description_placeholder -->
-    <string name="feature_post_creation_description_placeholder">Describe este lugar, qué lo hace especial…</string>
+    <string name="feature_post_creation_description_placeholder">Describe este lugar, quÃ© lo hace especialâ€¦</string>
     <!-- resource: feature_post_creation_photos_label -->
     <string name="feature_post_creation_photos_label">Fotos</string>
     <!-- resource: feature_post_creation_photos_helper -->
-    <string name="feature_post_creation_photos_helper">Añade hasta 5 fotografías para mostrar en tu publicación</string>
+    <string name="feature_post_creation_photos_helper">AÃ±ade hasta 5 fotografÃ­as para mostrar en tu publicaciÃ³n</string>
     <!-- resource: feature_post_creation_photos_add_content_description -->
-    <string name="feature_post_creation_photos_add_content_description">Añadir foto</string>
+    <string name="feature_post_creation_photos_add_content_description">AÃ±adir foto</string>
     <!-- resource: feature_moderation_publication_details_title -->
-    <string name="feature_moderation_publication_details_title">Detalles de la publicación</string>
+    <string name="feature_moderation_publication_details_title">Detalles de la publicaciÃ³n</string>
     <!-- resource: feature_moderation_publication_details_already_reviewed -->
-    <string name="feature_moderation_publication_details_already_reviewed">Esta publicación ya fue revisada</string>
+    <string name="feature_moderation_publication_details_already_reviewed">Esta publicaciÃ³n ya fue revisada</string>
     <!-- resource: feature_moderation_publication_details_reject_action -->
     <string name="feature_moderation_publication_details_reject_action">Rechazar</string>
     <!-- resource: feature_moderation_publication_details_approve_action -->
     <string name="feature_moderation_publication_details_approve_action">Aprobar</string>
     <!-- resource: feature_post_creation_location_label -->
-    <string name="feature_post_creation_location_label">Ubicación exacta</string>
+    <string name="feature_post_creation_location_label">UbicaciÃ³n exacta</string>
     <!-- resource: feature_post_creation_location_helper -->
-    <string name="feature_post_creation_location_helper">Toca el mapa para marcar la ubicación exacta del lugar</string>
+    <string name="feature_post_creation_location_helper">Toca el mapa para marcar la ubicaciÃ³n exacta del lugar</string>
     <!-- resource: feature_post_creation_location_city -->
-    <string name="feature_post_creation_location_city">Armenia, Quindío</string>
+    <string name="feature_post_creation_location_city">Armenia, QuindÃ­o</string>
     <!-- resource: feature_post_creation_location_mark_action -->
     <string name="feature_post_creation_location_mark_action">Toca para marcar</string>
     <!-- resource: feature_post_creation_location_address_placeholder -->
-    <string name="feature_post_creation_location_address_placeholder">La dirección aparecerá aquí</string>
+    <string name="feature_post_creation_location_address_placeholder">La direcciÃ³n aparecerÃ¡ aquÃ­</string>
     <!-- resource: feature_post_creation_schedule_title -->
-    <string name="feature_post_creation_schedule_title">Horarios de atención</string>
+    <string name="feature_post_creation_schedule_title">Horarios de atenciÃ³n</string>
     <!-- resource: feature_post_creation_open_every_day -->
-    <string name="feature_post_creation_open_every_day">Abierto todos los días</string>
+    <string name="feature_post_creation_open_every_day">Abierto todos los dÃ­as</string>
     <!-- resource: feature_post_creation_day_disabled_snackbar -->
-    <string name="feature_post_creation_day_disabled_snackbar">Se debe activar el switch del día para poder hacerlo</string>
+    <string name="feature_post_creation_day_disabled_snackbar">Se debe activar el switch del dÃ­a para poder hacerlo</string>
     <!-- resource: feature_post_creation_success_title -->
-    <string name="feature_post_creation_success_title">¡Publicación enviada!</string>
+    <string name="feature_post_creation_success_title">Â¡PublicaciÃ³n enviada!</string>
     <!-- resource: feature_post_creation_success_subtitle -->
-    <string name="feature_post_creation_success_subtitle">Está en manos del equipo de moderación</string>
+    <string name="feature_post_creation_success_subtitle">EstÃ¡ en manos del equipo de moderaciÃ³n</string>
     <!-- resource: feature_post_creation_process_title -->
-    <string name="feature_post_creation_process_title">PROCESO DE PUBLICACIÓN</string>
+    <string name="feature_post_creation_process_title">PROCESO DE PUBLICACIÃ“N</string>
     <!-- resource: feature_post_creation_step_sent_title -->
-    <string name="feature_post_creation_step_sent_title">Publicación enviada</string>
+    <string name="feature_post_creation_step_sent_title">PublicaciÃ³n enviada</string>
     <!-- resource: feature_post_creation_step_sent_subtitle -->
     <string name="feature_post_creation_step_sent_subtitle">Recibida correctamente</string>
     <!-- resource: feature_post_creation_step_review_title -->
-    <string name="feature_post_creation_step_review_title">En revisión</string>
+    <string name="feature_post_creation_step_review_title">En revisiÃ³n</string>
     <!-- resource: feature_post_creation_step_review_subtitle -->
-    <string name="feature_post_creation_step_review_subtitle">Moderadores revisarán en ~24 h</string>
+    <string name="feature_post_creation_step_review_subtitle">Moderadores revisarÃ¡n en ~24 h</string>
     <!-- resource: feature_post_creation_step_published_title -->
     <string name="feature_post_creation_step_published_title">Publicada</string>
     <!-- resource: feature_post_creation_step_published_subtitle -->
@@ -367,10 +362,10 @@
     <!-- resource: feature_publication_details_inappropriate_title -->
     <string name="feature_publication_details_inappropriate_title">Contenido inapropiado detectado</string>
     <!-- resource: feature_publication_details_inappropriate_message -->
-    <string name="feature_publication_details_inappropriate_message">El comentario que estás escribiendo contiene lenguaje obsceno. Si quieres crear un comentario, puedes reemplazarlo por:</string>
+    <string name="feature_publication_details_inappropriate_message">El comentario que estÃ¡s escribiendo contiene lenguaje obsceno. Si quieres crear un comentario, puedes reemplazarlo por:</string>
 
     <!-- COMPONENT: BadgeDetailModal -->
-    <string name="component_badge_detail_modal_unlocked_label">¡NUEVA INSIGNIA DESBLOQUEADA!</string>
+    <string name="component_badge_detail_modal_unlocked_label">Â¡NUEVA INSIGNIA DESBLOQUEADA!</string>
     <string name="component_badge_detail_modal_view_badges_action">Ver mis insignias</string>
 
     <!-- FEATURE: UserInfo -->
@@ -381,21 +376,21 @@
     <string name="feature_user_info_empty_pending">No tienes contribuciones\npendientes</string>
     <string name="feature_user_info_empty_rejected">No tienes contribuciones\nrechazadas</string>
     <string name="feature_user_info_create_poi_action">Crear POI</string>
-    <string name="feature_user_info_logout_title">¿Cerrar sesión?</string>
-    <string name="feature_user_info_logout_message">Se cerrará tu sesión en este dispositivo.\nPodrás volver a ingresar en cualquier momento.</string>
-    <string name="feature_user_info_logout_confirm">Cerrar sesión</string>
+    <string name="feature_user_info_logout_title">Â¿Cerrar sesiÃ³n?</string>
+    <string name="feature_user_info_logout_message">Se cerrarÃ¡ tu sesiÃ³n en este dispositivo.\nPodrÃ¡s volver a ingresar en cualquier momento.</string>
+    <string name="feature_user_info_logout_confirm">Cerrar sesiÃ³n</string>
     <string name="feature_user_info_logout_cancel">Cancelar</string>
     <string name="feature_user_info_status_verified">Verificado</string>
     <string name="feature_user_info_status_pending">Pendiente</string>
     <string name="feature_user_info_status_rejected">Rechazado</string>
     <string name="feature_user_info_reject_reason_prefix">Motivo: %1$s</string>
     <string name="feature_user_info_edit_resend_action">Editar y reenviar</string>
-    <string name="feature_user_info_view_publication_action">Ver publicación</string>
+    <string name="feature_user_info_view_publication_action">Ver publicaciÃ³n</string>
 
     <!-- FEATURE: UserHome -->
-    <string name="feature_user_home_location">Armenia, Quindío</string>
+    <string name="feature_user_home_location">Armenia, QuindÃ­o</string>
     <string name="feature_user_home_recommended_title">RECOMENDADOS</string>
-    <string name="feature_user_home_create_publication_content_description">Crear publicación</string>
+    <string name="feature_user_home_create_publication_content_description">Crear publicaciÃ³n</string>
 
     <!-- FEATURE: Explore -->
     <string name="feature_explore_view_map_content_description">Ver mapa</string>
@@ -404,106 +399,106 @@
     <string name="feature_explore_map_back_to_list_content_description">Volver a lista</string>
 
     <!-- FEATURE: AccountEdit -->
-    <string name="feature_account_edit_title">Gestión de Cuenta</string>
-    <string name="feature_account_edit_personal_info_section">INFORMACIÓN PERSONAL</string>
+    <string name="feature_account_edit_title">GestiÃ³n de Cuenta</string>
+    <string name="feature_account_edit_personal_info_section">INFORMACIÃ“N PERSONAL</string>
     <string name="feature_account_edit_full_name_label">Nombre completo</string>
     <string name="feature_account_edit_full_name_placeholder">John Doe</string>
-    <string name="feature_account_edit_phone_label">Teléfono</string>
-    <string name="feature_account_edit_phone_placeholder">Ingresa tu número de teléfono</string>
-    <string name="feature_account_edit_residence_section">UBICACIÓN DE RESIDENCIA</string>
+    <string name="feature_account_edit_phone_label">TelÃ©fono</string>
+    <string name="feature_account_edit_phone_placeholder">Ingresa tu nÃºmero de telÃ©fono</string>
+    <string name="feature_account_edit_residence_section">UBICACIÃ“N DE RESIDENCIA</string>
     <string name="feature_account_edit_address_label">Barrio, ciudad o referencia</string>
-    <string name="feature_account_edit_address_placeholder">Ej. Barrio La Candelaria, Bogotá</string>
+    <string name="feature_account_edit_address_placeholder">Ej. Barrio La Candelaria, BogotÃ¡</string>
     <string name="feature_account_edit_department_label">Dpto</string>
     <string name="feature_account_edit_city_label">Ciudad</string>
-    <string name="feature_account_edit_add_exact_location">¿Desea añadir ubicación exacta?</string>
-    <string name="feature_account_edit_map_placeholder_content_description">Mapa (Próximamente)</string>
-    <string name="feature_account_edit_map_placeholder_label">Mapa (Próximamente)</string>
+    <string name="feature_account_edit_add_exact_location">Â¿Desea aÃ±adir ubicaciÃ³n exacta?</string>
+    <string name="feature_account_edit_map_placeholder_content_description">Mapa (PrÃ³ximamente)</string>
+    <string name="feature_account_edit_map_placeholder_label">Mapa (PrÃ³ximamente)</string>
     <string name="feature_account_edit_access_data_section">DATOS DE ACCESO</string>
-    <string name="feature_account_edit_email_label">Correo electrónico</string>
-    <string name="feature_account_edit_password_label">Contraseña</string>
-    <string name="feature_account_edit_change_password_action">Cambiar contraseña</string>
-    <string name="feature_account_edit_password_helper">La contraseña se gestiona mediante el proceso de recuperación.</string>
+    <string name="feature_account_edit_email_label">Correo electrÃ³nico</string>
+    <string name="feature_account_edit_password_label">ContraseÃ±a</string>
+    <string name="feature_account_edit_change_password_action">Cambiar contraseÃ±a</string>
+    <string name="feature_account_edit_password_helper">La contraseÃ±a se gestiona mediante el proceso de recuperaciÃ³n.</string>
     <string name="feature_account_edit_save_changes_action">Guardar cambios</string>
     <string name="feature_account_edit_delete_account_action">Eliminar cuenta</string>
-    <string name="feature_account_edit_delete_account_dialog_title">¿Eliminar cuenta?</string>
-    <string name="feature_account_edit_delete_account_dialog_message">Se borrarán permanentemente tu perfil, publicaciones y datos. Esta acción no se puede deshacer.</string>
-    <string name="feature_account_edit_delete_account_dialog_confirm">Sí, eliminar</string>
+    <string name="feature_account_edit_delete_account_dialog_title">Â¿Eliminar cuenta?</string>
+    <string name="feature_account_edit_delete_account_dialog_message">Se borrarÃ¡n permanentemente tu perfil, publicaciones y datos. Esta acciÃ³n no se puede deshacer.</string>
+    <string name="feature_account_edit_delete_account_dialog_confirm">SÃ­, eliminar</string>
     <string name="feature_account_edit_delete_account_dialog_cancel">Cancelar</string>
 
     <!-- FEATURE: Login -->
-    <string name="feature_login_title">Iniciar Sesión</string>
-    <string name="feature_login_logo_content_description">Icono de la aplicación</string>
+    <string name="feature_login_title">Iniciar SesiÃ³n</string>
+    <string name="feature_login_logo_content_description">Icono de la aplicaciÃ³n</string>
     <string name="feature_login_welcome_back">Bienvenido de nuevo</string>
     <string name="feature_login_email_label">Email</string>
     <string name="feature_login_email_placeholder">ejemplo@correo.com</string>
     <string name="feature_login_password_label">Password</string>
     <string name="feature_login_password_placeholder">********</string>
-    <string name="feature_login_hide_password">Ocultar contraseña</string>
-    <string name="feature_login_show_password">Mostrar contraseña</string>
-    <string name="feature_login_forgot_password">¿Olvidaste tu contraseña?</string>
-    <string name="feature_login_primary_action">Iniciar Sesión</string>
-    <string name="feature_login_no_account">¿No tienes una cuenta?</string>
+    <string name="feature_login_hide_password">Ocultar contraseÃ±a</string>
+    <string name="feature_login_show_password">Mostrar contraseÃ±a</string>
+    <string name="feature_login_forgot_password">Â¿Olvidaste tu contraseÃ±a?</string>
+    <string name="feature_login_primary_action">Iniciar SesiÃ³n</string>
+    <string name="feature_login_no_account">Â¿No tienes una cuenta?</string>
     <string name="feature_login_create_account">Crea tu cuenta</string>
 
     <!-- FEATURE: Register -->
     <string name="feature_register_title">Registrarse</string>
     <string name="feature_register_create_account_heading">Crear Cuenta</string>
-    <string name="feature_register_subtitle">Encuentra lugares únicos, conecta con tu comunidad.</string>
+    <string name="feature_register_subtitle">Encuentra lugares Ãºnicos, conecta con tu comunidad.</string>
     <string name="feature_register_full_name_label">Nombre Completo</string>
     <string name="feature_register_full_name_placeholder">John Doe</string>
-    <string name="feature_register_email_label">Correo electrónico</string>
+    <string name="feature_register_email_label">Correo electrÃ³nico</string>
     <string name="feature_register_email_placeholder">tu@email.com</string>
-    <string name="feature_register_password_label">Contraseña</string>
-    <string name="feature_register_password_placeholder">••••••••••••</string>
-    <string name="feature_register_residence_title">Ubicación de Residencia</string>
+    <string name="feature_register_password_label">ContraseÃ±a</string>
+    <string name="feature_register_password_placeholder">â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢</string>
+    <string name="feature_register_residence_title">UbicaciÃ³n de Residencia</string>
     <string name="feature_register_department_label">Dpto</string>
     <string name="feature_register_city_label">Ciudad</string>
-    <string name="feature_register_add_exact_location">¿Desea añadir ubicación exacta?</string>
+    <string name="feature_register_add_exact_location">Â¿Desea aÃ±adir ubicaciÃ³n exacta?</string>
     <string name="feature_register_map_placeholder_content_description">Map Placeholder</string>
-    <string name="feature_register_map_placeholder_label">Mapa (Próximamente)</string>
-    <string name="feature_register_have_account">¿Tienes una cuenta?</string>
-    <string name="feature_register_login_action">Iniciar sesión</string>
+    <string name="feature_register_map_placeholder_label">Mapa (PrÃ³ximamente)</string>
+    <string name="feature_register_have_account">Â¿Tienes una cuenta?</string>
+    <string name="feature_register_login_action">Iniciar sesiÃ³n</string>
 
     <!-- FEATURE: RecoveryPassword -->
-    <string name="feature_recovery_password_title">Recuperar Contraseña</string>
-    <string name="feature_recovery_password_logo_content_description">Icono de la aplicación</string>
-    <string name="feature_recovery_password_message">Introduce el correo electrónico de tu cuenta y te enviaremos un correo electrónico con un enlace para recuperar tu contraseña</string>
-    <string name="feature_recovery_password_resend_message">¿No recibiste el correo electrónico o el enlace ya ha caducado? Revisa el correo electrónico que introdujiste y te reenviaremos el correo de recuperación</string>
-    <string name="feature_recovery_password_email_label">Correo Electrónico</string>
+    <string name="feature_recovery_password_title">Recuperar ContraseÃ±a</string>
+    <string name="feature_recovery_password_logo_content_description">Icono de la aplicaciÃ³n</string>
+    <string name="feature_recovery_password_message">Introduce el correo electrÃ³nico de tu cuenta y te enviaremos un correo electrÃ³nico con un enlace para recuperar tu contraseÃ±a</string>
+    <string name="feature_recovery_password_resend_message">Â¿No recibiste el correo electrÃ³nico o el enlace ya ha caducado? Revisa el correo electrÃ³nico que introdujiste y te reenviaremos el correo de recuperaciÃ³n</string>
+    <string name="feature_recovery_password_email_label">Correo ElectrÃ³nico</string>
     <string name="feature_recovery_password_email_placeholder">tu@email.com</string>
     <string name="feature_recovery_password_send_email_action">Enviar Correo</string>
     <string name="feature_recovery_password_resend_email_action">Reenviar Correo</string>
     <string name="feature_recovery_password_success_title">Revisa tu correo</string>
-    <string name="feature_recovery_password_success_message">Comprueba tu bandeja de entrada y sigue el enlace para reestablecer tu contraseña de forma segura</string>
+    <string name="feature_recovery_password_success_message">Comprueba tu bandeja de entrada y sigue el enlace para reestablecer tu contraseÃ±a de forma segura</string>
 
     <!-- FEATURE: ResetPassword -->
-    <string name="feature_reset_password_title">Restablecer Contraseña</string>
-    <string name="feature_reset_password_logo_content_description">Icono de la aplicación</string>
-    <string name="feature_reset_password_message">Es momento de restablecer tu contraseña! Introduce una nueva contraseña para tu cuenta</string>
-    <string name="feature_reset_password_new_password_label">Contraseña</string>
-    <string name="feature_reset_password_confirm_password_label">Confirmar nueva contraseña</string>
-    <string name="feature_reset_password_new_password_placeholder">Escribe tu nueva contraseña</string>
-    <string name="feature_reset_password_submit_action">Restablecer Contraseña</string>
+    <string name="feature_reset_password_title">Restablecer ContraseÃ±a</string>
+    <string name="feature_reset_password_logo_content_description">Icono de la aplicaciÃ³n</string>
+    <string name="feature_reset_password_message">Es momento de restablecer tu contraseÃ±a! Introduce una nueva contraseÃ±a para tu cuenta</string>
+    <string name="feature_reset_password_new_password_label">ContraseÃ±a</string>
+    <string name="feature_reset_password_confirm_password_label">Confirmar nueva contraseÃ±a</string>
+    <string name="feature_reset_password_new_password_placeholder">Escribe tu nueva contraseÃ±a</string>
+    <string name="feature_reset_password_submit_action">Restablecer ContraseÃ±a</string>
 
     <!-- FEATURE: AppHome -->
-    <string name="feature_app_home_hero_line_1">Encuentra lugares únicos,</string>
+    <string name="feature_app_home_hero_line_1">Encuentra lugares Ãºnicos,</string>
     <string name="feature_app_home_hero_line_2">conecta con tu comunidad</string>
     <string name="feature_app_home_create_account_content_description">Crear cuenta</string>
     <string name="feature_app_home_register_action">Register</string>
-    <string name="feature_app_home_have_account">¿Tienes una cuenta?</string>
-    <string name="feature_app_home_login_action">Inicia sesión</string>
+    <string name="feature_app_home_have_account">Â¿Tienes una cuenta?</string>
+    <string name="feature_app_home_login_action">Inicia sesiÃ³n</string>
 
     <!-- FEATURE: Comments -->
-    <string name="feature_comments_title">Reseñas y calificaciones</string>
-    <string name="feature_comments_total_reviews">%1$d reseñas</string>
+    <string name="feature_comments_title">ReseÃ±as y calificaciones</string>
+    <string name="feature_comments_total_reviews">%1$d reseÃ±as</string>
     <string name="feature_comments_delete_content_description">Eliminar comentario</string>
-    <string name="feature_comments_delete_dialog_title">¿Eliminar comentario?</string>
-    <string name="feature_comments_delete_dialog_message">Esta acción eliminará tu comentario de forma permanente.</string>
-    <string name="feature_comments_delete_dialog_confirm">Sí, eliminar</string>
+    <string name="feature_comments_delete_dialog_title">Â¿Eliminar comentario?</string>
+    <string name="feature_comments_delete_dialog_message">Esta acciÃ³n eliminarÃ¡ tu comentario de forma permanente.</string>
+    <string name="feature_comments_delete_dialog_confirm">SÃ­, eliminar</string>
     <string name="feature_comments_delete_dialog_cancel">Cancelar</string>
 
     <!-- FEATURE: AdminReports -->
-    <string name="feature_admin_reports_title">Moderación</string>
+    <string name="feature_admin_reports_title">ModeraciÃ³n</string>
     <string name="feature_admin_reports_subtitle">Reportes realizados</string>
     <string name="feature_admin_reports_counter_label">Reportes</string>
     <string name="feature_admin_reports_empty_state">No hay reportes activos en este momento</string>
@@ -511,7 +506,7 @@
     <!-- FEATURE: AdminReportDetails -->
     <string name="feature_admin_report_details_not_found">Reporte no encontrado</string>
     <string name="feature_admin_report_details_title">Detalles del reporte</string>
-    <string name="feature_admin_report_details_publication_info_title">Información de la publicación</string>
+    <string name="feature_admin_report_details_publication_info_title">InformaciÃ³n de la publicaciÃ³n</string>
     <string name="feature_admin_report_details_report_info_title">Detalles del reporte</string>
     <string name="feature_admin_report_details_report_reason_label">Motivo del reporte</string>
     <string name="feature_admin_report_details_reported_by_label">Reportado por</string>
@@ -521,33 +516,33 @@
     <string name="feature_admin_report_details_confirm_action">Confirmar</string>
     <string name="feature_admin_report_details_cancel_action">Cancelar</string>
     <string name="feature_admin_report_details_confirm_dialog_title">Confirmar reporte</string>
-    <string name="feature_admin_report_details_confirm_dialog_message">¿Deseas confirmar el reporte de "%1$s"? Esta acción incrementará el contador de reportes aceptados.</string>
+    <string name="feature_admin_report_details_confirm_dialog_message">Â¿Deseas confirmar el reporte de "%1$s"? Esta acciÃ³n incrementarÃ¡ el contador de reportes aceptados.</string>
     <string name="feature_admin_report_details_reject_dialog_title">Rechazar reporte</string>
-    <string name="feature_admin_report_details_reject_dialog_message">¿Deseas rechazar el reporte de "%1$s"? Se considerará que la publicación no incumple las reglas.</string>
+    <string name="feature_admin_report_details_reject_dialog_message">Â¿Deseas rechazar el reporte de "%1$s"? Se considerarÃ¡ que la publicaciÃ³n no incumple las reglas.</string>
 
     <!-- FEATURE: PublicationDetails (extended) -->
-    <string name="feature_publication_details_login_required_for_review">Debes iniciar sesión para publicar una reseña</string>
-    <string name="feature_publication_details_delete_dialog_title">¿Eliminar publicación?</string>
-    <string name="feature_publication_details_delete_dialog_message">Esta publicación y sus datos relacionados se eliminarán de forma permanente.</string>
-    <string name="feature_publication_details_delete_dialog_confirm">Sí, eliminar</string>
+    <string name="feature_publication_details_login_required_for_review">Debes iniciar sesiÃ³n para publicar una reseÃ±a</string>
+    <string name="feature_publication_details_delete_dialog_title">Â¿Eliminar publicaciÃ³n?</string>
+    <string name="feature_publication_details_delete_dialog_message">Esta publicaciÃ³n y sus datos relacionados se eliminarÃ¡n de forma permanente.</string>
+    <string name="feature_publication_details_delete_dialog_confirm">SÃ­, eliminar</string>
     <string name="feature_publication_details_delete_dialog_cancel">Cancelar</string>
     <string name="feature_publication_details_report_content_description">Reportar</string>
-    <string name="feature_publication_details_rating_modal_title">¿Qué te pareció este lugar?</string>
-    <string name="feature_publication_details_rating_modal_subtitle">Tu opinión ayuda a otros usuarios</string>
+    <string name="feature_publication_details_rating_modal_title">Â¿QuÃ© te pareciÃ³ este lugar?</string>
+    <string name="feature_publication_details_rating_modal_subtitle">Tu opiniÃ³n ayuda a otros usuarios</string>
     <string name="feature_publication_details_comment_counter">%1$d/%2$d</string>
     <string name="feature_publication_details_inappropriate_suggestion">El lugar no fue de mi agrado, mi experiencia fue mala.</string>
     <string name="feature_publication_details_report_modal_title">Reportar contenido</string>
     <string name="feature_publication_details_report_modal_subtitle">Selecciona el motivo del reporte</string>
-    <string name="feature_publication_details_report_reason_label">Descripción del motivo</string>
-    <string name="feature_publication_details_report_reason_placeholder">Escribe aquí el motivo...</string>
-    <string name="feature_publication_details_report_option_incorrect_info_title">Información incorrecta</string>
+    <string name="feature_publication_details_report_reason_label">DescripciÃ³n del motivo</string>
+    <string name="feature_publication_details_report_reason_placeholder">Escribe aquÃ­ el motivo...</string>
+    <string name="feature_publication_details_report_option_incorrect_info_title">InformaciÃ³n incorrecta</string>
     <string name="feature_publication_details_report_option_incorrect_info_subtitle">Datos desactualizados o inexactos</string>
-    <string name="feature_publication_details_report_option_wrong_location_title">Ubicación errónea</string>
+    <string name="feature_publication_details_report_option_wrong_location_title">UbicaciÃ³n errÃ³nea</string>
     <string name="feature_publication_details_report_option_wrong_location_subtitle">El punto en el mapa no coincide con el lugar real</string>
     <string name="feature_publication_details_report_option_inappropriate_title">Contenido inapropiado</string>
-    <string name="feature_publication_details_report_option_inappropriate_subtitle">Lenguaje ofensivo, imágenes inadecuadas o spam</string>
+    <string name="feature_publication_details_report_option_inappropriate_subtitle">Lenguaje ofensivo, imÃ¡genes inadecuadas o spam</string>
     <string name="feature_publication_details_report_option_other_title">Otro</string>
-    <string name="feature_publication_details_report_option_other_subtitle">Describe el motivo específico a continuación</string>
+    <string name="feature_publication_details_report_option_other_subtitle">Describe el motivo especÃ­fico a continuaciÃ³n</string>
     <string name="feature_publication_details_interested_action">Me interesa</string>
     <string name="feature_publication_details_visited_action">Visitado</string>
 
@@ -555,7 +550,7 @@
     <string name="feature_notifications_title">Notificaciones</string>
     <string name="feature_notifications_empty_title">No tienes notificaciones</string>
     <string name="feature_notifications_empty_subtitle">Te avisaremos cuando haya novedades importantes para ti</string>
-    <string name="feature_notifications_mark_all_as_read_action">Marcar todas como leídas</string>
+    <string name="feature_notifications_mark_all_as_read_action">Marcar todas como leÃ­das</string>
 
     <!-- FEATURE: Badges -->
     <string name="feature_badges_title">Mis insignias</string>
@@ -563,24 +558,24 @@
     <string name="feature_badges_current_level_label">NIVEL ACTUAL</string>
     <string name="feature_badges_total_points_label">Puntos totales</string>
     <string name="feature_badges_contributions_label">Aportes</string>
-    <string name="feature_badges_last_activity">Última actividad: %1$s</string>
+    <string name="feature_badges_last_activity">Ãšltima actividad: %1$s</string>
 
     <!-- VIEWMODEL: Login -->
     <string name="vm_login_email_required">El email es obligatorio</string>
-    <string name="vm_login_email_invalid">Ingresa un email válido</string>
-    <string name="vm_login_password_required">La contraseña es obligatoria</string>
-    <string name="vm_login_password_min_length">La contraseña debe tener al menos 6 caracteres</string>
+    <string name="vm_login_email_invalid">Ingresa un email vÃ¡lido</string>
+    <string name="vm_login_password_required">La contraseÃ±a es obligatoria</string>
+    <string name="vm_login_password_min_length">La contraseÃ±a debe tener al menos 6 caracteres</string>
     <string name="vm_login_form_incomplete">Completa los campos requeridos</string>
-    <string name="vm_login_invalid_credentials">Credenciales inválidas</string>
-    <string name="vm_login_success">Inicio de sesión exitoso</string>
-    <string name="vm_login_unexpected_error">No fue posible iniciar sesión. Intenta nuevamente.</string>
+    <string name="vm_login_invalid_credentials">Credenciales invÃ¡lidas</string>
+    <string name="vm_login_success">Inicio de sesiÃ³n exitoso</string>
+    <string name="vm_login_unexpected_error">No fue posible iniciar sesiÃ³n. Intenta nuevamente.</string>
 
     <!-- VIEWMODEL: Register -->
     <string name="vm_register_name_required">El nombre es obligatorio</string>
     <string name="vm_register_email_required">El correo es obligatorio</string>
-    <string name="vm_register_email_invalid">Correo inválido</string>
-    <string name="vm_register_password_required">La contraseña es obligatoria</string>
-    <string name="vm_register_password_min_length">Mínimo 6 caracteres</string>
+    <string name="vm_register_email_invalid">Correo invÃ¡lido</string>
+    <string name="vm_register_password_required">La contraseÃ±a es obligatoria</string>
+    <string name="vm_register_password_min_length">MÃ­nimo 6 caracteres</string>
     <string name="vm_register_department_required">Seleccione un departamento</string>
     <string name="vm_register_city_required">Seleccione un municipio</string>
     <string name="vm_register_form_invalid">Por favor, corrige los errores en el formulario</string>
@@ -590,17 +585,17 @@
 
     <!-- VIEWMODEL: RecoveryPassword -->
     <string name="vm_recovery_email_required">El email es obligatorio</string>
-    <string name="vm_recovery_email_invalid">Ingresa un email válido</string>
-    <string name="vm_recovery_invalid_form">Por favor, ingresa un email válido</string>
-    <string name="vm_recovery_email_not_found">Este email no está registrado en el sistema</string>
-    <string name="vm_recovery_success">Se ha enviado un correo de recuperación a %1$s</string>
+    <string name="vm_recovery_email_invalid">Ingresa un email vÃ¡lido</string>
+    <string name="vm_recovery_invalid_form">Por favor, ingresa un email vÃ¡lido</string>
+    <string name="vm_recovery_email_not_found">Este email no estÃ¡ registrado en el sistema</string>
+    <string name="vm_recovery_success">Se ha enviado un correo de recuperaciÃ³n a %1$s</string>
 
     <!-- VIEWMODEL: ResetPassword -->
-    <string name="vm_reset_password_required">La contraseña es obligatoria</string>
-    <string name="vm_reset_password_min_length">La contraseña debe tener al menos 6 caracteres</string>
+    <string name="vm_reset_password_required">La contraseÃ±a es obligatoria</string>
+    <string name="vm_reset_password_min_length">La contraseÃ±a debe tener al menos 6 caracteres</string>
     <string name="vm_reset_confirm_required">La confirmacion es obligatoria</string>
-    <string name="vm_reset_password_mismatch">Las contraseñas no coinciden</string>
-    <string name="vm_reset_success">Contraseña restablecida con éxito</string>
+    <string name="vm_reset_password_mismatch">Las contraseÃ±as no coinciden</string>
+    <string name="vm_reset_success">ContraseÃ±a restablecida con Ã©xito</string>
     <string name="vm_reset_invalid_form">Por favor, verifica los campos</string>
 
     <!-- VIEWMODEL: Comments -->
@@ -611,64 +606,60 @@
     <string name="vm_comments_delete_error">Error al eliminar: %1$s</string>
 
     <!-- VIEWMODEL: PublicationDetails -->
-    <string name="vm_publication_details_favorite_added">Añadido a favoritos</string>
+    <string name="vm_publication_details_favorite_added">AÃ±adido a favoritos</string>
     <string name="vm_publication_details_favorite_removed">Removido de favoritos</string>
     <string name="vm_publication_details_favorite_update_failed">No se pudo actualizar favorito</string>
     <string name="vm_publication_details_generic_error">Error: %1$s</string>
-    <string name="vm_publication_details_login_required">Debes iniciar sesión para comentar</string>
+    <string name="vm_publication_details_login_required">Debes iniciar sesiÃ³n para comentar</string>
     <string name="vm_publication_details_comment_saved">Comentario guardado exitosamente</string>
     <string name="vm_publication_details_comment_save_failed">No se pudo guardar el comentario</string>
     <string name="vm_publication_details_save_error">Error al guardar: %1$s</string>
-    <string name="vm_publication_details_publication_updated">Publicación actualizada</string>
-    <string name="vm_publication_details_publication_update_failed">No se pudo actualizar la publicación</string>
+    <string name="vm_publication_details_publication_updated">PublicaciÃ³n actualizada</string>
+    <string name="vm_publication_details_publication_update_failed">No se pudo actualizar la publicaciÃ³n</string>
     <string name="vm_publication_details_update_error">Error al actualizar: %1$s</string>
-    <string name="vm_publication_details_publication_deleted">Publicación eliminada</string>
-    <string name="vm_publication_details_publication_delete_failed">No se pudo eliminar la publicación</string>
+    <string name="vm_publication_details_publication_deleted">PublicaciÃ³n eliminada</string>
+    <string name="vm_publication_details_publication_delete_failed">No se pudo eliminar la publicaciÃ³n</string>
     <string name="vm_publication_details_delete_error">Error al eliminar: %1$s</string>
 
     <!-- VIEWMODEL: UserHome -->
-    <string name="vm_user_home_favorite_added">Añadido a favoritos</string>
+    <string name="vm_user_home_favorite_added">AÃ±adido a favoritos</string>
     <string name="vm_user_home_favorite_removed">Removido de favoritos</string>
     <string name="vm_user_home_favorite_update_failed">No se pudo actualizar favorito</string>
     <string name="vm_user_home_favorite_error">Error: %1$s</string>
 
     <!-- VIEWMODEL: PostCreation -->
     <string name="vm_post_creation_place_name_required">El nombre del lugar es obligatorio</string>
-    <string name="vm_post_creation_category_required">La categoría es obligatoria</string>
-    <string name="vm_post_creation_price_free">Gratuito</string>
-    <string name="vm_post_creation_price_economic">Economico</string>
-    <string name="vm_post_creation_price_moderate">Moderado</string>
-    <string name="vm_post_creation_price_expensive">Costoso</string>
+    <string name="vm_post_creation_category_required">La categorÃ­a es obligatoria</string>
     <string name="vm_post_creation_submit_action">Publicar</string>
     <string name="vm_post_creation_required_fields">Por favor, completa todos los campos requeridos</string>
-    <string name="vm_post_creation_session_expired">Sesión expirada</string>
-    <string name="vm_post_creation_invalid_category">La categoría seleccionada no es válida</string>
-    <string name="vm_post_creation_resubmitted_success">Nueva publicación enviada con las correcciones</string>
-    <string name="vm_post_creation_success">Publicación creada exitosamente</string>
-    <string name="vm_post_creation_create_failed">No fue posible crear la publicación</string>
-    <string name="vm_post_creation_create_error">Error al crear publicación: %1$s</string>
+    <string name="vm_post_creation_session_expired">SesiÃ³n expirada</string>
+    <string name="vm_post_creation_invalid_category">La categorÃ­a seleccionada no es vÃ¡lida</string>
+    <string name="vm_post_creation_resubmitted_success">Nueva publicaciÃ³n enviada con las correcciones</string>
+    <string name="vm_post_creation_success">PublicaciÃ³n creada exitosamente</string>
+    <string name="vm_post_creation_create_failed">No fue posible crear la publicaciÃ³n</string>
+    <string name="vm_post_creation_create_error">Error al crear publicaciÃ³n: %1$s</string>
 
     <!-- VIEWMODEL: AccountEdit -->
-    <string name="vm_account_edit_default_full_name">Carlos Andrés Ruiz</string>
+    <string name="vm_account_edit_default_full_name">Carlos AndrÃ©s Ruiz</string>
     <string name="vm_account_edit_default_department">Quindio</string>
     <string name="vm_account_edit_default_city">Armenia</string>
-    <string name="vm_account_edit_default_address">Ej. Barrio La Candelaria, Bogotá</string>
+    <string name="vm_account_edit_default_address">Ej. Barrio La Candelaria, BogotÃ¡</string>
     <string name="vm_account_edit_default_email">carlos.ruiz@universidad.edu.co</string>
     <string name="vm_account_edit_name_required">El nombre es obligatorio</string>
-    <string name="vm_account_edit_phone_required">El teléfono es obligatorio</string>
-    <string name="vm_account_edit_phone_invalid">Teléfono inválido</string>
+    <string name="vm_account_edit_phone_required">El telÃ©fono es obligatorio</string>
+    <string name="vm_account_edit_phone_invalid">TelÃ©fono invÃ¡lido</string>
     <string name="vm_account_edit_email_required">El correo es obligatorio</string>
-    <string name="vm_account_edit_email_invalid">Correo inválido</string>
-    <string name="vm_account_edit_address_required">La dirección es obligatoria</string>
+    <string name="vm_account_edit_email_invalid">Correo invÃ¡lido</string>
+    <string name="vm_account_edit_address_required">La direcciÃ³n es obligatoria</string>
     <string name="vm_account_edit_department_required">Seleccione un departamento</string>
     <string name="vm_account_edit_city_required">Seleccione un municipio</string>
     <string name="vm_account_edit_required_fields">Por favor, completa todos los campos requeridos</string>
     <string name="vm_account_edit_save_success">Cambios guardados exitosamente</string>
     <string name="vm_account_edit_save_failed">No fue posible guardar los cambios</string>
     <string name="vm_account_edit_user_not_found">Usuario no encontrado</string>
-    <string name="vm_account_edit_session_expired">Sesión expirada</string>
+    <string name="vm_account_edit_session_expired">SesiÃ³n expirada</string>
     <string name="vm_account_edit_save_error">Error al guardar cambios: %1$s</string>
-    <string name="vm_account_edit_open_change_password">Abriendo cambio de contraseña</string>
+    <string name="vm_account_edit_open_change_password">Abriendo cambio de contraseÃ±a</string>
     <string name="vm_account_edit_delete_success">Cuenta eliminada exitosamente</string>
     <string name="vm_account_edit_delete_error">Error al eliminar cuenta: %1$s</string>
     <string name="vm_account_edit_default_initial_one">C</string>
@@ -680,48 +671,36 @@
 
     <!-- VIEWMODEL: Notifications -->
     <string name="vm_notifications_nearby_title">Nuevo lugar cercano</string>
-    <string name="vm_notifications_item_one_description">Mirador de Salento fue añadido a 1.2 km de tu ubicación actual.</string>
+    <string name="vm_notifications_item_one_description">Mirador de Salento fue aÃ±adido a 1.2 km de tu ubicaciÃ³n actual.</string>
     <string name="vm_notifications_item_one_time">Hace 4 horas</string>
-    <string name="vm_notifications_item_two_description">Hotel El Zafiro fue añadido a 1.9 km de tu ubicación actual.</string>
+    <string name="vm_notifications_item_two_description">Hotel El Zafiro fue aÃ±adido a 1.9 km de tu ubicaciÃ³n actual.</string>
     <string name="vm_notifications_item_two_time">Hace 8 horas</string>
 
     <!-- VIEWMODEL: Badges -->
     <string name="vm_badges_item_1_name">Explorador Novato</string>
     <string name="vm_badges_item_1_description">Has visitado 5 lugares y comenzado tu camino como explorador.</string>
-    <string name="vm_badges_item_1_category">Exploración</string>
-    <string name="vm_badges_item_2_name">Crítico Gastronómico</string>
-    <string name="vm_badges_item_2_description">Has realizado 10 reseñas de restaurantes locales con fotos detalladas.</string>
-    <string name="vm_badges_item_2_category">Gastronomía</string>
-    <string name="vm_badges_item_3_name">Fotógrafo Experto</string>
-    <string name="vm_badges_item_3_description">Has subido más de 50 fotos de alta calidad que han inspirado a otros.</string>
-    <string name="vm_badges_item_3_category">Fotografía</string>
+    <string name="vm_badges_item_1_category">ExploraciÃ³n</string>
+    <string name="vm_badges_item_2_name">CrÃ­tico GastronÃ³mico</string>
+    <string name="vm_badges_item_2_description">Has realizado 10 reseÃ±as de restaurantes locales con fotos detalladas.</string>
+    <string name="vm_badges_item_2_category">GastronomÃ­a</string>
+    <string name="vm_badges_item_3_name">FotÃ³grafo Experto</string>
+    <string name="vm_badges_item_3_description">Has subido mÃ¡s de 50 fotos de alta calidad que han inspirado a otros.</string>
+    <string name="vm_badges_item_3_category">FotografÃ­a</string>
     <string name="vm_badges_item_4_name">Senderista Supremo</string>
     <string name="vm_badges_item_4_description">Has completado todas las rutas de senderismo registradas en el departamento.</string>
     <string name="vm_badges_item_4_category">Naturaleza</string>
     <string name="vm_badges_item_5_name">Historiador</string>
-    <string name="vm_badges_item_5_description">Has compartido información valiosa sobre la historia de 5 monumentos locales.</string>
+    <string name="vm_badges_item_5_description">Has compartido informaciÃ³n valiosa sobre la historia de 5 monumentos locales.</string>
     <string name="vm_badges_item_5_category">Cultura</string>
-    <string name="vm_badges_item_6_name">Cafetero de Corazón</string>
-    <string name="vm_badges_item_6_description">Has visitado y reseñado 10 fincas cafeteras tradicionales de la región.</string>
-    <string name="vm_badges_item_6_category">Tradición</string>
+    <string name="vm_badges_item_6_name">Cafetero de CorazÃ³n</string>
+    <string name="vm_badges_item_6_description">Has visitado y reseÃ±ado 10 fincas cafeteras tradicionales de la regiÃ³n.</string>
+    <string name="vm_badges_item_6_category">TradiciÃ³n</string>
 
     <!-- VIEWMODEL: Filters -->
-    <string name="vm_filters_category_nature_parks">Naturaleza y Parques</string>
-    <string name="vm_filters_category_specialty_coffee">Cafés Especiales</string>
-    <string name="vm_filters_category_museums_culture">Museos y Cultura</string>
-    <string name="vm_filters_category_viewpoints">Miradores</string>
-    <string name="vm_filters_category_colonial_architecture">Arquitectura Colonial</string>
-    <string name="vm_filters_category_typical_restaurants">Restaurantes Típicos</string>
-    <string name="vm_filters_category_nightlife">Vida Nocturna</string>
-    <string name="vm_filters_category_adventure_sports">Aventura y Deporte</string>
     <string name="vm_filters_location_nearby">Cercanos</string>
     <string name="vm_filters_location_city">En la ciudad</string>
     <string name="vm_filters_location_department">En el departamento</string>
-    <string name="vm_filters_location_country">En el país</string>
-    <string name="vm_filters_price_free">Gratuito</string>
-    <string name="vm_filters_price_economic">Economico</string>
-    <string name="vm_filters_price_moderate">Moderado</string>
-    <string name="vm_filters_price_expensive">Costoso</string>
+    <string name="vm_filters_location_country">En el paÃ­s</string>
 
     <!-- FEATURE: AdminModeration -->
     <string name="feature_admin_moderation_title">Moderacion</string>
