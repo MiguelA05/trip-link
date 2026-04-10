@@ -1,5 +1,6 @@
 package com.example.triplink.features.register
 
+import android.content.Context
 import android.util.Patterns
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
@@ -7,11 +8,13 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import com.example.triplink.core.utils.RequestResult
+import com.example.triplink.R
 import com.example.triplink.data.seed.GeoSeedData
 import com.example.triplink.domain.model.Ubicacion
 import com.example.triplink.domain.model.Usuario
 import com.example.triplink.domain.repository.auth.AuthRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -19,6 +22,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class RegisterViewModel @Inject constructor(
+    @param:ApplicationContext private val appContext: Context,
     private val authRepository: AuthRepository
 ) : ViewModel() {
 
@@ -52,31 +56,31 @@ class RegisterViewModel @Inject constructor(
     }
 
     fun validateName(value: String): String? {
-        return if (value.isBlank()) "El nombre es obligatorio" else null
+        return if (value.isBlank()) appContext.getString(R.string.vm_register_name_required) else null
     }
 
     fun validateEmail(value: String): String? {
         return when {
-            value.isBlank() -> "El correo es obligatorio"
-            !Patterns.EMAIL_ADDRESS.matcher(value).matches() -> "Correo invalido"
+            value.isBlank() -> appContext.getString(R.string.vm_register_email_required)
+            !Patterns.EMAIL_ADDRESS.matcher(value).matches() -> appContext.getString(R.string.vm_register_email_invalid)
             else -> null
         }
     }
 
     fun validatePassword(value: String): String? {
         return when {
-            value.isBlank() -> "La contrasena es obligatoria"
-            value.length < 6 -> "Minimo 6 caracteres"
+            value.isBlank() -> appContext.getString(R.string.vm_register_password_required)
+            value.length < 6 -> appContext.getString(R.string.vm_register_password_min_length)
             else -> null
         }
     }
 
     fun validateDepartment(value: String): String? {
-        return if (value.isBlank()) "Seleccione un departamento" else null
+        return if (value.isBlank()) appContext.getString(R.string.vm_register_department_required) else null
     }
 
     fun validateCity(value: String): String? {
-        return if (value.isBlank()) "Seleccione un municipio" else null
+        return if (value.isBlank()) appContext.getString(R.string.vm_register_city_required) else null
     }
 
     fun onNameChange(newValue: String) {
@@ -119,12 +123,12 @@ class RegisterViewModel @Inject constructor(
 
     fun register() {
         if (!validateAll()) {
-            _registerResult.value = RequestResult.Failure("Por favor, corrige los errores en el formulario")
+            _registerResult.value = RequestResult.Failure(appContext.getString(R.string.vm_register_form_invalid))
             return
         }
 
         if (authRepository.findByEmail(email) != null) {
-            _registerResult.value = RequestResult.Failure("El correo ya se encuentra registrado")
+            _registerResult.value = RequestResult.Failure(appContext.getString(R.string.vm_register_email_already_exists))
             return
         }
 
@@ -139,9 +143,9 @@ class RegisterViewModel @Inject constructor(
         )
 
         _registerResult.value = if (wasSaved) {
-            RequestResult.Success("Registro exitoso para $name")
+            RequestResult.Success(appContext.getString(R.string.vm_register_success, name))
         } else {
-            RequestResult.Failure("No fue posible registrar el usuario")
+            RequestResult.Failure(appContext.getString(R.string.vm_register_save_failed))
         }
     }
 

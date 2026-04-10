@@ -1,10 +1,12 @@
 package com.example.triplink.features.publicationDetails
 
+import android.content.Context
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.triplink.R
 import com.example.triplink.core.utils.RequestResult
 import com.example.triplink.domain.model.Comentario
 import com.example.triplink.domain.model.PuntoInteres
@@ -12,6 +14,7 @@ import com.example.triplink.domain.repository.comment.CommentRepository
 import com.example.triplink.domain.repository.favorite.FavoriteRepository
 import com.example.triplink.domain.repository.publication.PublicationRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -21,6 +24,7 @@ import java.util.UUID
 
 @HiltViewModel
 class PublicationDetailsViewModel @Inject constructor(
+    @param:ApplicationContext private val appContext: Context,
     private val publicationRepository: PublicationRepository,
     private val favoriteRepository: FavoriteRepository,
     private val commentRepository: CommentRepository
@@ -55,13 +59,21 @@ class PublicationDetailsViewModel @Inject constructor(
                 val wasToggled = favoriteRepository.toggleFavorite(userId, publicationId)
                 if (wasToggled) {
                     isFavorite = !isFavorite
-                    val message = if (isFavorite) "Añadido a favoritos" else "Removido de favoritos"
+                    val message = if (isFavorite) {
+                        appContext.getString(R.string.vm_publication_details_favorite_added)
+                    } else {
+                        appContext.getString(R.string.vm_publication_details_favorite_removed)
+                    }
                     _favoriteToggleResult.value = RequestResult.Success(message)
                 } else {
-                    _favoriteToggleResult.value = RequestResult.Failure("No se pudo actualizar favorito")
+                    _favoriteToggleResult.value = RequestResult.Failure(
+                        appContext.getString(R.string.vm_publication_details_favorite_update_failed)
+                    )
                 }
             } catch (e: Exception) {
-                _favoriteToggleResult.value = RequestResult.Failure("Error: ${e.message}")
+                _favoriteToggleResult.value = RequestResult.Failure(
+                    appContext.getString(R.string.vm_publication_details_generic_error, e.message ?: "")
+                )
             }
         }
     }
@@ -72,7 +84,7 @@ class PublicationDetailsViewModel @Inject constructor(
 
     fun saveComment(publicationId: String, userId: String, userName: String, rating: Float, text: String) {
         if (userId.isBlank()) {
-            _commentResult.value = RequestResult.Failure("Debes iniciar sesión para comentar")
+            _commentResult.value = RequestResult.Failure(appContext.getString(R.string.vm_publication_details_login_required))
             return
         }
 
@@ -91,12 +103,14 @@ class PublicationDetailsViewModel @Inject constructor(
                 val wasSaved = commentRepository.saveComment(publicationId, comment)
                 if (wasSaved) {
                     comments = commentRepository.getCommentsByPublicationId(publicationId)
-                    _commentResult.value = RequestResult.Success("Comentario guardado exitosamente")
+                    _commentResult.value = RequestResult.Success(appContext.getString(R.string.vm_publication_details_comment_saved))
                 } else {
-                    _commentResult.value = RequestResult.Failure("No se pudo guardar el comentario")
+                    _commentResult.value = RequestResult.Failure(appContext.getString(R.string.vm_publication_details_comment_save_failed))
                 }
             } catch (e: Exception) {
-                _commentResult.value = RequestResult.Failure("Error al guardar: ${e.message}")
+                _commentResult.value = RequestResult.Failure(
+                    appContext.getString(R.string.vm_publication_details_save_error, e.message ?: "")
+                )
             }
         }
     }
@@ -110,12 +124,14 @@ class PublicationDetailsViewModel @Inject constructor(
             try {
                 val wasUpdated = publicationRepository.updatePuntoInteres(updatedPublication)
                 _publicationActionResult.value = if (wasUpdated) {
-                    RequestResult.Success("Publicación actualizada")
+                    RequestResult.Success(appContext.getString(R.string.vm_publication_details_publication_updated))
                 } else {
-                    RequestResult.Failure("No se pudo actualizar la publicación")
+                    RequestResult.Failure(appContext.getString(R.string.vm_publication_details_publication_update_failed))
                 }
             } catch (e: Exception) {
-                _publicationActionResult.value = RequestResult.Failure("Error al actualizar: ${e.message}")
+                _publicationActionResult.value = RequestResult.Failure(
+                    appContext.getString(R.string.vm_publication_details_update_error, e.message ?: "")
+                )
             }
         }
     }
@@ -125,12 +141,14 @@ class PublicationDetailsViewModel @Inject constructor(
             try {
                 val wasDeleted = publicationRepository.deletePublicationById(publicationId)
                 _publicationActionResult.value = if (wasDeleted) {
-                    RequestResult.Success("Publicación eliminada")
+                    RequestResult.Success(appContext.getString(R.string.vm_publication_details_publication_deleted))
                 } else {
-                    RequestResult.Failure("No se pudo eliminar la publicación")
+                    RequestResult.Failure(appContext.getString(R.string.vm_publication_details_publication_delete_failed))
                 }
             } catch (e: Exception) {
-                _publicationActionResult.value = RequestResult.Failure("Error al eliminar: ${e.message}")
+                _publicationActionResult.value = RequestResult.Failure(
+                    appContext.getString(R.string.vm_publication_details_delete_error, e.message ?: "")
+                )
             }
         }
     }

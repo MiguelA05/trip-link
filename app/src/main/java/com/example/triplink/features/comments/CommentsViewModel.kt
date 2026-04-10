@@ -1,12 +1,15 @@
 package com.example.triplink.features.comments
 
+import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.triplink.R
 import com.example.triplink.core.components.RatingCount
 import com.example.triplink.core.utils.RequestResult
 import com.example.triplink.domain.model.Comentario
 import com.example.triplink.domain.repository.comment.CommentRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -23,6 +26,7 @@ data class CommentsUiState(
 
 @HiltViewModel
 class CommentsViewModel @Inject constructor(
+    @param:ApplicationContext private val appContext: Context,
     private val commentRepository: CommentRepository
 ) : ViewModel() {
 
@@ -39,24 +43,26 @@ class CommentsViewModel @Inject constructor(
                 val existing = commentRepository.getCommentsByPublicationId(publicationId)
                     .firstOrNull { it.id == commentId }
                     ?: run {
-                        _saveCommentResult.value = RequestResult.Failure("Comentario no encontrado")
+                        _saveCommentResult.value = RequestResult.Failure(appContext.getString(R.string.vm_comments_not_found))
                         return@launch
                     }
 
                 if (!existing.usuarioId.equals(currentUserId, ignoreCase = true)) {
-                    _saveCommentResult.value = RequestResult.Failure("Solo puedes eliminar tus propios comentarios")
+                    _saveCommentResult.value = RequestResult.Failure(appContext.getString(R.string.vm_comments_delete_forbidden))
                     return@launch
                 }
 
                 val wasDeleted = commentRepository.deleteComment(publicationId, commentId)
                 _saveCommentResult.value = if (wasDeleted) {
                     _refreshTick.value += 1
-                    RequestResult.Success("Comentario eliminado")
+                    RequestResult.Success(appContext.getString(R.string.vm_comments_deleted))
                 } else {
-                    RequestResult.Failure("No se pudo eliminar el comentario")
+                    RequestResult.Failure(appContext.getString(R.string.vm_comments_delete_failed))
                 }
             } catch (e: Exception) {
-                _saveCommentResult.value = RequestResult.Failure("Error al eliminar: ${e.message}")
+                _saveCommentResult.value = RequestResult.Failure(
+                    appContext.getString(R.string.vm_comments_delete_error, e.message ?: "")
+                )
             }
         }
     }

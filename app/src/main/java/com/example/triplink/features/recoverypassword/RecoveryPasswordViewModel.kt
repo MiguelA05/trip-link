@@ -1,5 +1,6 @@
 package com.example.triplink.features.recoverypassword
 
+import android.content.Context
 import android.util.Patterns
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -7,8 +8,10 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import com.example.triplink.core.utils.RequestResult
 import com.example.triplink.core.utils.ValidatedField
+import com.example.triplink.R
 import com.example.triplink.domain.repository.auth.AuthRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -16,6 +19,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class RecoveryPasswordViewModel @Inject constructor(
+    @param:ApplicationContext private val appContext: Context,
     private val authRepository: AuthRepository
 ) : ViewModel() {
 
@@ -32,8 +36,8 @@ class RecoveryPasswordViewModel @Inject constructor(
 
     val email = ValidatedField("") { value ->
         when {
-            value.isEmpty() -> "El email es obligatorio"
-            !Patterns.EMAIL_ADDRESS.matcher(value).matches() -> "Ingresa un email válido"
+            value.isEmpty() -> appContext.getString(R.string.vm_recovery_email_required)
+            !Patterns.EMAIL_ADDRESS.matcher(value).matches() -> appContext.getString(R.string.vm_recovery_email_invalid)
             else -> null
         }
     }
@@ -51,14 +55,14 @@ class RecoveryPasswordViewModel @Inject constructor(
 
     fun sendPasswordResetEmail() {
         if (!isFormValid) {
-            _recoveryResult.value = RequestResult.Failure("Por favor, ingresa un email válido")
+            _recoveryResult.value = RequestResult.Failure(appContext.getString(R.string.vm_recovery_invalid_form))
             return
         }
 
         // Validar que el email existe en el sistema
         val userExists = authRepository.findByEmail(email.value) != null
         if (!userExists) {
-            _recoveryResult.value = RequestResult.Failure("Este email no está registrado en el sistema")
+            _recoveryResult.value = RequestResult.Failure(appContext.getString(R.string.vm_recovery_email_not_found))
             return
         }
 
@@ -66,6 +70,8 @@ class RecoveryPasswordViewModel @Inject constructor(
         // Por ahora, simulamos el envío exitoso
         isEmailSent = true
         showSuccessDialog = true
-        _recoveryResult.value = RequestResult.Success("Se ha enviado un correo de recuperación a ${email.value}")
+        _recoveryResult.value = RequestResult.Success(
+            appContext.getString(R.string.vm_recovery_success, email.value)
+        )
     }
 }

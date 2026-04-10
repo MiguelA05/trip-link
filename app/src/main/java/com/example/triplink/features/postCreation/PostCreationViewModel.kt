@@ -1,10 +1,12 @@
 package com.example.triplink.features.postCreation
 
+import android.content.Context
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.triplink.R
 import com.example.triplink.core.utils.RequestResult
 import com.example.triplink.core.utils.ValidatedField
 import com.example.triplink.data.datastore.SessionDataStore
@@ -17,6 +19,7 @@ import com.example.triplink.domain.model.enums.EstadoPublicacion
 import com.example.triplink.domain.model.enums.RangoPrecios
 import com.example.triplink.domain.repository.publication.PublicationRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -28,18 +31,19 @@ import javax.inject.Inject
 
 @HiltViewModel
 class PostCreationViewModel @Inject constructor(
+    @param:ApplicationContext private val appContext: Context,
     private val publicationRepository: PublicationRepository,
     private val sessionDataStore: SessionDataStore
 ) : ViewModel() {
 
     var placeName = ValidatedField("") { value ->
-        if (value.isBlank()) "El nombre del lugar es obligatorio" else null
+        if (value.isBlank()) appContext.getString(R.string.vm_post_creation_place_name_required) else null
     }
 
     var description by mutableStateOf("")
 
     var selectedCategory = ValidatedField("") { value ->
-        if (value.isBlank()) "La categoría es obligatoria" else null
+        if (value.isBlank()) appContext.getString(R.string.vm_post_creation_category_required) else null
     }
 
     var isOpenEveryDay by mutableStateOf(false)
@@ -54,7 +58,7 @@ class PostCreationViewModel @Inject constructor(
         }
     )
 
-    var selectedPriceRange by mutableStateOf("Gratuito")
+    var selectedPriceRange by mutableStateOf(appContext.getString(R.string.vm_post_creation_price_free))
     var showSuccessModal by mutableStateOf(false)
         private set
 
@@ -64,7 +68,7 @@ class PostCreationViewModel @Inject constructor(
     private var prefilledPhotos by mutableStateOf<List<String>>(emptyList())
 
     val submitButtonLabel: String
-        get() = "Publicar"
+        get() = appContext.getString(R.string.vm_post_creation_submit_action)
 
     val categories = Categoria.entries.map { it.label }
 
@@ -187,7 +191,7 @@ class PostCreationViewModel @Inject constructor(
 
     fun createPost() {
         if (!isFormValid) {
-            _createResult.value = RequestResult.Failure("Por favor, completa todos los campos requeridos")
+            _createResult.value = RequestResult.Failure(appContext.getString(R.string.vm_post_creation_required_fields))
             return
         }
 
@@ -196,13 +200,13 @@ class PostCreationViewModel @Inject constructor(
                 val session = sessionDataStore.sessionFlow.first()
                 val userId = session?.userId
                 if (userId.isNullOrBlank()) {
-                    _createResult.value = RequestResult.Failure("Sesión expirada")
+                    _createResult.value = RequestResult.Failure(appContext.getString(R.string.vm_post_creation_session_expired))
                     return@launch
                 }
 
                 val category = selectedCategory.value.toDomainCategoryOrNull()
                 if (category == null) {
-                    _createResult.value = RequestResult.Failure("La categoría seleccionada no es válida")
+                    _createResult.value = RequestResult.Failure(appContext.getString(R.string.vm_post_creation_invalid_category))
                     return@launch
                 }
 
@@ -226,16 +230,18 @@ class PostCreationViewModel @Inject constructor(
                     showSuccessModal = true
                     _createResult.value = RequestResult.Success(
                         if (prefilledFromPublicationId != null) {
-                            "Nueva publicación enviada con las correcciones"
+                            appContext.getString(R.string.vm_post_creation_resubmitted_success)
                         } else {
-                            "Publicación creada exitosamente"
+                            appContext.getString(R.string.vm_post_creation_success)
                         }
                     )
                 } else {
-                    _createResult.value = RequestResult.Failure("No fue posible crear la publicación")
+                    _createResult.value = RequestResult.Failure(appContext.getString(R.string.vm_post_creation_create_failed))
                 }
             } catch (e: Exception) {
-                _createResult.value = RequestResult.Failure("Error al crear publicación: ${e.message}")
+                _createResult.value = RequestResult.Failure(
+                    appContext.getString(R.string.vm_post_creation_create_error, e.message ?: "")
+                )
             }
         }
     }
@@ -259,7 +265,7 @@ class PostCreationViewModel @Inject constructor(
         daySchedules = DiaSemana.entries.map {
             DayScheduleData(it)
         }
-        selectedPriceRange = "Gratuito"
+        selectedPriceRange = appContext.getString(R.string.vm_post_creation_price_free)
         showSuccessModal = false
         prefilledFromPublicationId = null
         prefilledPhotos = emptyList()
@@ -285,20 +291,20 @@ class PostCreationViewModel @Inject constructor(
     }
 
     private fun String.toDomainPriceRange(): RangoPrecios = when (normalizeForEnum(this)) {
-        "GRATUITO" -> RangoPrecios.GRATUITO
-        "ECONOMICO" -> RangoPrecios.ECONOMICO
-        "MODERADO" -> RangoPrecios.MODERADO
-        "COSTOSO" -> RangoPrecios.COSTOSO
+        normalizeForEnum(appContext.getString(R.string.vm_post_creation_price_free)) -> RangoPrecios.GRATUITO
+        normalizeForEnum(appContext.getString(R.string.vm_post_creation_price_economic)) -> RangoPrecios.ECONOMICO
+        normalizeForEnum(appContext.getString(R.string.vm_post_creation_price_moderate)) -> RangoPrecios.MODERADO
+        normalizeForEnum(appContext.getString(R.string.vm_post_creation_price_expensive)) -> RangoPrecios.COSTOSO
         else -> RangoPrecios.GRATUITO
     }
 
 
     private fun RangoPrecios?.toUiLabel(): String = when (this) {
-        null -> "Gratuito"
-        RangoPrecios.GRATUITO -> "Gratuito"
-        RangoPrecios.ECONOMICO -> "Economico"
-        RangoPrecios.MODERADO -> "Moderado"
-        RangoPrecios.COSTOSO -> "Costoso"
+        null -> appContext.getString(R.string.vm_post_creation_price_free)
+        RangoPrecios.GRATUITO -> appContext.getString(R.string.vm_post_creation_price_free)
+        RangoPrecios.ECONOMICO -> appContext.getString(R.string.vm_post_creation_price_economic)
+        RangoPrecios.MODERADO -> appContext.getString(R.string.vm_post_creation_price_moderate)
+        RangoPrecios.COSTOSO -> appContext.getString(R.string.vm_post_creation_price_expensive)
     }
 
     private fun Long.toHHmm(): String {

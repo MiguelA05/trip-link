@@ -512,6 +512,164 @@
     <string name="feature_badges_contributions_label">Contributions</string>
     <string name="feature_badges_last_activity">Last activity: %1$s</string>
 
+    <!-- VIEWMODEL: Login -->
+    <string name="vm_login_email_required">Email is required</string>
+    <string name="vm_login_email_invalid">Enter a valid email address</string>
+    <string name="vm_login_password_required">Password is required</string>
+    <string name="vm_login_password_min_length">Password must be at least 6 characters</string>
+    <string name="vm_login_form_incomplete">Complete the required fields</string>
+    <string name="vm_login_invalid_credentials">Invalid credentials</string>
+    <string name="vm_login_success">Signed in successfully</string>
+    <string name="vm_login_unexpected_error">Could not sign in. Please try again.</string>
+
+    <!-- VIEWMODEL: Register -->
+    <string name="vm_register_name_required">Name is required</string>
+    <string name="vm_register_email_required">Email is required</string>
+    <string name="vm_register_email_invalid">Invalid email address</string>
+    <string name="vm_register_password_required">Password is required</string>
+    <string name="vm_register_password_min_length">Minimum 6 characters</string>
+    <string name="vm_register_department_required">Select a department</string>
+    <string name="vm_register_city_required">Select a city</string>
+    <string name="vm_register_form_invalid">Please fix the form errors</string>
+    <string name="vm_register_email_already_exists">This email is already registered</string>
+    <string name="vm_register_success">Registration successful for %1$s</string>
+    <string name="vm_register_save_failed">Could not register the user</string>
+
+    <!-- VIEWMODEL: RecoveryPassword -->
+    <string name="vm_recovery_email_required">Email is required</string>
+    <string name="vm_recovery_email_invalid">Enter a valid email address</string>
+    <string name="vm_recovery_invalid_form">Please enter a valid email address</string>
+    <string name="vm_recovery_email_not_found">This email is not registered in the system</string>
+    <string name="vm_recovery_success">A recovery email was sent to %1$s</string>
+
+    <!-- VIEWMODEL: ResetPassword -->
+    <string name="vm_reset_password_required">Password is required</string>
+    <string name="vm_reset_password_min_length">Password must be at least 6 characters</string>
+    <string name="vm_reset_confirm_required">Confirmation is required</string>
+    <string name="vm_reset_password_mismatch">Passwords do not match</string>
+    <string name="vm_reset_success">Password reset successfully</string>
+    <string name="vm_reset_invalid_form">Please verify the fields</string>
+
+    <!-- VIEWMODEL: Comments -->
+    <string name="vm_comments_not_found">Comment not found</string>
+    <string name="vm_comments_delete_forbidden">You can only delete your own comments</string>
+    <string name="vm_comments_deleted">Comment deleted</string>
+    <string name="vm_comments_delete_failed">Could not delete the comment</string>
+    <string name="vm_comments_delete_error">Error deleting comment: %1$s</string>
+
+    <!-- VIEWMODEL: PublicationDetails -->
+    <string name="vm_publication_details_favorite_added">Added to favorites</string>
+    <string name="vm_publication_details_favorite_removed">Removed from favorites</string>
+    <string name="vm_publication_details_favorite_update_failed">Could not update favorite</string>
+    <string name="vm_publication_details_generic_error">Error: %1$s</string>
+    <string name="vm_publication_details_login_required">You must sign in to comment</string>
+    <string name="vm_publication_details_comment_saved">Comment saved successfully</string>
+    <string name="vm_publication_details_comment_save_failed">Could not save the comment</string>
+    <string name="vm_publication_details_save_error">Error saving: %1$s</string>
+    <string name="vm_publication_details_publication_updated">Publication updated</string>
+    <string name="vm_publication_details_publication_update_failed">Could not update publication</string>
+    <string name="vm_publication_details_update_error">Error updating: %1$s</string>
+    <string name="vm_publication_details_publication_deleted">Publication deleted</string>
+    <string name="vm_publication_details_publication_delete_failed">Could not delete publication</string>
+    <string name="vm_publication_details_delete_error">Error deleting: %1$s</string>
+
+    <!-- VIEWMODEL: UserHome -->
+    <string name="vm_user_home_favorite_added">Added to favorites</string>
+    <string name="vm_user_home_favorite_removed">Removed from favorites</string>
+    <string name="vm_user_home_favorite_update_failed">Could not update favorite</string>
+    <string name="vm_user_home_favorite_error">Error: %1$s</string>
+
+    <!-- VIEWMODEL: PostCreation -->
+    <string name="vm_post_creation_place_name_required">Place name is required</string>
+    <string name="vm_post_creation_category_required">Category is required</string>
+    <string name="vm_post_creation_price_free">Free</string>
+    <string name="vm_post_creation_price_economic">Economic</string>
+    <string name="vm_post_creation_price_moderate">Moderate</string>
+    <string name="vm_post_creation_price_expensive">Expensive</string>
+    <string name="vm_post_creation_submit_action">Publish</string>
+    <string name="vm_post_creation_required_fields">Please complete all required fields</string>
+    <string name="vm_post_creation_session_expired">Session expired</string>
+    <string name="vm_post_creation_invalid_category">The selected category is not valid</string>
+    <string name="vm_post_creation_resubmitted_success">New publication sent with corrections</string>
+    <string name="vm_post_creation_success">Publication created successfully</string>
+    <string name="vm_post_creation_create_failed">Could not create the publication</string>
+    <string name="vm_post_creation_create_error">Error creating publication: %1$s</string>
+
+    <!-- VIEWMODEL: AccountEdit -->
+    <string name="vm_account_edit_default_full_name">John Doe</string>
+    <string name="vm_account_edit_default_department">Quindio</string>
+    <string name="vm_account_edit_default_city">Armenia</string>
+    <string name="vm_account_edit_default_address">Ex. La Candelaria neighborhood, Bogota</string>
+    <string name="vm_account_edit_default_email">john.doe@university.edu.co</string>
+    <string name="vm_account_edit_name_required">Name is required</string>
+    <string name="vm_account_edit_phone_required">Phone is required</string>
+    <string name="vm_account_edit_phone_invalid">Invalid phone number</string>
+    <string name="vm_account_edit_email_required">Email is required</string>
+    <string name="vm_account_edit_email_invalid">Invalid email</string>
+    <string name="vm_account_edit_address_required">Address is required</string>
+    <string name="vm_account_edit_department_required">Select a department</string>
+    <string name="vm_account_edit_city_required">Select a city</string>
+    <string name="vm_account_edit_required_fields">Please complete all required fields</string>
+    <string name="vm_account_edit_save_success">Changes saved successfully</string>
+    <string name="vm_account_edit_save_failed">Could not save changes</string>
+    <string name="vm_account_edit_user_not_found">User not found</string>
+    <string name="vm_account_edit_session_expired">Session expired</string>
+    <string name="vm_account_edit_save_error">Error saving changes: %1$s</string>
+    <string name="vm_account_edit_open_change_password">Opening password change</string>
+    <string name="vm_account_edit_delete_success">Account deleted successfully</string>
+    <string name="vm_account_edit_delete_error">Error deleting account: %1$s</string>
+    <string name="vm_account_edit_default_initial_one">J</string>
+    <string name="vm_account_edit_default_initial_two">D</string>
+
+    <!-- VIEWMODEL: UserInfo -->
+    <string name="vm_user_info_default_user_name">User</string>
+    <string name="vm_user_info_default_role_label">TRAVELER</string>
+
+    <!-- VIEWMODEL: Notifications -->
+    <string name="vm_notifications_nearby_title">New place nearby</string>
+    <string name="vm_notifications_item_one_description">Salento Viewpoint was added 1.2 km from your current location.</string>
+    <string name="vm_notifications_item_one_time">4 hours ago</string>
+    <string name="vm_notifications_item_two_description">El Zafiro Hotel was added 1.9 km from your current location.</string>
+    <string name="vm_notifications_item_two_time">8 hours ago</string>
+
+    <!-- VIEWMODEL: Badges -->
+    <string name="vm_badges_item_1_name">Novice Explorer</string>
+    <string name="vm_badges_item_1_description">You have visited 5 places and started your explorer journey.</string>
+    <string name="vm_badges_item_1_category">Exploration</string>
+    <string name="vm_badges_item_2_name">Food Critic</string>
+    <string name="vm_badges_item_2_description">You have written 10 local restaurant reviews with detailed photos.</string>
+    <string name="vm_badges_item_2_category">Gastronomy</string>
+    <string name="vm_badges_item_3_name">Expert Photographer</string>
+    <string name="vm_badges_item_3_description">You have uploaded over 50 high-quality photos that inspired others.</string>
+    <string name="vm_badges_item_3_category">Photography</string>
+    <string name="vm_badges_item_4_name">Supreme Hiker</string>
+    <string name="vm_badges_item_4_description">You have completed all hiking routes registered in the department.</string>
+    <string name="vm_badges_item_4_category">Nature</string>
+    <string name="vm_badges_item_5_name">Historian</string>
+    <string name="vm_badges_item_5_description">You shared valuable information about the history of 5 local landmarks.</string>
+    <string name="vm_badges_item_5_category">Culture</string>
+    <string name="vm_badges_item_6_name">Coffee Lover</string>
+    <string name="vm_badges_item_6_description">You visited and reviewed 10 traditional coffee farms in the region.</string>
+    <string name="vm_badges_item_6_category">Tradition</string>
+
+    <!-- VIEWMODEL: Filters -->
+    <string name="vm_filters_category_nature_parks">Nature and Parks</string>
+    <string name="vm_filters_category_specialty_coffee">Specialty Coffee</string>
+    <string name="vm_filters_category_museums_culture">Museums and Culture</string>
+    <string name="vm_filters_category_viewpoints">Viewpoints</string>
+    <string name="vm_filters_category_colonial_architecture">Colonial Architecture</string>
+    <string name="vm_filters_category_typical_restaurants">Traditional Restaurants</string>
+    <string name="vm_filters_category_nightlife">Nightlife</string>
+    <string name="vm_filters_category_adventure_sports">Adventure and Sports</string>
+    <string name="vm_filters_location_nearby">Nearby</string>
+    <string name="vm_filters_location_city">In the city</string>
+    <string name="vm_filters_location_department">In the department</string>
+    <string name="vm_filters_location_country">In the country</string>
+    <string name="vm_filters_price_free">Free</string>
+    <string name="vm_filters_price_economic">Economic</string>
+    <string name="vm_filters_price_moderate">Moderate</string>
+    <string name="vm_filters_price_expensive">Expensive</string>
+
     <!-- FEATURE: AdminModeration -->
     <string name="feature_admin_moderation_title">Moderation</string>
     <string name="feature_admin_moderation_subtitle">Recent publications</string>

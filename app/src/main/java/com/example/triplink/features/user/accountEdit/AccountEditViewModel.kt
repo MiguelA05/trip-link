@@ -1,5 +1,6 @@
 package com.example.triplink.features.user.accountEdit
 
+import android.content.Context
 import android.util.Patterns
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
@@ -7,12 +8,14 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.triplink.R
 import com.example.triplink.core.utils.RequestResult
 import com.example.triplink.data.datastore.SessionDataStore
 import com.example.triplink.data.seed.GeoSeedData
 import com.example.triplink.domain.model.Ubicacion
 import com.example.triplink.domain.repository.user.UserProfileRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -22,12 +25,13 @@ import javax.inject.Inject
 
 @HiltViewModel
 class AccountEditViewModel @Inject constructor(
+    @param:ApplicationContext private val appContext: Context,
     private val userProfileRepository: UserProfileRepository,
     private val sessionDataStore: SessionDataStore
 ) : ViewModel() {
 
     // Información Personal
-    var fullName by mutableStateOf("Carlos Andrés Ruiz")
+    var fullName by mutableStateOf(appContext.getString(R.string.vm_account_edit_default_full_name))
     var phone by mutableStateOf("")
 
     var fullNameError by mutableStateOf<String?>(null)
@@ -37,9 +41,9 @@ class AccountEditViewModel @Inject constructor(
     val departments = GeoSeedData.departments
     val citiesMap = GeoSeedData.citiesByDepartment
 
-    var selectedDepartment by mutableStateOf("Quindio")
-    var selectedCity by mutableStateOf("Armenia")
-    var address by mutableStateOf("Ej. Barrio La Candelaria, Bogotá")
+    var selectedDepartment by mutableStateOf(appContext.getString(R.string.vm_account_edit_default_department))
+    var selectedCity by mutableStateOf(appContext.getString(R.string.vm_account_edit_default_city))
+    var address by mutableStateOf(appContext.getString(R.string.vm_account_edit_default_address))
 
     var departmentError by mutableStateOf<String?>(null)
     var cityError by mutableStateOf<String?>(null)
@@ -48,7 +52,7 @@ class AccountEditViewModel @Inject constructor(
     var addExactLocation by mutableStateOf(false)
 
     // Datos de Acceso
-    var email by mutableStateOf("carlos.ruiz@universidad.edu.co")
+    var email by mutableStateOf(appContext.getString(R.string.vm_account_edit_default_email))
     var emailError by mutableStateOf<String?>(null)
 
     // Result flow for feedback
@@ -92,35 +96,35 @@ class AccountEditViewModel @Inject constructor(
     }
 
     fun validateFullName(value: String): String? {
-        return if (value.isBlank()) "El nombre es obligatorio" else null
+        return if (value.isBlank()) appContext.getString(R.string.vm_account_edit_name_required) else null
     }
 
     fun validatePhone(value: String): String? {
         return when {
-            value.isBlank() -> "El teléfono es obligatorio"
-            !value.matches(Regex("^[0-9]{7,15}$")) -> "Teléfono inválido"
+            value.isBlank() -> appContext.getString(R.string.vm_account_edit_phone_required)
+            !value.matches(Regex("^[0-9]{7,15}$")) -> appContext.getString(R.string.vm_account_edit_phone_invalid)
             else -> null
         }
     }
 
     fun validateEmail(value: String): String? {
         return when {
-            value.isBlank() -> "El correo es obligatorio"
-            !Patterns.EMAIL_ADDRESS.matcher(value).matches() -> "Correo inválido"
+            value.isBlank() -> appContext.getString(R.string.vm_account_edit_email_required)
+            !Patterns.EMAIL_ADDRESS.matcher(value).matches() -> appContext.getString(R.string.vm_account_edit_email_invalid)
             else -> null
         }
     }
 
     fun validateAddress(value: String): String? {
-        return if (value.isBlank()) "La dirección es obligatoria" else null
+        return if (value.isBlank()) appContext.getString(R.string.vm_account_edit_address_required) else null
     }
 
     fun validateDepartment(value: String): String? {
-        return if (value.isBlank()) "Seleccione un departamento" else null
+        return if (value.isBlank()) appContext.getString(R.string.vm_account_edit_department_required) else null
     }
 
     fun validateCity(value: String): String? {
-        return if (value.isBlank()) "Seleccione un municipio" else null
+        return if (value.isBlank()) appContext.getString(R.string.vm_account_edit_city_required) else null
     }
 
     fun onFullNameChange(newValue: String) {
@@ -157,7 +161,7 @@ class AccountEditViewModel @Inject constructor(
 
     fun saveChanges() {
         if (!isFormValid) {
-            _updateResult.value = RequestResult.Failure("Por favor, completa todos los campos requeridos")
+            _updateResult.value = RequestResult.Failure(appContext.getString(R.string.vm_account_edit_required_fields))
             return
         }
 
@@ -177,25 +181,27 @@ class AccountEditViewModel @Inject constructor(
                         )
                         val wasUpdated = userProfileRepository.updateUser(updatedUser)
                         _updateResult.value = if (wasUpdated) {
-                            RequestResult.Success("Cambios guardados exitosamente")
+                            RequestResult.Success(appContext.getString(R.string.vm_account_edit_save_success))
                         } else {
-                            RequestResult.Failure("No fue posible guardar los cambios")
+                            RequestResult.Failure(appContext.getString(R.string.vm_account_edit_save_failed))
                         }
                     } ?: run {
-                        _updateResult.value = RequestResult.Failure("Usuario no encontrado")
+                        _updateResult.value = RequestResult.Failure(appContext.getString(R.string.vm_account_edit_user_not_found))
                     }
                 } ?: run {
-                    _updateResult.value = RequestResult.Failure("Sesión expirada")
+                    _updateResult.value = RequestResult.Failure(appContext.getString(R.string.vm_account_edit_session_expired))
                 }
             } catch (e: Exception) {
-                _updateResult.value = RequestResult.Failure("Error al guardar cambios: ${e.message}")
+                _updateResult.value = RequestResult.Failure(
+                    appContext.getString(R.string.vm_account_edit_save_error, e.message ?: "")
+                )
             }
         }
     }
 
     fun changePassword() {
         // This should navigate to password change screen
-        _updateResult.value = RequestResult.Success("Abriendo cambio de contraseña")
+        _updateResult.value = RequestResult.Success(appContext.getString(R.string.vm_account_edit_open_change_password))
     }
 
     fun deleteAccount() {
@@ -206,15 +212,17 @@ class AccountEditViewModel @Inject constructor(
                     val wasDeleted = userProfileRepository.deleteUser(userId)
                     _deleteResult.value = if (wasDeleted) {
                         sessionDataStore.clearSession()
-                        RequestResult.Success("Cuenta eliminada exitosamente")
+                        RequestResult.Success(appContext.getString(R.string.vm_account_edit_delete_success))
                     } else {
-                        RequestResult.Failure("Usuario no encontrado")
+                        RequestResult.Failure(appContext.getString(R.string.vm_account_edit_user_not_found))
                     }
                 } ?: run {
-                    _deleteResult.value = RequestResult.Failure("Sesión expirada")
+                    _deleteResult.value = RequestResult.Failure(appContext.getString(R.string.vm_account_edit_session_expired))
                 }
             } catch (e: Exception) {
-                _deleteResult.value = RequestResult.Failure("Error al eliminar cuenta: ${e.message}")
+                _deleteResult.value = RequestResult.Failure(
+                    appContext.getString(R.string.vm_account_edit_delete_error, e.message ?: "")
+                )
             }
         }
     }
@@ -229,7 +237,9 @@ class AccountEditViewModel @Inject constructor(
 
     fun getUserInitials(): String {
         val names = fullName.split(" ")
-        return (names.getOrNull(0)?.firstOrNull()?.uppercaseChar()?.toString() ?: "C") +
-                (names.getOrNull(1)?.firstOrNull()?.uppercaseChar()?.toString() ?: "A")
+        return (names.getOrNull(0)?.firstOrNull()?.uppercaseChar()?.toString()
+            ?: appContext.getString(R.string.vm_account_edit_default_initial_one)) +
+                (names.getOrNull(1)?.firstOrNull()?.uppercaseChar()?.toString()
+                    ?: appContext.getString(R.string.vm_account_edit_default_initial_two))
     }
 }

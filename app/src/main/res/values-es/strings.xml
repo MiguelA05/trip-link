@@ -407,7 +407,7 @@
     <string name="feature_register_residence_title">Ubicación de Residencia</string>
     <string name="feature_register_department_label">Dpto</string>
     <string name="feature_register_city_label">Ciudad</string>
-    <string name="feature_register_add_exact_location">¿Desea añadir ubicacion exacta?</string>
+    <string name="feature_register_add_exact_location">¿Desea añadir ubicación exacta?</string>
     <string name="feature_register_map_placeholder_content_description">Map Placeholder</string>
     <string name="feature_register_map_placeholder_label">Mapa (Próximamente)</string>
     <string name="feature_register_have_account">¿Tienes una cuenta?</string>
@@ -512,7 +512,165 @@
     <string name="feature_badges_current_level_label">NIVEL ACTUAL</string>
     <string name="feature_badges_total_points_label">Puntos totales</string>
     <string name="feature_badges_contributions_label">Aportes</string>
-    <string name="feature_badges_last_activity">Ultima actividad: %1$s</string>
+    <string name="feature_badges_last_activity">Última actividad: %1$s</string>
+
+    <!-- VIEWMODEL: Login -->
+    <string name="vm_login_email_required">El email es obligatorio</string>
+    <string name="vm_login_email_invalid">Ingresa un email válido</string>
+    <string name="vm_login_password_required">La contraseña es obligatoria</string>
+    <string name="vm_login_password_min_length">La contraseña debe tener al menos 6 caracteres</string>
+    <string name="vm_login_form_incomplete">Completa los campos requeridos</string>
+    <string name="vm_login_invalid_credentials">Credenciales inválidas</string>
+    <string name="vm_login_success">Inicio de sesión exitoso</string>
+    <string name="vm_login_unexpected_error">No fue posible iniciar sesión. Intenta nuevamente.</string>
+
+    <!-- VIEWMODEL: Register -->
+    <string name="vm_register_name_required">El nombre es obligatorio</string>
+    <string name="vm_register_email_required">El correo es obligatorio</string>
+    <string name="vm_register_email_invalid">Correo inválido</string>
+    <string name="vm_register_password_required">La contraseña es obligatoria</string>
+    <string name="vm_register_password_min_length">Mínimo 6 caracteres</string>
+    <string name="vm_register_department_required">Seleccione un departamento</string>
+    <string name="vm_register_city_required">Seleccione un municipio</string>
+    <string name="vm_register_form_invalid">Por favor, corrige los errores en el formulario</string>
+    <string name="vm_register_email_already_exists">El correo ya se encuentra registrado</string>
+    <string name="vm_register_success">Registro exitoso para %1$s</string>
+    <string name="vm_register_save_failed">No fue posible registrar el usuario</string>
+
+    <!-- VIEWMODEL: RecoveryPassword -->
+    <string name="vm_recovery_email_required">El email es obligatorio</string>
+    <string name="vm_recovery_email_invalid">Ingresa un email válido</string>
+    <string name="vm_recovery_invalid_form">Por favor, ingresa un email válido</string>
+    <string name="vm_recovery_email_not_found">Este email no está registrado en el sistema</string>
+    <string name="vm_recovery_success">Se ha enviado un correo de recuperación a %1$s</string>
+
+    <!-- VIEWMODEL: ResetPassword -->
+    <string name="vm_reset_password_required">La contraseña es obligatoria</string>
+    <string name="vm_reset_password_min_length">La contraseña debe tener al menos 6 caracteres</string>
+    <string name="vm_reset_confirm_required">La confirmacion es obligatoria</string>
+    <string name="vm_reset_password_mismatch">Las contraseñas no coinciden</string>
+    <string name="vm_reset_success">Contraseña restablecida con éxito</string>
+    <string name="vm_reset_invalid_form">Por favor, verifica los campos</string>
+
+    <!-- VIEWMODEL: Comments -->
+    <string name="vm_comments_not_found">Comentario no encontrado</string>
+    <string name="vm_comments_delete_forbidden">Solo puedes eliminar tus propios comentarios</string>
+    <string name="vm_comments_deleted">Comentario eliminado</string>
+    <string name="vm_comments_delete_failed">No se pudo eliminar el comentario</string>
+    <string name="vm_comments_delete_error">Error al eliminar: %1$s</string>
+
+    <!-- VIEWMODEL: PublicationDetails -->
+    <string name="vm_publication_details_favorite_added">Añadido a favoritos</string>
+    <string name="vm_publication_details_favorite_removed">Removido de favoritos</string>
+    <string name="vm_publication_details_favorite_update_failed">No se pudo actualizar favorito</string>
+    <string name="vm_publication_details_generic_error">Error: %1$s</string>
+    <string name="vm_publication_details_login_required">Debes iniciar sesión para comentar</string>
+    <string name="vm_publication_details_comment_saved">Comentario guardado exitosamente</string>
+    <string name="vm_publication_details_comment_save_failed">No se pudo guardar el comentario</string>
+    <string name="vm_publication_details_save_error">Error al guardar: %1$s</string>
+    <string name="vm_publication_details_publication_updated">Publicación actualizada</string>
+    <string name="vm_publication_details_publication_update_failed">No se pudo actualizar la publicación</string>
+    <string name="vm_publication_details_update_error">Error al actualizar: %1$s</string>
+    <string name="vm_publication_details_publication_deleted">Publicación eliminada</string>
+    <string name="vm_publication_details_publication_delete_failed">No se pudo eliminar la publicación</string>
+    <string name="vm_publication_details_delete_error">Error al eliminar: %1$s</string>
+
+    <!-- VIEWMODEL: UserHome -->
+    <string name="vm_user_home_favorite_added">Añadido a favoritos</string>
+    <string name="vm_user_home_favorite_removed">Removido de favoritos</string>
+    <string name="vm_user_home_favorite_update_failed">No se pudo actualizar favorito</string>
+    <string name="vm_user_home_favorite_error">Error: %1$s</string>
+
+    <!-- VIEWMODEL: PostCreation -->
+    <string name="vm_post_creation_place_name_required">El nombre del lugar es obligatorio</string>
+    <string name="vm_post_creation_category_required">La categoría es obligatoria</string>
+    <string name="vm_post_creation_price_free">Gratuito</string>
+    <string name="vm_post_creation_price_economic">Economico</string>
+    <string name="vm_post_creation_price_moderate">Moderado</string>
+    <string name="vm_post_creation_price_expensive">Costoso</string>
+    <string name="vm_post_creation_submit_action">Publicar</string>
+    <string name="vm_post_creation_required_fields">Por favor, completa todos los campos requeridos</string>
+    <string name="vm_post_creation_session_expired">Sesión expirada</string>
+    <string name="vm_post_creation_invalid_category">La categoría seleccionada no es válida</string>
+    <string name="vm_post_creation_resubmitted_success">Nueva publicación enviada con las correcciones</string>
+    <string name="vm_post_creation_success">Publicación creada exitosamente</string>
+    <string name="vm_post_creation_create_failed">No fue posible crear la publicación</string>
+    <string name="vm_post_creation_create_error">Error al crear publicación: %1$s</string>
+
+    <!-- VIEWMODEL: AccountEdit -->
+    <string name="vm_account_edit_default_full_name">Carlos Andrés Ruiz</string>
+    <string name="vm_account_edit_default_department">Quindio</string>
+    <string name="vm_account_edit_default_city">Armenia</string>
+    <string name="vm_account_edit_default_address">Ej. Barrio La Candelaria, Bogotá</string>
+    <string name="vm_account_edit_default_email">carlos.ruiz@universidad.edu.co</string>
+    <string name="vm_account_edit_name_required">El nombre es obligatorio</string>
+    <string name="vm_account_edit_phone_required">El teléfono es obligatorio</string>
+    <string name="vm_account_edit_phone_invalid">Teléfono inválido</string>
+    <string name="vm_account_edit_email_required">El correo es obligatorio</string>
+    <string name="vm_account_edit_email_invalid">Correo inválido</string>
+    <string name="vm_account_edit_address_required">La dirección es obligatoria</string>
+    <string name="vm_account_edit_department_required">Seleccione un departamento</string>
+    <string name="vm_account_edit_city_required">Seleccione un municipio</string>
+    <string name="vm_account_edit_required_fields">Por favor, completa todos los campos requeridos</string>
+    <string name="vm_account_edit_save_success">Cambios guardados exitosamente</string>
+    <string name="vm_account_edit_save_failed">No fue posible guardar los cambios</string>
+    <string name="vm_account_edit_user_not_found">Usuario no encontrado</string>
+    <string name="vm_account_edit_session_expired">Sesión expirada</string>
+    <string name="vm_account_edit_save_error">Error al guardar cambios: %1$s</string>
+    <string name="vm_account_edit_open_change_password">Abriendo cambio de contraseña</string>
+    <string name="vm_account_edit_delete_success">Cuenta eliminada exitosamente</string>
+    <string name="vm_account_edit_delete_error">Error al eliminar cuenta: %1$s</string>
+    <string name="vm_account_edit_default_initial_one">C</string>
+    <string name="vm_account_edit_default_initial_two">A</string>
+
+    <!-- VIEWMODEL: UserInfo -->
+    <string name="vm_user_info_default_user_name">Usuario</string>
+    <string name="vm_user_info_default_role_label">TURISTA</string>
+
+    <!-- VIEWMODEL: Notifications -->
+    <string name="vm_notifications_nearby_title">Nuevo lugar cercano</string>
+    <string name="vm_notifications_item_one_description">Mirador de Salento fue añadido a 1.2 km de tu ubicación actual.</string>
+    <string name="vm_notifications_item_one_time">Hace 4 horas</string>
+    <string name="vm_notifications_item_two_description">Hotel El Zafiro fue añadido a 1.9 km de tu ubicación actual.</string>
+    <string name="vm_notifications_item_two_time">Hace 8 horas</string>
+
+    <!-- VIEWMODEL: Badges -->
+    <string name="vm_badges_item_1_name">Explorador Novato</string>
+    <string name="vm_badges_item_1_description">Has visitado 5 lugares y comenzado tu camino como explorador.</string>
+    <string name="vm_badges_item_1_category">Exploración</string>
+    <string name="vm_badges_item_2_name">Crítico Gastronómico</string>
+    <string name="vm_badges_item_2_description">Has realizado 10 reseñas de restaurantes locales con fotos detalladas.</string>
+    <string name="vm_badges_item_2_category">Gastronomía</string>
+    <string name="vm_badges_item_3_name">Fotógrafo Experto</string>
+    <string name="vm_badges_item_3_description">Has subido más de 50 fotos de alta calidad que han inspirado a otros.</string>
+    <string name="vm_badges_item_3_category">Fotografía</string>
+    <string name="vm_badges_item_4_name">Senderista Supremo</string>
+    <string name="vm_badges_item_4_description">Has completado todas las rutas de senderismo registradas en el departamento.</string>
+    <string name="vm_badges_item_4_category">Naturaleza</string>
+    <string name="vm_badges_item_5_name">Historiador</string>
+    <string name="vm_badges_item_5_description">Has compartido información valiosa sobre la historia de 5 monumentos locales.</string>
+    <string name="vm_badges_item_5_category">Cultura</string>
+    <string name="vm_badges_item_6_name">Cafetero de Corazón</string>
+    <string name="vm_badges_item_6_description">Has visitado y reseñado 10 fincas cafeteras tradicionales de la región.</string>
+    <string name="vm_badges_item_6_category">Tradición</string>
+
+    <!-- VIEWMODEL: Filters -->
+    <string name="vm_filters_category_nature_parks">Naturaleza y Parques</string>
+    <string name="vm_filters_category_specialty_coffee">Cafés Especiales</string>
+    <string name="vm_filters_category_museums_culture">Museos y Cultura</string>
+    <string name="vm_filters_category_viewpoints">Miradores</string>
+    <string name="vm_filters_category_colonial_architecture">Arquitectura Colonial</string>
+    <string name="vm_filters_category_typical_restaurants">Restaurantes Típicos</string>
+    <string name="vm_filters_category_nightlife">Vida Nocturna</string>
+    <string name="vm_filters_category_adventure_sports">Aventura y Deporte</string>
+    <string name="vm_filters_location_nearby">Cercanos</string>
+    <string name="vm_filters_location_city">En la ciudad</string>
+    <string name="vm_filters_location_department">En el departamento</string>
+    <string name="vm_filters_location_country">En el país</string>
+    <string name="vm_filters_price_free">Gratuito</string>
+    <string name="vm_filters_price_economic">Economico</string>
+    <string name="vm_filters_price_moderate">Moderado</string>
+    <string name="vm_filters_price_expensive">Costoso</string>
 
     <!-- FEATURE: AdminModeration -->
     <string name="feature_admin_moderation_title">Moderacion</string>

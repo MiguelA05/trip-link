@@ -1,5 +1,6 @@
 package com.example.triplink.features.login
 
+import android.content.Context
 import android.util.Patterns
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.runtime.getValue
@@ -9,9 +10,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.triplink.core.utils.RequestResult
 import com.example.triplink.core.utils.ValidatedField
+import com.example.triplink.R
 import com.example.triplink.data.datastore.SessionDataStore
 import com.example.triplink.domain.repository.auth.AuthRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -20,13 +23,14 @@ import javax.inject.Inject
 
 @HiltViewModel
 class LoginViewModel @Inject constructor(
+    @param:ApplicationContext private val appContext: Context,
     private val sessionDataStore: SessionDataStore,
     private val authRepository: AuthRepository
 ) : ViewModel() {
     var email = ValidatedField("") { value ->
         when {
-            value.isEmpty() -> "El email es obligatorio"
-            !Patterns.EMAIL_ADDRESS.matcher(value).matches() -> "Ingresa un email válido"
+            value.isEmpty() -> appContext.getString(R.string.vm_login_email_required)
+            !Patterns.EMAIL_ADDRESS.matcher(value).matches() -> appContext.getString(R.string.vm_login_email_invalid)
             else -> null
         }
     }
@@ -34,8 +38,8 @@ class LoginViewModel @Inject constructor(
 
     var password = ValidatedField("") { value ->
         when {
-            value.isEmpty() -> "La contraseña es obligatoria"
-            value.length < 6 -> "La contraseña debe tener al menos 6 caracteres"
+            value.isEmpty() -> appContext.getString(R.string.vm_login_password_required)
+            value.length < 6 -> appContext.getString(R.string.vm_login_password_min_length)
             else -> null
         }
     }
@@ -78,13 +82,13 @@ class LoginViewModel @Inject constructor(
 
     fun login() {
         if (!isFormValid) {
-            _loginResult.value = RequestResult.Failure("Completa los campos requeridos")
+            _loginResult.value = RequestResult.Failure(appContext.getString(R.string.vm_login_form_incomplete))
             return
         }
 
         val authenticatedUser = authRepository.login(email.value, password.value)
         if (authenticatedUser == null) {
-            _loginResult.value = RequestResult.Failure("Credenciales inválidas")
+            _loginResult.value = RequestResult.Failure(appContext.getString(R.string.vm_login_invalid_credentials))
             return
         }
 
@@ -95,9 +99,9 @@ class LoginViewModel @Inject constructor(
                     role = authenticatedUser.rol
                 )
             }.onSuccess {
-                _loginResult.value = RequestResult.Success("Login exitoso")
+                _loginResult.value = RequestResult.Success(appContext.getString(R.string.vm_login_success))
             }.onFailure {
-                _loginResult.value = RequestResult.Failure("No fue posible iniciar sesión. Intenta nuevamente.")
+                _loginResult.value = RequestResult.Failure(appContext.getString(R.string.vm_login_unexpected_error))
             }
         }
     }

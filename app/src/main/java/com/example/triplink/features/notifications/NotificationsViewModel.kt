@@ -1,10 +1,13 @@
 package com.example.triplink.features.notifications
 
+import android.content.Context
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
+import com.example.triplink.R
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 
 data class NotificationItem(
@@ -15,21 +18,23 @@ data class NotificationItem(
 )
 
 @HiltViewModel
-class NotificationsViewModel @Inject constructor() : ViewModel() {
+ class NotificationsViewModel @Inject constructor(
+    @param:ApplicationContext private val appContext: Context
+) : ViewModel() {
 
     var notifications by mutableStateOf(
         listOf(
             NotificationItem(
                 1,
-                "Nuevo lugar cercano",
-                "Mirador de Salento fue anadido a 1.2 km de tu ubicacion actual.",
-                "Hace 4 horas"
+                appContext.getString(R.string.vm_notifications_nearby_title),
+                appContext.getString(R.string.vm_notifications_item_one_description),
+                appContext.getString(R.string.vm_notifications_item_one_time)
             ),
             NotificationItem(
                 2,
-                "Nuevo lugar cercano",
-                "Hotel El Zafiro fue anadido a 1.9 km de tu ubicacion actual.",
-                "Hace 8 horas"
+                appContext.getString(R.string.vm_notifications_nearby_title),
+                appContext.getString(R.string.vm_notifications_item_two_description),
+                appContext.getString(R.string.vm_notifications_item_two_time)
             )
         )
     )

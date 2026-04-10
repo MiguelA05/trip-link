@@ -1,16 +1,19 @@
 package com.example.triplink.features.user.info
 
+import android.content.Context
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.triplink.R
 import com.example.triplink.data.datastore.SessionDataStore
 import com.example.triplink.domain.model.PuntoInteres
 import com.example.triplink.domain.model.enums.EstadoPublicacion
 import com.example.triplink.domain.repository.publication.PublicationRepository
 import com.example.triplink.domain.repository.user.UserProfileRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
@@ -42,6 +45,7 @@ data class UserInfoUiState(
 
 @HiltViewModel
 class UserInfoViewModel @Inject constructor(
+	@param:ApplicationContext private val appContext: Context,
 	private val userProfileRepository: UserProfileRepository,
 	private val publicationRepository: PublicationRepository,
 	private val sessionDataStore: SessionDataStore
@@ -52,9 +56,9 @@ class UserInfoViewModel @Inject constructor(
 
 	var uiState by mutableStateOf(
 		UserInfoUiState(
-			userName = "Usuario",
-			userInitials = buildInitials("Usuario"),
-			roleLabel = "TURISTA",
+			userName = appContext.getString(R.string.vm_user_info_default_user_name),
+			userInitials = buildInitials(appContext.getString(R.string.vm_user_info_default_user_name)),
+			roleLabel = appContext.getString(R.string.vm_user_info_default_role_label),
 			points = 0,
 			contributions = 0,
 			activeDays = 1,
