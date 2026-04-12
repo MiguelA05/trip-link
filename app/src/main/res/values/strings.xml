@@ -618,6 +618,11 @@
     <string name="vm_publication_details_publication_deleted">Publication deleted</string>
     <string name="vm_publication_details_publication_delete_failed">Could not delete publication</string>
     <string name="vm_publication_details_delete_error">Error deleting: %1$s</string>
+    <string name="vm_publication_details_report_login_required">You must sign in to report a publication</string>
+    <string name="vm_publication_details_report_other_reason_required">Please describe the reason for your report</string>
+    <string name="vm_publication_details_report_sent">Report sent successfully</string>
+    <string name="vm_publication_details_report_send_failed">Could not send the report</string>
+    <string name="vm_publication_details_report_error">Error sending report: %1$s</string>
 
     <!-- VIEWMODEL: UserHome -->
     <string name="vm_user_home_favorite_added">Added to favorites</string>

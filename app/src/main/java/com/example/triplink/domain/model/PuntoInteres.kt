@@ -17,6 +17,7 @@ data class PuntoInteres(
     val fotos: List<String>,
     val horarios: List<HorarioPuntoInteres> = emptyList(),
     val comments: List<Comentario> = emptyList(),
+    val reportes: List<Reporte> = emptyList(),
     val commentCount: Int = comments.size,
     val favoriteCount: Int = 0,
     val fechaCreacion: Long = System.currentTimeMillis(),

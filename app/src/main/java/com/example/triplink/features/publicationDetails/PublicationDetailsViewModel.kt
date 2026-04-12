@@ -10,6 +10,9 @@ import com.example.triplink.R
 import com.example.triplink.core.utils.RequestResult
 import com.example.triplink.domain.model.Comentario
 import com.example.triplink.domain.model.PuntoInteres
+import com.example.triplink.domain.model.Reporte
+import com.example.triplink.domain.model.enums.RazonReporte
+import com.example.triplink.domain.repository.admin.ReportRepository
 import com.example.triplink.domain.repository.comment.CommentRepository
 import com.example.triplink.domain.repository.favorite.FavoriteRepository
 import com.example.triplink.domain.repository.publication.PublicationRepository
@@ -27,7 +30,8 @@ class PublicationDetailsViewModel @Inject constructor(
     @param:ApplicationContext private val appContext: Context,
     private val publicationRepository: PublicationRepository,
     private val favoriteRepository: FavoriteRepository,
-    private val commentRepository: CommentRepository
+    private val commentRepository: CommentRepository,
+    private val reportRepository: ReportRepository
 ) : ViewModel() {
 
     var isFavorite by mutableStateOf(false)
@@ -44,6 +48,9 @@ class PublicationDetailsViewModel @Inject constructor(
 
     private val _publicationActionResult = MutableStateFlow<RequestResult?>(null)
     val publicationActionResult: StateFlow<RequestResult?> = _publicationActionResult.asStateFlow()
+
+    private val _reportResult = MutableStateFlow<RequestResult?>(null)
+    val reportResult: StateFlow<RequestResult?> = _reportResult.asStateFlow()
 
     fun getPublicationById(publicationId: String): PuntoInteres? {
         return publicationRepository.getPublicationById(publicationId)
@@ -119,6 +126,50 @@ class PublicationDetailsViewModel @Inject constructor(
         return commentRepository.getAverageRating(publicationId)
     }
 
+    fun submitReport(
+        publicationId: String,
+        userId: String,
+        reason: RazonReporte,
+        description: String?
+    ) {
+        if (userId.isBlank()) {
+            _reportResult.value = RequestResult.Failure(
+                appContext.getString(R.string.vm_publication_details_report_login_required)
+            )
+            return
+        }
+
+        if (reason == RazonReporte.OTRO && description.isNullOrBlank()) {
+            _reportResult.value = RequestResult.Failure(
+                appContext.getString(R.string.vm_publication_details_report_other_reason_required)
+            )
+            return
+        }
+
+        viewModelScope.launch {
+            try {
+                val report = Reporte(
+                    id = UUID.randomUUID().toString(),
+                    reportadorId = userId,
+                    puntoInteresId = publicationId,
+                    motivo = reason,
+                    descripcion = description?.trim()?.takeIf { it.isNotBlank() }
+                )
+
+                val wasSaved = reportRepository.submitReport(report)
+                _reportResult.value = if (wasSaved) {
+                    RequestResult.Success(appContext.getString(R.string.vm_publication_details_report_sent))
+                } else {
+                    RequestResult.Failure(appContext.getString(R.string.vm_publication_details_report_send_failed))
+                }
+            } catch (e: Exception) {
+                _reportResult.value = RequestResult.Failure(
+                    appContext.getString(R.string.vm_publication_details_report_error, e.message ?: "")
+                )
+            }
+        }
+    }
+
     fun updatePublication(updatedPublication: PuntoInteres) {
         viewModelScope.launch {
             try {
@@ -163,5 +214,9 @@ class PublicationDetailsViewModel @Inject constructor(
 
     fun clearPublicationActionResult() {
         _publicationActionResult.value = null
+    }
+
+    fun clearReportResult() {
+        _reportResult.value = null
     }
 }

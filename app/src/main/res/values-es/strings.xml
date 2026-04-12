@@ -620,6 +620,11 @@
     <string name="vm_publication_details_publication_deleted">Publicación eliminada</string>
     <string name="vm_publication_details_publication_delete_failed">No se pudo eliminar la publicación</string>
     <string name="vm_publication_details_delete_error">Error al eliminar: %1$s</string>
+    <string name="vm_publication_details_report_login_required">Debes iniciar sesión para reportar una publicación</string>
+    <string name="vm_publication_details_report_other_reason_required">Describe el motivo del reporte</string>
+    <string name="vm_publication_details_report_sent">Reporte enviado exitosamente</string>
+    <string name="vm_publication_details_report_send_failed">No se pudo enviar el reporte</string>
+    <string name="vm_publication_details_report_error">Error al enviar reporte: %1$s</string>
 
     <!-- VIEWMODEL: UserHome -->
     <string name="vm_user_home_favorite_added">Añadido a favoritos</string>

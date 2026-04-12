@@ -29,8 +29,8 @@ data class AdminReportSeedEntry(
 
 fun createAdminReportsSeedState(): AdminReportsSeedState {
     val publicationsById = mutableStateMapOf(
-        "poi-1" to PuntoInteres(
-            id = "poi-1",
+        "1" to PuntoInteres(
+            id = "1",
             titulo = "Mercado Artesanal del Quindio",
             informacion = "Oferta gastronomica y artesanal en el centro del departamento.",
             usuarioAutorId = "laura@email.com",
@@ -42,8 +42,8 @@ fun createAdminReportsSeedState(): AdminReportsSeedState {
             estado = EstadoPublicacion.PENDIENTE,
             rangoPrecios = RangoPrecios.COSTOSO
         ),
-        "poi-2" to PuntoInteres(
-            id = "poi-2",
+        "2" to PuntoInteres(
+            id = "2",
             titulo = "Plaza Principal Filandia",
             informacion = "Recorrido patrimonial y comercial de la zona central.",
             usuarioAutorId = "martin@email.com",
@@ -55,8 +55,8 @@ fun createAdminReportsSeedState(): AdminReportsSeedState {
             estado = EstadoPublicacion.PENDIENTE,
             rangoPrecios = RangoPrecios.GRATUITO
         ),
-        "poi-3" to PuntoInteres(
-            id = "poi-3",
+        "3" to PuntoInteres(
+            id = "3",
             titulo = "Mirador Alto de la Cruz",
             informacion = "Mirador panoramico con vista al valle del Quindio.",
             usuarioAutorId = "miguel@email.com",
@@ -75,26 +75,26 @@ fun createAdminReportsSeedState(): AdminReportsSeedState {
             report = Reporte(
                 id = "rep-1",
                 reportadorId = "camila@email.com",
-                puntoInteresId = "poi-1",
+                puntoInteresId = "1",
                 motivo = RazonReporte.INFORMACION_FALSA,
                 descripcion = "La direccion no coincide con el lugar real",
                 estado = EstadoReporte.PENDIENTE,
                 fechaCreacion = System.currentTimeMillis() - 3L * 24L * 60L * 60L * 1000L
             ),
-            pointOfInterest = publicationsById.getValue("poi-1"),
+            pointOfInterest = publicationsById.getValue("1"),
             reporterName = "Camila Torres"
         ),
         AdminReportSeedEntry(
             report = Reporte(
                 id = "rep-2",
                 reportadorId = "valentina@email.com",
-                puntoInteresId = "poi-1",
+                puntoInteresId = "1",
                 motivo = RazonReporte.CONTENIDO_INAPROPIADO,
                 descripcion = "Incluye publicidad no relacionada con el sitio",
                 estado = EstadoReporte.PENDIENTE,
                 fechaCreacion = System.currentTimeMillis() - 5L * 60L * 60L * 1000L
             ),
-            pointOfInterest = publicationsById.getValue("poi-1"),
+            pointOfInterest = publicationsById.getValue("1"),
             reporterName = "Valentina Rios"
         )
     )

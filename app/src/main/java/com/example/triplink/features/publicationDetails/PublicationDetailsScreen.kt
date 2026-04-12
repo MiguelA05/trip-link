@@ -76,6 +76,7 @@ fun PublicationDetailsScreen(
     val publication = viewModel.getPublicationById(publicationId)
     val publicationActionResult by viewModel.publicationActionResult.collectAsState()
     val commentResult by viewModel.commentResult.collectAsState()
+    val reportResult by viewModel.reportResult.collectAsState()
     val snackbarHostState = remember { SnackbarHostState() }
     val coroutineScope = rememberCoroutineScope()
 
@@ -112,6 +113,17 @@ fun PublicationDetailsScreen(
             }
             snackbarHostState.showSnackbar(message)
             viewModel.clearCommentResult()
+        }
+    }
+
+    LaunchedEffect(reportResult) {
+        reportResult?.let { result ->
+            val message = when (result) {
+                is RequestResult.Success -> result.message
+                is RequestResult.Failure -> result.errorMessage
+            }
+            snackbarHostState.showSnackbar(message)
+            viewModel.clearReportResult()
         }
     }
 
@@ -235,7 +247,19 @@ fun PublicationDetailsScreen(
     }
 
     if (!ownerViewEnabled && showReportModal) {
-        ReportModal(onDismiss = { showReportModal = false })
+        ReportModal(
+            onDismiss = { showReportModal = false },
+            onSubmit = { reason, customReason ->
+                val userId = (sessionState as? SessionState.Authenticated)?.session?.userId.orEmpty()
+                viewModel.submitReport(
+                    publicationId = publicationId,
+                    userId = userId,
+                    reason = reason,
+                    description = customReason
+                )
+                showReportModal = false
+            }
+        )
     }
 
     if (showRatingModal) {
@@ -675,7 +699,10 @@ fun InappropriateContentModal(onDismiss: () -> Unit, onReplace: () -> Unit) {
 }
 
 @Composable
-fun ReportModal(onDismiss: () -> Unit) {
+fun ReportModal(
+    onDismiss: () -> Unit,
+    onSubmit: (RazonReporte, String?) -> Unit
+) {
     var selectedOption by remember { mutableStateOf<RazonReporte?>(null) }
     var otherReason by remember { mutableStateOf("") }
 
@@ -816,11 +843,23 @@ fun ReportModal(onDismiss: () -> Unit) {
 
                 Spacer(modifier = Modifier.height(24.dp))
 
+                val reportEnabled = selectedOption != null &&
+                    (selectedOption != RazonReporte.OTRO || otherReason.isNotBlank())
+
                 GeneralButton(
                     text = stringResource(R.string.feature_publication_details_send_report),
-                    onClick = { /* Enviar */ },
+                    onClick = {
+                        selectedOption?.let { selected ->
+                            val customReason = if (selected == RazonReporte.OTRO) {
+                                otherReason.trim().takeIf { it.isNotBlank() }
+                            } else {
+                                null
+                            }
+                            onSubmit(selected, customReason)
+                        }
+                    },
                     icon = Icons.AutoMirrored.Filled.Send,
-                    enabled = selectedOption != null
+                    enabled = reportEnabled
                 )
 
                 TextButton(onClick = onDismiss) {
