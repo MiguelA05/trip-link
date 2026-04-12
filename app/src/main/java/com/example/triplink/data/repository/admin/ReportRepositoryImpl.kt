@@ -26,8 +26,21 @@ class ReportRepositoryImpl @Inject constructor(
             .map { it.toDomain(store.seedState.acceptedReportsCountByPublication[it.pointOfInterest.id] ?: 0) }
             .sortedByDescending { it.report.fechaCreacion }
 
+    override fun hasUserReportedPublication(userId: String, publicationId: String): Boolean {
+        return store.seedState.pendingReports.any {
+            it.report.reportadorId.equals(userId, ignoreCase = true) &&
+                it.report.puntoInteresId == publicationId
+        } || publicationRepository.getPublicationById(publicationId)
+            ?.reportes
+            ?.any { report ->
+                report.reportadorId.equals(userId, ignoreCase = true) &&
+                    report.puntoInteresId == publicationId
+            } == true
+    }
+
     override fun submitReport(report: Reporte): Boolean {
         val publication = publicationRepository.getPublicationById(report.puntoInteresId) ?: return false
+        if (hasUserReportedPublication(report.reportadorId, report.puntoInteresId)) return false
 
         val reporterName = userProfileRepository.findUserNameById(report.reportadorId)
             ?: report.reportadorId.substringBefore('@')

@@ -161,6 +161,11 @@ fun PublicationDetailsScreen(
         ?.userId
         ?.equals(publication.usuarioAutorId, ignoreCase = true) == true
     val ownerViewEnabled = isOwnerPublicationView && isCurrentUserOwner
+    val currentUserId = (sessionState as? SessionState.Authenticated)?.session?.userId.orEmpty()
+    val alreadyReportedByCurrentUser = currentUserId.isNotBlank() && publication.reportes.any {
+        it.reportadorId.equals(currentUserId, ignoreCase = true)
+    }
+    val canOpenReportModal = !ownerViewEnabled && !alreadyReportedByCurrentUser
 
     val selectedPriceLevel = publication.rangoPrecios.localizedLabelOrNoPrice()
 
@@ -184,7 +189,8 @@ fun PublicationDetailsScreen(
                     title = publication.titulo,
                     imageUrl = publication.fotos.firstOrNull().orEmpty(),
                     showReportAction = !ownerViewEnabled,
-                    onReportClick = { showReportModal = true },
+                    reportActionEnabled = canOpenReportModal,
+                    onReportClick = { if (canOpenReportModal) showReportModal = true },
                     onBackClick = onBackClick
                 )
             }
@@ -246,7 +252,7 @@ fun PublicationDetailsScreen(
         }
     }
 
-    if (!ownerViewEnabled && showReportModal) {
+    if (canOpenReportModal && showReportModal) {
         ReportModal(
             onDismiss = { showReportModal = false },
             onSubmit = { reason, customReason ->
@@ -300,6 +306,7 @@ fun ImageHeader(
     title: String,
     imageUrl: String,
     showReportAction: Boolean,
+    reportActionEnabled: Boolean = true,
     onReportClick: () -> Unit,
     onBackClick: () -> Unit
 ) {
@@ -372,18 +379,25 @@ fun ImageHeader(
         }
 
         if (showReportAction) {
-            IconButton(
-                onClick = onReportClick,
+            Surface(
                 modifier = Modifier
                     .align(Alignment.TopEnd)
-                    .padding(16.dp)
+                    .padding(16.dp),
+                shape = CircleShape,
+                color = if (reportActionEnabled) {
+                    Color.Black.copy(alpha = 0.4f)
+                } else {
+                    Color.Black.copy(alpha = 0.22f)
+                }
             ) {
-                Icon(
-                    imageVector = Icons.Outlined.ErrorOutline,
-                    contentDescription = stringResource(R.string.feature_publication_details_report_content_description),
-                    tint = PrincipalRed,
-                    modifier = Modifier.size(28.dp)
-                )
+                IconButton(onClick = onReportClick, enabled = reportActionEnabled) {
+                    Icon(
+                        imageVector = Icons.Outlined.ErrorOutline,
+                        contentDescription = stringResource(R.string.feature_publication_details_report_content_description),
+                        tint = if (reportActionEnabled) PrincipalRed else Color.White.copy(alpha = 0.55f),
+                        modifier = Modifier.size(28.dp)
+                    )
+                }
             }
         }
     }

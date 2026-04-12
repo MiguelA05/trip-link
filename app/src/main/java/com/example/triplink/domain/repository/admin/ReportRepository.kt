@@ -7,6 +7,7 @@ interface ReportRepository {
     val pendingReportsCount: Int
     val reportCases: List<AdminReportCase>
 
+    fun hasUserReportedPublication(userId: String, publicationId: String): Boolean
     fun submitReport(report: Reporte): Boolean
     fun getReportById(reportId: String): AdminReportCase?
     fun confirmReport(reportId: String)

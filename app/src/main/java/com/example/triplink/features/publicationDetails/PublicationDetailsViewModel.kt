@@ -146,6 +146,13 @@ class PublicationDetailsViewModel @Inject constructor(
             return
         }
 
+        if (reportRepository.hasUserReportedPublication(userId, publicationId)) {
+            _reportResult.value = RequestResult.Failure(
+                appContext.getString(R.string.vm_publication_details_report_duplicate)
+            )
+            return
+        }
+
         viewModelScope.launch {
             try {
                 val report = Reporte(
