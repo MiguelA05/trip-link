@@ -38,8 +38,11 @@ class AccountEditViewModel @Inject constructor(
     var phoneError by mutableStateOf<String?>(null)
 
     // Ubicación de Residencia
-    val departments = GeoSeedData.departments
-    val citiesMap = GeoSeedData.citiesByDepartment
+    val departments = GeoSeedData.getNombresDeparts()
+    
+    fun getCitiesForDepartment(departmentName: String): List<String> {
+        return GeoSeedData.getNombresCiudades(departmentName)
+    }
 
     var selectedDepartment by mutableStateOf(appContext.getString(R.string.vm_account_edit_default_department))
     var selectedCity by mutableStateOf(appContext.getString(R.string.vm_account_edit_default_city))

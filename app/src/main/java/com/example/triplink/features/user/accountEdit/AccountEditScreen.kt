@@ -177,8 +177,7 @@ fun AccountEditScreen(
                     SelectableDropdown(
                         label = stringResource(R.string.feature_account_edit_city_label),
                         selectedValue = accountEditViewModel.selectedCity,
-                        options = accountEditViewModel.citiesMap[accountEditViewModel.selectedDepartment]
-                            ?: emptyList(),
+                        options = accountEditViewModel.getCitiesForDepartment(accountEditViewModel.selectedDepartment),
                         onOptionSelected = { accountEditViewModel.onCityChange(it) },
                         modifier = Modifier.weight(1.5f)
                     )

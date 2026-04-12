@@ -176,7 +176,7 @@ fun RegisterScreen(
                 SelectableDropdown(
                     label = stringResource(R.string.feature_register_city_label),
                     selectedValue = registerViewModel.selectedCity,
-                    options = registerViewModel.citiesMap[registerViewModel.selectedDepartment] ?: emptyList(),
+                    options = registerViewModel.getCitiesForDepartment(registerViewModel.selectedDepartment),
                     onOptionSelected = { registerViewModel.onCityChange(it) },
                     modifier = Modifier.weight(1.5f)
                 )

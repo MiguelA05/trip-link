@@ -39,8 +39,11 @@ class RegisterViewModel @Inject constructor(
     private val _registerResult = MutableStateFlow<RequestResult?>(null)
     val registerResult: StateFlow<RequestResult?> = _registerResult.asStateFlow()
 
-    val departments = GeoSeedData.departments
-    val citiesMap = GeoSeedData.citiesByDepartment
+    val departments = GeoSeedData.getNombresDeparts()
+
+    fun getCitiesForDepartment(departmentName: String): List<String> {
+        return GeoSeedData.getNombresCiudades(departmentName)
+    }
 
     var selectedDepartment by mutableStateOf("")
     var selectedCity by mutableStateOf("")
