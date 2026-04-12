@@ -72,7 +72,7 @@ fun UserInfoScreen(
 		modifier = Modifier
 			.fillMaxSize()
 			.padding(contentPadding),
-		containerColor = Color(0xFFF0F2F5),
+		containerColor = MaterialTheme.colorScheme.background,
 		contentWindowInsets = WindowInsets(0, 0, 0, 0)
 	) { paddingValues ->
 		LazyColumn(
@@ -115,7 +115,7 @@ fun UserInfoScreen(
 			item {
 				Card(
 					modifier = Modifier.fillMaxWidth(),
-					colors = CardDefaults.cardColors(containerColor = Color(0xFFF7F8FA)),
+					colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
 					elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
 				) {
 					StatusTabs(
@@ -141,7 +141,7 @@ fun UserInfoScreen(
 						modifier = Modifier
 							.fillMaxWidth()
 							.padding(horizontal = 10.dp),
-						colors = CardDefaults.cardColors(containerColor = Color(0xFFF2F4F7)),
+						colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant),
 						shape = RoundedCornerShape(18.dp),
 						elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
 					) {
@@ -154,7 +154,7 @@ fun UserInfoScreen(
 						) {
 							Text(
 								text = emptyMessage,
-								color = Color(0xFF8FA1BA),
+								color = MaterialTheme.colorScheme.onSurfaceVariant,
 								style = MaterialTheme.typography.headlineSmall,
 								fontWeight = FontWeight.Medium,
 								textAlign = TextAlign.Center
@@ -207,21 +207,21 @@ fun ContributionCard(
 	onActionClick: () -> Unit
 ) {
 	val leftBarColor = when (contribution.status) {
-		EstadoPublicacion.VERIFICADA -> Color(0xFF4CAF50)
-		EstadoPublicacion.PENDIENTE -> Color(0xFFFFA000)
-		EstadoPublicacion.RECHAZADA -> Color(0xFFD32F2F)
+		EstadoPublicacion.VERIFICADA -> MaterialTheme.colorScheme.primary
+		EstadoPublicacion.PENDIENTE -> MaterialTheme.colorScheme.tertiary
+		EstadoPublicacion.RECHAZADA -> MaterialTheme.colorScheme.error
 	}
 
 	val badgeColor = when (contribution.status) {
-		EstadoPublicacion.VERIFICADA -> Color(0xFFE8F5E9)
-		EstadoPublicacion.PENDIENTE -> Color(0xFFFFF3E0)
-		EstadoPublicacion.RECHAZADA -> Color(0xFFFFEBEE)
+		EstadoPublicacion.VERIFICADA -> MaterialTheme.colorScheme.primaryContainer
+		EstadoPublicacion.PENDIENTE -> MaterialTheme.colorScheme.tertiaryContainer
+		EstadoPublicacion.RECHAZADA -> MaterialTheme.colorScheme.errorContainer
 	}
 
 	val badgeTextColor = when (contribution.status) {
-		EstadoPublicacion.VERIFICADA -> Color(0xFF2E7D32)
-		EstadoPublicacion.PENDIENTE -> Color(0xFFE65100)
-		EstadoPublicacion.RECHAZADA -> Color(0xFFC62828)
+		EstadoPublicacion.VERIFICADA -> MaterialTheme.colorScheme.onPrimaryContainer
+		EstadoPublicacion.PENDIENTE -> MaterialTheme.colorScheme.onTertiaryContainer
+		EstadoPublicacion.RECHAZADA -> MaterialTheme.colorScheme.onErrorContainer
 	}
 
 	val statusLabel = when (contribution.status) {
@@ -237,7 +237,7 @@ fun ContributionCard(
 		modifier = Modifier
 			.fillMaxWidth()
 			.padding(horizontal = 10.dp),
-		colors = CardDefaults.cardColors(containerColor = Color.White),
+		colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
 		shape = RoundedCornerShape(16.dp),
 		elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
 	) {

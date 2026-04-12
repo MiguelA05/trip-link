@@ -16,11 +16,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.example.triplink.ui.theme.FormFieldBackground
-import com.example.triplink.ui.theme.FormFieldBorder
-import com.example.triplink.ui.theme.FormFieldPlaceholder
-import com.example.triplink.ui.theme.PrincipalBlack
-import com.example.triplink.ui.theme.PrincipalRed
 
 @Composable
 fun FormField(
@@ -45,7 +40,7 @@ fun FormField(
             text = label,
             style = MaterialTheme.typography.labelLarge.copy(
                 fontWeight = FontWeight.SemiBold,
-                color = PrincipalBlack
+                color = MaterialTheme.colorScheme.onSurface
             )
         )
 
@@ -57,7 +52,7 @@ fun FormField(
                 Text(
                     text = placeholder,
                     style = MaterialTheme.typography.bodyLarge.copy(
-                        color = FormFieldPlaceholder
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 ) 
             },
@@ -69,23 +64,26 @@ fun FormField(
                     Text(
                         text = errorText, 
                         style = MaterialTheme.typography.bodySmall,
-                        color = PrincipalRed
-                    ) 
+                        color = MaterialTheme.colorScheme.error
+                    )
                 }
             } else null,
             trailingIcon = trailingIcon,
-            textStyle = MaterialTheme.typography.bodyLarge.copy(color = PrincipalBlack),
+            textStyle = MaterialTheme.typography.bodyLarge.copy(color = MaterialTheme.colorScheme.onSurface),
             singleLine = true,
             shape = RoundedCornerShape(12.dp),
             colors = OutlinedTextFieldDefaults.colors(
-                focusedContainerColor = FormFieldBackground,
-                unfocusedContainerColor = FormFieldBackground,
-                disabledContainerColor = FormFieldBackground,
-                errorContainerColor = FormFieldBackground,
-                focusedBorderColor = FormFieldBorder,
-                unfocusedBorderColor = FormFieldBorder,
-                errorBorderColor = PrincipalRed,
-                cursorColor = PrincipalBlack
+                focusedContainerColor = MaterialTheme.colorScheme.surfaceVariant,
+                unfocusedContainerColor = MaterialTheme.colorScheme.surfaceVariant,
+                disabledContainerColor = MaterialTheme.colorScheme.surfaceVariant,
+                errorContainerColor = MaterialTheme.colorScheme.surfaceVariant,
+                focusedBorderColor = MaterialTheme.colorScheme.outline,
+                unfocusedBorderColor = MaterialTheme.colorScheme.outline,
+                errorBorderColor = MaterialTheme.colorScheme.error,
+                cursorColor = MaterialTheme.colorScheme.primary,
+                focusedTextColor = MaterialTheme.colorScheme.onSurface,
+                unfocusedTextColor = MaterialTheme.colorScheme.onSurface,
+                disabledTextColor = MaterialTheme.colorScheme.onSurfaceVariant
             )
         )
     }

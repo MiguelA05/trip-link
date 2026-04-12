@@ -55,8 +55,6 @@ import com.example.triplink.R
 import com.example.triplink.core.components.ExploreMapPublicationCard
 import com.example.triplink.core.components.common.CategoryChips
 import com.example.triplink.core.components.common.SearchBar
-import com.example.triplink.ui.theme.PrincipalBlue
-import com.example.triplink.ui.theme.PrincipalWhite
 import com.example.triplink.ui.theme.TextColors
 import kotlin.math.roundToInt
 import kotlinx.coroutines.launch
@@ -84,7 +82,7 @@ fun ExploreMapScreen(
 			.padding(contentPadding),
 		scaffoldState = scaffoldState,
 		sheetPeekHeight = 170.dp,
-		sheetContainerColor = Color(0xFFF4F5F7),
+		sheetContainerColor = MaterialTheme.colorScheme.surface,
 		sheetShape = RoundedCornerShape(topStart = 28.dp, topEnd = 28.dp),
 		sheetShadowElevation = 8.dp,
 		sheetTonalElevation = 4.dp,
@@ -104,7 +102,7 @@ fun ExploreMapScreen(
 							.align(Alignment.CenterHorizontally)
 							.padding(top = 4.dp, bottom = 10.dp)
 							.size(width = 56.dp, height = 6.dp)
-							.background(Color(0xFFD8DCE3), shape = RoundedCornerShape(999.dp))
+							.background(MaterialTheme.colorScheme.outlineVariant, shape = RoundedCornerShape(999.dp))
 							.clickable {
 								coroutineScope.launch {
 									if (sheetState.currentValue == SheetValue.PartiallyExpanded) {
@@ -130,8 +128,8 @@ fun ExploreMapScreen(
 					modifier = Modifier
 						.align(Alignment.TopEnd)
 						.padding(top = 18.dp, end = 16.dp),
-					containerColor = PrincipalBlue,
-					contentColor = PrincipalWhite,
+					containerColor = MaterialTheme.colorScheme.primary,
+					contentColor = MaterialTheme.colorScheme.onPrimary,
 					shape = CircleShape
 				) {
 					Icon(
@@ -145,7 +143,7 @@ fun ExploreMapScreen(
 		Box(
 			modifier = Modifier
 				.fillMaxSize()
-				.background(Color(0xFFE6E9EE))
+				.background(MaterialTheme.colorScheme.background)
 		) {
 			Box(
 				modifier = Modifier
@@ -216,7 +214,7 @@ private fun MarkerPin(
 	) {
 		Surface(
 			shape = RoundedCornerShape(999.dp),
-			color = Color(0xFFF6F7FA),
+			color = MaterialTheme.colorScheme.surface,
 			tonalElevation = 2.dp,
 			onClick = onClick
 		) {
@@ -228,7 +226,7 @@ private fun MarkerPin(
 				Icon(
 					imageVector = Icons.Outlined.Star,
 					contentDescription = null,
-					tint = Color(0xFFF4AA1E),
+					tint = MaterialTheme.colorScheme.tertiary,
 					modifier = Modifier.size(13.dp)
 				)
 				Text(
@@ -243,7 +241,7 @@ private fun MarkerPin(
 		Surface(
 			modifier = Modifier.size(if (marker.highlighted) 54.dp else 46.dp),
 			shape = CircleShape,
-			color = if (marker.highlighted) Color(0xFF2E7D32) else PrincipalBlue,
+			color = if (marker.highlighted) MaterialTheme.colorScheme.secondary else MaterialTheme.colorScheme.primary,
 			onClick = onClick,
 			shadowElevation = 6.dp
 		) {
@@ -251,7 +249,7 @@ private fun MarkerPin(
 				Icon(
 					imageVector = if (marker.highlighted) Icons.Outlined.Eco else Icons.Outlined.LocationOn,
 					contentDescription = null,
-					tint = Color.White,
+					tint = if (marker.highlighted) MaterialTheme.colorScheme.onSecondary else MaterialTheme.colorScheme.onPrimary,
 					modifier = Modifier.size(24.dp)
 				)
 			}
@@ -261,10 +259,14 @@ private fun MarkerPin(
 
 @Composable
 private fun MapPlaceholderLayer(modifier: Modifier = Modifier) {
-	Canvas(modifier = modifier) {
-		drawRect(Color(0xFFE3E7ED))
+	val mapBackground = MaterialTheme.colorScheme.surfaceVariant
+	val roadColor = MaterialTheme.colorScheme.surface
+	val parkColor = MaterialTheme.colorScheme.secondaryContainer
+	val riverColor = MaterialTheme.colorScheme.primaryContainer
 
-		val roadColor = Color(0xFFF7F8FB)
+	Canvas(modifier = modifier) {
+		drawRect(mapBackground)
+
 		val pathEffect = PathEffect.cornerPathEffect(20f)
 
 		for (index in 0..8) {
@@ -290,20 +292,20 @@ private fun MapPlaceholderLayer(modifier: Modifier = Modifier) {
 		}
 
 		drawRoundRect(
-			color = Color(0xFFB8DDA5),
+			color = parkColor,
 			topLeft = Offset(size.width * 0.07f, size.height * 0.18f),
 			size = androidx.compose.ui.geometry.Size(size.width * 0.16f, size.height * 0.10f),
 			cornerRadius = CornerRadius(32f, 32f)
 		)
 		drawRoundRect(
-			color = Color(0xFFB8DDA5),
+			color = parkColor,
 			topLeft = Offset(size.width * 0.72f, size.height * 0.42f),
 			size = androidx.compose.ui.geometry.Size(size.width * 0.2f, size.height * 0.12f),
 			cornerRadius = CornerRadius(32f, 32f)
 		)
 
 		drawRoundRect(
-			color = Color(0xFF91C8F6),
+			color = riverColor,
 			topLeft = Offset(size.width * 0.42f, size.height * 0.04f),
 			size = androidx.compose.ui.geometry.Size(size.width * 0.18f, size.height * 0.72f),
 			cornerRadius = CornerRadius(100f, 100f)

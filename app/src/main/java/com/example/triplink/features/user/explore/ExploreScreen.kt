@@ -14,13 +14,13 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Map
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.ScaffoldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
@@ -28,8 +28,6 @@ import com.example.triplink.R
 import com.example.triplink.core.components.PublicationCard
 import com.example.triplink.core.components.common.CategoryChips
 import com.example.triplink.core.components.common.SearchBar
-import com.example.triplink.ui.theme.PrincipalBlue
-import com.example.triplink.ui.theme.PrincipalWhite
 
 @Composable
 fun ExploreScreen(
@@ -45,13 +43,13 @@ fun ExploreScreen(
 		modifier = Modifier
 			.fillMaxSize()
 			.padding(contentPadding),
-		containerColor = Color(0xFFF5F6F8),
+		containerColor = MaterialTheme.colorScheme.background,
 		contentWindowInsets = ScaffoldDefaults.contentWindowInsets,
 		topBar = {
 			Column(
 				modifier = Modifier
 					.fillMaxWidth()
-					.background(Color(0xFFF5F6F8))
+					.background(MaterialTheme.colorScheme.background)
 					.statusBarsPadding()
 					.padding(horizontal = 12.dp, vertical = 8.dp),
 				verticalArrangement = Arrangement.spacedBy(8.dp)
@@ -71,8 +69,8 @@ fun ExploreScreen(
 		floatingActionButton = {
 			FloatingActionButton(
 				onClick = onMapClick,
-				containerColor = PrincipalBlue,
-				contentColor = PrincipalWhite
+				containerColor = MaterialTheme.colorScheme.primary,
+				contentColor = MaterialTheme.colorScheme.onPrimary
 			) {
 				Icon(
 					imageVector = Icons.Outlined.Map,

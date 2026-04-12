@@ -17,10 +17,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.example.triplink.ui.theme.PrincipalBlue
-import com.example.triplink.ui.theme.PrincipalBlueBlocked
-import com.example.triplink.ui.theme.PrincipalGray
-import com.example.triplink.ui.theme.PrincipalWhite
 import com.example.triplink.ui.theme.TextTokens
 
 @Composable
@@ -58,10 +54,10 @@ fun GeneralButton(
             shape = RoundedCornerShape(16.dp),
             enabled = enabled,
             colors = ButtonDefaults.buttonColors(
-                containerColor = PrincipalBlue,
-                contentColor = PrincipalWhite,
-                disabledContainerColor = PrincipalBlueBlocked,
-                disabledContentColor = PrincipalWhite
+                containerColor = MaterialTheme.colorScheme.primary,
+                contentColor = MaterialTheme.colorScheme.onPrimary,
+                disabledContainerColor = MaterialTheme.colorScheme.surfaceVariant,
+                disabledContentColor = MaterialTheme.colorScheme.onSurfaceVariant
             )
         ) {
             content()
@@ -76,8 +72,10 @@ fun GeneralButton(
             enabled = enabled,
             shape = RoundedCornerShape(16.dp),
             colors = ButtonDefaults.filledTonalButtonColors(
-                disabledContainerColor = PrincipalBlueBlocked,
-                disabledContentColor = PrincipalGray
+                containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                contentColor = MaterialTheme.colorScheme.onSecondaryContainer,
+                disabledContainerColor = MaterialTheme.colorScheme.surfaceVariant,
+                disabledContentColor = MaterialTheme.colorScheme.onSurfaceVariant
             )
         ) {
             content()

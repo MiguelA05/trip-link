@@ -19,7 +19,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.font.FontWeight
@@ -27,7 +26,6 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.example.triplink.R
 import com.example.triplink.core.components.admin.ReportModerationPublicationCard
-import com.example.triplink.ui.theme.PrincipalBlue
 
 @Composable
 fun AdminReportsScreen(
@@ -40,7 +38,7 @@ fun AdminReportsScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(0xFFF4F5F7))
+            .background(MaterialTheme.colorScheme.background)
             .padding(contentPadding)
             .statusBarsPadding()
             .padding(horizontal = 14.dp, vertical = 12.dp),
@@ -56,25 +54,25 @@ fun AdminReportsScreen(
                     text = stringResource(R.string.feature_admin_reports_title),
                     style = MaterialTheme.typography.headlineSmall,
                     fontWeight = FontWeight.Bold,
-                    color = Color(0xFF1E1F26)
+                    color = MaterialTheme.colorScheme.onSurface
                 )
                 Text(
                     text = stringResource(R.string.feature_admin_reports_subtitle),
                     style = MaterialTheme.typography.bodyLarge,
-                    color = Color(0xFF9AA3B2),
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
                     modifier = Modifier.padding(top = 4.dp)
                 )
             }
 
             Surface(
                 shape = RoundedCornerShape(999.dp),
-                color = Color(0xFFE8F2FF),
-                border = androidx.compose.foundation.BorderStroke(1.dp, Color(0xFFB7D7FF))
+                color = MaterialTheme.colorScheme.secondaryContainer,
+                border = androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant)
             ) {
                 Text(
                     text = stringResource(R.string.feature_admin_moderation_badge),
                     modifier = Modifier.padding(horizontal = 12.dp, vertical = 7.dp),
-                    color = PrincipalBlue,
+                    color = MaterialTheme.colorScheme.onSecondaryContainer,
                     style = MaterialTheme.typography.labelLarge,
                     fontWeight = FontWeight.Bold
                 )
@@ -84,8 +82,8 @@ fun AdminReportsScreen(
         Surface(
             modifier = Modifier.fillMaxWidth(),
             shape = RoundedCornerShape(24.dp),
-            color = Color(0xFFFFF7DE),
-            border = androidx.compose.foundation.BorderStroke(1.dp, Color(0xFFFFD36A))
+            color = MaterialTheme.colorScheme.tertiaryContainer,
+            border = androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.tertiary)
         ) {
             Column(
                 modifier = Modifier.padding(vertical = 18.dp, horizontal = 20.dp),
@@ -96,13 +94,13 @@ fun AdminReportsScreen(
                     text = viewModel.pendingCount.toString(),
                     style = MaterialTheme.typography.displaySmall,
                     fontWeight = FontWeight.ExtraBold,
-                    color = Color(0xFFF98A1F)
+                    color = MaterialTheme.colorScheme.onTertiaryContainer
                 )
                 Text(
                     text = stringResource(R.string.feature_admin_reports_counter_label),
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold,
-                    color = Color(0xFFF98A1F),
+                    color = MaterialTheme.colorScheme.onTertiaryContainer,
                     textAlign = TextAlign.Center
                 )
             }
@@ -127,14 +125,14 @@ fun AdminReportsScreen(
                     Surface(
                         modifier = Modifier.fillMaxWidth(),
                         shape = RoundedCornerShape(18.dp),
-                        color = Color(0xFFF0F2F7),
-                        border = androidx.compose.foundation.BorderStroke(1.dp, Color(0xFFE1E6EF))
+                        color = MaterialTheme.colorScheme.surfaceVariant,
+                        border = androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant)
                     ) {
                         Text(
                             text = stringResource(R.string.feature_admin_reports_empty_state),
                             modifier = Modifier.padding(20.dp),
                             style = MaterialTheme.typography.bodyLarge,
-                            color = Color(0xFF7C889B),
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
                             textAlign = TextAlign.Center
                         )
                     }

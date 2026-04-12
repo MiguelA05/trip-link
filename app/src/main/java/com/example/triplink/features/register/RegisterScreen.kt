@@ -30,7 +30,6 @@ import com.example.triplink.core.components.FormField
 import com.example.triplink.core.components.GeneralButton
 import com.example.triplink.core.components.LinkTextRow
 import com.example.triplink.core.utils.RequestResult
-import com.example.triplink.ui.theme.PrincipalBlue
 import com.example.triplink.ui.theme.TextColors
 import com.example.triplink.ui.theme.TextTokens
 
@@ -75,16 +74,16 @@ fun RegisterScreen(
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                             contentDescription = stringResource(R.string.component_general_top_bar_back_content_description),
-                            tint = PrincipalBlue
+                            tint = MaterialTheme.colorScheme.primary
                         )
                     }
                 },
                 colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-                    containerColor = Color.White
+                    containerColor = MaterialTheme.colorScheme.surface
                 )
             )
         },
-        containerColor = Color.White
+        containerColor = MaterialTheme.colorScheme.background
     ) { paddingValues ->
         Column(
             modifier = Modifier
@@ -113,7 +112,11 @@ fun RegisterScreen(
                 modifier = Modifier.padding(top = 8.dp, bottom = 24.dp)
             )
 
-            HorizontalDivider(modifier = Modifier.padding(bottom = 24.dp), thickness = 1.dp, color = Color(0xFFEEEEEE))
+            HorizontalDivider(
+                modifier = Modifier.padding(bottom = 24.dp),
+                thickness = 1.dp,
+                color = MaterialTheme.colorScheme.outlineVariant
+            )
 
             FormField(
                 label = stringResource(R.string.feature_register_full_name_label),
@@ -191,7 +194,7 @@ fun RegisterScreen(
                 Checkbox(
                     checked = registerViewModel.addExactLocation,
                     onCheckedChange = { registerViewModel.addExactLocation = it },
-                    colors = CheckboxDefaults.colors(checkedColor = PrincipalBlue)
+                        colors = CheckboxDefaults.colors(checkedColor = MaterialTheme.colorScheme.primary)
                 )
                 Text(
                     text = stringResource(R.string.feature_register_add_exact_location),
@@ -206,20 +209,20 @@ fun RegisterScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(150.dp)
-                        .background(Color(0xFFF5F5F5), RoundedCornerShape(12.dp))
-                        .border(1.dp, Color(0xFFE0E0E0), RoundedCornerShape(12.dp)),
+                        .background(MaterialTheme.colorScheme.surfaceVariant, RoundedCornerShape(12.dp))
+                        .border(1.dp, MaterialTheme.colorScheme.outlineVariant, RoundedCornerShape(12.dp)),
                     contentAlignment = Alignment.Center
                 ) {
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
                         Icon(
                             imageVector = Icons.Default.LocationOn,
                             contentDescription = stringResource(R.string.feature_register_map_placeholder_content_description),
-                            tint = Color.LightGray,
+                            tint = MaterialTheme.colorScheme.onSurfaceVariant,
                             modifier = Modifier.size(48.dp)
                         )
                         Text(
                             text = stringResource(R.string.feature_register_map_placeholder_label),
-                            color = Color.LightGray
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
                     }
                 }
@@ -233,7 +236,7 @@ fun RegisterScreen(
                     is RequestResult.Success -> {
                         Text(
                             text = result.message,
-                            color = Color(0xFF4CAF50),
+                            color = MaterialTheme.colorScheme.primary,
                             style = MaterialTheme.typography.bodyMedium,
                             modifier = Modifier.padding(bottom = 8.dp)
                         )
@@ -241,7 +244,7 @@ fun RegisterScreen(
                     is RequestResult.Failure -> {
                         Text(
                             text = result.errorMessage,
-                            color = Color.Red,
+                            color = MaterialTheme.colorScheme.error,
                             style = MaterialTheme.typography.bodyMedium,
                             modifier = Modifier.padding(bottom = 8.dp)
                         )
@@ -281,8 +284,8 @@ fun SelectableDropdown(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .background(Color(0xFFF5F5F5), RoundedCornerShape(24.dp))
-                .border(1.dp, Color(0xFFE0E0E0), RoundedCornerShape(24.dp))
+                .background(MaterialTheme.colorScheme.surfaceVariant, RoundedCornerShape(24.dp))
+                .border(1.dp, MaterialTheme.colorScheme.outlineVariant, RoundedCornerShape(24.dp))
                 .clickable { expanded = true }
                 .padding(horizontal = 16.dp, vertical = 12.dp),
             verticalAlignment = Alignment.CenterVertically,
@@ -297,7 +300,7 @@ fun SelectableDropdown(
             Icon(
                 imageVector = Icons.Default.KeyboardArrowDown,
                 contentDescription = null,
-                tint = PrincipalBlue,
+                tint = MaterialTheme.colorScheme.primary,
                 modifier = Modifier.size(20.dp)
             )
         }
@@ -306,7 +309,7 @@ fun SelectableDropdown(
             expanded = expanded,
             onDismissRequest = { expanded = false },
             modifier = Modifier
-                .background(Color.White)
+                .background(MaterialTheme.colorScheme.surface)
         ) {
             options.forEach { option ->
                 DropdownMenuItem(

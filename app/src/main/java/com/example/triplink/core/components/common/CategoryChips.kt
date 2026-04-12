@@ -13,11 +13,9 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.example.triplink.core.localization.localizedLabelOrAll
 import com.example.triplink.domain.model.enums.Categoria
-import com.example.triplink.ui.theme.PrincipalBlue
 
 
 @Composable
@@ -46,10 +44,10 @@ fun <T> CategoryChips(
                 },
                 shape = RoundedCornerShape(8.dp),
                 colors = FilterChipDefaults.filterChipColors(
-                    containerColor = Color(0xFFEAEAEA),
-                    selectedContainerColor = Color(0xFFDCE7FF),
-                    selectedLabelColor = PrincipalBlue,
-                    labelColor = Color(0xFF4D4D4D)
+                    containerColor = MaterialTheme.colorScheme.surfaceVariant,
+                    selectedContainerColor = MaterialTheme.colorScheme.secondaryContainer,
+                    selectedLabelColor = MaterialTheme.colorScheme.primary,
+                    labelColor = MaterialTheme.colorScheme.onSurfaceVariant
                 ),
                 modifier = Modifier.padding(vertical = 2.dp)
             )
@@ -84,10 +82,10 @@ fun CategoryChips(
                 },
                 shape = RoundedCornerShape(8.dp),
                 colors = FilterChipDefaults.filterChipColors(
-                    containerColor = Color(0xFFEAEAEA),
-                    selectedContainerColor = Color(0xFFDCE7FF),
-                    selectedLabelColor = PrincipalBlue,
-                    labelColor = Color(0xFF4D4D4D)
+                    containerColor = MaterialTheme.colorScheme.surfaceVariant,
+                    selectedContainerColor = MaterialTheme.colorScheme.secondaryContainer,
+                    selectedLabelColor = MaterialTheme.colorScheme.primary,
+                    labelColor = MaterialTheme.colorScheme.onSurfaceVariant
                 ),
                 modifier = Modifier.padding(vertical = 2.dp)
             )

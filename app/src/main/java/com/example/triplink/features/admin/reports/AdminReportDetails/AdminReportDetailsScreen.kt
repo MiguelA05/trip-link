@@ -50,8 +50,6 @@ import coil3.request.crossfade
 import com.example.triplink.R
 import com.example.triplink.core.components.DestructiveConfirmDialog
 import com.example.triplink.core.components.GeneralAlertDialog
-import com.example.triplink.ui.theme.PrincipalBlue
-import com.example.triplink.ui.theme.PrincipalGreen
 import com.example.triplink.ui.theme.TextColors
 import com.example.triplink.ui.theme.TextTokens
 
@@ -68,7 +66,7 @@ fun AdminReportDetailsScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .background(Color(0xFFF4F5F7))
+                .background(MaterialTheme.colorScheme.background)
                 .padding(contentPadding)
                 .statusBarsPadding(),
             verticalArrangement = Arrangement.Center,
@@ -89,7 +87,7 @@ fun AdminReportDetailsScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(0xFFF4F5F7))
+            .background(MaterialTheme.colorScheme.background)
             .padding(contentPadding)
             .statusBarsPadding()
             .verticalScroll(rememberScrollState())
@@ -149,7 +147,7 @@ fun AdminReportDetailsScreen(
             Surface(
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(16.dp),
-                color = Color.White,
+                color = MaterialTheme.colorScheme.surface,
                 shadowElevation = 1.dp
             ) {
                 Column(
@@ -169,12 +167,12 @@ fun AdminReportDetailsScreen(
                         color = TextColors.Primary
                     )
 
-                    Surface(shape = RoundedCornerShape(8.dp), color = Color(0xFFFFE9D6)) {
+                    Surface(shape = RoundedCornerShape(8.dp), color = MaterialTheme.colorScheme.tertiaryContainer) {
                         Text(
                             text = report.categoryLabel,
                             modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
                             style = TextTokens.chipLabel(),
-                            color = Color(0xFFF07A17)
+                            color = MaterialTheme.colorScheme.onTertiaryContainer
                         )
                     }
 
@@ -185,13 +183,13 @@ fun AdminReportDetailsScreen(
                         Icon(
                             imageVector = Icons.Default.LocationOn,
                             contentDescription = null,
-                            tint = Color(0xFF9AA3B2),
+                            tint = MaterialTheme.colorScheme.onSurfaceVariant,
                             modifier = Modifier.size(18.dp)
                         )
                         Text(
                             text = report.cityLabel,
                             style = MaterialTheme.typography.bodyMedium,
-                            color = Color(0xFF6A7688)
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
                     }
 
@@ -202,13 +200,13 @@ fun AdminReportDetailsScreen(
                         Icon(
                             imageVector = Icons.Default.AttachMoney,
                             contentDescription = null,
-                            tint = PrincipalBlue,
+                            tint = MaterialTheme.colorScheme.primary,
                             modifier = Modifier.size(18.dp)
                         )
                         Text(
                             text = report.priceLabel,
                             style = MaterialTheme.typography.bodyMedium,
-                            color = PrincipalBlue,
+                            color = MaterialTheme.colorScheme.primary,
                             fontWeight = FontWeight.SemiBold
                         )
                     }
@@ -220,13 +218,13 @@ fun AdminReportDetailsScreen(
                         Icon(
                             imageVector = Icons.Default.AccessTime,
                             contentDescription = null,
-                            tint = Color(0xFF8A93A3),
+                            tint = MaterialTheme.colorScheme.onSurfaceVariant,
                             modifier = Modifier.size(18.dp)
                         )
                         Text(
                             text = report.scheduleLabel,
                             style = MaterialTheme.typography.bodyMedium,
-                            color = Color(0xFF677487)
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
                     }
                 }
@@ -235,7 +233,7 @@ fun AdminReportDetailsScreen(
             Surface(
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(16.dp),
-                color = Color.White,
+                color = MaterialTheme.colorScheme.surface,
                 shadowElevation = 1.dp
             ) {
                 Column(
@@ -248,7 +246,7 @@ fun AdminReportDetailsScreen(
                         color = TextColors.Primary
                     )
 
-                    Surface(shape = RoundedCornerShape(10.dp), color = Color(0xFFFFF2F2)) {
+                    Surface(shape = RoundedCornerShape(10.dp), color = MaterialTheme.colorScheme.errorContainer) {
                         Column(
                             modifier = Modifier.padding(12.dp),
                             verticalArrangement = Arrangement.spacedBy(6.dp)
@@ -256,7 +254,7 @@ fun AdminReportDetailsScreen(
                             Text(
                                 text = stringResource(R.string.feature_admin_report_details_report_reason_label),
                                 style = MaterialTheme.typography.labelMedium,
-                                color = Color(0xFFD84343),
+                                color = MaterialTheme.colorScheme.onErrorContainer,
                                 fontWeight = FontWeight.SemiBold
                             )
                             Text(
@@ -327,7 +325,7 @@ fun AdminReportDetailsScreen(
                 Surface(
                     modifier = Modifier.weight(1f),
                     shape = RoundedCornerShape(12.dp),
-                    color = Color(0xFFF35A5A)
+                    color = MaterialTheme.colorScheme.error
                 ) {
                     Button(
                         onClick = { showRejectDialog = true },
@@ -336,14 +334,18 @@ fun AdminReportDetailsScreen(
                             .padding(12.dp),
                         colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent)
                     ) {
-                        Text(text = stringResource(R.string.feature_admin_report_details_reject_action), color = Color.White, fontWeight = FontWeight.Bold)
+                        Text(
+                            text = stringResource(R.string.feature_admin_report_details_reject_action),
+                            color = MaterialTheme.colorScheme.onError,
+                            fontWeight = FontWeight.Bold
+                        )
                     }
                 }
 
                 Surface(
                     modifier = Modifier.weight(1f),
                     shape = RoundedCornerShape(12.dp),
-                    color = PrincipalGreen
+                    color = MaterialTheme.colorScheme.primary
                 ) {
                     Button(
                         onClick = { showConfirmDialog = true },
@@ -352,7 +354,11 @@ fun AdminReportDetailsScreen(
                             .padding(12.dp),
                         colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent)
                     ) {
-                        Text(text = stringResource(R.string.feature_admin_report_details_confirm_action), color = Color.White, fontWeight = FontWeight.Bold)
+                        Text(
+                            text = stringResource(R.string.feature_admin_report_details_confirm_action),
+                            color = MaterialTheme.colorScheme.onPrimary,
+                            fontWeight = FontWeight.Bold
+                        )
                     }
                 }
             }

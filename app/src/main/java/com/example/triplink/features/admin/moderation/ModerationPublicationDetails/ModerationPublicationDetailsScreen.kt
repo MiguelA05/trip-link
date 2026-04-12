@@ -48,8 +48,6 @@ import com.example.triplink.core.localization.localizedLabel
 import com.example.triplink.core.localization.localizedLabelOrNoPrice
 import com.example.triplink.domain.model.enums.EstadoPublicacion
 import com.example.triplink.domain.model.enums.moderator.DecisionModerador
-import com.example.triplink.ui.theme.PrincipalGreen
-import com.example.triplink.ui.theme.PrincipalRed
 
 @Composable
 fun ModerationPublicationDetailsScreen(
@@ -64,7 +62,7 @@ fun ModerationPublicationDetailsScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .background(Color(0xFFF4F5F7))
+                .background(MaterialTheme.colorScheme.background)
                 .padding(contentPadding),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
@@ -73,7 +71,7 @@ fun ModerationPublicationDetailsScreen(
                 text = stringResource(R.string.feature_publication_details_not_found),
                 style = MaterialTheme.typography.headlineSmall,
                 fontWeight = FontWeight.Bold,
-                color = Color(0xFF1E2430)
+                color = MaterialTheme.colorScheme.onSurface
             )
         }
         return
@@ -87,7 +85,7 @@ fun ModerationPublicationDetailsScreen(
     Scaffold(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(0xFFF4F5F7)),
+            .background(MaterialTheme.colorScheme.background),
         topBar = {
             GeneralTopBar(
                 title = stringResource(R.string.feature_moderation_publication_details_title),
@@ -150,7 +148,7 @@ fun ModerationPublicationDetailsScreen(
                     .fillMaxWidth()
                     .align(Alignment.BottomCenter),
                 shadowElevation = 12.dp,
-                color = Color.White
+                color = MaterialTheme.colorScheme.surface
             ) {
                 Column(
                     modifier = Modifier
@@ -162,7 +160,7 @@ fun ModerationPublicationDetailsScreen(
                         Text(
                             text = stringResource(R.string.feature_moderation_publication_details_already_reviewed),
                             style = MaterialTheme.typography.bodyMedium,
-                            color = Color(0xFF7C889B),
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
                             fontWeight = FontWeight.SemiBold
                         )
                     }
@@ -178,10 +176,10 @@ fun ModerationPublicationDetailsScreen(
                                 .weight(1f)
                                 .height(54.dp),
                             shape = RoundedCornerShape(14.dp),
-                            border = BorderStroke(1.5.dp, PrincipalRed),
+                            border = BorderStroke(1.5.dp, MaterialTheme.colorScheme.error),
                             colors = ButtonDefaults.outlinedButtonColors(
-                                contentColor = PrincipalRed,
-                                disabledContentColor = PrincipalRed.copy(alpha = 0.45f)
+                                contentColor = MaterialTheme.colorScheme.error,
+                                disabledContentColor = MaterialTheme.colorScheme.error.copy(alpha = 0.45f)
                             )
                         ) {
                             Text(
@@ -198,13 +196,13 @@ fun ModerationPublicationDetailsScreen(
                                 .height(54.dp),
                             shape = RoundedCornerShape(14.dp),
                             colors = ButtonDefaults.buttonColors(
-                                containerColor = PrincipalGreen,
-                                disabledContainerColor = PrincipalGreen.copy(alpha = 0.35f)
+                                containerColor = MaterialTheme.colorScheme.primary,
+                                disabledContainerColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.35f)
                             )
                         ) {
                             Text(
                                 text = stringResource(R.string.feature_moderation_publication_details_approve_action),
-                                color = Color.White,
+                                color = MaterialTheme.colorScheme.onPrimary,
                                 fontWeight = FontWeight.Bold
                             )
                         }

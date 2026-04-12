@@ -37,9 +37,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.triplink.R
-import com.example.triplink.ui.theme.PastelBlue
-import com.example.triplink.ui.theme.PrincipalBlue
-import com.example.triplink.ui.theme.PrincipalWhite
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -63,7 +60,7 @@ fun GeneralAlertDialog(
         Surface(
             modifier = Modifier.fillMaxWidth(),
             shape = RoundedCornerShape(28.dp),
-            color = PrincipalWhite
+            color = MaterialTheme.colorScheme.surface
         ) {
             Box(modifier = Modifier.padding(16.dp)) {
                 // Botón de cerrar en la esquina superior derecha
@@ -73,7 +70,7 @@ fun GeneralAlertDialog(
                         .align(Alignment.TopEnd)
                         .size(32.dp),
                     colors = IconButtonDefaults.iconButtonColors(
-                        containerColor = Color(0xFFF5F5F5)
+                        containerColor = MaterialTheme.colorScheme.surfaceVariant
                     )
                 ) {
                     Icon(
@@ -82,7 +79,7 @@ fun GeneralAlertDialog(
                             R.string.component_general_alert_dialog_close_content_description
                         ),
                         modifier = Modifier.size(16.dp),
-                        tint = Color.Gray
+                        tint = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }
 
@@ -97,14 +94,14 @@ fun GeneralAlertDialog(
                     Box(
                         modifier = Modifier
                             .size(80.dp)
-                            .background(PastelBlue, CircleShape),
+                            .background(MaterialTheme.colorScheme.primaryContainer, CircleShape),
                         contentAlignment = Alignment.Center
                     ) {
                         Icon(
                             imageVector = icon,
                             contentDescription = null,
                             modifier = Modifier.size(40.dp),
-                            tint = PrincipalBlue
+                            tint = MaterialTheme.colorScheme.primary
                         )
                     }
 
@@ -122,7 +119,7 @@ fun GeneralAlertDialog(
                         text = message,
                         style = MaterialTheme.typography.bodyMedium.copy(
                             textAlign = TextAlign.Center,
-                            color = Color.Gray,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
                             lineHeight = 20.sp
                         ),
                         modifier = Modifier.padding(horizontal = 16.dp)
@@ -130,7 +127,7 @@ fun GeneralAlertDialog(
 
                     Spacer(modifier = Modifier.height(8.dp))
                     
-                    HorizontalDivider(color = Color(0xFFF0F0F0))
+                    HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
 
                     if (dismissButtonText != null && onDismissAction != null) {
                         androidx.compose.foundation.layout.Row(
@@ -144,7 +141,7 @@ fun GeneralAlertDialog(
                                     .height(50.dp),
                                 shape = RoundedCornerShape(25.dp),
                                 colors = ButtonDefaults.outlinedButtonColors(
-                                    contentColor = PrincipalBlue
+                                    contentColor = MaterialTheme.colorScheme.primary
                                 )
                             ) {
                                 Text(
@@ -162,14 +159,14 @@ fun GeneralAlertDialog(
                                     .height(50.dp),
                                 shape = RoundedCornerShape(25.dp),
                                 colors = ButtonDefaults.buttonColors(
-                                    containerColor = PrincipalBlue
+                                    containerColor = MaterialTheme.colorScheme.primary
                                 )
                             ) {
                                 Text(
                                     text = resolvedButtonText,
                                     style = MaterialTheme.typography.titleMedium.copy(
                                         fontWeight = FontWeight.Bold,
-                                        color = PrincipalWhite
+                                        color = MaterialTheme.colorScheme.onPrimary
                                     )
                                 )
                             }
@@ -183,14 +180,14 @@ fun GeneralAlertDialog(
                                 .height(50.dp),
                             shape = RoundedCornerShape(25.dp),
                             colors = ButtonDefaults.buttonColors(
-                                containerColor = PrincipalBlue
+                                containerColor = MaterialTheme.colorScheme.primary
                             )
                         ) {
                             Text(
                                 text = resolvedButtonText,
                                 style = MaterialTheme.typography.titleMedium.copy(
                                     fontWeight = FontWeight.Bold,
-                                    color = PrincipalWhite
+                                    color = MaterialTheme.colorScheme.onPrimary
                                 )
                             )
                         }

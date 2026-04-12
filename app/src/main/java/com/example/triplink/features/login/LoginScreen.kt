@@ -49,9 +49,6 @@ import com.example.triplink.core.components.GeneralButton
 import com.example.triplink.core.components.GeneralTopBar
 import com.example.triplink.core.components.LinkTextRow
 import com.example.triplink.core.utils.RequestResult
-import com.example.triplink.ui.theme.PrincipalBlue
-import com.example.triplink.ui.theme.PrincipalRed
-import com.example.triplink.ui.theme.PrincipalWhite
 import kotlinx.coroutines.launch
 
 
@@ -88,8 +85,8 @@ fun LoginScreen(
             SnackbarHost(snackbarHostState) { data ->
                 val isError = loginResult is RequestResult.Failure
                 Snackbar(
-                    containerColor = if (isError) PrincipalRed else PrincipalBlue,
-                    contentColor = PrincipalWhite
+                    containerColor = if (isError) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.primary,
+                    contentColor = if (isError) MaterialTheme.colorScheme.onError else MaterialTheme.colorScheme.onPrimary
                 ) {
                     Text(
                         text = data.visuals.message,
@@ -168,7 +165,7 @@ fun LoginScreen(
                 onClick = onNavigateToRecovery,
                 interactionSource = viewModel.forgotPasswordInteractionSource,
                 colors = ButtonDefaults.textButtonColors(
-                    contentColor = PrincipalBlue
+                    contentColor = MaterialTheme.colorScheme.primary
                 ),
                 modifier = Modifier
                     .padding(bottom = 8.dp)
@@ -180,7 +177,7 @@ fun LoginScreen(
                 Text(
                     text = stringResource(R.string.feature_login_forgot_password),
                     style = MaterialTheme.typography.bodyLarge.copy(
-                        color = PrincipalBlue
+                        color = MaterialTheme.colorScheme.primary
                     )
                 )
             }

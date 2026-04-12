@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -56,7 +57,7 @@ fun HomeScreen(
                     brush = Brush.verticalGradient(
                         colors = listOf(
                             Color.Transparent,          // Comienzo (arriba)
-                            Color(0xFF001A33).copy(alpha = 0.9f) // Final (abajo) - Azul muy oscuro
+                            MaterialTheme.colorScheme.scrim.copy(alpha = 0.9f)
                         )
                     )
                 )
@@ -82,12 +83,12 @@ fun HomeScreen(
                 Text(
                     text = stringResource(R.string.feature_app_home_hero_line_1),
                     style = TextTokens.sectionTitle(),
-                    color = Color.White
+                    color = MaterialTheme.colorScheme.onPrimary
                 )
                 Text(
                     text = stringResource(R.string.feature_app_home_hero_line_2),
                     style = TextTokens.sectionTitle(),
-                    color = Color.White
+                    color = MaterialTheme.colorScheme.onPrimary
                 )
             }
 
@@ -113,7 +114,7 @@ fun HomeScreen(
             LinkTextRow(
                 text = stringResource(R.string.feature_app_home_have_account),
                 buttonText = stringResource(R.string.feature_app_home_login_action),
-                textColor = Color.White,
+                textColor = MaterialTheme.colorScheme.onPrimary,
                 onClick = onNavigateToLogin
 
             )

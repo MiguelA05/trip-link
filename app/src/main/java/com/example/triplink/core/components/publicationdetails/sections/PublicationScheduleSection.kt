@@ -15,12 +15,10 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.triplink.R
-import com.example.triplink.ui.theme.PrincipalOrange
 
 @Composable
 fun PublicationScheduleSection(
@@ -37,13 +35,13 @@ fun PublicationScheduleSection(
             text = stringResource(R.string.component_publication_weekly_schedule_title),
             style = MaterialTheme.typography.titleLarge,
             fontWeight = FontWeight.Bold,
-            color = Color(0xFF121826)
+            color = MaterialTheme.colorScheme.onSurface
         )
 
         Surface(
             shape = RoundedCornerShape(16.dp),
-            border = androidx.compose.foundation.BorderStroke(1.dp, Color(0xFFD8DEE9)),
-            color = Color.White,
+            border = androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
+            color = MaterialTheme.colorScheme.surface,
             modifier = Modifier.fillMaxWidth()
         ) {
             Row(
@@ -54,12 +52,12 @@ fun PublicationScheduleSection(
                 Icon(
                     imageVector = Icons.Default.AccessTime,
                     contentDescription = null,
-                    tint = PrincipalOrange
+                    tint = MaterialTheme.colorScheme.tertiary
                 )
                 Text(
                     text = schedule,
                     style = MaterialTheme.typography.bodyLarge,
-                    color = Color(0xFF1F2937),
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
                     fontWeight = FontWeight.Medium
                 )
             }

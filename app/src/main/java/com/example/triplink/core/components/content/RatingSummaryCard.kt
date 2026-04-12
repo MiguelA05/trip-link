@@ -23,7 +23,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -31,7 +30,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.triplink.R
-import com.example.triplink.ui.theme.PrincipalOrange
 import java.util.Locale
 
 @Composable
@@ -44,7 +42,7 @@ fun RatingSummaryCard(
     Card(
         modifier = modifier.fillMaxWidth(),
         shape = RoundedCornerShape(24.dp),
-        colors = CardDefaults.cardColors(containerColor = Color(0xFFF7F8FA)),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
         Row(
@@ -59,7 +57,7 @@ fun RatingSummaryCard(
             ) {
                 Text(
                     text = String.format(Locale.ROOT, "%.1f", average),
-                    color = PrincipalOrange,
+                    color = MaterialTheme.colorScheme.tertiary,
                     fontSize = 56.sp,
                     fontWeight = FontWeight.ExtraBold,
                     lineHeight = 56.sp
@@ -71,7 +69,7 @@ fun RatingSummaryCard(
                             imageVector = Icons.Default.Star,
                             contentDescription = null,
                             modifier = Modifier.size(16.dp),
-                            tint = if (index < average.toInt()) PrincipalOrange else Color(0xFFD8DCE3)
+                            tint = if (index < average.toInt()) MaterialTheme.colorScheme.tertiary else MaterialTheme.colorScheme.outlineVariant
                         )
                     }
                 }
@@ -79,7 +77,7 @@ fun RatingSummaryCard(
                 Text(
                     text = stringResource(R.string.component_rating_summary_card_based_on),
                     style = MaterialTheme.typography.bodyMedium,
-                    color = Color(0xFF788A9F)
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
                 Text(
                     text = pluralStringResource(
@@ -89,7 +87,7 @@ fun RatingSummaryCard(
                     ),
                     style = MaterialTheme.typography.bodyMedium,
                     fontWeight = FontWeight.Bold,
-                    color = Color(0xFF465A73)
+                    color = MaterialTheme.colorScheme.onSurface
                 )
             }
 
@@ -97,7 +95,7 @@ fun RatingSummaryCard(
                 modifier = Modifier
                     .height(120.dp)
                     .width(1.dp),
-                color = Color(0xFFDADFE8)
+                color = MaterialTheme.colorScheme.outlineVariant
             )
 
             Column(
@@ -129,7 +127,7 @@ private fun RatingDistributionRow(
         Text(
             text = "${item.stars}",
             style = MaterialTheme.typography.bodyMedium,
-            color = Color(0xFF4D5F78),
+            color = MaterialTheme.colorScheme.onSurface,
             fontWeight = FontWeight.SemiBold
         )
         Spacer(modifier = Modifier.width(3.dp))
@@ -137,7 +135,7 @@ private fun RatingDistributionRow(
             imageVector = Icons.Default.Star,
             contentDescription = null,
             modifier = Modifier.size(14.dp),
-            tint = PrincipalOrange
+            tint = MaterialTheme.colorScheme.tertiary
         )
         Spacer(modifier = Modifier.width(8.dp))
 
@@ -145,13 +143,13 @@ private fun RatingDistributionRow(
             modifier = Modifier
                 .weight(1f)
                 .height(8.dp)
-                .background(color = Color(0xFFE1E5EC), shape = RoundedCornerShape(999.dp))
+                .background(color = MaterialTheme.colorScheme.outlineVariant, shape = RoundedCornerShape(999.dp))
         ) {
             Box(
                 modifier = Modifier
                     .fillMaxWidth(progress)
                     .height(8.dp)
-                    .background(color = PrincipalOrange, shape = RoundedCornerShape(999.dp))
+                    .background(color = MaterialTheme.colorScheme.tertiary, shape = RoundedCornerShape(999.dp))
             )
         }
 
@@ -159,7 +157,7 @@ private fun RatingDistributionRow(
         Text(
             text = item.count.toString(),
             style = MaterialTheme.typography.bodyMedium,
-            color = Color(0xFF7D8EA4),
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
             fontWeight = FontWeight.Medium
         )
     }

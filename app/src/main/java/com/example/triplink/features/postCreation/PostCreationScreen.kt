@@ -26,7 +26,6 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
@@ -50,7 +49,6 @@ import com.example.triplink.core.localization.localizedShortLabel
 import com.example.triplink.domain.model.enums.Categoria
 import com.example.triplink.domain.model.enums.DiaSemana
 import com.example.triplink.domain.model.enums.RangoPrecios
-import com.example.triplink.ui.theme.PrincipalBlue
 import com.example.triplink.ui.theme.TextColors
 import com.example.triplink.ui.theme.TextTokens
 import kotlinx.coroutines.launch
@@ -160,10 +158,10 @@ fun PostCreationScreen(
                             .height(120.dp),
                         shape = RoundedCornerShape(12.dp),
                         colors = OutlinedTextFieldDefaults.colors(
-                            focusedContainerColor = Color(0xFFF5F5F5),
-                            unfocusedContainerColor = Color(0xFFF5F5F5),
-                            focusedBorderColor = Color(0xFFE0E0E0),
-                            unfocusedBorderColor = Color(0xFFE0E0E0)
+                            focusedContainerColor = MaterialTheme.colorScheme.surfaceVariant,
+                            unfocusedContainerColor = MaterialTheme.colorScheme.surfaceVariant,
+                            focusedBorderColor = MaterialTheme.colorScheme.outlineVariant,
+                            unfocusedBorderColor = MaterialTheme.colorScheme.outlineVariant
                         ),
                         supportingText = {
                             Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.CenterEnd) {
@@ -210,17 +208,17 @@ fun PostCreationScreen(
                                 },
                                 shape = RoundedCornerShape(12.dp),
                                 colors = OutlinedTextFieldDefaults.colors(
-                                    focusedContainerColor = Color(0xFFF5F5F5),
-                                    unfocusedContainerColor = Color(0xFFF5F5F5),
-                                    focusedBorderColor = if (viewModel.selectedCategory.error != null) Color.Red else Color(0xFFE0E0E0),
-                                    unfocusedBorderColor = if (viewModel.selectedCategory.error != null) Color.Red else Color(0xFFE0E0E0)
+                                    focusedContainerColor = MaterialTheme.colorScheme.surfaceVariant,
+                                    unfocusedContainerColor = MaterialTheme.colorScheme.surfaceVariant,
+                                    focusedBorderColor = if (viewModel.selectedCategory.error != null) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.outlineVariant,
+                                    unfocusedBorderColor = if (viewModel.selectedCategory.error != null) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.outlineVariant
                                 )
                             )
 
                             ExposedDropdownMenu(
                                 expanded = expanded,
                                 onDismissRequest = { expanded = false },
-                                modifier = Modifier.background(Color.White)
+                                modifier = Modifier.background(MaterialTheme.colorScheme.surface)
                             ) {
                                 viewModel.categories.forEach { category ->
                                     DropdownMenuItem(
@@ -238,7 +236,7 @@ fun PostCreationScreen(
                     if (viewModel.selectedCategory.error != null) {
                         Text(
                             text = viewModel.selectedCategory.error!!,
-                            color = Color.Red,
+                            color = MaterialTheme.colorScheme.error,
                             style = MaterialTheme.typography.bodySmall
                         )
                     }
@@ -268,12 +266,12 @@ fun PostCreationScreen(
                         Surface(
                             modifier = Modifier.size(60.dp),
                             shape = RoundedCornerShape(8.dp),
-                            color = PrincipalBlue
+                            color = MaterialTheme.colorScheme.primary
                         ) {
                             Icon(
                                 imageVector = Icons.Default.Add,
                                 contentDescription = stringResource(R.string.feature_post_creation_photos_add_content_description),
-                                tint = Color.White,
+                                tint = MaterialTheme.colorScheme.onPrimary,
                                 modifier = Modifier.padding(16.dp)
                             )
                         }
@@ -282,13 +280,13 @@ fun PostCreationScreen(
                             Surface(
                                 modifier = Modifier.size(60.dp),
                                 shape = RoundedCornerShape(8.dp),
-                                color = Color(0xFFF5F5F5),
+                                color = MaterialTheme.colorScheme.surfaceVariant,
                                 border = borderStroke()
                             ) {
                                 Icon(
                                     imageVector = Icons.Default.Image,
                                     contentDescription = null,
-                                    tint = Color.LightGray,
+                                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
                                     modifier = Modifier.padding(16.dp)
                                 )
                             }
@@ -320,21 +318,22 @@ fun PostCreationScreen(
                         modifier = Modifier
                             .fillMaxWidth()
                             .height(200.dp)
-                            .background(Color(0xFFD1E7D1), RoundedCornerShape(12.dp))
-                            .border(1.dp, Color(0xFFE0E0E0), RoundedCornerShape(12.dp))
+                            .background(MaterialTheme.colorScheme.secondaryContainer, RoundedCornerShape(12.dp))
+                            .border(1.dp, MaterialTheme.colorScheme.outlineVariant, RoundedCornerShape(12.dp))
                     ) {
+                        val mapGridColor = MaterialTheme.colorScheme.onSecondaryContainer.copy(alpha = 0.25f)
                         Canvas(modifier = Modifier.fillMaxSize()) {
                             val gridSpacing = 40.dp.toPx()
                             for (x in 0..size.width.toInt() step gridSpacing.toInt()) {
                                 drawLine(
-                                    Color.White.copy(alpha = 0.5f),
+                                    mapGridColor,
                                     start = androidx.compose.ui.geometry.Offset(x.toFloat(), 0f),
                                     end = androidx.compose.ui.geometry.Offset(x.toFloat(), size.height)
                                 )
                             }
                             for (y in 0..size.height.toInt() step gridSpacing.toInt()) {
                                 drawLine(
-                                    Color.White.copy(alpha = 0.5f),
+                                    mapGridColor,
                                     start = androidx.compose.ui.geometry.Offset(0f, y.toFloat()),
                                     end = androidx.compose.ui.geometry.Offset(size.width, y.toFloat())
                                 )
@@ -353,8 +352,8 @@ fun PostCreationScreen(
                         Button(
                             onClick = { /* Mark on map */ },
                             colors = ButtonDefaults.buttonColors(
-                                containerColor = Color.White,
-                                contentColor = PrincipalBlue
+                                containerColor = MaterialTheme.colorScheme.surface,
+                                contentColor = MaterialTheme.colorScheme.primary
                             ),
                             shape = RoundedCornerShape(24.dp),
                             elevation = ButtonDefaults.buttonElevation(4.dp),
@@ -374,15 +373,15 @@ fun PostCreationScreen(
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .background(Color(0xFFF5F5F5), RoundedCornerShape(24.dp))
-                            .border(1.dp, Color(0xFFE0E0E0), RoundedCornerShape(24.dp))
+                            .background(MaterialTheme.colorScheme.surfaceVariant, RoundedCornerShape(24.dp))
+                            .border(1.dp, MaterialTheme.colorScheme.outlineVariant, RoundedCornerShape(24.dp))
                             .padding(12.dp)
                     ) {
                         Row(verticalAlignment = Alignment.CenterVertically) {
                             Icon(
                                 imageVector = Icons.Default.LocationOn,
                                 contentDescription = null,
-                                tint = Color.LightGray,
+                                tint = MaterialTheme.colorScheme.onSurfaceVariant,
                                 modifier = Modifier.size(18.dp)
                             )
                             ClarifierSpacer(Modifier.width(8.dp))
@@ -409,14 +408,14 @@ fun PostCreationScreen(
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .background(Color(0xFFF8F9FA), RoundedCornerShape(12.dp))
-                            .border(1.dp, Color(0xFFE0E0E0), RoundedCornerShape(12.dp))
+                            .background(MaterialTheme.colorScheme.surfaceVariant, RoundedCornerShape(12.dp))
+                            .border(1.dp, MaterialTheme.colorScheme.outlineVariant, RoundedCornerShape(12.dp))
                             .padding(12.dp),
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
                         Row(verticalAlignment = Alignment.CenterVertically) {
-                            Icon(Icons.Default.AccessTime, contentDescription = null, tint = PrincipalBlue)
+                            Icon(Icons.Default.AccessTime, contentDescription = null, tint = MaterialTheme.colorScheme.primary)
                             ClarifierSpacer(Modifier.width(8.dp))
                             Text(
                                 text = stringResource(R.string.feature_post_creation_open_every_day),
@@ -427,10 +426,10 @@ fun PostCreationScreen(
                             checked = viewModel.isOpenEveryDay,
                             onCheckedChange = { viewModel.onOpenEveryDayChange(it) },
                             colors = SwitchDefaults.colors(
-                                checkedThumbColor = Color.White,
-                                checkedTrackColor = PrincipalBlue,
-                                uncheckedThumbColor = Color.White,
-                                uncheckedTrackColor = Color.LightGray
+                                checkedThumbColor = MaterialTheme.colorScheme.onPrimary,
+                                checkedTrackColor = MaterialTheme.colorScheme.primary,
+                                uncheckedThumbColor = MaterialTheme.colorScheme.surface,
+                                uncheckedTrackColor = MaterialTheme.colorScheme.outline
                             )
                         )
                     }
@@ -485,9 +484,9 @@ fun PostCreationScreen(
 
             // Advertencia (campos obligatorios)
             Surface(
-                color = Color(0xFFFFF9C4).copy(alpha = 0.5f),
+                color = MaterialTheme.colorScheme.tertiaryContainer.copy(alpha = 0.5f),
                 shape = RoundedCornerShape(12.dp),
-                border = androidx.compose.foundation.BorderStroke(1.dp, Color(0xFFFFD54F)),
+                border = androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.tertiary),
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Row(
@@ -498,7 +497,7 @@ fun PostCreationScreen(
                     Icon(
                         imageVector = Icons.Default.WarningAmber,
                         contentDescription = null,
-                        tint = Color(0xFFF57F17)
+                        tint = MaterialTheme.colorScheme.tertiary
                     )
                     Text(
                         text = buildAnnotatedString {
@@ -509,7 +508,7 @@ fun PostCreationScreen(
                             append(stringResource(R.string.feature_post_creation_required_fields_warning_body))
                         },
                         style = MaterialTheme.typography.bodySmall,
-                        color = Color(0xFF5D4037)
+                        color = MaterialTheme.colorScheme.onTertiaryContainer
                     )
                 }
             }
@@ -543,7 +542,7 @@ fun PostSuccessBottomSheet(
     ModalBottomSheet(
         onDismissRequest = onDismiss,
         sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true),
-        containerColor = Color.White,
+        containerColor = MaterialTheme.colorScheme.surface,
         shape = RoundedCornerShape(topStart = 28.dp, topEnd = 28.dp),
         dragHandle = {
             Box(
@@ -551,7 +550,7 @@ fun PostSuccessBottomSheet(
                     .padding(vertical = 12.dp)
                     .width(40.dp)
                     .height(4.dp)
-                    .background(Color(0xFFE2E8F0), CircleShape)
+                    .background(MaterialTheme.colorScheme.outlineVariant, CircleShape)
             )
         }
     ) {
@@ -564,7 +563,7 @@ fun PostSuccessBottomSheet(
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(PrincipalBlue)
+                    .background(MaterialTheme.colorScheme.primary)
                     .padding(vertical = 32.dp),
                 contentAlignment = Alignment.Center
             ) {
@@ -572,24 +571,24 @@ fun PostSuccessBottomSheet(
                     Surface(
                         modifier = Modifier.size(48.dp),
                         shape = CircleShape,
-                        color = Color.White.copy(alpha = 0.3f)
+                        color = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.3f)
                     ) {
                         Icon(
                             imageVector = Icons.Default.Check,
                             contentDescription = null,
-                            tint = Color.White,
+                            tint = MaterialTheme.colorScheme.onPrimary,
                             modifier = Modifier.padding(8.dp)
                         )
                     }
                     Spacer(modifier = Modifier.height(16.dp))
                     Text(
                                 text = stringResource(R.string.feature_post_creation_success_title),
-                        color = Color.White,
+                        color = MaterialTheme.colorScheme.onPrimary,
                                 style = TextTokens.sectionTitle()
                     )
                     Text(
                                 text = stringResource(R.string.feature_post_creation_success_subtitle),
-                        color = Color.White.copy(alpha = 0.9f),
+                        color = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.9f),
                                 style = TextTokens.inputText()
                     )
                 }
@@ -640,7 +639,7 @@ fun PostSuccessBottomSheet(
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(56.dp),
-                    colors = ButtonDefaults.buttonColors(containerColor = PrincipalBlue),
+                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary),
                     shape = RoundedCornerShape(16.dp)
                 ) {
                     Text(
@@ -655,10 +654,10 @@ fun PostSuccessBottomSheet(
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(56.dp),
-                    border = androidx.compose.foundation.BorderStroke(1.dp, PrincipalBlue.copy(alpha = 0.1f)),
+                    border = androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.primary.copy(alpha = 0.2f)),
                     colors = ButtonDefaults.outlinedButtonColors(
-                        contentColor = PrincipalBlue,
-                        containerColor = Color(0xFFF5F8FF)
+                        contentColor = MaterialTheme.colorScheme.primary,
+                        containerColor = MaterialTheme.colorScheme.surfaceVariant
                     ),
                     shape = RoundedCornerShape(16.dp)
                 ) {
@@ -695,15 +694,19 @@ fun StepRow(
                 modifier = Modifier.size(32.dp),
                 shape = CircleShape,
                 color = when (status) {
-                    StepStatus.COMPLETED -> Color(0xFF4CAF50)
-                    StepStatus.ACTIVE -> Color(0xFFFF9800)
-                    StepStatus.INACTIVE -> Color(0xFFE0E0E0)
+                    StepStatus.COMPLETED -> MaterialTheme.colorScheme.primary
+                    StepStatus.ACTIVE -> MaterialTheme.colorScheme.tertiary
+                    StepStatus.INACTIVE -> MaterialTheme.colorScheme.outlineVariant
                 }
             ) {
                 Icon(
                     imageVector = icon,
                     contentDescription = null,
-                    tint = Color.White,
+                    tint = when (status) {
+                        StepStatus.COMPLETED -> MaterialTheme.colorScheme.onPrimary
+                        StepStatus.ACTIVE -> MaterialTheme.colorScheme.onTertiary
+                        StepStatus.INACTIVE -> MaterialTheme.colorScheme.onSurfaceVariant
+                    },
                     modifier = Modifier.padding(6.dp)
                 )
             }
@@ -713,7 +716,10 @@ fun StepRow(
                     modifier = Modifier
                         .width(2.dp)
                         .height(16.dp)
-                        .background(if (status == StepStatus.COMPLETED) Color(0xFF4CAF50) else Color(0xFFE0E0E0))
+                        .background(
+                            if (status == StepStatus.COMPLETED) MaterialTheme.colorScheme.primary
+                            else MaterialTheme.colorScheme.outlineVariant
+                        )
                 )
             }
         }
@@ -730,7 +736,7 @@ fun StepRow(
             Text(
                 text = subtitle,
                 style = MaterialTheme.typography.bodySmall,
-                color = if (status == StepStatus.ACTIVE) Color(0xFFFF9800) else TextColors.Secondary
+                color = if (status == StepStatus.ACTIVE) MaterialTheme.colorScheme.tertiary else TextColors.Secondary
             )
         }
     }
@@ -747,8 +753,8 @@ fun DayScheduleRow(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .background(Color(0xFFF8F9FA), RoundedCornerShape(12.dp))
-            .border(1.dp, Color(0xFFE0E0E0), RoundedCornerShape(12.dp))
+            .background(MaterialTheme.colorScheme.surfaceVariant, RoundedCornerShape(12.dp))
+            .border(1.dp, MaterialTheme.colorScheme.outlineVariant, RoundedCornerShape(12.dp))
             .padding(horizontal = 12.dp, vertical = 8.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(8.dp)
@@ -757,7 +763,7 @@ fun DayScheduleRow(
             text = schedule.day.localizedShortLabel(),
             style = MaterialTheme.typography.bodyMedium,
             fontWeight = FontWeight.Bold,
-            color = PrincipalBlue,
+            color = MaterialTheme.colorScheme.primary,
             modifier = Modifier.width(35.dp)
         )
 
@@ -782,10 +788,10 @@ fun DayScheduleRow(
             onCheckedChange = onToggle,
             modifier = Modifier.scale(0.8f),
             colors = SwitchDefaults.colors(
-                checkedThumbColor = Color.White,
-                checkedTrackColor = PrincipalBlue,
-                uncheckedThumbColor = Color.White,
-                uncheckedTrackColor = Color.LightGray
+                checkedThumbColor = MaterialTheme.colorScheme.onPrimary,
+                checkedTrackColor = MaterialTheme.colorScheme.primary,
+                uncheckedThumbColor = MaterialTheme.colorScheme.surface,
+                uncheckedTrackColor = MaterialTheme.colorScheme.outline
             )
         )
     }
@@ -803,10 +809,10 @@ fun TimeInputBox(
             .width(80.dp)
             .height(36.dp)
             .background(
-                if (enabled) Color.White else Color(0xFFF5F5F5),
+                if (enabled) MaterialTheme.colorScheme.surface else MaterialTheme.colorScheme.surfaceVariant,
                 RoundedCornerShape(8.dp)
             )
-            .border(1.dp, Color(0xFFE0E0E0), RoundedCornerShape(8.dp))
+            .border(1.dp, MaterialTheme.colorScheme.outlineVariant, RoundedCornerShape(8.dp))
             .clickable(enabled = !enabled, onClick = onDisabledClick),
         contentAlignment = Alignment.Center
     ) {
@@ -821,7 +827,7 @@ fun TimeInputBox(
                 color = if (enabled) TextColors.Primary else TextColors.Secondary
             ),
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-            cursorBrush = SolidColor(PrincipalBlue),
+            cursorBrush = SolidColor(MaterialTheme.colorScheme.primary),
             decorationBox = { innerTextField ->
                 if (value.isEmpty()) {
                     Text(
@@ -848,10 +854,10 @@ fun PriceOption(icon: String, label: String, isSelected: Boolean, onClick: () ->
         Surface(
             modifier = Modifier.size(64.dp),
             shape = RoundedCornerShape(16.dp),
-            color = if (isSelected) PrincipalBlue.copy(alpha = 0.1f) else Color.White,
+            color = if (isSelected) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surface,
             border = androidx.compose.foundation.BorderStroke(
                 1.dp,
-                if (isSelected) PrincipalBlue else Color(0xFFE0E0E0)
+                if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.outlineVariant
             )
         ) {
             Box(contentAlignment = Alignment.Center) {
@@ -859,14 +865,14 @@ fun PriceOption(icon: String, label: String, isSelected: Boolean, onClick: () ->
                     text = icon,
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold,
-                    color = if (isSelected) PrincipalBlue else Color.Black
+                    color = if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface
                 )
             }
         }
         Text(
             text = label,
             style = MaterialTheme.typography.labelMedium,
-            color = if (isSelected) PrincipalBlue else Color.Gray
+            color = if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant
         )
     }
 }
@@ -879,7 +885,7 @@ fun PostCreationCard(content: @Composable () -> Unit) {
     Surface(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(16.dp),
-        color = Color.White,
+        color = MaterialTheme.colorScheme.surface,
         shadowElevation = 2.dp
     ) {
         Box(modifier = Modifier.padding(16.dp)) {
@@ -889,11 +895,12 @@ fun PostCreationCard(content: @Composable () -> Unit) {
 }
 
 @Composable
-fun borderStroke() = androidx.compose.foundation.BorderStroke(1.dp, Color(0xFFE0E0E0))
+fun borderStroke() = androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant)
 
+@Composable
 fun buildRequiredLabel(text: String) = buildAnnotatedString {
     append(text)
-    withStyle(style = SpanStyle(color = Color.Red)) {
+    withStyle(style = SpanStyle(color = MaterialTheme.colorScheme.error)) {
         append(" *")
     }
 }

@@ -18,8 +18,6 @@ import com.example.triplink.core.localization.localizedLabel
 import com.example.triplink.domain.model.enums.Categoria
 import com.example.triplink.domain.model.enums.RangoPrecios
 import com.example.triplink.domain.model.enums.UbicacionFiltro
-import com.example.triplink.ui.theme.DarkGray
-import com.example.triplink.ui.theme.PrincipalBlue
 import com.example.triplink.ui.theme.TextTokens
 
 @OptIn(ExperimentalLayoutApi::class)
@@ -56,7 +54,7 @@ fun FiltersScreen(
                 )
             }
 
-            item { HorizontalDivider(color = Color(0xFFEEEEEE)) }
+            item { HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant) }
 
             item {
                 FilterSection(
@@ -75,7 +73,7 @@ fun FiltersScreen(
                 )
             }
 
-            item { HorizontalDivider(color = Color(0xFFEEEEEE)) }
+            item { HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant) }
 
             item {
                 FilterSection(
@@ -94,7 +92,7 @@ fun FiltersScreen(
                 )
             }
 
-            item { HorizontalDivider(color = Color(0xFFEEEEEE)) }
+            item { HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant) }
 
             item {
                 FilterSection(
@@ -124,7 +122,7 @@ fun <T> FilterSection(
         Text(
             text = title,
             style = TextTokens.sectionTitle(),
-            color = Color.Black
+            color = MaterialTheme.colorScheme.onSurface
         )
         Spacer(modifier = Modifier.height(16.dp))
         FlowRow(
@@ -155,15 +153,15 @@ fun FilterChipItem(
         shape = RoundedCornerShape(24.dp),
         border = BorderStroke(
             width = 1.dp,
-            color = if (isSelected) PrincipalBlue else Color(0xFFD1D5DB)
+            color = if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.outlineVariant
         ),
-        color = if (isSelected) PrincipalBlue.copy(alpha = 0.1f) else Color.Transparent
+        color = if (isSelected) MaterialTheme.colorScheme.secondaryContainer else Color.Transparent
     ) {
         Text(
             text = text,
             modifier = Modifier.padding(horizontal = 16.dp, vertical = 10.dp),
             style = TextTokens.inputText().copy(fontWeight = FontWeight.Medium),
-            color = if (isSelected) PrincipalBlue else DarkGray
+            color = if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant
         )
     }
 }

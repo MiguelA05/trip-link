@@ -28,7 +28,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
@@ -36,7 +35,6 @@ import coil3.request.crossfade
 import com.example.triplink.R
 import com.example.triplink.core.localization.localizedLabel
 import com.example.triplink.domain.model.PuntoInteres
-import com.example.triplink.ui.theme.PrincipalOrange
 import com.example.triplink.ui.theme.TextColors
 import com.example.triplink.ui.theme.TextTokens
 
@@ -76,13 +74,13 @@ fun ExploreMapPublicationCard(
                         .align(Alignment.TopStart)
                         .padding(10.dp),
                     shape = RoundedCornerShape(999.dp),
-                    color = Color(0xFFCDE8CF)
+                    color = MaterialTheme.colorScheme.secondaryContainer
                 ) {
                     Text(
                         text = publication.categoria.localizedLabel(),
                         modifier = Modifier.padding(horizontal = 10.dp, vertical = 5.dp),
                         style = TextTokens.chipLabel(),
-                        color = Color(0xFF3B6E3E),
+                        color = MaterialTheme.colorScheme.onSecondaryContainer,
                     )
                 }
 
@@ -93,7 +91,10 @@ fun ExploreMapPublicationCard(
                         .height(56.dp)
                         .background(
                             Brush.verticalGradient(
-                                listOf(Color.Transparent, Color.Black.copy(alpha = 0.45f))
+                                listOf(
+                                    Color.Transparent,
+                                    MaterialTheme.colorScheme.scrim.copy(alpha = 0.45f)
+                                )
                             )
                         )
                 )
@@ -112,7 +113,7 @@ fun ExploreMapPublicationCard(
 
                 Surface(
                     shape = RoundedCornerShape(999.dp),
-                    color = Color(0xFFF5EBCD)
+                    color = MaterialTheme.colorScheme.tertiaryContainer
                 ) {
                     Row(
                         modifier = Modifier.padding(horizontal = 8.dp, vertical = 5.dp),
@@ -122,7 +123,7 @@ fun ExploreMapPublicationCard(
                         Icon(
                             imageVector = Icons.Default.Star,
                             contentDescription = null,
-                            tint = PrincipalOrange,
+                            tint = MaterialTheme.colorScheme.tertiary,
                             modifier = Modifier.size(15.dp)
                         )
                         Text(
@@ -145,7 +146,7 @@ fun ExploreMapPublicationCard(
                 Icon(
                     imageVector = Icons.Outlined.LocationOn,
                     contentDescription = null,
-                    tint = Color(0xFF9BA5B3),
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
                     modifier = Modifier.size(14.dp)
                 )
                 Text(
@@ -163,7 +164,7 @@ fun ExploreMapPublicationCard(
                     Icon(
                         imageVector = Icons.Outlined.AccessTime,
                         contentDescription = null,
-                        tint = Color(0xFF9BA5B3),
+                        tint = MaterialTheme.colorScheme.onSurfaceVariant,
                         modifier = Modifier.size(14.dp)
                     )
                     Text(

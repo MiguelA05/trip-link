@@ -32,8 +32,6 @@ import com.example.triplink.core.components.DestructiveConfirmDialog
 import com.example.triplink.core.components.GeneralButton
 import com.example.triplink.core.components.GeneralTopBar
 import com.example.triplink.core.utils.RequestResult
-import com.example.triplink.ui.theme.PrincipalBlue
-import com.example.triplink.ui.theme.PrincipalRed
 import com.example.triplink.ui.theme.TextColors
 import com.example.triplink.ui.theme.TextTokens
 
@@ -88,7 +86,7 @@ fun AccountEditScreen(
                 showBackButton = true
             )
         },
-        containerColor = Color(0xFFF0F2F5)
+        containerColor = MaterialTheme.colorScheme.background
     ) { paddingValues ->
         Column(
             modifier = Modifier
@@ -104,15 +102,15 @@ fun AccountEditScreen(
             Box(
                 modifier = Modifier
                     .size(100.dp)
-                    .background(Color(0xFFE8EEF7), CircleShape)
-                    .border(2.dp, Color(0xFFD0DCF0), CircleShape),
+                    .background(MaterialTheme.colorScheme.primaryContainer, CircleShape)
+                    .border(2.dp, MaterialTheme.colorScheme.outlineVariant, CircleShape),
                 contentAlignment = Alignment.Center
             ) {
                 Text(
                     text = accountEditViewModel.getUserInitials(),
                     style = MaterialTheme.typography.displaySmall,
                     fontWeight = FontWeight.Bold,
-                    color = Color(0xFF7B9BDB),
+                    color = MaterialTheme.colorScheme.onPrimaryContainer,
                     textAlign = TextAlign.Center
                 )
             }
@@ -192,7 +190,7 @@ fun AccountEditScreen(
                     Checkbox(
                         checked = accountEditViewModel.addExactLocation,
                         onCheckedChange = { accountEditViewModel.addExactLocation = it },
-                        colors = CheckboxDefaults.colors(checkedColor = PrincipalBlue)
+                        colors = CheckboxDefaults.colors(checkedColor = MaterialTheme.colorScheme.primary)
                     )
                     Text(
                         text = stringResource(R.string.feature_account_edit_add_exact_location),
@@ -207,8 +205,8 @@ fun AccountEditScreen(
                         modifier = Modifier
                             .fillMaxWidth()
                             .height(150.dp)
-                            .background(Color(0xFFF5F5F5), RoundedCornerShape(12.dp))
-                            .border(1.dp, Color(0xFFE0E0E0), RoundedCornerShape(12.dp)),
+                            .background(MaterialTheme.colorScheme.surfaceVariant, RoundedCornerShape(12.dp))
+                            .border(1.dp, MaterialTheme.colorScheme.outlineVariant, RoundedCornerShape(12.dp)),
                         contentAlignment = Alignment.Center
                     ) {
                         Column(
@@ -218,13 +216,13 @@ fun AccountEditScreen(
                             Icon(
                                 imageVector = Icons.Default.LocationOn,
                                 contentDescription = stringResource(R.string.feature_account_edit_map_placeholder_content_description),
-                                tint = Color.LightGray,
+                                tint = MaterialTheme.colorScheme.onSurfaceVariant,
                                 modifier = Modifier.size(48.dp)
                             )
                             Spacer(modifier = Modifier.height(8.dp))
                             Text(
                                 text = stringResource(R.string.feature_account_edit_map_placeholder_label),
-                                color = Color.LightGray
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
                             )
                         }
                     }
@@ -256,30 +254,30 @@ fun AccountEditScreen(
                         Icon(
                             imageVector = Icons.Outlined.Email,
                             contentDescription = null,
-                            tint = Color(0xFFB1B4C1)
+                            tint = MaterialTheme.colorScheme.onSurfaceVariant
                         )
                     },
                     trailingIcon = {
                         Icon(
                             imageVector = Icons.Outlined.Lock,
                             contentDescription = null,
-                            tint = Color(0xFFB1B4C1)
+                            tint = MaterialTheme.colorScheme.onSurfaceVariant
                         )
                     },
                     textStyle = LocalTextStyle.current.copy(
-                        color = Color(0xFFA0A3B1),
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
                         fontSize = TextTokens.inputText().fontSize
                     ),
                     shape = RoundedCornerShape(18.dp),
                     colors = OutlinedTextFieldDefaults.colors(
-                        focusedContainerColor = Color(0xFFEEF0F5),
-                        unfocusedContainerColor = Color(0xFFEEF0F5),
-                        disabledContainerColor = Color(0xFFEEF0F5),
+                        focusedContainerColor = MaterialTheme.colorScheme.surfaceVariant,
+                        unfocusedContainerColor = MaterialTheme.colorScheme.surfaceVariant,
+                        disabledContainerColor = MaterialTheme.colorScheme.surfaceVariant,
                         focusedBorderColor = Color.Transparent,
                         unfocusedBorderColor = Color.Transparent,
                         disabledBorderColor = Color.Transparent,
-                        focusedTextColor = Color(0xFFA0A3B1),
-                        unfocusedTextColor = Color(0xFFA0A3B1)
+                        focusedTextColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                        unfocusedTextColor = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 )
 
@@ -288,7 +286,7 @@ fun AccountEditScreen(
                 Text(
                     text = stringResource(R.string.feature_account_edit_email_helper),
                     style = MaterialTheme.typography.bodyMedium,
-                    color = Color(0xFF9C9EA5),
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
                     modifier = Modifier.fillMaxWidth(),
                     textAlign = TextAlign.Start
                 )
@@ -314,10 +312,10 @@ fun AccountEditScreen(
                         .fillMaxWidth()
                         .height(76.dp),
                     shape = RoundedCornerShape(18.dp),
-                    border = BorderStroke(1.dp, Color(0xFFBBD5FA)),
+                    border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
                     colors = ButtonDefaults.outlinedButtonColors(
-                        containerColor = Color(0xFFEAF1FF),
-                        contentColor = PrincipalBlue
+                        containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                        contentColor = MaterialTheme.colorScheme.onSecondaryContainer
                     )
                 ) {
                     Text(
@@ -331,7 +329,7 @@ fun AccountEditScreen(
                 Text(
                     text = stringResource(R.string.feature_account_edit_password_helper),
                     style = MaterialTheme.typography.bodyMedium,
-                    color = Color(0xFF9C9EA5),
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
                     modifier = Modifier.fillMaxWidth(),
                     textAlign = TextAlign.Start
                 )
@@ -360,7 +358,7 @@ fun AccountEditScreen(
                 },
                 colors = ButtonDefaults.buttonColors(
                     containerColor = Color.Transparent,
-                    contentColor = PrincipalRed
+                    contentColor = MaterialTheme.colorScheme.error
                 ),
                 modifier = Modifier
                     .fillMaxWidth()
@@ -401,8 +399,8 @@ private fun AccountSectionContainer(
     Card(
         modifier = modifier.fillMaxWidth(),
         shape = RoundedCornerShape(28.dp),
-        colors = CardDefaults.cardColors(containerColor = Color(0xFFF7F8FA)),
-        border = BorderStroke(1.dp, Color(0xFFE5EAF1)),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
         elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
     ) {
         Column(
@@ -413,7 +411,7 @@ private fun AccountSectionContainer(
                 text = title,
                 fontWeight = FontWeight.SemiBold,
                 style = MaterialTheme.typography.labelLarge,
-                color = PrincipalBlue,
+                color = MaterialTheme.colorScheme.primary,
                 modifier = Modifier.fillMaxWidth(),
                 textAlign = TextAlign.Start
             )
@@ -438,8 +436,8 @@ fun SelectableDropdown(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .background(Color(0xFFF5F5F5), RoundedCornerShape(24.dp))
-                .border(1.dp, Color(0xFFE0E0E0), RoundedCornerShape(24.dp))
+                .background(MaterialTheme.colorScheme.surfaceVariant, RoundedCornerShape(24.dp))
+                .border(1.dp, MaterialTheme.colorScheme.outlineVariant, RoundedCornerShape(24.dp))
                 .clickable { expanded = true }
                 .padding(horizontal = 16.dp, vertical = 12.dp),
             verticalAlignment = Alignment.CenterVertically,
@@ -447,14 +445,14 @@ fun SelectableDropdown(
         ) {
             Text(
                 text = selectedValue.ifEmpty { label },
-                color = if (selectedValue.isEmpty()) Color(0xFF9E9E9E) else Color.Black,
+                color = if (selectedValue.isEmpty()) MaterialTheme.colorScheme.onSurfaceVariant else MaterialTheme.colorScheme.onSurface,
                 style = TextTokens.inputText(),
                 maxLines = 1
             )
             Icon(
                 imageVector = Icons.Default.KeyboardArrowDown,
                 contentDescription = null,
-                tint = PrincipalBlue,
+                tint = MaterialTheme.colorScheme.primary,
                 modifier = Modifier.size(20.dp)
             )
         }
@@ -462,7 +460,7 @@ fun SelectableDropdown(
         DropdownMenu(
             expanded = expanded,
             onDismissRequest = { expanded = false },
-            modifier = Modifier.background(Color.White)
+            modifier = Modifier.background(MaterialTheme.colorScheme.surface)
         ) {
             options.forEach { option ->
                 DropdownMenuItem(

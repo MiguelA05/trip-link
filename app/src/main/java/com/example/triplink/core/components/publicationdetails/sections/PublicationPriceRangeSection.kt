@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -17,8 +18,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.res.stringResource
 import com.example.triplink.R
-import com.example.triplink.ui.theme.PrincipalBlue
-import com.example.triplink.ui.theme.PrincipalGray
 import com.example.triplink.ui.theme.TextTokens
 
 @Composable
@@ -43,13 +42,13 @@ fun PublicationPriceRangeSection(
         Text(
             text = stringResource(R.string.component_publication_price_range_title),
             style = TextTokens.sectionTitle(),
-            color = Color(0xFF121826)
+            color = MaterialTheme.colorScheme.onSurface
         )
 
         Surface(
             shape = RoundedCornerShape(16.dp),
-            border = androidx.compose.foundation.BorderStroke(1.dp, Color(0xFFD1D5DB)),
-            color = Color.White,
+            border = androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
+            color = MaterialTheme.colorScheme.surface,
             modifier = Modifier.fillMaxWidth()
         ) {
             Row(
@@ -67,12 +66,12 @@ fun PublicationPriceRangeSection(
                 Column(horizontalAlignment = Alignment.Start) {
                     Text(
                         text = selectedLevel,
-                        color = PrincipalBlue,
+                        color = MaterialTheme.colorScheme.primary,
                         style = TextTokens.cardTitle()
                     )
                     Text(
                         text = stringResource(R.string.component_publication_price_range_estimated),
-                        color = PrincipalGray,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
                         style = TextTokens.helperText()
                     )
                 }
@@ -85,13 +84,13 @@ fun PublicationPriceRangeSection(
 private fun PriceTag(text: String, isSelected: Boolean) {
     Surface(
         shape = RoundedCornerShape(12.dp),
-        color = if (isSelected) PrincipalBlue else Color(0xFFF1F5F9),
+        color = if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surfaceVariant,
         modifier = Modifier.size(width = 50.dp, height = 45.dp)
     ) {
         Box(contentAlignment = Alignment.Center) {
             Text(
                 text = text,
-                color = if (isSelected) Color.White else PrincipalGray,
+                color = if (isSelected) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurfaceVariant,
                 style = TextTokens.cardTitle()
             )
         }

@@ -1,6 +1,7 @@
 package com.example.triplink.core.components
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -25,7 +26,6 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
@@ -48,6 +48,11 @@ fun PublicationCard(
     onCommentsClick: () -> Unit = {}
 ) {
     var isFavorite by remember(puntoInteres.id) { mutableStateOf(false) }
+    val cardBorderColor = if (isSystemInDarkTheme()) {
+        MaterialTheme.colorScheme.outline.copy(alpha = 0.92f)
+    } else {
+        MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.88f)
+    }
 
     Card(
         modifier = modifier
@@ -56,7 +61,8 @@ fun PublicationCard(
         // Toda la tarjeta abre detalle; los botones internos mantienen su accion propia.
         onClick = { onCardClick?.invoke() },
         enabled = onCardClick != null,
-        colors = CardDefaults.cardColors(containerColor = Color.White),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+        border = androidx.compose.foundation.BorderStroke(1.25.dp, cardBorderColor),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
         shape = RoundedCornerShape(24.dp)
     ) {
@@ -73,7 +79,7 @@ fun PublicationCard(
                     modifier = Modifier
                         .size(48.dp)
                         .clip(CircleShape)
-                        .background(Color(0xFFD1E4FF)),
+                        .background(MaterialTheme.colorScheme.primaryContainer),
                     contentAlignment = Alignment.Center
                 ) {
                     Text(
@@ -103,13 +109,13 @@ fun PublicationCard(
 
                 // Distance Badge
                 Surface(
-                    color = Color(0xFFEEF4FF),
+                    color = MaterialTheme.colorScheme.secondaryContainer,
                     shape = RoundedCornerShape(16.dp)
                 ) {
                     Text(
                         text = stringResource(R.string.component_publication_card_near_you),
                         modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp),
-                        color = TextColors.Accent,
+                        color = MaterialTheme.colorScheme.onSecondaryContainer,
                         style = TextTokens.chipLabel()
                     )
                 }
@@ -139,13 +145,13 @@ fun PublicationCard(
                     modifier = Modifier
                         .padding(12.dp)
                         .align(Alignment.TopStart),
-                    color = Color(0xFF388E3C),
+                    color = MaterialTheme.colorScheme.secondary,
                     shape = RoundedCornerShape(8.dp)
                 ) {
                     Text(
                         text = puntoInteres.categoria.localizedLabel(),
                         modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp),
-                        color = TextColors.OnImage,
+                        color = MaterialTheme.colorScheme.onSecondary,
                         style = TextTokens.chipLabel()
                     )
                 }
@@ -155,7 +161,7 @@ fun PublicationCard(
                     modifier = Modifier
                         .padding(12.dp)
                         .align(Alignment.TopEnd),
-                    color = Color.White,
+                    color = MaterialTheme.colorScheme.surface,
                     shape = RoundedCornerShape(8.dp)
                 ) {
                     Row(
@@ -166,7 +172,7 @@ fun PublicationCard(
                         Icon(
                             imageVector = Icons.Default.Star,
                             contentDescription = null,
-                            tint = Color(0xFFFFC107),
+                            tint = MaterialTheme.colorScheme.tertiary,
                             modifier = Modifier.size(16.dp)
                         )
                         Text(
@@ -184,7 +190,10 @@ fun PublicationCard(
                         .align(Alignment.BottomStart)
                         .background(
                             Brush.verticalGradient(
-                                colors = listOf(Color.Transparent, Color.Black.copy(alpha = 0.7f))
+                                colors = listOf(
+                                    Color.Transparent,
+                                    MaterialTheme.colorScheme.scrim.copy(alpha = 0.55f)
+                                )
                             )
                         )
                         .padding(16.dp)
@@ -200,7 +209,7 @@ fun PublicationCard(
                             Icon(
                                 imageVector = Icons.Outlined.LocationOn,
                                 contentDescription = null,
-                                tint = Color.White,
+                                tint = MaterialTheme.colorScheme.onPrimary,
                                 modifier = Modifier.size(14.dp)
                             )
                             Spacer(modifier = Modifier.width(4.dp))
@@ -233,7 +242,7 @@ fun PublicationCard(
                                 contentDescription = stringResource(
                                     R.string.component_publication_card_comments_content_description
                                 ),
-                                tint = Color.Gray,
+                                tint = MaterialTheme.colorScheme.onSurfaceVariant,
                                 modifier = Modifier.size(24.dp)
                             )
                         }
@@ -258,7 +267,7 @@ fun PublicationCard(
                                 contentDescription = stringResource(
                                     R.string.component_publication_card_add_to_favorites_content_description
                                 ),
-                                tint = if (isFavorite) Color(0xFFE53935) else Color.Gray,
+                                tint = if (isFavorite) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onSurfaceVariant,
                                 modifier = Modifier.size(24.dp)
                             )
                         }

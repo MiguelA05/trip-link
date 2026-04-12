@@ -37,7 +37,6 @@ import com.example.triplink.core.components.common.CategoryChips
 import com.example.triplink.domain.model.enums.moderator.DecisionModerador
 import com.example.triplink.domain.model.enums.moderator.ModerationFilter
 import com.example.triplink.domain.model.moderator.ModerationPublication
-import com.example.triplink.ui.theme.PrincipalBlue
 import kotlinx.coroutines.launch
 import androidx.compose.runtime.rememberCoroutineScope
 
@@ -85,7 +84,7 @@ fun ModerationScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(0xFFF4F5F7))
+            .background(MaterialTheme.colorScheme.background)
             .padding(contentPadding)
             .statusBarsPadding()
             .padding(horizontal = 14.dp, vertical = 12.dp),
@@ -105,18 +104,18 @@ fun ModerationScreen(
                 Text(
                     text = stringResource(R.string.feature_admin_moderation_subtitle),
                     style = MaterialTheme.typography.bodyMedium,
-                    color = Color(0xFF97A0AF)
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
 
             Surface(
                 shape = RoundedCornerShape(999.dp),
-                color = Color(0xFFE8F2FF)
+                color = MaterialTheme.colorScheme.secondaryContainer
             ) {
                 Text(
                     text = stringResource(R.string.feature_admin_moderation_badge),
                     modifier = Modifier.padding(horizontal = 12.dp, vertical = 7.dp),
-                    color = PrincipalBlue,
+                    color = MaterialTheme.colorScheme.onSecondaryContainer,
                     style = MaterialTheme.typography.labelLarge,
                     fontWeight = FontWeight.Bold
                 )
@@ -130,19 +129,19 @@ fun ModerationScreen(
             StatItem(
                 value = viewModel.pendingCount.toString(),
                 label = stringResource(R.string.feature_admin_moderation_filter_pending),
-                color = Color(0xFFF58C1E),
+                color = MaterialTheme.colorScheme.tertiary,
                 modifier = Modifier.weight(1f)
             )
             StatItem(
                 value = viewModel.verifiedCount.toString(),
                 label = stringResource(R.string.feature_admin_moderation_filter_verified),
-                color = Color(0xFF3AA454),
+                color = MaterialTheme.colorScheme.primary,
                 modifier = Modifier.weight(1f)
             )
             StatItem(
                 value = viewModel.rejectedCount.toString(),
                 label = stringResource(R.string.feature_admin_moderation_filter_rejected),
-                color = Color(0xFFE24A4A),
+                color = MaterialTheme.colorScheme.error,
                 modifier = Modifier.weight(1f)
             )
         }
@@ -181,14 +180,14 @@ fun ModerationScreen(
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(top = 8.dp),
-                        color = Color(0xFFF0F2F7),
+                        color = MaterialTheme.colorScheme.surfaceVariant,
                         shape = RoundedCornerShape(18.dp)
                     ) {
                         Text(
                             text = stringResource(R.string.feature_admin_moderation_empty_state),
                             modifier = Modifier.padding(20.dp),
                             style = MaterialTheme.typography.bodyLarge,
-                            color = Color(0xFF7C889B)
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
                     }
                 }

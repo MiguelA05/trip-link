@@ -16,6 +16,7 @@ import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
@@ -43,7 +44,6 @@ import com.example.triplink.core.components.RatingSummaryCard
 import com.example.triplink.core.navigation.SessionState
 import com.example.triplink.core.navigation.SessionViewModel
 import com.example.triplink.core.utils.RequestResult
-import com.example.triplink.ui.theme.PrincipalRed
 
 @Composable
 fun CommentsScreen(
@@ -73,7 +73,7 @@ fun CommentsScreen(
 
 	Scaffold(
 		modifier = Modifier.fillMaxSize(),
-		containerColor = Color(0xFFF2F4F8),
+		containerColor = MaterialTheme.colorScheme.background,
 		snackbarHost = { SnackbarHost(snackbarHostState) },
 		topBar = {
 			GeneralTopBar(
@@ -85,7 +85,7 @@ fun CommentsScreen(
 		LazyColumn(
 			modifier = Modifier
 				.fillMaxSize()
-				.background(Color(0xFFF2F4F8))
+				.background(MaterialTheme.colorScheme.background)
 				.padding(paddingValues),
 			contentPadding = PaddingValues(horizontal = 16.dp, vertical = 14.dp),
 			verticalArrangement = Arrangement.spacedBy(14.dp)
@@ -102,7 +102,7 @@ fun CommentsScreen(
 				Text(
 					text = stringResource(R.string.feature_comments_total_reviews, uiState.totalReviews),
 					modifier = Modifier.fillMaxWidth(),
-					color = Color(0xFF63758E),
+					color = MaterialTheme.colorScheme.onSurfaceVariant,
 					fontWeight = FontWeight.SemiBold
 				)
 			}
@@ -119,17 +119,17 @@ fun CommentsScreen(
 								.padding(top = 12.dp, end = 12.dp)
 								.size(34.dp),
 							shape = CircleShape,
-							border = BorderStroke(1.dp, Color(0xFFF6C6CC)),
+							border = BorderStroke(1.dp, MaterialTheme.colorScheme.error.copy(alpha = 0.35f)),
 							colors = ButtonDefaults.outlinedButtonColors(
-								containerColor = Color(0xFFFFEBEE),
-								contentColor = PrincipalRed
+								containerColor = MaterialTheme.colorScheme.errorContainer,
+								contentColor = MaterialTheme.colorScheme.onErrorContainer
 							),
 							contentPadding = PaddingValues(0.dp)
 						) {
 							Icon(
 								imageVector = Icons.Outlined.Delete,
 								contentDescription = stringResource(R.string.feature_comments_delete_content_description),
-								tint = PrincipalRed,
+											tint = MaterialTheme.colorScheme.onErrorContainer,
 								modifier = Modifier.size(18.dp)
 							)
 						}

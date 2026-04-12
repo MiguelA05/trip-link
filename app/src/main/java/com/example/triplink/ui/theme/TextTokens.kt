@@ -97,11 +97,20 @@ object TextTokens {
 }
 
 object TextColors {
-    val Primary: Color = PrincipalBlack
-    val Secondary: Color = DarkGray
-    val Accent: Color = PrincipalBlue
-    val OnImage: Color = PrincipalWhite
-    val Muted: Color = PrincipalGray
+    val Primary: Color
+        @Composable get() = MaterialTheme.colorScheme.onSurface
+
+    val Secondary: Color
+        @Composable get() = MaterialTheme.colorScheme.onSurfaceVariant
+
+    val Accent: Color
+        @Composable get() = MaterialTheme.colorScheme.primary
+
+    val OnImage: Color
+        @Composable get() = MaterialTheme.colorScheme.onPrimary
+
+    val Muted: Color
+        @Composable get() = MaterialTheme.colorScheme.outline
 }
 
 

@@ -28,7 +28,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -36,16 +35,24 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import com.example.triplink.R
 import com.example.triplink.features.badges.Badge
+import com.example.triplink.features.badges.BadgeColorRole
 
 @Composable
 fun BadgeDetailModal(badge: Badge, onDismiss: () -> Unit) {
+    val badgeColor = when (badge.colorRole) {
+        BadgeColorRole.PRIMARY -> MaterialTheme.colorScheme.primary
+        BadgeColorRole.SECONDARY -> MaterialTheme.colorScheme.secondary
+        BadgeColorRole.TERTIARY -> MaterialTheme.colorScheme.tertiary
+        BadgeColorRole.ERROR -> MaterialTheme.colorScheme.error
+    }
+
     Dialog(onDismissRequest = onDismiss) {
         Surface(
             modifier = Modifier
                 .fillMaxWidth()
                 .wrapContentHeight(),
             shape = RoundedCornerShape(28.dp),
-            color = Color.White
+            color = MaterialTheme.colorScheme.surface
         ) {
             Column(
                 modifier = Modifier
@@ -59,12 +66,12 @@ fun BadgeDetailModal(badge: Badge, onDismiss: () -> Unit) {
                         onClick = onDismiss,
                         modifier = Modifier
                             .size(32.dp)
-                            .background(Color(0xFFF5F5F5), CircleShape)
+                            .background(MaterialTheme.colorScheme.surfaceVariant, CircleShape)
                     ) {
                         Icon(
                             imageVector = Icons.Default.Close,
                             contentDescription = stringResource(R.string.component_general_alert_dialog_close_content_description),
-                            tint = Color.Gray,
+                            tint = MaterialTheme.colorScheme.onSurfaceVariant,
                             modifier = Modifier.size(18.dp)
                         )
                     }
@@ -74,31 +81,31 @@ fun BadgeDetailModal(badge: Badge, onDismiss: () -> Unit) {
                 Box(
                     modifier = Modifier
                         .size(140.dp)
-                        .background(Color.White, CircleShape)
+                        .background(MaterialTheme.colorScheme.surface, CircleShape)
                         .shadow(0.dp, CircleShape)
-                        .background(Color.White, CircleShape)
+                        .background(MaterialTheme.colorScheme.surface, CircleShape)
                         .padding(4.dp)
                 ) {
                     Box(
                         modifier = Modifier
                             .fillMaxSize()
-                            .background(Color.White, CircleShape)
+                            .background(MaterialTheme.colorScheme.surface, CircleShape)
                             .padding(8.dp)
-                            .background(Color.Transparent, CircleShape)
+                            .background(MaterialTheme.colorScheme.surface.copy(alpha = 0f), CircleShape)
                             .align(Alignment.Center),
                         contentAlignment = Alignment.Center
                     ) {
                         Surface(
                             modifier = Modifier.fillMaxSize(),
                             shape = CircleShape,
-                            color = Color.White,
-                            border = androidx.compose.foundation.BorderStroke(4.dp, badge.color)
+                            color = MaterialTheme.colorScheme.surface,
+                            border = androidx.compose.foundation.BorderStroke(4.dp, badgeColor)
                         ) {
                             Box(contentAlignment = Alignment.Center) {
                                 Icon(
                                     imageVector = badge.icon,
                                     contentDescription = null,
-                                    tint = badge.color,
+                                    tint = badgeColor,
                                     modifier = Modifier.size(64.dp)
                                 )
                             }
@@ -110,9 +117,9 @@ fun BadgeDetailModal(badge: Badge, onDismiss: () -> Unit) {
 
                 // Tag
                 Surface(
-                    color = badge.color.copy(alpha = 0.08f),
+                    color = badgeColor.copy(alpha = 0.12f),
                     shape = RoundedCornerShape(12.dp),
-                    border = androidx.compose.foundation.BorderStroke(1.dp, badge.color.copy(alpha = 0.2f))
+                    border = androidx.compose.foundation.BorderStroke(1.dp, badgeColor.copy(alpha = 0.3f))
                 ) {
                     Row(
                         modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
@@ -121,7 +128,7 @@ fun BadgeDetailModal(badge: Badge, onDismiss: () -> Unit) {
                         Icon(
                             imageVector = Icons.Default.MilitaryTech,
                             contentDescription = null,
-                            tint = badge.color,
+                            tint = badgeColor,
                             modifier = Modifier.size(18.dp)
                         )
                         Spacer(modifier = Modifier.width(8.dp))
@@ -129,7 +136,7 @@ fun BadgeDetailModal(badge: Badge, onDismiss: () -> Unit) {
                             text = stringResource(R.string.component_badge_detail_modal_unlocked_label),
                             style = MaterialTheme.typography.labelLarge,
                             fontWeight = FontWeight.Bold,
-                            color = badge.color
+                            color = badgeColor
                         )
                     }
                 }
@@ -140,7 +147,7 @@ fun BadgeDetailModal(badge: Badge, onDismiss: () -> Unit) {
                     text = badge.name,
                     style = MaterialTheme.typography.headlineMedium.copy(
                         fontWeight = FontWeight.ExtraBold,
-                        color = Color(0xFF1565C0)
+                        color = MaterialTheme.colorScheme.primary
                     ),
                     textAlign = TextAlign.Center
                 )
@@ -149,14 +156,14 @@ fun BadgeDetailModal(badge: Badge, onDismiss: () -> Unit) {
 
                 // Category Tag
                 Surface(
-                    color = Color(0xFFF5F5F5),
+                    color = MaterialTheme.colorScheme.surfaceVariant,
                     shape = RoundedCornerShape(8.dp)
                 ) {
                     Text(
                         text = badge.category,
                         modifier = Modifier.padding(horizontal = 12.dp, vertical = 4.dp),
                         style = MaterialTheme.typography.labelMedium,
-                        color = Color.Gray
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }
 
@@ -166,7 +173,7 @@ fun BadgeDetailModal(badge: Badge, onDismiss: () -> Unit) {
                     text = badge.description,
                     style = MaterialTheme.typography.bodyLarge,
                     textAlign = TextAlign.Center,
-                    color = Color.Gray,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
                     modifier = Modifier.padding(horizontal = 8.dp)
                 )
 
@@ -177,14 +184,14 @@ fun BadgeDetailModal(badge: Badge, onDismiss: () -> Unit) {
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(56.dp),
-                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF2962FF)),
+                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary),
                     shape = RoundedCornerShape(16.dp)
                 ) {
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Icon(
                             imageVector = Icons.Default.MilitaryTech,
                             contentDescription = null,
-                            tint = Color.White,
+                            tint = MaterialTheme.colorScheme.onPrimary,
                             modifier = Modifier.size(20.dp)
                         )
                         Spacer(modifier = Modifier.width(8.dp))

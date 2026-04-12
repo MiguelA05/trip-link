@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -22,7 +23,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.triplink.R
 import com.example.triplink.domain.model.enums.EstadoPublicacion
-import com.example.triplink.ui.theme.PrincipalBlue
 import com.example.triplink.ui.theme.TextTokens
 
 @Composable
@@ -62,15 +62,15 @@ fun StatusTabs(
             }
             
             val badgeBgColor = when (tab) {
-                EstadoPublicacion.VERIFICADA -> Color(0xFFE8F5E9)
-                EstadoPublicacion.PENDIENTE -> Color(0xFFFFF3E0)
-                EstadoPublicacion.RECHAZADA -> Color(0xFFFFEBEE)
+                EstadoPublicacion.VERIFICADA -> MaterialTheme.colorScheme.primaryContainer
+                EstadoPublicacion.PENDIENTE -> MaterialTheme.colorScheme.tertiaryContainer
+                EstadoPublicacion.RECHAZADA -> MaterialTheme.colorScheme.errorContainer
             }
             
             val badgeTextColor = when (tab) {
-                EstadoPublicacion.VERIFICADA -> Color(0xFF2E7D32)
-                EstadoPublicacion.PENDIENTE -> Color(0xFFE65100)
-                EstadoPublicacion.RECHAZADA -> Color(0xFFC62828)
+                EstadoPublicacion.VERIFICADA -> MaterialTheme.colorScheme.onPrimaryContainer
+                EstadoPublicacion.PENDIENTE -> MaterialTheme.colorScheme.onTertiaryContainer
+                EstadoPublicacion.RECHAZADA -> MaterialTheme.colorScheme.onErrorContainer
             }
 
             Column(
@@ -83,7 +83,7 @@ fun StatusTabs(
                 Text(
                     text = label,
                     style = TextTokens.chipLabel(),
-                    color = if (selected) PrincipalBlue else Color(0xFF8FA1BA)
+                    color = if (selected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant
                 )
                 
                 Spacer(modifier = Modifier.height(6.dp))
@@ -107,7 +107,7 @@ fun StatusTabs(
                             .padding(top = 8.dp)
                             .fillMaxWidth(0.8f),
                         thickness = 3.dp,
-                        color = PrincipalBlue
+                        color = MaterialTheme.colorScheme.primary
                     )
                 }
             }

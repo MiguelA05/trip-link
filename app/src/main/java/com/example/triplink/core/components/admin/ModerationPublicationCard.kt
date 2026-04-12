@@ -1,6 +1,7 @@
 package com.example.triplink.core.components
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -46,9 +47,6 @@ import coil3.request.crossfade
 import com.example.triplink.R
 import com.example.triplink.features.admin.moderation.ModerationPublicationCardStatus
 import com.example.triplink.features.admin.moderation.ModerationPublicationCardUi
-import com.example.triplink.ui.theme.PrincipalBlue
-import com.example.triplink.ui.theme.PrincipalGreen
-import com.example.triplink.ui.theme.PrincipalRed
 import com.example.triplink.ui.theme.TextColors
 
 @Composable
@@ -64,6 +62,11 @@ fun ModerationPublicationCard(
         R.string.component_moderation_publication_card_swipe_hint
     )
     val interactionEnabled = publication.status == ModerationPublicationCardStatus.PENDING
+    val cardBorderColor = if (isSystemInDarkTheme()) {
+        MaterialTheme.colorScheme.outline.copy(alpha = 0.92f)
+    } else {
+        MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.9f)
+    }
 
     val dismissState = rememberSwipeToDismissBoxState(
         positionalThreshold = { it * 0.32f },
@@ -86,8 +89,16 @@ fun ModerationPublicationCard(
         enableDismissFromEndToStart = interactionEnabled,
         backgroundContent = {
             val isApproveDirection = dismissState.dismissDirection == SwipeToDismissBoxValue.StartToEnd
-            val backgroundColor = if (isApproveDirection) Color(0xFFDFF4E2) else Color(0xFFFFE4E4)
-            val iconTint = if (isApproveDirection) PrincipalGreen else PrincipalRed
+            val backgroundColor = if (isApproveDirection) {
+                MaterialTheme.colorScheme.primaryContainer
+            } else {
+                MaterialTheme.colorScheme.errorContainer
+            }
+            val iconTint = if (isApproveDirection) {
+                MaterialTheme.colorScheme.primary
+            } else {
+                MaterialTheme.colorScheme.error
+            }
 
             Box(
                 modifier = Modifier
@@ -107,8 +118,9 @@ fun ModerationPublicationCard(
     ) {
         Surface(
             shape = RoundedCornerShape(20.dp),
-            color = Color(0xFFF9FAFB),
+            color = MaterialTheme.colorScheme.surface,
             shadowElevation = 2.dp,
+            border = androidx.compose.foundation.BorderStroke(1.25.dp, cardBorderColor),
             modifier = Modifier.fillMaxWidth()
         ) {
             Column(modifier = Modifier.fillMaxWidth()) {
@@ -134,7 +146,7 @@ fun ModerationPublicationCard(
                             .align(Alignment.BottomStart)
                             .background(
                                 Brush.verticalGradient(
-                                    colors = listOf(Color.Transparent, Color.Black.copy(alpha = 0.52f))
+                                    colors = listOf(Color.Transparent, MaterialTheme.colorScheme.scrim.copy(alpha = 0.45f))
                                 )
                             )
                             .padding(horizontal = 12.dp, vertical = 10.dp)
@@ -147,12 +159,12 @@ fun ModerationPublicationCard(
                                 modifier = Modifier
                                     .size(24.dp)
                                     .clip(CircleShape)
-                                    .background(Color(0xFFD96A1E)),
+                                    .background(MaterialTheme.colorScheme.tertiary),
                                 contentAlignment = Alignment.Center
                             ) {
                                 Text(
                                     text = publication.authorName.split(" ").take(2).joinToString("") { it.first().uppercase() },
-                                    color = Color.White,
+                                    color = MaterialTheme.colorScheme.onTertiary,
                                     style = MaterialTheme.typography.labelSmall,
                                     fontWeight = FontWeight.Bold
                                 )
@@ -162,13 +174,13 @@ fun ModerationPublicationCard(
                                 Text(
                                     text = publication.authorName,
                                     style = MaterialTheme.typography.labelMedium,
-                                    color = Color.White,
+                                    color = MaterialTheme.colorScheme.onPrimary,
                                     fontWeight = FontWeight.SemiBold
                                 )
                                 Text(
                                     text = publication.timeLabel,
                                     style = MaterialTheme.typography.labelSmall,
-                                    color = Color.White.copy(alpha = 0.85f)
+                                    color = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.85f)
                                 )
                             }
                         }
@@ -177,9 +189,9 @@ fun ModerationPublicationCard(
                     Surface(
                         shape = RoundedCornerShape(999.dp),
                         color = when (publication.status) {
-                            ModerationPublicationCardStatus.PENDING -> Color(0xFFFFEEE0)
-                            ModerationPublicationCardStatus.VERIFIED -> Color(0xFFE4F5E7)
-                            ModerationPublicationCardStatus.REJECTED -> Color(0xFFFDE6E6)
+                            ModerationPublicationCardStatus.PENDING -> MaterialTheme.colorScheme.tertiaryContainer
+                            ModerationPublicationCardStatus.VERIFIED -> MaterialTheme.colorScheme.primaryContainer
+                            ModerationPublicationCardStatus.REJECTED -> MaterialTheme.colorScheme.errorContainer
                         },
                         modifier = Modifier
                             .align(Alignment.TopEnd)
@@ -201,9 +213,9 @@ fun ModerationPublicationCard(
                             style = MaterialTheme.typography.labelMedium,
                             fontWeight = FontWeight.Bold,
                             color = when (publication.status) {
-                                ModerationPublicationCardStatus.PENDING -> Color(0xFFCC6E00)
-                                ModerationPublicationCardStatus.VERIFIED -> Color(0xFF2E7D32)
-                                ModerationPublicationCardStatus.REJECTED -> Color(0xFFD84343)
+                                ModerationPublicationCardStatus.PENDING -> MaterialTheme.colorScheme.onTertiaryContainer
+                                ModerationPublicationCardStatus.VERIFIED -> MaterialTheme.colorScheme.onPrimaryContainer
+                                ModerationPublicationCardStatus.REJECTED -> MaterialTheme.colorScheme.onErrorContainer
                             }
                         )
                     }
@@ -234,13 +246,13 @@ fun ModerationPublicationCard(
                     ) {
                         Surface(
                             shape = RoundedCornerShape(8.dp),
-                            color = Color(0xFFFFE9D6)
+                            color = MaterialTheme.colorScheme.tertiaryContainer
                         ) {
                             Text(
                                 text = publication.categoryLabel,
                                 modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
                                 style = MaterialTheme.typography.labelMedium,
-                                color = Color(0xFFF07A17),
+                                color = MaterialTheme.colorScheme.onTertiaryContainer,
                                 fontWeight = FontWeight.SemiBold
                             )
                         }
@@ -248,13 +260,13 @@ fun ModerationPublicationCard(
                         if (publication.reportCount > 0) {
                             Surface(
                                 shape = RoundedCornerShape(8.dp),
-                                color = Color(0xFFFFF1D7)
+                                color = MaterialTheme.colorScheme.tertiaryContainer
                             ) {
                                 Text(
                                     text = acceptedReportsText,
                                     modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
                                     style = MaterialTheme.typography.labelMedium,
-                                    color = Color(0xFFD97A00),
+                                    color = MaterialTheme.colorScheme.onTertiaryContainer,
                                     fontWeight = FontWeight.SemiBold
                                 )
                             }
@@ -265,7 +277,7 @@ fun ModerationPublicationCard(
                         Icon(
                                 imageVector = Icons.Default.LocationOn,
                             contentDescription = null,
-                            tint = Color(0xFF9AA3B2),
+                            tint = MaterialTheme.colorScheme.onSurfaceVariant,
                             modifier = Modifier.size(18.dp)
                         )
                         Spacer(modifier = Modifier.size(4.dp))
@@ -278,7 +290,7 @@ fun ModerationPublicationCard(
 
                     Surface(
                         shape = RoundedCornerShape(14.dp),
-                        color = Color(0xFFF1F4FB)
+                        color = MaterialTheme.colorScheme.surfaceVariant
                     ) {
                         Row(
                             modifier = Modifier.padding(horizontal = 12.dp, vertical = 10.dp),
@@ -287,28 +299,28 @@ fun ModerationPublicationCard(
                             Text(
                                 text = "\$",
                                 style = MaterialTheme.typography.bodyLarge,
-                                color = PrincipalBlue,
+                                color = MaterialTheme.colorScheme.primary,
                                 fontWeight = FontWeight.Bold
                             )
                             Spacer(modifier = Modifier.size(6.dp))
                             Text(
                                 text = publication.priceLabel,
                                 style = MaterialTheme.typography.bodyLarge,
-                                color = PrincipalBlue,
+                                color = MaterialTheme.colorScheme.primary,
                                 fontWeight = FontWeight.Bold
                             )
                             Spacer(modifier = Modifier.size(12.dp))
                             Text(
                                 text = "|",
                                 style = MaterialTheme.typography.bodyLarge,
-                                color = Color(0xFFD1D8E3),
+                                color = MaterialTheme.colorScheme.outlineVariant,
                                 fontWeight = FontWeight.Bold
                             )
                             Spacer(modifier = Modifier.size(12.dp))
                             Icon(
                                 imageVector = Icons.Default.AccessTime,
                                 contentDescription = null,
-                                tint = Color(0xFF8A93A3),
+                                tint = MaterialTheme.colorScheme.onSurfaceVariant,
                                 modifier = Modifier.size(18.dp)
                             )
                             Spacer(modifier = Modifier.size(6.dp))
@@ -324,7 +336,7 @@ fun ModerationPublicationCard(
                     publication.reasonMessage?.takeIf { it.isNotBlank() }?.let { message ->
                         Surface(
                             shape = RoundedCornerShape(10.dp),
-                            color = Color(0xFFFFF2F2)
+                            color = MaterialTheme.colorScheme.errorContainer
                         ) {
                             Row(
                                 modifier = Modifier.padding(horizontal = 10.dp, vertical = 8.dp),
@@ -334,7 +346,7 @@ fun ModerationPublicationCard(
                                 Icon(
                                     imageVector = Icons.Outlined.WarningAmber,
                                     contentDescription = null,
-                                    tint = Color(0xFFD84343)
+                                    tint = MaterialTheme.colorScheme.onErrorContainer
                                 )
                                 Text(
                                     text = stringResource(
@@ -342,7 +354,7 @@ fun ModerationPublicationCard(
                                         message
                                     ),
                                     style = MaterialTheme.typography.bodySmall,
-                                    color = Color(0xFFD84343),
+                                    color = MaterialTheme.colorScheme.onErrorContainer,
                                     fontWeight = FontWeight.SemiBold
                                 )
                             }
@@ -357,7 +369,7 @@ fun ModerationPublicationCard(
                         ) {
                             Surface(
                                 shape = CircleShape,
-                                color = Color(0xFFF35A5A)
+                                color = MaterialTheme.colorScheme.error
                             ) {
                                 IconButton(onClick = { onRejectRequested(publication.id) }) {
                                     Icon(
@@ -365,7 +377,7 @@ fun ModerationPublicationCard(
                                         contentDescription = stringResource(
                                             R.string.component_moderation_publication_card_reject_action
                                         ),
-                                        tint = Color.White
+                                        tint = MaterialTheme.colorScheme.onError
                                     )
                                 }
                             }
@@ -378,21 +390,21 @@ fun ModerationPublicationCard(
                                 Icon(
                                     imageVector = Icons.Outlined.RemoveRedEye,
                                     contentDescription = null,
-                                    tint = PrincipalBlue
+                                    tint = MaterialTheme.colorScheme.primary
                                 )
                                 Spacer(modifier = Modifier.size(6.dp))
                                 Text(
                                     text = stringResource(
                                         R.string.component_moderation_publication_card_view_detail_action
                                     ),
-                                    color = PrincipalBlue,
+                                    color = MaterialTheme.colorScheme.primary,
                                     fontWeight = FontWeight.SemiBold
                                 )
                             }
 
                             Surface(
                                 shape = CircleShape,
-                                color = Color(0xFF3CBF2A)
+                                color = MaterialTheme.colorScheme.primary
                             ) {
                                 IconButton(onClick = { onApproveRequested(publication.id) }) {
                                     Icon(
@@ -400,7 +412,7 @@ fun ModerationPublicationCard(
                                         contentDescription = stringResource(
                                             R.string.component_moderation_publication_card_verify_action
                                         ),
-                                        tint = Color.White
+                                        tint = MaterialTheme.colorScheme.onPrimary
                                     )
                                 }
                             }

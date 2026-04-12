@@ -26,7 +26,6 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.example.triplink.R
 import com.example.triplink.core.components.GeneralTopBar
-import com.example.triplink.ui.theme.*
 import com.example.triplink.ui.theme.TextTokens
 
 
@@ -50,7 +49,7 @@ fun NotificationsScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
-                .background(Color.White)
+                .background(MaterialTheme.colorScheme.background)
         ) {
             if (viewModel.areNotificationsEmpty()) {
                 EmptyNotificationsView()
@@ -80,21 +79,21 @@ fun EmptyNotificationsView() {
             imageVector = Icons.Default.NotificationsOff,
             contentDescription = null,
             modifier = Modifier.size(80.dp),
-            tint = PrincipalGray.copy(alpha = 0.5f)
+            tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f)
         )
         Spacer(modifier = Modifier.height(24.dp))
         Text(
             text = stringResource(R.string.feature_notifications_empty_title),
             style = MaterialTheme.typography.headlineSmall,
             fontWeight = FontWeight.Bold,
-            color = DarkGray,
+            color = MaterialTheme.colorScheme.onSurface,
             textAlign = TextAlign.Center
         )
         Spacer(modifier = Modifier.height(12.dp))
         Text(
             text = stringResource(R.string.feature_notifications_empty_subtitle),
             style = MaterialTheme.typography.bodyLarge,
-            color = PrincipalGray,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
             textAlign = TextAlign.Center,
             lineHeight = 22.sp
         )
@@ -125,13 +124,13 @@ fun NotificationsList(
                         imageVector = Icons.Default.DoneAll,
                         contentDescription = null,
                         modifier = Modifier.size(18.dp),
-                        tint = PrincipalBlue
+                        tint = MaterialTheme.colorScheme.primary
                     )
                     Spacer(modifier = Modifier.width(8.dp))
                     Text(
                         text = stringResource(R.string.feature_notifications_mark_all_as_read_action),
                         style = MaterialTheme.typography.labelLarge,
-                        color = PrincipalBlue,
+                        color = MaterialTheme.colorScheme.primary,
                         fontWeight = FontWeight.Bold
                     )
                 }
@@ -157,9 +156,9 @@ fun NotificationCard(
             .fillMaxWidth()
             .clickable { onClick() },
         shape = RoundedCornerShape(24.dp),
-        border = BorderStroke(1.dp, Color(0xFFF1F5F9)),
+        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
         shadowElevation = 2.dp,
-        color = Color.White
+        color = MaterialTheme.colorScheme.surface
     ) {
         Row(
             modifier = Modifier
@@ -170,14 +169,14 @@ fun NotificationCard(
             // Icono de ubicación en círculo azul suave
             Surface(
                 shape = CircleShape,
-                color = SoftBlue,
+                color = MaterialTheme.colorScheme.secondaryContainer,
                 modifier = Modifier.size(48.dp)
             ) {
                 Box(contentAlignment = Alignment.Center) {
                     Icon(
                         imageVector = Icons.Default.LocationOn,
                         contentDescription = null,
-                        tint = PrincipalBlue,
+                        tint = MaterialTheme.colorScheme.primary,
                         modifier = Modifier.size(24.dp)
                     )
                 }
@@ -194,13 +193,13 @@ fun NotificationCard(
                     Text(
                         text = notification.title,
                         style = TextTokens.cardTitle(),
-                        color = Color.Black
+                        color = MaterialTheme.colorScheme.onSurface
                     )
                     // Punto azul de no leído
                     Box(
                         modifier = Modifier
                             .size(10.dp)
-                            .background(PrincipalBlue, CircleShape)
+                            .background(MaterialTheme.colorScheme.primary, CircleShape)
                     )
                 }
 
@@ -209,7 +208,7 @@ fun NotificationCard(
                 Text(
                     text = notification.description,
                     style = TextTokens.cardSubtitle(),
-                    color = DarkGray,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
 
                 Spacer(modifier = Modifier.height(8.dp))
@@ -217,7 +216,7 @@ fun NotificationCard(
                 Text(
                     text = notification.time,
                     style = TextTokens.helperText(),
-                    color = PrincipalGray
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
 
@@ -226,7 +225,7 @@ fun NotificationCard(
             Icon(
                 imageVector = Icons.Default.ChevronRight,
                 contentDescription = null,
-                tint = Color.LightGray
+                tint = MaterialTheme.colorScheme.onSurfaceVariant
             )
         }
     }

@@ -29,8 +29,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.triplink.R
-import com.example.triplink.ui.theme.PrincipalBlue
-import com.example.triplink.ui.theme.PrincipalWhite
 
 @Composable
 fun ProfileHeader(
@@ -45,7 +43,7 @@ fun ProfileHeader(
         modifier = modifier
             .fillMaxWidth()
             .background(
-                color = PrincipalBlue,
+                color = MaterialTheme.colorScheme.primary,
                 shape = RoundedCornerShape(bottomStart = 28.dp, bottomEnd = 28.dp)
             )
             .statusBarsPadding()
@@ -58,27 +56,27 @@ fun ProfileHeader(
         ) {
             IconButton(
                 onClick = onBackClick,
-                modifier = Modifier.background(Color.White.copy(alpha = 0.12f), CircleShape)
+                modifier = Modifier.background(MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.12f), CircleShape)
             ) {
                 Icon(
                     imageVector = Icons.AutoMirrored.Outlined.Logout,
                     contentDescription = stringResource(
                         R.string.component_profile_header_logout_content_description
                     ),
-                    tint = PrincipalWhite
+                    tint = MaterialTheme.colorScheme.onPrimary
                 )
             }
 
             IconButton(
                 onClick = onEditClick,
-                modifier = Modifier.background(Color.White.copy(alpha = 0.12f), CircleShape)
+                modifier = Modifier.background(MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.12f), CircleShape)
             ) {
                 Icon(
                     imageVector = Icons.Outlined.Edit,
                     contentDescription = stringResource(
                         R.string.component_profile_header_edit_content_description
                     ),
-                    tint = PrincipalWhite
+                    tint = MaterialTheme.colorScheme.onPrimary
                 )
             }
         }
@@ -93,14 +91,14 @@ fun ProfileHeader(
             Box(
                 modifier = Modifier
                     .size(118.dp)
-                    .background(Color(0xFFE8EBF1), CircleShape),
+                    .background(MaterialTheme.colorScheme.primaryContainer, CircleShape),
                 contentAlignment = Alignment.Center
             ) {
                 Text(
                     text = initials,
                     style = MaterialTheme.typography.headlineMedium.copy(
                         fontWeight = FontWeight.Bold,
-                        color = Color(0xFF8796AA)
+                        color = MaterialTheme.colorScheme.onPrimaryContainer
                     )
                 )
             }
@@ -108,13 +106,13 @@ fun ProfileHeader(
             Text(
                 text = userName,
                 style = MaterialTheme.typography.headlineSmall.copy(
-                    color = PrincipalWhite,
+                    color = MaterialTheme.colorScheme.onPrimary,
                     fontWeight = FontWeight.Bold
                 )
             )
 
             Surface(
-                color = Color(0xFFF3AA17),
+                color = MaterialTheme.colorScheme.tertiary,
                 shape = RoundedCornerShape(18.dp)
             ) {
                 Row(
@@ -125,13 +123,13 @@ fun ProfileHeader(
                     Icon(
                         imageVector = Icons.Outlined.EmojiEvents,
                         contentDescription = null,
-                        tint = PrincipalWhite,
+                        tint = MaterialTheme.colorScheme.onTertiary,
                         modifier = Modifier.size(18.dp)
                     )
                     Text(
                         text = roleLabel,
                         style = MaterialTheme.typography.labelLarge.copy(
-                            color = PrincipalWhite,
+                            color = MaterialTheme.colorScheme.onTertiary,
                             fontWeight = FontWeight.Bold,
                             letterSpacing = 0.5.sp
                         )

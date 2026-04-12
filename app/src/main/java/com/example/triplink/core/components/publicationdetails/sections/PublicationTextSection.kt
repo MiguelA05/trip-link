@@ -8,11 +8,9 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.triplink.ui.theme.PrincipalGray
 
 @Composable
 fun PublicationTextSection(
@@ -30,12 +28,12 @@ fun PublicationTextSection(
             text = title,
             style = MaterialTheme.typography.titleLarge,
             fontWeight = FontWeight.Bold,
-            color = Color(0xFF121826)
+            color = MaterialTheme.colorScheme.onSurface
         )
         Text(
             text = body,
             style = MaterialTheme.typography.bodyLarge,
-            color = PrincipalGray,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
             lineHeight = 22.sp
         )
     }

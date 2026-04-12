@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -20,11 +21,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.res.stringResource
 import com.example.triplink.R
-import com.example.triplink.ui.theme.DarkGray
-import com.example.triplink.ui.theme.PastelBlue
-import com.example.triplink.ui.theme.PrincipalBlue
-import com.example.triplink.ui.theme.PrincipalGray
-import com.example.triplink.ui.theme.SoftBlue
 import com.example.triplink.ui.theme.TextTokens
 
 data class DayScheduleUi(
@@ -49,14 +45,14 @@ fun PublicationWeeklyScheduleSection(
         Text(
             text = sectionTitle,
             style = TextTokens.sectionTitle(),
-            color = Color.Black
+            color = MaterialTheme.colorScheme.onSurface
         )
         Spacer(modifier = Modifier.size(12.dp))
 
         Surface(
             shape = RoundedCornerShape(24.dp),
-            border = androidx.compose.foundation.BorderStroke(1.dp, Color(0xFFD1D5DB)),
-            color = Color.White,
+            border = androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
+            color = MaterialTheme.colorScheme.surface,
             modifier = Modifier.fillMaxWidth()
         ) {
             Column(
@@ -68,7 +64,10 @@ fun PublicationWeeklyScheduleSection(
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .background(if (isToday) SoftBlue else Color.Transparent, RoundedCornerShape(12.dp))
+                            .background(
+                                if (isToday) MaterialTheme.colorScheme.secondaryContainer else Color.Transparent,
+                                RoundedCornerShape(12.dp)
+                            )
                             .padding(horizontal = 12.dp, vertical = 10.dp),
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.SpaceBetween
@@ -78,7 +77,7 @@ fun PublicationWeeklyScheduleSection(
                                 Box(
                                     modifier = Modifier
                                         .size(6.dp)
-                                        .background(PrincipalBlue, CircleShape)
+                                        .background(MaterialTheme.colorScheme.primary, CircleShape)
                                 )
                                 Spacer(modifier = Modifier.size(8.dp))
                             } else {
@@ -87,20 +86,20 @@ fun PublicationWeeklyScheduleSection(
 
                             Text(
                                 text = item.day,
-                                color = if (isToday) PrincipalBlue else if (item.isClosed) PrincipalGray else Color.Black,
+                                color = if (isToday) MaterialTheme.colorScheme.primary else if (item.isClosed) MaterialTheme.colorScheme.onSurfaceVariant else MaterialTheme.colorScheme.onSurface,
                                 style = TextTokens.cardTitle()
                             )
 
                             if (isToday) {
                                 Spacer(modifier = Modifier.size(8.dp))
                                 Surface(
-                                    color = PastelBlue,
+                                    color = MaterialTheme.colorScheme.primaryContainer,
                                     shape = RoundedCornerShape(8.dp)
                                 ) {
                                     Text(
                                         text = stringResource(R.string.component_publication_weekly_schedule_today),
                                         modifier = Modifier.padding(horizontal = 8.dp, vertical = 2.dp),
-                                        color = PrincipalBlue,
+                                        color = MaterialTheme.colorScheme.onPrimaryContainer,
                                         style = TextTokens.counterLabel()
                                     )
                                 }
@@ -109,7 +108,7 @@ fun PublicationWeeklyScheduleSection(
 
                         Text(
                             text = item.hours,
-                            color = if (isToday) PrincipalBlue else if (item.isClosed) PrincipalGray.copy(alpha = 0.6f) else DarkGray,
+                            color = if (isToday) MaterialTheme.colorScheme.primary else if (item.isClosed) MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f) else MaterialTheme.colorScheme.onSurfaceVariant,
                             style = TextTokens.helperText()
                         )
                     }

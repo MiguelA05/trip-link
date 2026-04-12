@@ -36,9 +36,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.example.triplink.R
-import com.example.triplink.ui.theme.PrincipalBlue
-import com.example.triplink.ui.theme.PrincipalRed
-import com.example.triplink.ui.theme.PrincipalWhite
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -56,7 +53,7 @@ fun CompactDestructiveConfirmDialog(
         Surface(
             modifier = modifier.fillMaxWidth(),
             shape = RoundedCornerShape(24.dp),
-            color = PrincipalWhite
+            color = MaterialTheme.colorScheme.surface
         ) {
             Box(modifier = Modifier.padding(horizontal = 16.dp, vertical = 14.dp)) {
                 IconButton(
@@ -65,13 +62,13 @@ fun CompactDestructiveConfirmDialog(
                         .align(Alignment.TopEnd)
                         .size(32.dp),
                     colors = IconButtonDefaults.iconButtonColors(
-                        containerColor = Color(0xFFF1F2F5)
+                        containerColor = MaterialTheme.colorScheme.surfaceVariant
                     )
                 ) {
                     Icon(
                         imageVector = Icons.Default.Close,
                         contentDescription = stringResource(R.string.component_general_alert_dialog_close_content_description),
-                        tint = Color(0xFF9AA0A6)
+                        tint = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }
 
@@ -85,13 +82,13 @@ fun CompactDestructiveConfirmDialog(
                     Box(
                         modifier = Modifier
                             .size(68.dp)
-                            .background(Color(0xFFF8DDDF), CircleShape),
+                            .background(MaterialTheme.colorScheme.errorContainer, CircleShape),
                         contentAlignment = Alignment.Center
                     ) {
                         Icon(
                             imageVector = icon,
                             contentDescription = null,
-                            tint = PrincipalRed,
+                            tint = MaterialTheme.colorScheme.error,
                             modifier = Modifier.size(30.dp)
                         )
                     }
@@ -101,18 +98,18 @@ fun CompactDestructiveConfirmDialog(
                         style = MaterialTheme.typography.titleLarge,
                         fontWeight = FontWeight.Bold,
                         textAlign = TextAlign.Center,
-                        color = Color(0xFF202124)
+                        color = MaterialTheme.colorScheme.onSurface
                     )
 
                     Text(
                         text = message,
                         style = MaterialTheme.typography.bodyMedium,
-                        color = Color(0xFF4F4E57),
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
                         textAlign = TextAlign.Center,
                         modifier = Modifier.padding(horizontal = 6.dp)
                     )
 
-                    HorizontalDivider(color = Color(0xFFE7E9EE))
+                    HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
 
                     Row(
                         modifier = Modifier.fillMaxWidth(),
@@ -124,7 +121,7 @@ fun CompactDestructiveConfirmDialog(
                                 .weight(1f)
                                 .height(46.dp),
                             shape = RoundedCornerShape(24.dp),
-                            colors = ButtonDefaults.outlinedButtonColors(contentColor = PrincipalBlue)
+                            colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colorScheme.primary)
                         ) {
                             Text(
                                 text = dismissText,
@@ -139,12 +136,12 @@ fun CompactDestructiveConfirmDialog(
                                 .weight(1f)
                                 .height(46.dp),
                             shape = RoundedCornerShape(24.dp),
-                            colors = ButtonDefaults.buttonColors(containerColor = PrincipalRed)
+                            colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.error)
                         ) {
                             Text(
                                 text = confirmText,
                                 fontWeight = FontWeight.Bold,
-                                color = PrincipalWhite,
+                                color = MaterialTheme.colorScheme.onError,
                                 style = MaterialTheme.typography.titleMedium
                             )
                         }

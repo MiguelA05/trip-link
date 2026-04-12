@@ -131,7 +131,7 @@ fun PublicationDetailsScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .background(Color(0xFFF4F5F7)),
+                .background(MaterialTheme.colorScheme.background),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
@@ -215,7 +215,7 @@ fun PublicationDetailsScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
-                .background(Color.White)
+                .background(MaterialTheme.colorScheme.surface)
         ) {
             item {
                 PublicationTextSection(
@@ -329,7 +329,7 @@ fun ImageHeader(
             Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(Color.LightGray)
+                    .background(MaterialTheme.colorScheme.surfaceVariant)
             )
         }
 
@@ -340,7 +340,7 @@ fun ImageHeader(
         ) {
             Text(
                 text = categoryLabel.uppercase(),
-                color = PrincipalGreen,
+                color = MaterialTheme.colorScheme.secondary,
                 style = TextTokens.chipLabel(),
                 fontWeight = FontWeight.Bold
             )
@@ -358,10 +358,10 @@ fun ImageHeader(
                 .padding(start = 16.dp)
                 .size(44.dp),
             shape = CircleShape,
-            color = Color.Black.copy(alpha = 0.4f)
+            color = MaterialTheme.colorScheme.scrim.copy(alpha = 0.4f)
         ) {
             IconButton(onClick = onBackClick) {
-                Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = null, tint = Color.White)
+                Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = null, tint = MaterialTheme.colorScheme.onPrimary)
             }
         }
 
@@ -371,10 +371,10 @@ fun ImageHeader(
                 .padding(end = 16.dp)
                 .size(44.dp),
             shape = CircleShape,
-            color = Color.Black.copy(alpha = 0.4f)
+            color = MaterialTheme.colorScheme.scrim.copy(alpha = 0.4f)
         ) {
             IconButton(onClick = { /* TODO */ }) {
-                Icon(Icons.AutoMirrored.Filled.ArrowForward, contentDescription = null, tint = Color.White)
+                Icon(Icons.AutoMirrored.Filled.ArrowForward, contentDescription = null, tint = MaterialTheme.colorScheme.onPrimary)
             }
         }
 
@@ -385,16 +385,16 @@ fun ImageHeader(
                     .padding(16.dp),
                 shape = CircleShape,
                 color = if (reportActionEnabled) {
-                    Color.Black.copy(alpha = 0.4f)
+                    MaterialTheme.colorScheme.scrim.copy(alpha = 0.4f)
                 } else {
-                    Color.Black.copy(alpha = 0.22f)
+                    MaterialTheme.colorScheme.scrim.copy(alpha = 0.22f)
                 }
             ) {
                 IconButton(onClick = onReportClick, enabled = reportActionEnabled) {
                     Icon(
                         imageVector = Icons.Outlined.ErrorOutline,
                         contentDescription = stringResource(R.string.feature_publication_details_report_content_description),
-                        tint = if (reportActionEnabled) PrincipalRed else Color.White.copy(alpha = 0.55f),
+                        tint = if (reportActionEnabled) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.55f),
                         modifier = Modifier.size(28.dp)
                     )
                 }
@@ -416,7 +416,7 @@ fun RatingModal(
     ModalBottomSheet(
         onDismissRequest = onDismiss,
         sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true),
-        containerColor = Color.White,
+        containerColor = MaterialTheme.colorScheme.surface,
         shape = RoundedCornerShape(topStart = 28.dp, topEnd = 28.dp),
         dragHandle = {
             Box(
@@ -424,7 +424,7 @@ fun RatingModal(
                     .padding(vertical = 12.dp)
                     .width(40.dp)
                     .height(4.dp)
-                    .background(Color(0xFFE2E8F0), CircleShape)
+                    .background(MaterialTheme.colorScheme.outlineVariant, CircleShape)
             )
         }
     ) {
@@ -444,7 +444,7 @@ fun RatingModal(
             Text(
                 text = stringResource(R.string.feature_publication_details_rating_modal_subtitle),
                 style = MaterialTheme.typography.bodyMedium,
-                color = Color.Gray,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
                 textAlign = TextAlign.Center
             )
 
@@ -460,13 +460,13 @@ fun RatingModal(
                 )
                 Spacer(modifier = Modifier.width(8.dp))
                 Surface(
-                    color = Color(0xFFFFEBEE),
+                    color = MaterialTheme.colorScheme.errorContainer,
                     shape = RoundedCornerShape(4.dp)
                 ) {
                     Text(
                         text = stringResource(R.string.feature_publication_details_required_label),
                         modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp),
-                        color = Color(0xFFEF5350),
+                        color = MaterialTheme.colorScheme.onErrorContainer,
                         style = TextTokens.counterLabel()
                     )
                 }
@@ -483,7 +483,7 @@ fun RatingModal(
                     Icon(
                         imageVector = if (isSelected) Icons.Default.Star else Icons.Outlined.StarOutline,
                         contentDescription = null,
-                        tint = if (isSelected) PrincipalOrange else Color(0xFFCBD5E1),
+                        tint = if (isSelected) MaterialTheme.colorScheme.tertiary else MaterialTheme.colorScheme.outline,
                         modifier = Modifier
                             .size(48.dp)
                             .clickable { rating = starIndex }
@@ -495,7 +495,7 @@ fun RatingModal(
             Text(
                 text = stringResource(R.string.feature_publication_details_review_rating_note),
                 style = TextTokens.helperText(),
-                color = Color.LightGray
+                color = MaterialTheme.colorScheme.onSurfaceVariant
             )
 
             Spacer(modifier = Modifier.height(32.dp))
@@ -512,13 +512,13 @@ fun RatingModal(
                     )
                     Spacer(modifier = Modifier.width(8.dp))
                     Surface(
-                        color = Color(0xFFF1F5F9),
+                        color = MaterialTheme.colorScheme.surfaceVariant,
                         shape = RoundedCornerShape(4.dp)
                     ) {
                         Text(
                             text = stringResource(R.string.feature_publication_details_comment_optional_label),
                             modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp),
-                            color = Color.Gray,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
                             style = TextTokens.counterLabel()
                         )
                     }
@@ -526,7 +526,7 @@ fun RatingModal(
                 Text(
                     text = stringResource(R.string.feature_publication_details_comment_counter, comment.length, maxChars),
                     style = TextTokens.helperText(),
-                    color = Color.LightGray
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
 
@@ -538,7 +538,7 @@ fun RatingModal(
                 placeholder = {
                     Text(
                         stringResource(R.string.feature_publication_details_comment_placeholder),
-                        color = Color.LightGray
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 },
                 modifier = Modifier
@@ -546,10 +546,10 @@ fun RatingModal(
                     .height(120.dp),
                 shape = RoundedCornerShape(16.dp),
                 colors = OutlinedTextFieldDefaults.colors(
-                    focusedBorderColor = Color(0xFFE2E8F0),
-                    unfocusedBorderColor = Color(0xFFE2E8F0),
-                    focusedContainerColor = Color(0xFFF8FAFC),
-                    unfocusedContainerColor = Color(0xFFF8FAFC)
+                    focusedBorderColor = MaterialTheme.colorScheme.outlineVariant,
+                    unfocusedBorderColor = MaterialTheme.colorScheme.outlineVariant,
+                    focusedContainerColor = MaterialTheme.colorScheme.surfaceVariant,
+                    unfocusedContainerColor = MaterialTheme.colorScheme.surfaceVariant
                 )
             )
 
@@ -569,7 +569,7 @@ fun RatingModal(
                 Text(
                     text = stringResource(R.string.feature_publication_details_cancel),
                     style = TextTokens.buttonLabel(),
-                    color = PrincipalBlue
+                    color = MaterialTheme.colorScheme.primary
                 )
             }
         }
@@ -587,7 +587,7 @@ fun InappropriateContentModal(onDismiss: () -> Unit, onReplace: () -> Unit) {
                 .fillMaxWidth()
                 .padding(24.dp)
                 .clip(RoundedCornerShape(28.dp)),
-            color = Color.White
+            color = MaterialTheme.colorScheme.surface
         ) {
             Column(
                 modifier = Modifier.fillMaxWidth(),
@@ -598,7 +598,7 @@ fun InappropriateContentModal(onDismiss: () -> Unit, onReplace: () -> Unit) {
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(6.dp)
-                        .background(Color(0xFFEF5350))
+                        .background(MaterialTheme.colorScheme.error)
                 )
 
                 Column(
@@ -611,14 +611,14 @@ fun InappropriateContentModal(onDismiss: () -> Unit, onReplace: () -> Unit) {
                             onClick = onDismiss,
                             modifier = Modifier
                                 .align(Alignment.TopEnd)
-                                .background(Color(0xFFF1F5F9), CircleShape)
+                                .background(MaterialTheme.colorScheme.surfaceVariant, CircleShape)
                                 .size(32.dp)
                         ) {
                             Icon(
                                 Icons.Default.Close,
                                 contentDescription = stringResource(R.string.component_general_alert_dialog_close_content_description),
                                 modifier = Modifier.size(18.dp),
-                                tint = Color.Gray
+                                tint = MaterialTheme.colorScheme.onSurfaceVariant
                             )
                         }
                     }
@@ -626,14 +626,14 @@ fun InappropriateContentModal(onDismiss: () -> Unit, onReplace: () -> Unit) {
                     // Angry Face Icon
                     Surface(
                         shape = CircleShape,
-                        color = Color(0xFFFFEBEE),
+                        color = MaterialTheme.colorScheme.errorContainer,
                         modifier = Modifier.size(80.dp)
                     ) {
                         Box(contentAlignment = Alignment.Center) {
                             Icon(
                                 imageVector = Icons.Default.SentimentVeryDissatisfied,
                                 contentDescription = null,
-                                tint = Color(0xFFEF5350),
+                                tint = MaterialTheme.colorScheme.onErrorContainer,
                                 modifier = Modifier.size(48.dp)
                             )
                         }
@@ -653,7 +653,7 @@ fun InappropriateContentModal(onDismiss: () -> Unit, onReplace: () -> Unit) {
                     Text(
                         text = stringResource(R.string.feature_publication_details_inappropriate_message),
                         style = TextTokens.cardSubtitle(),
-                        color = Color.Gray,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
                         textAlign = TextAlign.Center
                     )
 
@@ -662,14 +662,14 @@ fun InappropriateContentModal(onDismiss: () -> Unit, onReplace: () -> Unit) {
                     // Suggestion Box
                     Surface(
                         shape = RoundedCornerShape(16.dp),
-                        border = BorderStroke(1.dp, Color(0xFFE2E8F0)),
-                        color = Color(0xFFF8FAFC),
+                        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
+                        color = MaterialTheme.colorScheme.surfaceVariant,
                         modifier = Modifier.fillMaxWidth()
                     ) {
                         Text(
                             text = stringResource(R.string.feature_publication_details_inappropriate_suggestion),
                             modifier = Modifier.padding(16.dp),
-                            color = Color.Gray,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
                             style = TextTokens.inputText()
                         )
                     }
@@ -684,12 +684,12 @@ fun InappropriateContentModal(onDismiss: () -> Unit, onReplace: () -> Unit) {
                             onClick = onDismiss,
                             modifier = Modifier.weight(1f).height(48.dp),
                             shape = RoundedCornerShape(24.dp),
-                            border = BorderStroke(1.dp, PrincipalBlue)
+                            border = BorderStroke(1.dp, MaterialTheme.colorScheme.primary)
                         ) {
                             Text(
                                 text = stringResource(R.string.feature_publication_details_cancel),
                                 style = TextTokens.buttonLabel(),
-                                color = PrincipalBlue
+                                color = MaterialTheme.colorScheme.primary
                             )
                         }
 
@@ -697,12 +697,12 @@ fun InappropriateContentModal(onDismiss: () -> Unit, onReplace: () -> Unit) {
                             onClick = onReplace,
                             modifier = Modifier.weight(1f).height(48.dp),
                             shape = RoundedCornerShape(24.dp),
-                            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFB3261E))
+                            colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.error)
                         ) {
                             Text(
                                 text = stringResource(R.string.feature_publication_details_replace),
                                 style = TextTokens.buttonLabel(),
-                                color = Color.White
+                                color = MaterialTheme.colorScheme.onError
                             )
                         }
                     }
@@ -756,7 +756,7 @@ fun ReportModal(
                 .fillMaxWidth()
                 .padding(16.dp)
                 .clip(RoundedCornerShape(28.dp)),
-            color = Color.White
+            color = MaterialTheme.colorScheme.surface
         ) {
             Column(
                 modifier = Modifier
@@ -772,11 +772,11 @@ fun ReportModal(
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Surface(
                             shape = CircleShape,
-                            color = PrincipalBlue,
+                            color = MaterialTheme.colorScheme.primary,
                             modifier = Modifier.size(40.dp)
                         ) {
                             Box(contentAlignment = Alignment.Center) {
-                                Icon(Icons.Outlined.Shield, contentDescription = null, tint = Color.White, modifier = Modifier.size(24.dp))
+                                Icon(Icons.Outlined.Shield, contentDescription = null, tint = MaterialTheme.colorScheme.onPrimary, modifier = Modifier.size(24.dp))
                             }
                         }
                         Spacer(modifier = Modifier.width(12.dp))
@@ -789,14 +789,14 @@ fun ReportModal(
                     IconButton(
                         onClick = onDismiss,
                         modifier = Modifier
-                            .background(Color(0xFFF1F5F9), CircleShape)
+                            .background(MaterialTheme.colorScheme.surfaceVariant, CircleShape)
                             .size(32.dp)
                     ) {
                         Icon(
                             Icons.Default.Close,
                             contentDescription = stringResource(R.string.component_general_alert_dialog_close_content_description),
                             modifier = Modifier.size(18.dp),
-                            tint = Color.Gray
+                            tint = MaterialTheme.colorScheme.onSurfaceVariant
                         )
                     }
                 }
@@ -805,11 +805,11 @@ fun ReportModal(
                 Text(
                     text = stringResource(R.string.feature_publication_details_report_modal_subtitle),
                     style = MaterialTheme.typography.bodyMedium,
-                    color = Color.Gray,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
                     modifier = Modifier.fillMaxWidth()
                 )
                 
-                HorizontalDivider(modifier = Modifier.padding(vertical = 16.dp), color = Color(0xFFF1F5F9))
+                HorizontalDivider(modifier = Modifier.padding(vertical = 16.dp), color = MaterialTheme.colorScheme.outlineVariant)
 
                 Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
                     options.forEach { option ->
@@ -836,20 +836,20 @@ fun ReportModal(
                 
                 Surface(
                     shape = RoundedCornerShape(12.dp),
-                    color = Color(0xFFF8FAFC),
-                    border = BorderStroke(1.dp, Color(0xFFF1F5F9)),
+                    color = MaterialTheme.colorScheme.surfaceVariant,
+                    border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     Row(
                         modifier = Modifier.padding(12.dp),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Icon(Icons.Outlined.VerifiedUser, contentDescription = null, tint = Color.LightGray, modifier = Modifier.size(18.dp))
+                        Icon(Icons.Outlined.VerifiedUser, contentDescription = null, tint = MaterialTheme.colorScheme.onSurfaceVariant, modifier = Modifier.size(18.dp))
                         Spacer(modifier = Modifier.width(12.dp))
                         Text(
                                 text = stringResource(R.string.feature_publication_details_report_reviewed_by_moderation),
                                 style = TextTokens.helperText(),
-                            color = Color.Gray,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
                             lineHeight = 16.sp
                         )
                     }
@@ -880,7 +880,7 @@ fun ReportModal(
                     Text(
                         text = stringResource(R.string.feature_publication_details_cancel),
                         style = TextTokens.buttonLabel(),
-                        color = PrincipalBlue
+                        color = MaterialTheme.colorScheme.primary
                     )
                 }
             }
@@ -900,8 +900,8 @@ fun ReportOptionItem(option: ReportOptionData, isSelected: Boolean, onClick: () 
     Surface(
         onClick = onClick,
         shape = RoundedCornerShape(16.dp),
-        border = BorderStroke(1.dp, if (isSelected) PrincipalBlue else Color(0xFFF1F5F9)),
-        color = if (isSelected) Color(0xFFF8FAFF) else Color.White,
+        border = BorderStroke(1.dp, if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.outlineVariant),
+        color = if (isSelected) MaterialTheme.colorScheme.secondaryContainer else MaterialTheme.colorScheme.surface,
         modifier = Modifier.fillMaxWidth()
     ) {
         Row(
@@ -911,7 +911,7 @@ fun ReportOptionItem(option: ReportOptionData, isSelected: Boolean, onClick: () 
             Icon(
                 imageVector = option.icon,
                 contentDescription = null,
-                tint = if (isSelected) PrincipalBlue else Color.Gray,
+                tint = if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier.size(24.dp)
             )
             Spacer(modifier = Modifier.width(16.dp))
@@ -919,12 +919,12 @@ fun ReportOptionItem(option: ReportOptionData, isSelected: Boolean, onClick: () 
                 Text(
                     text = option.title,
                     style = TextTokens.cardTitle(),
-                    color = if (isSelected) PrincipalBlue else Color.Black
+                    color = if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface
                 )
                 Text(
                     text = option.subtitle,
                     style = TextTokens.helperText(),
-                    color = Color.Gray,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
                     lineHeight = 14.sp
                 )
             }
@@ -932,8 +932,8 @@ fun ReportOptionItem(option: ReportOptionData, isSelected: Boolean, onClick: () 
                 selected = isSelected,
                 onClick = onClick,
                 colors = RadioButtonDefaults.colors(
-                    selectedColor = PrincipalBlue,
-                    unselectedColor = Color.LightGray
+                    selectedColor = MaterialTheme.colorScheme.primary,
+                    unselectedColor = MaterialTheme.colorScheme.outline
                 )
             )
         }
@@ -959,13 +959,13 @@ fun ReviewsSection(
             Text(
                 text = stringResource(R.string.feature_publication_details_reviews_title),
                 style = TextTokens.sectionTitle(),
-                color = Color.Black
+                color = MaterialTheme.colorScheme.onSurface
             )
             Spacer(modifier = Modifier.width(12.dp))
             Surface(
                 shape = RoundedCornerShape(8.dp),
-                border = BorderStroke(1.dp, Color(0xFFD1D5DB)),
-                color = Color.White
+                border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
+                color = MaterialTheme.colorScheme.surface
             ) {
                 Row(
                     modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
@@ -974,14 +974,14 @@ fun ReviewsSection(
                     Icon(
                         imageVector = Icons.Default.Star,
                         contentDescription = null,
-                        tint = PrincipalOrange,
+                        tint = MaterialTheme.colorScheme.tertiary,
                         modifier = Modifier.size(18.dp)
                     )
                     Spacer(modifier = Modifier.width(4.dp))
                     Text(
                         text = generalRating.toString(),
                         style = TextTokens.cardTitle(),
-                        color = Color.Black
+                        color = MaterialTheme.colorScheme.onSurface
                     )
                 }
             }
@@ -1007,8 +1007,8 @@ fun ReviewsSection(
 fun ReviewCard(review: Review) {
     Surface(
         shape = RoundedCornerShape(16.dp),
-        border = BorderStroke(1.dp, Color(0xFFD1D5DB)),
-        color = Color(0xFFF8FAFC)
+        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
+        color = MaterialTheme.colorScheme.surfaceVariant
     ) {
         Column(
             modifier = Modifier
@@ -1023,14 +1023,14 @@ fun ReviewCard(review: Review) {
                 Text(
                     text = review.username,
                     style = TextTokens.sectionAction(),
-                    color = Color.Black
+                    color = MaterialTheme.colorScheme.onSurface
                 )
                 Row {
                     repeat(5) { index ->
                         Icon(
                             imageVector = if (index < review.rating) Icons.Default.Star else Icons.Default.StarBorder,
                             contentDescription = null,
-                            tint = PrincipalOrange,
+                            tint = MaterialTheme.colorScheme.tertiary,
                             modifier = Modifier.size(20.dp)
                         )
                     }
@@ -1039,7 +1039,7 @@ fun ReviewCard(review: Review) {
             Spacer(modifier = Modifier.height(8.dp))
             Text(
                 text = review.comment,
-                color = DarkGray,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
                 style = TextTokens.inputText(),
                 lineHeight = 22.sp
             )
@@ -1058,7 +1058,7 @@ fun BottomActionsBar(
     Surface(
         modifier = Modifier.fillMaxWidth(),
         shadowElevation = 16.dp,
-        color = Color.White
+        color = MaterialTheme.colorScheme.surface
     ) {
         Row(
             modifier = Modifier
@@ -1073,10 +1073,10 @@ fun BottomActionsBar(
                         .fillMaxWidth()
                         .height(54.dp),
                     shape = RoundedCornerShape(12.dp),
-                    border = BorderStroke(1.5.dp, PrincipalRed),
+                    border = BorderStroke(1.5.dp, MaterialTheme.colorScheme.error),
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = Color(0xFFFFEBEE),
-                        contentColor = PrincipalRed
+                        containerColor = MaterialTheme.colorScheme.errorContainer,
+                        contentColor = MaterialTheme.colorScheme.onErrorContainer
                     )
                 ) {
                     Icon(Icons.Outlined.Delete, contentDescription = null)
@@ -1094,10 +1094,10 @@ fun BottomActionsBar(
                         .weight(1f)
                         .height(54.dp),
                     shape = RoundedCornerShape(12.dp),
-                    border = if (isInterested) null else BorderStroke(1.5.dp, PrincipalBlue),
+                    border = if (isInterested) null else BorderStroke(1.5.dp, MaterialTheme.colorScheme.primary),
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = if (isInterested) PrincipalBlue else Color.White,
-                        contentColor = if (isInterested) Color.White else PrincipalBlue
+                        containerColor = if (isInterested) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surface,
+                        contentColor = if (isInterested) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.primary
                     )
                 ) {
                     Icon(
@@ -1118,8 +1118,8 @@ fun BottomActionsBar(
                         .weight(1f)
                         .height(54.dp),
                     shape = RoundedCornerShape(12.dp),
-                    border = BorderStroke(1.5.dp, PrincipalGreen),
-                    colors = ButtonDefaults.outlinedButtonColors(contentColor = PrincipalGreen)
+                    border = BorderStroke(1.5.dp, MaterialTheme.colorScheme.secondary),
+                    colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colorScheme.secondary)
                 ) {
                     Icon(Icons.Outlined.CheckCircle, contentDescription = null)
                     Spacer(modifier = Modifier.width(8.dp))

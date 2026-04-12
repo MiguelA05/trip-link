@@ -37,10 +37,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.example.triplink.R
-import com.example.triplink.ui.theme.PrincipalBlue
-import com.example.triplink.ui.theme.PrincipalGreen
-import com.example.triplink.ui.theme.PrincipalRed
-import com.example.triplink.ui.theme.PrincipalWhite
 
 @Composable
 fun ApprovePublicationDialog(
@@ -51,15 +47,15 @@ fun ApprovePublicationDialog(
     BaseModerationDialog(
         onDismiss = onDismiss,
         icon = Icons.Outlined.ThumbUp,
-        iconTint = PrincipalGreen,
-        iconBackground = Color(0xFFDCF2D5),
+        iconTint = MaterialTheme.colorScheme.primary,
+        iconBackground = MaterialTheme.colorScheme.primaryContainer,
         title = stringResource(R.string.component_moderation_decision_dialog_approve_title),
         message = stringResource(
             R.string.component_moderation_decision_dialog_message_publication,
             publicationTitle
         ),
         confirmText = stringResource(R.string.component_moderation_decision_dialog_approve_action),
-        confirmColor = PrincipalGreen,
+        confirmColor = MaterialTheme.colorScheme.primary,
         confirmEnabled = true,
         onConfirm = onConfirm,
         body = null
@@ -77,21 +73,21 @@ fun RejectPublicationDialog(
     BaseModerationDialog(
         onDismiss = onDismiss,
         icon = Icons.Outlined.ThumbDown,
-        iconTint = Color(0xFFB3261E),
-        iconBackground = Color(0xFFF7DCDD),
+        iconTint = MaterialTheme.colorScheme.error,
+        iconBackground = MaterialTheme.colorScheme.errorContainer,
         title = stringResource(R.string.component_moderation_decision_dialog_reject_title),
         message = stringResource(
             R.string.component_moderation_decision_dialog_message_publication,
             publicationTitle
         ),
         confirmText = stringResource(R.string.component_moderation_decision_dialog_reject_action),
-        confirmColor = PrincipalRed,
+        confirmColor = MaterialTheme.colorScheme.error,
         confirmEnabled = reason.isNotBlank(),
         onConfirm = onConfirm,
         body = {
             Surface(
                 shape = RoundedCornerShape(22.dp),
-                color = Color(0xFFF7F7F8),
+                color = MaterialTheme.colorScheme.surfaceVariant,
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Column(
@@ -102,7 +98,7 @@ fun RejectPublicationDialog(
                         text = stringResource(R.string.component_moderation_decision_dialog_reason_label),
                         style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.Bold,
-                        color = Color(0xFF2A2C33)
+                        color = MaterialTheme.colorScheme.onSurface
                     )
                     OutlinedTextField(
                         value = reason,
@@ -110,17 +106,17 @@ fun RejectPublicationDialog(
                         placeholder = {
                             Text(
                                 text = stringResource(R.string.component_moderation_decision_dialog_reason_placeholder),
-                                color = Color(0xFF9C9FA8)
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
                             )
                         },
                         minLines = 4,
                         maxLines = 4,
                         shape = RoundedCornerShape(18.dp),
                         colors = OutlinedTextFieldDefaults.colors(
-                            focusedContainerColor = Color(0xFFEEF0F4),
-                            unfocusedContainerColor = Color(0xFFEEF0F4),
-                            focusedBorderColor = Color(0xFFD3D8E3),
-                            unfocusedBorderColor = Color(0xFFD3D8E3)
+                            focusedContainerColor = MaterialTheme.colorScheme.surface,
+                            unfocusedContainerColor = MaterialTheme.colorScheme.surface,
+                            focusedBorderColor = MaterialTheme.colorScheme.outlineVariant,
+                            unfocusedBorderColor = MaterialTheme.colorScheme.outlineVariant
                         ),
                         modifier = Modifier.fillMaxWidth()
                     )
@@ -131,7 +127,7 @@ fun RejectPublicationDialog(
                             300
                         ),
                         style = MaterialTheme.typography.labelMedium,
-                        color = Color(0xFFA1A8B6),
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
                         modifier = Modifier.align(Alignment.End)
                     )
                 }
@@ -158,7 +154,7 @@ private fun BaseModerationDialog(
     BasicAlertDialog(onDismissRequest = onDismiss) {
         Surface(
             shape = RoundedCornerShape(30.dp),
-            color = PrincipalWhite,
+            color = MaterialTheme.colorScheme.surface,
             modifier = Modifier.fillMaxWidth()
         ) {
             Column(
@@ -172,12 +168,12 @@ private fun BaseModerationDialog(
                     modifier = Modifier
                         .align(Alignment.End)
                         .size(38.dp)
-                        .background(Color(0xFFF2F4F8), CircleShape)
+                        .background(MaterialTheme.colorScheme.surfaceVariant, CircleShape)
                 ) {
                     Icon(
                         imageVector = Icons.Outlined.Close,
                         contentDescription = stringResource(R.string.component_moderation_decision_dialog_close),
-                        tint = Color(0xFF9EA5B2)
+                        tint = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }
 
@@ -207,12 +203,12 @@ private fun BaseModerationDialog(
                 Text(
                     text = message,
                     style = MaterialTheme.typography.bodyLarge,
-                    color = Color(0xFF575B65),
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
                     textAlign = TextAlign.Center,
                     modifier = Modifier.fillMaxWidth()
                 )
 
-                HorizontalDivider(color = Color(0xFFE9EBF0))
+                HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
 
                 body?.invoke()
 
@@ -226,7 +222,7 @@ private fun BaseModerationDialog(
                             .weight(1f)
                             .height(56.dp),
                         shape = RoundedCornerShape(30.dp),
-                        colors = ButtonDefaults.outlinedButtonColors(contentColor = PrincipalBlue)
+                        colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colorScheme.primary)
                     ) {
                         Text(
                             text = stringResource(R.string.component_moderation_decision_dialog_cancel_action),
@@ -244,7 +240,7 @@ private fun BaseModerationDialog(
                         shape = RoundedCornerShape(30.dp),
                         colors = ButtonDefaults.buttonColors(
                             containerColor = confirmColor,
-                            contentColor = PrincipalWhite
+                            contentColor = if (confirmColor == MaterialTheme.colorScheme.error) MaterialTheme.colorScheme.onError else MaterialTheme.colorScheme.onPrimary
                         )
                     ) {
                         Text(

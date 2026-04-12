@@ -16,13 +16,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import com.example.triplink.ui.theme.PrincipalBlack
-import com.example.triplink.ui.theme.PrincipalBlue
 
 @Composable
 fun LinkTextRow(
     text: String,
-    textColor: Color = PrincipalBlack,
+    textColor: Color = MaterialTheme.colorScheme.onSurface,
     buttonText: String,
     onClick: () -> Unit,
     modifier: Modifier = Modifier
@@ -44,7 +42,7 @@ fun LinkTextRow(
             onClick = onClick,
             interactionSource = interactionSource,
             colors = ButtonDefaults.textButtonColors(
-                contentColor = PrincipalBlue
+                contentColor = MaterialTheme.colorScheme.primary
             ),
             modifier = Modifier.background(
                 color = Color.Transparent,
@@ -54,7 +52,7 @@ fun LinkTextRow(
             Text(
                 text = buttonText,
                 style = MaterialTheme.typography.bodyLarge.copy(
-                    color = PrincipalBlue
+                    color = MaterialTheme.colorScheme.primary
                 )
             )
         }

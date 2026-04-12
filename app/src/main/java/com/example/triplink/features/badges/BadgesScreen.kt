@@ -15,7 +15,6 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -42,7 +41,7 @@ fun BadgesScreen(
                 onBack = onBack
             )
         },
-        containerColor = Color.White
+        containerColor = MaterialTheme.colorScheme.background
     ) { paddingValues ->
         Box(modifier = Modifier.fillMaxSize()) {
             Column(
@@ -96,7 +95,7 @@ fun UserStatusCard() {
         modifier = Modifier
             .fillMaxWidth()
             .shadow(8.dp, RoundedCornerShape(24.dp)),
-        colors = CardDefaults.cardColors(containerColor = Color.White),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
         shape = RoundedCornerShape(24.dp)
     ) {
         Column(
@@ -107,13 +106,13 @@ fun UserStatusCard() {
             Box(
                 modifier = Modifier
                     .size(64.dp)
-                    .background(Color(0xFFE3F2FD), CircleShape),
+                    .background(MaterialTheme.colorScheme.primaryContainer, CircleShape),
                 contentAlignment = Alignment.Center
             ) {
                 Icon(
                     imageVector = Icons.Default.EmojiEvents,
                     contentDescription = null,
-                    tint = Color(0xFF1E88E5),
+                    tint = MaterialTheme.colorScheme.primary,
                     modifier = Modifier.size(32.dp)
                 )
             }
@@ -129,13 +128,13 @@ fun UserStatusCard() {
             Text(
                 text = stringResource(R.string.feature_badges_current_level_label),
                 style = MaterialTheme.typography.labelSmall,
-                color = Color.Gray,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
                 letterSpacing = 1.sp
             )
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            HorizontalDivider(color = Color(0xFFEEEEEE))
+            HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
 
             Spacer(modifier = Modifier.height(16.dp))
 
@@ -148,18 +147,18 @@ fun UserStatusCard() {
                         text = "0",
                         style = MaterialTheme.typography.headlineSmall,
                         fontWeight = FontWeight.Bold,
-                        color = Color(0xFF1E88E5)
+                        color = MaterialTheme.colorScheme.primary
                     )
                     Text(
                         text = stringResource(R.string.feature_badges_total_points_label),
                         style = MaterialTheme.typography.bodySmall,
-                        color = Color.Gray
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }
 
                 VerticalDivider(
                     modifier = Modifier.height(40.dp),
-                    color = Color(0xFFEEEEEE)
+                    color = MaterialTheme.colorScheme.outlineVariant
                 )
 
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
@@ -167,12 +166,12 @@ fun UserStatusCard() {
                         text = "0",
                         style = MaterialTheme.typography.headlineSmall,
                         fontWeight = FontWeight.Bold,
-                        color = Color(0xFF1E88E5)
+                        color = MaterialTheme.colorScheme.primary
                     )
                     Text(
                         text = stringResource(R.string.feature_badges_contributions_label),
                         style = MaterialTheme.typography.bodySmall,
-                        color = Color.Gray
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }
             }
@@ -181,7 +180,7 @@ fun UserStatusCard() {
 
             Box(
                 modifier = Modifier
-                    .background(Color(0xFFF5F5F5), RoundedCornerShape(12.dp))
+                    .background(MaterialTheme.colorScheme.surfaceVariant, RoundedCornerShape(12.dp))
                     .padding(horizontal = 16.dp, vertical = 8.dp)
                     .fillMaxWidth()
             ) {
@@ -189,7 +188,7 @@ fun UserStatusCard() {
                     Icon(
                         imageVector = Icons.Default.Schedule,
                         contentDescription = null,
-                        tint = Color.Gray,
+                        tint = MaterialTheme.colorScheme.onSurfaceVariant,
                         modifier = Modifier.size(16.dp)
                     )
                     Spacer(modifier = Modifier.width(8.dp))
@@ -199,7 +198,7 @@ fun UserStatusCard() {
                             "22/02/2026"
                         ),
                         style = MaterialTheme.typography.bodySmall,
-                        color = Color.DarkGray
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }
             }
@@ -219,19 +218,19 @@ fun BadgeItem(badge: Badge, onClick: () -> Unit) {
             modifier = Modifier
                 .size(80.dp)
                 .shadow(4.dp, CircleShape)
-                .background(Color.White, CircleShape)
+                .background(MaterialTheme.colorScheme.surface, CircleShape)
                 .padding(4.dp)
         ) {
             Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(badge.color.copy(alpha = 0.1f), CircleShape),
+                    .background(resolveBadgeColor(badge.colorRole).copy(alpha = 0.15f), CircleShape),
                 contentAlignment = Alignment.Center
             ) {
                 Icon(
                     imageVector = badge.icon,
                     contentDescription = badge.name,
-                    tint = badge.color,
+                    tint = resolveBadgeColor(badge.colorRole),
                     modifier = Modifier.size(32.dp)
                 )
             }
@@ -246,6 +245,16 @@ fun BadgeItem(badge: Badge, onClick: () -> Unit) {
             fontWeight = FontWeight.Medium,
             lineHeight = 14.sp
         )
+    }
+}
+
+@Composable
+private fun resolveBadgeColor(colorRole: BadgeColorRole): androidx.compose.ui.graphics.Color {
+    return when (colorRole) {
+        BadgeColorRole.PRIMARY -> MaterialTheme.colorScheme.primary
+        BadgeColorRole.SECONDARY -> MaterialTheme.colorScheme.secondary
+        BadgeColorRole.TERTIARY -> MaterialTheme.colorScheme.tertiary
+        BadgeColorRole.ERROR -> MaterialTheme.colorScheme.error
     }
 }
 

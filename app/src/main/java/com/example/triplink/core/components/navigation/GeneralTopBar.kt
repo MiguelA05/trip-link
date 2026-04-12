@@ -13,8 +13,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import com.example.triplink.R
-import com.example.triplink.ui.theme.PrincipalBlue
-import com.example.triplink.ui.theme.SoftBlue
 import com.example.triplink.ui.theme.TextColors
 import com.example.triplink.ui.theme.TextTokens
 
@@ -43,13 +41,13 @@ fun GeneralTopBar(
                         contentDescription = stringResource(
                             R.string.component_general_top_bar_back_content_description
                         ),
-                        tint = PrincipalBlue
+                        tint = MaterialTheme.colorScheme.primary
                     )
                 }
             }
         },
         colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-            containerColor = SoftBlue
+            containerColor = MaterialTheme.colorScheme.surface
         )
     )
 }

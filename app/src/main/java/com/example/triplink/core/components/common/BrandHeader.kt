@@ -15,11 +15,11 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.NotificationsNone
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -36,7 +36,7 @@ fun BrandHeader(
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .background(Color(0xFFF5F6F8))
+            .background(MaterialTheme.colorScheme.background)
             .statusBarsPadding()
             .padding(horizontal = 18.dp, vertical = 14.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
@@ -54,7 +54,7 @@ fun BrandHeader(
                 Text(
                     text = locationText,
                     style = TextTokens.cardSubtitle(),
-                    color = Color.Gray
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
         }
@@ -63,7 +63,7 @@ fun BrandHeader(
             Icon(
                 imageVector = Icons.Outlined.NotificationsNone,
                 contentDescription = stringResource(R.string.component_brand_header_notifications_content_description),
-                tint = Color(0xFF9BB9FF),
+                tint = MaterialTheme.colorScheme.primary,
                 modifier = Modifier.size(28.dp)
             )
         }

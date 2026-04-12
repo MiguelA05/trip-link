@@ -3,6 +3,7 @@ package com.example.triplink.core.components
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -30,7 +31,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -49,13 +49,19 @@ fun CommentCard(
 ) {
     var isExpanded by remember { mutableStateOf(false) }
     var hasOverflow by remember(comment.id) { mutableStateOf(false) }
+    val cardBorderColor = if (isSystemInDarkTheme()) {
+        MaterialTheme.colorScheme.outline.copy(alpha = 0.9f)
+    } else {
+        MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.88f)
+    }
 
     Card(
         modifier = modifier.fillMaxWidth(),
         shape = MaterialTheme.shapes.extraLarge,
         colors = CardDefaults.cardColors(
-            containerColor = Color.White
+            containerColor = MaterialTheme.colorScheme.surface
         ),
+        border = androidx.compose.foundation.BorderStroke(1.25.dp, cardBorderColor),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
         Column(
@@ -70,7 +76,7 @@ fun CommentCard(
                     modifier = Modifier
                         .size(48.dp)
                         .clip(CircleShape)
-                        .background(Color(0xFFD32F2F)),
+                        .background(MaterialTheme.colorScheme.primaryContainer),
                     contentAlignment = Alignment.Center
                 ) {
                     Text(
@@ -78,7 +84,7 @@ fun CommentCard(
                             name = comment.userName,
                             fallbackInitial = stringResource(R.string.component_comment_card_default_initial)
                         ),
-                        color = Color.White,
+                        color = MaterialTheme.colorScheme.onPrimaryContainer,
                         fontWeight = FontWeight.Bold,
                         fontSize = 18.sp
                     )
@@ -95,7 +101,7 @@ fun CommentCard(
                     Text(
                         text = formatDate(comment.date),
                         style = MaterialTheme.typography.bodySmall,
-                        color = Color.LightGray
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }
             }
@@ -108,13 +114,13 @@ fun CommentCard(
                         imageVector = Icons.Default.Star,
                         contentDescription = null,
                         modifier = Modifier.size(18.dp),
-                        tint = if (index < comment.rating.toInt()) Color(0xFFFFB300) else Color.LightGray
+                        tint = if (index < comment.rating.toInt()) MaterialTheme.colorScheme.tertiary else MaterialTheme.colorScheme.outline
                     )
                 }
                 Spacer(modifier = Modifier.width(8.dp))
                 Text(
                     text = String.format(Locale.ROOT, "%.1f", comment.rating),
-                    color = Color(0xFFFFB300),
+                    color = MaterialTheme.colorScheme.tertiary,
                     fontWeight = FontWeight.Bold,
                     fontSize = 14.sp
                 )
@@ -125,7 +131,7 @@ fun CommentCard(
             Text(
                 text = comment.text,
                 style = MaterialTheme.typography.bodyMedium,
-                color = Color.DarkGray,
+                color = MaterialTheme.colorScheme.onSurface,
                 maxLines = if (isExpanded) Int.MAX_VALUE else 3,
                 overflow = TextOverflow.Ellipsis,
                 lineHeight = 20.sp,
@@ -148,7 +154,7 @@ fun CommentCard(
                     Icon(
                         imageVector = if (isExpanded) Icons.Default.KeyboardArrowUp else Icons.Default.KeyboardArrowDown,
                         contentDescription = null,
-                        tint = Color(0xFFFFB300),
+                        tint = MaterialTheme.colorScheme.tertiary,
                         modifier = Modifier.size(20.dp)
                     )
                     Spacer(modifier = Modifier.width(4.dp))
@@ -158,7 +164,7 @@ fun CommentCard(
                         } else {
                             stringResource(R.string.component_comment_card_show_more)
                         },
-                        color = Color(0xFFFFB300),
+                        color = MaterialTheme.colorScheme.tertiary,
                         fontWeight = FontWeight.Bold,
                         fontSize = 14.sp
                     )

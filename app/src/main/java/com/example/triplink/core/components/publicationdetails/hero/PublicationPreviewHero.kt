@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -51,7 +52,7 @@ fun PublicationPreviewHero(
             Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(Color(0xFFE5E7EB))
+                    .background(MaterialTheme.colorScheme.surfaceVariant)
             )
         }
 
@@ -60,7 +61,7 @@ fun PublicationPreviewHero(
                 .fillMaxSize()
                 .background(
                     Brush.verticalGradient(
-                        colors = listOf(Color.Transparent, Color.Black.copy(alpha = 0.45f))
+                        colors = listOf(Color.Transparent, MaterialTheme.colorScheme.scrim.copy(alpha = 0.45f))
                     )
                 )
         )
@@ -73,12 +74,12 @@ fun PublicationPreviewHero(
         ) {
             androidx.compose.material3.Text(
                 text = categoryLabel.uppercase(),
-                color = Color(0xFF3CE36D),
+                color = MaterialTheme.colorScheme.secondary,
                 style = TextTokens.chipLabel()
             )
             androidx.compose.material3.Text(
                 text = title,
-                color = Color.White,
+                color = MaterialTheme.colorScheme.onPrimary,
                 style = TextTokens.heroTitle(),
                 lineHeight = TextTokens.heroTitle().lineHeight
             )

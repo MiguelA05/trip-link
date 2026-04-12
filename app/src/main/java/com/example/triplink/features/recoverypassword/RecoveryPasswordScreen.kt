@@ -37,9 +37,6 @@ import com.example.triplink.core.components.GeneralAlertDialog
 import com.example.triplink.core.components.GeneralButton
 import com.example.triplink.core.components.GeneralTopBar
 import com.example.triplink.core.utils.RequestResult
-import com.example.triplink.ui.theme.PrincipalBlue
-import com.example.triplink.ui.theme.PrincipalRed
-import com.example.triplink.ui.theme.PrincipalWhite
 import kotlinx.coroutines.delay
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 
@@ -75,8 +72,8 @@ fun RecoveryPasswordScreen(
             SnackbarHost(snackbarHostState) { data ->
                 val isError = recoveryResult is RequestResult.Failure
                 Snackbar(
-                    containerColor = if (isError) PrincipalRed else PrincipalBlue,
-                    contentColor = PrincipalWhite
+                    containerColor = if (isError) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.primary,
+                    contentColor = if (isError) MaterialTheme.colorScheme.onError else MaterialTheme.colorScheme.onPrimary
                 ) {
                     Text(
                         text = data.visuals.message,
