@@ -21,15 +21,8 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.Logout
-import androidx.compose.material.icons.filled.CameraAlt
-import androidx.compose.material.icons.filled.Explore
-import androidx.compose.material.icons.filled.Flag
-import androidx.compose.material.icons.filled.LocalDining
-import androidx.compose.material.icons.filled.MilitaryTech
-import androidx.compose.material.icons.filled.RocketLaunch
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
@@ -48,10 +41,10 @@ import com.example.triplink.core.components.GeneralAlertDialog
 import com.example.triplink.core.components.GeneralButton
 import com.example.triplink.core.components.profile.EmptyState
 import com.example.triplink.core.components.profile.ProfileHeader
+import com.example.triplink.core.components.profile.RecentBadgeChip
 import com.example.triplink.core.components.profile.SectionCard
 import com.example.triplink.core.components.profile.StatsRow
 import com.example.triplink.core.components.profile.StatusTabs
-import com.example.triplink.domain.model.InsigniaIconKey
 import com.example.triplink.domain.model.enums.EstadoPublicacion
 import com.example.triplink.ui.theme.TextColors
 import com.example.triplink.ui.theme.TextTokens
@@ -120,7 +113,13 @@ fun UserInfoScreen(
 				if (state.recentBadges.isEmpty()) {
 					EmptyState(message = stringResource(R.string.feature_user_info_badges_empty))
 				} else {
-					RecentBadgesRow(badges = state.recentBadges)
+					LazyRow(
+						horizontalArrangement = Arrangement.spacedBy(10.dp)
+					) {
+						items(state.recentBadges) { badge ->
+							RecentBadgeChip(badge = badge)
+						}
+					}
 				}
 			}
 		}
@@ -211,55 +210,6 @@ fun UserInfoScreen(
 			onDismissAction = viewModel::dismissLogoutDialog
 		)
 	}
-}
-
-@Composable
-private fun RecentBadgesRow(badges: List<UserRecentBadgeItem>) {
-	LazyRow(
-		horizontalArrangement = Arrangement.spacedBy(10.dp),
-		contentPadding = PaddingValues(vertical = 2.dp)
-	) {
-		items(badges, key = { it.id }) { badge ->
-			Surface(
-				shape = RoundedCornerShape(12.dp),
-				color = MaterialTheme.colorScheme.surfaceVariant,
-				border = androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant)
-			) {
-				Row(
-					modifier = Modifier.padding(horizontal = 10.dp, vertical = 8.dp),
-					verticalAlignment = Alignment.CenterVertically,
-					horizontalArrangement = Arrangement.spacedBy(8.dp)
-				) {
-					Icon(
-						imageVector = badge.iconKey.toIcon(),
-						contentDescription = null,
-						tint = MaterialTheme.colorScheme.primary
-					)
-					Column {
-						Text(
-							text = badge.name,
-							style = TextTokens.emphasized(TextTokens.label()),
-							color = TextColors.Primary
-						)
-						Text(
-							text = stringResource(R.string.component_badge_detail_modal_points, badge.points),
-							style = TextTokens.caption(),
-							color = TextColors.Secondary
-						)
-					}
-				}
-			}
-		}
-	}
-}
-
-private fun InsigniaIconKey.toIcon() = when (this) {
-	InsigniaIconKey.SPARK -> Icons.Default.RocketLaunch
-	InsigniaIconKey.COMPASS -> Icons.Default.Explore
-	InsigniaIconKey.CAMERA -> Icons.Default.CameraAlt
-	InsigniaIconKey.FOOD -> Icons.Default.LocalDining
-	InsigniaIconKey.PATH -> Icons.Default.Flag
-	InsigniaIconKey.TROPHY -> Icons.Default.MilitaryTech
 }
 
 @Composable
