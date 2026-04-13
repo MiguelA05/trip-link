@@ -57,6 +57,11 @@ class BadgeUnlockNotifierViewModel @Inject constructor(
         _currentUnlockDialog.value = pendingUnlocks.removeFirstOrNull()
     }
 
+    fun dismissAllUnlockDialogs() {
+        pendingUnlocks.clear()
+        _currentUnlockDialog.value = null
+    }
+
     override fun onCleared() {
         publicationsObserverJob?.cancel()
         super.onCleared()

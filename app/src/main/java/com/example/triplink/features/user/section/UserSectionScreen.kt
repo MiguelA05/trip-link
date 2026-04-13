@@ -12,11 +12,13 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.triplink.core.components.navigation.BottomBar
 import com.example.triplink.core.components.navigation.defaultNavItems
+import com.example.triplink.features.badges.BadgeUnlockNotificationHost
 import com.example.triplink.core.navigation.user.UserNavigation
 import com.example.triplink.core.navigation.user.UserSectionRoutes
 
 @Composable
 fun UserSectionScreen(
+    userId: String = "",
     onLogout: () -> Unit = {}
 ) {
     val navController = rememberNavController()
@@ -65,6 +67,17 @@ fun UserSectionScreen(
             navController = navController,
             padding = paddingValues,
             onLogout = onLogout
+        )
+    }
+
+    if (userId.isNotBlank()) {
+        BadgeUnlockNotificationHost(
+            userId = userId,
+            onViewBadges = {
+                navController.navigate(UserSectionRoutes.Bagdes) {
+                    launchSingleTop = true
+                }
+            }
         )
     }
 }

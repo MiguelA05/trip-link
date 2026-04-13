@@ -9,8 +9,6 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.triplink.data.model.UserSession
 import com.example.triplink.domain.model.enums.Rol
-import com.example.triplink.core.navigation.user.UserSectionRoutes
-import com.example.triplink.features.badges.BadgeUnlockNotificationHost
 import com.example.triplink.features.admin.section.AdminSectionScreen
 import com.example.triplink.features.user.section.UserSectionScreen
 
@@ -35,6 +33,7 @@ fun MainNavigation(
             composable<MainRoutes.UserSection> {
                 // Se pasa el callback de logout para cerrar sesión, úselo dentro de UserScreen
                 UserSectionScreen(
+                    userId = session.userId,
                     onLogout = onLogout
                 )
             }
@@ -46,14 +45,5 @@ fun MainNavigation(
                 )
             }
         }
-
-        BadgeUnlockNotificationHost(
-            userId = session.userId,
-            onViewBadges = {
-                navController.navigate(UserSectionRoutes.Bagdes) {
-                    launchSingleTop = true
-                }
-            }
-        )
     }
 }

@@ -25,7 +25,10 @@ fun BadgeUnlockNotificationHost(
 			totalPoints = unlock.totalPoints,
 			levelLabel = unlock.currentLevel,
 			onDismiss = viewModel::dismissUnlockDialog,
-			onViewBadges = onViewBadges
+			onViewBadges = {
+				onViewBadges()
+				viewModel.dismissUnlockDialog()
+			}
 		)
 	}
 }

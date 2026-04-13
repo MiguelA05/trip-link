@@ -38,6 +38,7 @@ import com.example.triplink.ui.theme.TextColors
 import com.example.triplink.ui.theme.TextTokens
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
+import kotlinx.coroutines.delay
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -51,6 +52,7 @@ fun RegisterScreen(
     val registerResult by registerViewModel.registerResult.collectAsState()
     var showSuccessDialog by remember { mutableStateOf(false) }
     var successMessage by remember { mutableStateOf("") }
+    var pendingSuccessNavigation by remember { mutableStateOf(false) }
 
     LaunchedEffect(registerResult) {
         registerResult?.let { result ->
@@ -65,6 +67,14 @@ fun RegisterScreen(
             }
             // Clear result after showing snackbar to avoid repeated triggers on recomposition
             registerViewModel.clearResult()
+        }
+    }
+
+    LaunchedEffect(pendingSuccessNavigation) {
+        if (pendingSuccessNavigation) {
+            delay(150)
+            pendingSuccessNavigation = false
+            onRegisterSuccess()
         }
     }
 
@@ -298,7 +308,7 @@ fun RegisterScreen(
             onDismissRequest = {},
             onConfirm = {
                 showSuccessDialog = false
-                onRegisterSuccess()
+                pendingSuccessNavigation = true
             },
             title = stringResource(R.string.feature_register_success_dialog_title),
             message = successMessage,
