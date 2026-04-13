@@ -44,11 +44,12 @@ fun PublicationCard(
     ratingLabel: String = "4.8",
     modifier: Modifier = Modifier,
     showFooter: Boolean = true,
+    isFavorite: Boolean = false,
     onCardClick: (() -> Unit)? = null,
     onFavoriteToggle: (Boolean) -> Unit = {},
     onCommentsClick: () -> Unit = {}
 ) {
-    var isFavorite by remember(puntoInteres.id) { mutableStateOf(false) }
+    var isFavoritedState by remember(puntoInteres.id, isFavorite) { mutableStateOf(isFavorite) }
     val cardBorderColor = if (isSystemInDarkTheme()) {
         MaterialTheme.colorScheme.outline.copy(alpha = 0.92f)
     } else {
@@ -258,17 +259,17 @@ fun PublicationCard(
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         IconButton(
                             onClick = {
-                                isFavorite = !isFavorite
-                                onFavoriteToggle(isFavorite)
+                                isFavoritedState = !isFavoritedState
+                                onFavoriteToggle(isFavoritedState)
                             },
                             modifier = Modifier.size(24.dp)
                         ) {
                             Icon(
-                                 imageVector = if (isFavorite) Icons.Filled.Favorite else Icons.Outlined.FavoriteBorder,
+                                 imageVector = if (isFavoritedState) Icons.Filled.Favorite else Icons.Outlined.FavoriteBorder,
                                 contentDescription = stringResource(
                                     R.string.component_publication_card_add_to_favorites_content_description
                                 ),
-                                tint = if (isFavorite) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onSurfaceVariant,
+                                tint = if (isFavoritedState) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onSurfaceVariant,
                                 modifier = Modifier.size(24.dp)
                             )
                         }

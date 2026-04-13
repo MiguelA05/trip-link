@@ -16,7 +16,9 @@ import com.example.triplink.features.filters.FiltersStore
 import com.example.triplink.features.filters.publicationMatchesFilters
 import com.example.triplink.domain.repository.publication.PublicationRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import javax.inject.Inject
@@ -32,8 +34,8 @@ class ExploreViewModel @Inject constructor(
     var query by mutableStateOf("")
         private set
 
-    var selectedCategory by mutableStateOf<Categoria?>(null)
-        private set
+    private val _selectedCategory = MutableStateFlow<Categoria?>(null)
+    val selectedCategory: StateFlow<Categoria?> = _selectedCategory.asStateFlow()
 
     var selectedTabIndex by mutableIntStateOf(1)
         private set
@@ -47,14 +49,15 @@ class ExploreViewModel @Inject constructor(
         Categoria.CULTURA
     )
 
-    // Flujo reactivo que combina publications y appliedFilters
+    // Flujo reactivo que combina publications, appliedFilters y selectedCategory
     val filteredPublications: StateFlow<List<PuntoInteres>> = combine(
         publications,
-        appliedFilters
-    ) { pubs, filters ->
+        appliedFilters,
+        _selectedCategory
+    ) { pubs, filters, category ->
         pubs.filter { publication ->
             val isVisible = publication.estado == EstadoPublicacion.VERIFICADA
-            val categoryMatches = selectedCategory == null || publication.categoria == selectedCategory
+            val categoryMatches = category == null || publication.categoria == category
             isVisible && categoryMatches && publicationMatchesFilters(publication, filters, query)
         }
     }.stateIn(viewModelScope, kotlinx.coroutines.flow.SharingStarted.Lazily, emptyList())
@@ -64,7 +67,7 @@ class ExploreViewModel @Inject constructor(
     }
 
     fun onCategorySelected(category: Categoria?) {
-        selectedCategory = category
+        _selectedCategory.value = category
     }
 
     fun ratingLabelForPublication(publication: PuntoInteres): String {

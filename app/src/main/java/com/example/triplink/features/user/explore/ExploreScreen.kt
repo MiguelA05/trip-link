@@ -44,6 +44,7 @@ fun ExploreScreen(
 	val publications by viewModel.publications.collectAsState()
 	val filteredPublications by viewModel.filteredPublications.collectAsState()
 	val appliedFilters by viewModel.appliedFilters.collectAsState()
+	val selectedCategory by viewModel.selectedCategory.collectAsState()
 	val appliedChips = buildList {
 		appliedFilters.categories.forEach { category ->
 			add(
@@ -115,12 +116,12 @@ fun ExploreScreen(
 					onQueryChange = viewModel::onQueryChange,
 					onFilterClick = onFiltersClick
 				)
-				CategoryChips(
-					categories = viewModel.categories,
-					selectedCategory = viewModel.selectedCategory,
-					onCategorySelected = viewModel::onCategorySelected,
-					appliedChips = appliedChips
-				)
+			CategoryChips(
+				categories = viewModel.categories,
+				selectedCategory = selectedCategory,
+				onCategorySelected = viewModel::onCategorySelected,
+				appliedChips = appliedChips
+			)
 			}
 		},
 		floatingActionButton = {

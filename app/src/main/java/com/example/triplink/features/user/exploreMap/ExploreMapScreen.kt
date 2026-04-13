@@ -81,6 +81,7 @@ fun ExploreMapScreen(
 	var mapSize by remember { mutableStateOf(IntSize.Zero) }
 	val appliedFilters by viewModel.appliedFilters.collectAsState()
 	val filteredPublications by viewModel.filteredPublications.collectAsState()
+	val selectedCategory by viewModel.selectedCategory.collectAsState()
 	val appliedChips = buildList {
 		appliedFilters.categories.forEach { category ->
 			add(
@@ -230,12 +231,12 @@ fun ExploreMapScreen(
 					onQueryChange = viewModel::onQueryChange,
 					onFilterClick = onFiltersClick
 				)
-				CategoryChips(
-					categories = viewModel.categories,
-					selectedCategory = viewModel.selectedCategory,
-					onCategorySelected = viewModel::onCategorySelected,
-					appliedChips = appliedChips
-				)
+			CategoryChips(
+				categories = viewModel.categories,
+				selectedCategory = selectedCategory,
+				onCategorySelected = viewModel::onCategorySelected,
+				appliedChips = appliedChips
+			)
 			}
 
 			Box(

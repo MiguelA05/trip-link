@@ -28,6 +28,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -64,7 +65,8 @@ fun UserInfoScreen(
 		viewModel.refreshData()
 	}
 
-	val state = viewModel.uiState
+	val stateFlow = viewModel.uiState.collectAsState()
+	val state = stateFlow.value
 
 	Scaffold(
 		modifier = Modifier
@@ -73,112 +75,112 @@ fun UserInfoScreen(
 		containerColor = MaterialTheme.colorScheme.background,
 		contentWindowInsets = WindowInsets(0, 0, 0, 0)
 	) { paddingValues ->
-		LazyColumn(
-			modifier = Modifier
-				.fillMaxSize()
-				.padding(paddingValues),
-			contentPadding = PaddingValues(bottom = 10.dp),
-			verticalArrangement = Arrangement.spacedBy(12.dp)
-		) {
-			item {
-				ProfileHeader(
-					userName = state.userName,
-					initials = state.userInitials,
-					roleLabel = state.roleLabel,
-					onBackClick = viewModel::onLogoutRequested,
-					onEditClick = onEditClick
-				)
-			}
+	LazyColumn(
+		modifier = Modifier
+			.fillMaxSize()
+			.padding(paddingValues),
+		contentPadding = PaddingValues(bottom = 10.dp),
+		verticalArrangement = Arrangement.spacedBy(12.dp)
+	) {
+		item {
+			ProfileHeader(
+				userName = state.userName,
+				initials = state.userInitials,
+				roleLabel = state.roleLabel,
+				onBackClick = viewModel::onLogoutRequested,
+				onEditClick = onEditClick
+			)
+		}
 
-			item {
-				StatsRow(
-					points = state.points,
-					contributions = state.contributions,
-					activeDays = state.activeDays,
-					modifier = Modifier.padding(horizontal = 10.dp)
-				)
-			}
+		item {
+			StatsRow(
+				points = state.points,
+				contributions = state.contributions,
+				activeDays = state.activeDays,
+				modifier = Modifier.padding(horizontal = 10.dp)
+			)
+		}
 
-			item {
-				SectionCard(
-					title = stringResource(R.string.feature_user_info_badges_title),
-					actionLabel = stringResource(R.string.feature_user_info_badges_action),
-					onActionClick = onBagdesClick,
-					modifier = Modifier.padding(horizontal = 10.dp)
-				) {
-					EmptyState(message = stringResource(R.string.feature_user_info_badges_empty))
-				}
-			}
-
-			item {
-				Card(
-					modifier = Modifier.fillMaxWidth(),
-					colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
-					elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
-				) {
-					StatusTabs(
-						selectedTab = state.selectedContributionTab,
-						onTabSelected = viewModel::onContributionTabSelected,
-						verifiedCount = state.verifiedCount,
-						pendingCount = state.pendingCount,
-						rejectedCount = state.rejectedCount,
-						modifier = Modifier.padding(horizontal = 4.dp)
-					)
-				}
-			}
-
-			if (state.selectedContributionItems.isEmpty()) {
-				item {
-					val emptyMessage = when (state.selectedContributionTab) {
-						EstadoPublicacion.VERIFICADA -> stringResource(R.string.feature_user_info_empty_verified)
-						EstadoPublicacion.PENDIENTE -> stringResource(R.string.feature_user_info_empty_pending)
-						EstadoPublicacion.RECHAZADA -> stringResource(R.string.feature_user_info_empty_rejected)
-					}
-
-					Card(
-						modifier = Modifier
-							.fillMaxWidth()
-							.padding(horizontal = 10.dp),
-						colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant),
-						shape = RoundedCornerShape(18.dp),
-						elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
-					) {
-						Column(
-							modifier = Modifier
-								.fillMaxWidth()
-								.padding(vertical = 42.dp, horizontal = 20.dp),
-							horizontalAlignment = Alignment.CenterHorizontally,
-							verticalArrangement = Arrangement.spacedBy(18.dp)
-						) {
-							Text(
-								text = emptyMessage,
-								color = MaterialTheme.colorScheme.onSurfaceVariant,
-											style = TextTokens.sectionTitle(),
-								textAlign = TextAlign.Center
-							)
-
-							GeneralButton(
-								onClick = onPostCreationClick,
-								text = stringResource(R.string.feature_user_info_create_poi_action)
-							)
-						}
-					}
-				}
-			} else {
-				items(state.selectedContributionItems) { contribution ->
-					ContributionCard(
-						contribution = contribution,
-						onActionClick = {
-							when (contribution.status) {
-								EstadoPublicacion.RECHAZADA -> onEditRejectedPublication(contribution.id)
-								EstadoPublicacion.VERIFICADA -> onViewVerifiedPublication(contribution.id)
-								EstadoPublicacion.PENDIENTE -> Unit
-							}
-						}
-					)
-				}
+		item {
+			SectionCard(
+				title = stringResource(R.string.feature_user_info_badges_title),
+				actionLabel = stringResource(R.string.feature_user_info_badges_action),
+				onActionClick = onBagdesClick,
+				modifier = Modifier.padding(horizontal = 10.dp)
+			) {
+				EmptyState(message = stringResource(R.string.feature_user_info_badges_empty))
 			}
 		}
+
+		item {
+			Card(
+				modifier = Modifier.fillMaxWidth(),
+				colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+				elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
+			) {
+				StatusTabs(
+					selectedTab = state.selectedContributionTab,
+					onTabSelected = viewModel::onContributionTabSelected,
+					verifiedCount = state.verifiedCount,
+					pendingCount = state.pendingCount,
+					rejectedCount = state.rejectedCount,
+					modifier = Modifier.padding(horizontal = 4.dp)
+				)
+			}
+		}
+
+		if (state.selectedContributionItems.isEmpty()) {
+			item {
+				val emptyMessage = when (state.selectedContributionTab) {
+					EstadoPublicacion.VERIFICADA -> stringResource(R.string.feature_user_info_empty_verified)
+					EstadoPublicacion.PENDIENTE -> stringResource(R.string.feature_user_info_empty_pending)
+					EstadoPublicacion.RECHAZADA -> stringResource(R.string.feature_user_info_empty_rejected)
+				}
+
+				Card(
+					modifier = Modifier
+						.fillMaxWidth()
+						.padding(horizontal = 10.dp),
+					colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant),
+					shape = RoundedCornerShape(18.dp),
+					elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
+				) {
+					Column(
+						modifier = Modifier
+							.fillMaxWidth()
+							.padding(vertical = 42.dp, horizontal = 20.dp),
+						horizontalAlignment = Alignment.CenterHorizontally,
+						verticalArrangement = Arrangement.spacedBy(18.dp)
+					) {
+						Text(
+							text = emptyMessage,
+							color = MaterialTheme.colorScheme.onSurfaceVariant,
+										style = TextTokens.sectionTitle(),
+							textAlign = TextAlign.Center
+						)
+
+						GeneralButton(
+							onClick = onPostCreationClick,
+							text = stringResource(R.string.feature_user_info_create_poi_action)
+						)
+					}
+				}
+			}
+		} else {
+			items(state.selectedContributionItems) { contribution ->
+				ContributionCard(
+					contribution = contribution,
+					onActionClick = {
+						when (contribution.status) {
+							EstadoPublicacion.RECHAZADA -> onEditRejectedPublication(contribution.id)
+							EstadoPublicacion.VERIFICADA -> onViewVerifiedPublication(contribution.id)
+							EstadoPublicacion.PENDIENTE -> Unit
+						}
+					}
+				)
+			}
+		}
+	}
 	}
 
 	if (viewModel.showLogoutDialog) {
@@ -286,13 +288,13 @@ fun ContributionCard(
 					style = TextTokens.body()
 				)
 
-				if (contribution.status == EstadoPublicacion.RECHAZADA && !contribution.rejectReason.isNullOrBlank()) {
-					Text(
-						text = stringResource(R.string.feature_user_info_reject_reason_prefix, contribution.rejectReason.orEmpty()),
-						color = TextColors.Secondary,
-						style = TextTokens.body()
-					)
-				}
+			if (contribution.status == EstadoPublicacion.RECHAZADA && !contribution.rejectReason.isNullOrBlank()) {
+				Text(
+					text = stringResource(R.string.feature_user_info_reject_reason_prefix, contribution.rejectReason ?: ""),
+					color = TextColors.Secondary,
+					style = TextTokens.body()
+				)
+			}
 
 				if (contribution.status != EstadoPublicacion.PENDIENTE) {
 					Spacer(modifier = Modifier.height(16.dp))
