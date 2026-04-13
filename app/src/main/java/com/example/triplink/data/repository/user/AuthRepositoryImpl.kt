@@ -23,7 +23,8 @@ class AuthRepositoryImpl @Inject constructor(
     override fun save(user: Usuario): Boolean {
         if (findByEmail(user.email) != null) return false
         store.setUsers(store.users.value + user)
-        store.favorites[user.email] = mutableSetOf()
+        store.favorites[user.email.trim().lowercase()] = mutableSetOf()
+        store.persistState()
         return true
     }
 }

@@ -37,13 +37,11 @@ class CommentRepositoryImpl @Inject constructor(
     }
 
     override fun getCommentsByPublicationId(publicationId: String): List<Comentario> {
-        return store.publications.value.firstOrNull { it.id == publicationId }?.comments
-            ?: store.comments[publicationId]
-            ?: emptyList()
+        return store.publications.value.firstOrNull { it.id == publicationId }?.comments.orEmpty()
     }
 
     override fun getAverageRating(publicationId: String): Double {
-        val comments = store.comments[publicationId] ?: return 0.0
+        val comments = getCommentsByPublicationId(publicationId)
         if (comments.isEmpty()) return 0.0
         return comments.map { it.rating }.average()
     }

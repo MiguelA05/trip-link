@@ -2,7 +2,9 @@ package com.example.triplink.domain.model
 
 import com.example.triplink.domain.model.enums.EstadoReporte
 import com.example.triplink.domain.model.enums.RazonReporte
+import kotlinx.serialization.Serializable
 
+@Serializable
 data class Reporte(
     //Solo se van a tratar reportar publicaciones de los puntos de interes
     val id: String,

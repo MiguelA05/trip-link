@@ -29,7 +29,6 @@ class PublicationRepositoryImpl @Inject constructor(
         if (getPublicationById(publication.id) != null) return false
         val normalized = publication.copy(commentCount = publication.comments.size)
         store.setPublications(store.publications.value + normalized)
-        store.comments[publication.id] = normalized.comments.toMutableList()
         return true
     }
 
@@ -38,7 +37,13 @@ class PublicationRepositoryImpl @Inject constructor(
         if (index == -1) return false
 
         val updated = store.publications.value.toMutableList()
-        val normalized = publication.copy(commentCount = publication.comments.size)
+        val current = updated[index]
+        val normalized = publication.copy(
+            comments = if (publication.comments.isEmpty() && current.comments.isNotEmpty()) current.comments else publication.comments,
+            reportes = if (publication.reportes.isEmpty() && current.reportes.isNotEmpty()) current.reportes else publication.reportes,
+            commentCount = if (publication.comments.isEmpty() && current.comments.isNotEmpty()) current.commentCount else publication.comments.size,
+            favoriteCount = if (publication.favoriteCount == 0 && current.favoriteCount != 0) current.favoriteCount else publication.favoriteCount
+        )
         updated[index] = normalized
         store.setPublications(updated)
         return true
@@ -47,7 +52,8 @@ class PublicationRepositoryImpl @Inject constructor(
     override fun deletePublicationById(publicationId: String): Boolean {
         val initialSize = store.publications.value.size
         store.setPublications(store.publications.value.filter { it.id != publicationId })
-        store.comments.remove(publicationId)
+        store.favorites.values.forEach { it.remove(publicationId) }
+        store.persistState()
         return store.publications.value.size < initialSize
     }
 

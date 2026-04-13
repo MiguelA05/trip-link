@@ -1,5 +1,8 @@
 package com.example.triplink.domain.model
 
+import kotlinx.serialization.Serializable
+
+@Serializable
 data class Comentario(
     val id: String,
     val usuarioId: String,

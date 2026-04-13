@@ -457,7 +457,7 @@
     <string name="feature_register_email_label">Email</string>
     <string name="feature_register_email_placeholder">you@mail.com</string>
     <string name="feature_register_password_label">Password</string>
-    <string name="feature_register_password_placeholder">â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢</string>
+    <string name="feature_register_password_placeholder">••••••••••••</string>
     <string name="feature_register_residence_title">Residence location</string>
     <string name="feature_register_department_label">Department</string>
     <string name="feature_register_city_label">City</string>

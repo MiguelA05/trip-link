@@ -12,6 +12,8 @@ class FavoriteRepositoryImpl @Inject constructor(
 
     override fun toggleFavorite(userId: String, publicationId: String): Boolean {
         val normalizedUserId = userId.trim().lowercase()
+        if (store.publications.value.none { it.id == publicationId }) return false
+
         val favorites = store.favorites.getOrPut(normalizedUserId) { mutableSetOf() }
         val toggled = if (favorites.contains(publicationId)) {
             favorites.remove(publicationId)
@@ -24,6 +26,7 @@ class FavoriteRepositoryImpl @Inject constructor(
             if (publication.id == publicationId) publication.copy(favoriteCount = favoriteCount) else publication
         }
         store.setPublications(updatedPublications)
+        store.persistState()
         return toggled
     }
 

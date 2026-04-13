@@ -1,9 +1,7 @@
 package com.example.triplink.data.repository.admin
 
-import com.example.triplink.data.seed.AdminReportSeedEntry
 import com.example.triplink.domain.model.Reporte
 import com.example.triplink.domain.model.admin.AdminReportCase
-import com.example.triplink.domain.model.enums.EstadoPublicacion
 import com.example.triplink.domain.model.enums.EstadoReporte
 import com.example.triplink.domain.repository.admin.ReportRepository
 import com.example.triplink.domain.repository.publication.PublicationRepository
@@ -14,23 +12,19 @@ import javax.inject.Singleton
 @Singleton
 class ReportRepositoryImpl @Inject constructor(
     private val publicationRepository: PublicationRepository,
-    private val userProfileRepository: UserProfileRepository,
-    private val store: AdminReportsStore
+    private val userProfileRepository: UserProfileRepository
 ) : ReportRepository {
 
+    private val acceptedReportThreshold: Int = 3
+
     override val pendingReportsCount: Int
-        get() = store.seedState.pendingReports.size
+        get() = pendingReportCases().size
 
     override val reportCases: List<AdminReportCase>
-        get() = store.seedState.pendingReports
-            .map { it.toDomain(store.seedState.acceptedReportsCountByPublication[it.pointOfInterest.id] ?: 0) }
-            .sortedByDescending { it.report.fechaCreacion }
+        get() = pendingReportCases().sortedByDescending { it.report.fechaCreacion }
 
     override fun hasUserReportedPublication(userId: String, publicationId: String): Boolean {
-        return store.seedState.pendingReports.any {
-            it.report.reportadorId.equals(userId, ignoreCase = true) &&
-                it.report.puntoInteresId == publicationId
-        } || publicationRepository.getPublicationById(publicationId)
+        return publicationRepository.getPublicationById(publicationId)
             ?.reportes
             ?.any { report ->
                 report.reportadorId.equals(userId, ignoreCase = true) &&
@@ -42,72 +36,58 @@ class ReportRepositoryImpl @Inject constructor(
         val publication = publicationRepository.getPublicationById(report.puntoInteresId) ?: return false
         if (hasUserReportedPublication(report.reportadorId, report.puntoInteresId)) return false
 
-        val reporterName = userProfileRepository.findUserNameById(report.reportadorId)
-            ?: report.reportadorId.substringBefore('@')
-
-        store.seedState.pendingReports.add(
-            0,
-            AdminReportSeedEntry(
-                report = report.copy(estado = EstadoReporte.PENDIENTE),
-                pointOfInterest = publication,
-                reporterName = reporterName
-            )
+        val updatedReports = publication.reportes + report.copy(estado = EstadoReporte.PENDIENTE)
+        return publicationRepository.updatePuntoInteres(
+            publication.copy(reportes = updatedReports)
         )
-
-        publicationRepository.updatePuntoInteres(
-            publication.copy(reportes = publication.reportes + report.copy(estado = EstadoReporte.PENDIENTE))
-        )
-
-        return true
     }
 
     override fun getReportById(reportId: String): AdminReportCase? {
-        return store.seedState.pendingReports
-            .find { it.report.id == reportId }
-            ?.let { entry ->
-                entry.toDomain(store.seedState.acceptedReportsCountByPublication[entry.pointOfInterest.id] ?: 0)
-            }
+        return pendingReportCases().find { it.report.id == reportId }
     }
 
     override fun confirmReport(reportId: String) {
-        val index = store.seedState.pendingReports.indexOfFirst { it.report.id == reportId }
-        if (index == -1) return
-
-        val entry = store.seedState.pendingReports[index]
+        val case = findReportCase(reportId) ?: return
         updatePublicationReportStatus(
-            publicationId = entry.pointOfInterest.id,
-            reportId = entry.report.id,
+            publicationId = case.pointOfInterest.id,
+            reportId = case.report.id,
             newStatus = EstadoReporte.APROBADO
         )
 
-        val publicationId = entry.pointOfInterest.id
-        val updatedCount = (store.seedState.acceptedReportsCountByPublication[publicationId] ?: 0) + 1
-        store.seedState.acceptedReportsCountByPublication[publicationId] = updatedCount
-
-        store.seedState.pendingReports.removeAt(index)
-
-        if (updatedCount >= store.acceptedReportThreshold) {
-            // Eliminar completamente la publicación cuando alcanza el umbral de reportes
-            publicationRepository.deletePublicationById(publicationId)
-
-            // Limpiar todos los reportes pendientes relacionados con esta publicación
-            store.seedState.pendingReports.removeAll { it.pointOfInterest.id == publicationId }
+        val publication = publicationRepository.getPublicationById(case.pointOfInterest.id) ?: return
+        val approvedCount = publication.reportes.count { it.estado == EstadoReporte.APROBADO }
+        if (approvedCount >= acceptedReportThreshold) {
+            publicationRepository.deletePublicationById(case.pointOfInterest.id)
         }
     }
 
     override fun invalidateReport(reportId: String) {
-        val index = store.seedState.pendingReports.indexOfFirst { it.report.id == reportId }
-        if (index == -1) return
-
-        val entry = store.seedState.pendingReports[index]
+        val case = findReportCase(reportId) ?: return
         updatePublicationReportStatus(
-            publicationId = entry.pointOfInterest.id,
-            reportId = entry.report.id,
+            publicationId = case.pointOfInterest.id,
+            reportId = case.report.id,
             newStatus = EstadoReporte.RECHAZADO
         )
-
-        store.seedState.pendingReports.removeAt(index)
     }
+
+    private fun pendingReportCases(): List<AdminReportCase> {
+        return publicationRepository.publications.value
+            .flatMap { publication ->
+                publication.reportes
+                    .filter { it.estado == EstadoReporte.PENDIENTE }
+                    .map { report ->
+                        AdminReportCase(
+                            report = report,
+                            pointOfInterest = publication,
+                            reporterName = userProfileRepository.findUserNameById(report.reportadorId)
+                                ?: report.reportadorId.substringBefore('@'),
+                            acceptedReportsCount = publication.reportes.count { it.estado == EstadoReporte.APROBADO }
+                        )
+                    }
+            }
+    }
+
+    private fun findReportCase(reportId: String): AdminReportCase? = pendingReportCases().firstOrNull { it.report.id == reportId }
 
     private fun updatePublicationReportStatus(
         publicationId: String,
@@ -123,13 +103,6 @@ class ReportRepositoryImpl @Inject constructor(
         }
         publicationRepository.updatePuntoInteres(publication.copy(reportes = updatedReports))
     }
-
-    private fun AdminReportSeedEntry.toDomain(acceptedReportsCount: Int): AdminReportCase = AdminReportCase(
-        report = report,
-        pointOfInterest = pointOfInterest,
-        reporterName = reporterName,
-        acceptedReportsCount = acceptedReportsCount
-    )
 }
 
 

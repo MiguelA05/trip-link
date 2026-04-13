@@ -3,7 +3,9 @@ package com.example.triplink.domain.model
 import com.example.triplink.domain.model.enums.Categoria
 import com.example.triplink.domain.model.enums.EstadoPublicacion
 import com.example.triplink.domain.model.enums.RangoPrecios
+import kotlinx.serialization.Serializable
 
+@Serializable
 data class PuntoInteres(
     val id: String,
     val titulo: String,

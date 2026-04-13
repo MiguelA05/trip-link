@@ -1,6 +1,7 @@
 package com.example.triplink.data.repository.user
 
 import com.example.triplink.domain.model.Usuario
+import com.example.triplink.domain.repository.publication.PublicationRepository
 import com.example.triplink.domain.repository.user.UserProfileRepository
 import kotlinx.coroutines.flow.StateFlow
 import javax.inject.Inject
@@ -9,6 +10,7 @@ import javax.inject.Singleton
 @Singleton
 class UserProfileRepositoryImpl @Inject constructor(
     private val store: UserRepositoryStore
+    , private val publicationRepository: PublicationRepository
 ) : UserProfileRepository {
 
     override val users: StateFlow<List<Usuario>> = store.users
@@ -34,9 +36,13 @@ class UserProfileRepositoryImpl @Inject constructor(
     override fun deleteUser(email: String): Boolean {
         val initialSize = store.users.value.size
         val normalizedEmail = email.trim().lowercase()
+        publicationRepository.getUserPublications(normalizedEmail).forEach { publication ->
+            publicationRepository.deletePublicationById(publication.id)
+        }
         store.setUsers(store.users.value.filter { !it.email.equals(normalizedEmail, ignoreCase = true) })
         store.favorites.remove(normalizedEmail)
         store.badgeUnlocksByUser.remove(normalizedEmail)
+        store.persistState()
         return store.users.value.size < initialSize
     }
 }

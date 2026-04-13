@@ -2,7 +2,9 @@ package com.example.triplink.domain.model
 
 import com.example.triplink.domain.model.enums.Nivel
 import com.example.triplink.domain.model.enums.Rol
+import kotlinx.serialization.Serializable
 
+@Serializable
 data class Usuario (
     //El email es la clave principal de esta clase no se puede repetir
     val email: String,
