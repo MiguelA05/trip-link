@@ -17,9 +17,9 @@ fun ReportModerationPublicationCard(
 ) {
     ModerationPublicationCard(
         publication = publication,
-        // En reportes, derecha confirma e izquierda invalida.
-        onApproveRequested = onInvalidateReport,
-        onRejectRequested = onConfirmReport,
+        // Mantiene la semántica base: aprobar/confirmar a la derecha, rechazar/invalidar a la izquierda.
+        onApproveRequested = onConfirmReport,
+        onRejectRequested = onInvalidateReport,
         onDetailsClick = onDetailsClick,
         modifier = modifier,
         swipeHintText = stringResource(

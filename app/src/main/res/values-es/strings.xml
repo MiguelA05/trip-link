@@ -26,6 +26,18 @@
     <!-- resource: component_moderation_decision_dialog_cancel_action -->
     <string name="component_moderation_decision_dialog_cancel_action">Cancelar</string>
 
+    <!-- component: ReportDecisionDialogs -->
+    <!-- resource: component_report_decision_dialog_confirm_title -->
+    <string name="component_report_decision_dialog_confirm_title">¿Confirmar reporte?</string>
+    <!-- resource: component_report_decision_dialog_invalidate_title -->
+    <string name="component_report_decision_dialog_invalidate_title">¿Invalidar reporte?</string>
+    <!-- resource: component_report_decision_dialog_message_publication -->
+    <string name="component_report_decision_dialog_message_publication">Esta acción no se puede deshacer. La publicación es "%1$s"</string>
+    <!-- resource: component_report_decision_dialog_confirm_action -->
+    <string name="component_report_decision_dialog_confirm_action">Confirmar reporte</string>
+    <!-- resource: component_report_decision_dialog_invalidate_action -->
+    <string name="component_report_decision_dialog_invalidate_action">Invalidar reporte</string>
+
     <!-- COMPONENT: ModerationPublicationCard -->
     <!-- resource: component_moderation_publication_card_swipe_hint -->
     <string name="component_moderation_publication_card_swipe_hint">Desliza para rechazar o aprobar</string>

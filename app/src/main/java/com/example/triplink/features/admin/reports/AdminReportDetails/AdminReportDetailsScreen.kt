@@ -49,7 +49,8 @@ import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
 import coil3.request.crossfade
 import com.example.triplink.R
-import com.example.triplink.core.components.ApprovePublicationDialog
+import com.example.triplink.core.components.ConfirmReportDialog
+import com.example.triplink.core.components.InvalidateReportDialog
 import com.example.triplink.ui.theme.TextColors
 import com.example.triplink.ui.theme.TextTokens
 
@@ -359,7 +360,7 @@ fun AdminReportDetailsScreen(
     }
 
     if (showConfirmDialog) {
-        ApprovePublicationDialog(
+        ConfirmReportDialog(
             publicationTitle = report.title,
             onDismiss = { showConfirmDialog = false },
             onConfirm = {
@@ -371,7 +372,7 @@ fun AdminReportDetailsScreen(
     }
 
     if (showRejectDialog) {
-        ApprovePublicationDialog(
+        InvalidateReportDialog(
             publicationTitle = report.title,
             onDismiss = { showRejectDialog = false },
             onConfirm = {

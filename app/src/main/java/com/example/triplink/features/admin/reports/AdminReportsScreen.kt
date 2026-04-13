@@ -27,8 +27,10 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.triplink.R
-import com.example.triplink.core.components.ApprovePublicationDialog
+import com.example.triplink.core.components.ConfirmReportDialog
+import com.example.triplink.core.components.InvalidateReportDialog
 import com.example.triplink.core.components.admin.ReportModerationPublicationCard
 import com.example.triplink.ui.theme.TextTokens
 
@@ -39,6 +41,7 @@ fun AdminReportsScreen(
 ) {
     val viewModel: AdminReportsViewModel = hiltViewModel()
     val listState = rememberLazyListState()
+    val reportCards by viewModel.reportCards.collectAsStateWithLifecycle()
 
     var showConfirmDialog by remember { mutableStateOf(false) }
     var showRejectDialog by remember { mutableStateOf(false) }
@@ -123,7 +126,7 @@ fun AdminReportsScreen(
             state = listState,
             verticalArrangement = Arrangement.spacedBy(20.dp)
         ) {
-            items(viewModel.reportCards, key = { it.id }) { publication ->
+            items(reportCards, key = { it.id }) { publication ->
                 ReportModerationPublicationCard(
                     publication = publication.toCardUi(),
                     onConfirmReport = {
@@ -140,7 +143,7 @@ fun AdminReportsScreen(
                 )
             }
 
-            if (viewModel.reportCards.isEmpty()) {
+            if (reportCards.isEmpty()) {
                 item {
                     Surface(
                         modifier = Modifier.fillMaxWidth(),
@@ -165,7 +168,7 @@ fun AdminReportsScreen(
     }
 
     if (showConfirmDialog && selectedReportId.isNotEmpty()) {
-        ApprovePublicationDialog(
+        ConfirmReportDialog(
             publicationTitle = selectedReportTitle,
             onDismiss = {
                 showConfirmDialog = false
@@ -182,7 +185,7 @@ fun AdminReportsScreen(
     }
 
     if (showRejectDialog && selectedReportId.isNotEmpty()) {
-        ApprovePublicationDialog(
+        InvalidateReportDialog(
             publicationTitle = selectedReportTitle,
             onDismiss = {
                 showRejectDialog = false

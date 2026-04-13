@@ -137,6 +137,54 @@ fun RejectPublicationDialog(
 }
 
 @Composable
+fun ConfirmReportDialog(
+    publicationTitle: String,
+    onDismiss: () -> Unit,
+    onConfirm: () -> Unit
+) {
+    BaseModerationDialog(
+        onDismiss = onDismiss,
+        icon = Icons.Outlined.ThumbUp,
+        iconTint = MaterialTheme.colorScheme.primary,
+        iconBackground = MaterialTheme.colorScheme.primaryContainer,
+        title = stringResource(R.string.component_report_decision_dialog_confirm_title),
+        message = stringResource(
+            R.string.component_report_decision_dialog_message_publication,
+            publicationTitle
+        ),
+        confirmText = stringResource(R.string.component_report_decision_dialog_confirm_action),
+        confirmColor = MaterialTheme.colorScheme.primary,
+        confirmEnabled = true,
+        onConfirm = onConfirm,
+        body = null
+    )
+}
+
+@Composable
+fun InvalidateReportDialog(
+    publicationTitle: String,
+    onDismiss: () -> Unit,
+    onConfirm: () -> Unit
+) {
+    BaseModerationDialog(
+        onDismiss = onDismiss,
+        icon = Icons.Outlined.ThumbDown,
+        iconTint = MaterialTheme.colorScheme.error,
+        iconBackground = MaterialTheme.colorScheme.errorContainer,
+        title = stringResource(R.string.component_report_decision_dialog_invalidate_title),
+        message = stringResource(
+            R.string.component_report_decision_dialog_message_publication,
+            publicationTitle
+        ),
+        confirmText = stringResource(R.string.component_report_decision_dialog_invalidate_action),
+        confirmColor = MaterialTheme.colorScheme.error,
+        confirmEnabled = true,
+        onConfirm = onConfirm,
+        body = null
+    )
+}
+
+@Composable
 @OptIn(ExperimentalMaterial3Api::class)
 private fun BaseModerationDialog(
     onDismiss: () -> Unit,

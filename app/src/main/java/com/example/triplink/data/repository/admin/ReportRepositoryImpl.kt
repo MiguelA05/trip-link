@@ -48,14 +48,19 @@ class ReportRepositoryImpl @Inject constructor(
 
     override fun confirmReport(reportId: String) {
         val case = findReportCase(reportId) ?: return
+
+        // Primero actualizamos el estado del reporte
         updatePublicationReportStatus(
             publicationId = case.pointOfInterest.id,
             reportId = case.report.id,
             newStatus = EstadoReporte.APROBADO
         )
 
-        val publication = publicationRepository.getPublicationById(case.pointOfInterest.id) ?: return
-        val approvedCount = publication.reportes.count { it.estado == EstadoReporte.APROBADO }
+        // Luego obtenemos la publicación actualizada y verificamos el conteo
+        val updatedPublication = publicationRepository.getPublicationById(case.pointOfInterest.id) ?: return
+        val approvedCount = updatedPublication.reportes.count { it.estado == EstadoReporte.APROBADO }
+
+        // Si hay 3 o más reportes aprobados, eliminamos la publicación
         if (approvedCount >= acceptedReportThreshold) {
             publicationRepository.deletePublicationById(case.pointOfInterest.id)
         }
