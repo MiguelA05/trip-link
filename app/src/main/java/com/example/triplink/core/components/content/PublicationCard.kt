@@ -42,7 +42,7 @@ fun PublicationCard(
     showFooter: Boolean = true,
     isFavorite: Boolean = false,
     onCardClick: (() -> Unit)? = null,
-    onFavoriteToggle: (Boolean) -> Unit = {},
+    onFavoriteToggle: () -> Unit = {},
     onCommentsClick: () -> Unit = {}
 ) {
     val cardBorderColor = if (isSystemInDarkTheme()) {
@@ -253,9 +253,7 @@ fun PublicationCard(
 
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         IconButton(
-                            onClick = {
-                                onFavoriteToggle(!isFavorite)
-                            },
+                            onClick = onFavoriteToggle,
                             modifier = Modifier.size(24.dp)
                         ) {
                             Icon(
