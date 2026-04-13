@@ -151,7 +151,10 @@ fun UserNavigation(
             NotificationsScreen(onBackClick = { navController.popBackStack() })
         }
         composable<UserSectionRoutes.Filters> {
-            FiltersScreen({ navController.popBackStack() })
+            FiltersScreen(
+                onBackClick = { navController.popBackStack() },
+                onApplyFilters = { navController.popBackStack() }
+            )
         }
         composable<UserSectionRoutes.PostCreation> { backStackEntry ->
             val route = backStackEntry.toRoute<UserSectionRoutes.PostCreation>()

@@ -21,6 +21,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
+import java.text.Normalizer
 import javax.inject.Inject
 
 @HiltViewModel
@@ -29,6 +30,15 @@ class AccountEditViewModel @Inject constructor(
     private val userProfileRepository: UserProfileRepository,
     private val sessionDataStore: SessionDataStore
 ) : ViewModel() {
+
+    private data class EditableAccountSnapshot(
+        val fullName: String,
+        val phone: String,
+        val selectedDepartment: String,
+        val selectedCity: String,
+        val address: String,
+        val addExactLocation: Boolean
+    )
 
     // Información Personal
     var fullName by mutableStateOf(appContext.getString(R.string.vm_account_edit_default_full_name))
@@ -57,6 +67,7 @@ class AccountEditViewModel @Inject constructor(
     // Datos de Acceso
     var email by mutableStateOf(appContext.getString(R.string.vm_account_edit_default_email))
     var emailError by mutableStateOf<String?>(null)
+    private var originalSnapshot by mutableStateOf<EditableAccountSnapshot?>(null)
 
     // Result flow for feedback
     private val _updateResult = MutableStateFlow<RequestResult?>(null)
@@ -67,11 +78,19 @@ class AccountEditViewModel @Inject constructor(
 
     val isFormValid by derivedStateOf {
         validateFullName(fullName) == null &&
-                validateEmail(email) == null &&
                 validatePhone(phone) == null &&
                 validateDepartment(selectedDepartment) == null &&
                 validateCity(selectedCity) == null &&
-                (address.isNotEmpty() || validateAddress(address) == null)
+                validateAddress(address) == null
+    }
+
+    val hasEditableChanges by derivedStateOf {
+        val baseline = originalSnapshot ?: return@derivedStateOf false
+        currentSnapshot() != baseline
+    }
+
+    val canSaveChanges by derivedStateOf {
+        isFormValid && hasEditableChanges
     }
 
     init {
@@ -87,15 +106,67 @@ class AccountEditViewModel @Inject constructor(
                     user?.let {
                         fullName = it.nombre
                         email = it.email
-                        it.ubicacion?.let { ubicacion ->
-                            selectedCity = ubicacion.ciudad
-                        }
+                        phone = it.telefono
+                        address = it.direccion
+
+                        val parsedLocation = parseCityAndDepartment(
+                            rawCity = it.ubicacion?.ciudad.orEmpty(),
+                            fallbackDepartment = it.departamento
+                        )
+                        val resolvedDepartment = if (it.departamento.isNotBlank()) it.departamento else parsedLocation.second
+                        val fallbackDepartment = appContext.getString(R.string.vm_account_edit_default_department)
+                        selectedDepartment = findDepartmentMatch(resolvedDepartment)
+                            ?: findDepartmentMatch(fallbackDepartment)
+                            ?: departments.firstOrNull().orEmpty()
+
+                        val departmentCities = getCitiesForDepartment(selectedDepartment)
+                        val candidateCity = if (parsedLocation.first.isNotBlank()) parsedLocation.first else it.ubicacion?.ciudad.orEmpty()
+                        val fallbackCity = appContext.getString(R.string.vm_account_edit_default_city)
+                        selectedCity = findCityMatch(departmentCities, candidateCity)
+                            ?: findCityMatch(departmentCities, fallbackCity)
+                            ?: departmentCities.firstOrNull().orEmpty()
+
+                        addExactLocation = it.ubicacionExactaActiva
+                        originalSnapshot = currentSnapshot()
                     }
                 }
             } catch (e: Exception) {
                 // Graceful error handling - keep defaults
             }
         }
+    }
+
+    private fun currentSnapshot(): EditableAccountSnapshot = EditableAccountSnapshot(
+        fullName = fullName.trim(),
+        phone = phone.trim(),
+        selectedDepartment = selectedDepartment.trim(),
+        selectedCity = selectedCity.trim(),
+        address = address.trim(),
+        addExactLocation = addExactLocation
+    )
+
+    private fun parseCityAndDepartment(rawCity: String, fallbackDepartment: String): Pair<String, String> {
+        val parts = rawCity.split(",").map { it.trim() }.filter { it.isNotBlank() }
+        val city = parts.getOrNull(0).orEmpty()
+        val department = parts.getOrNull(1).orEmpty().ifBlank { fallbackDepartment }
+        return city to department
+    }
+
+    private fun normalize(value: String): String {
+        val normalized = Normalizer.normalize(value, Normalizer.Form.NFD)
+        return normalized.replace("\\p{M}+".toRegex(), "").lowercase().trim()
+    }
+
+    private fun findDepartmentMatch(raw: String): String? {
+        val target = normalize(raw)
+        if (target.isBlank()) return null
+        return departments.firstOrNull { normalize(it) == target }
+    }
+
+    private fun findCityMatch(options: List<String>, raw: String): String? {
+        val target = normalize(raw)
+        if (target.isBlank()) return null
+        return options.firstOrNull { normalize(it) == target }
     }
 
     fun validateFullName(value: String): String? {
@@ -151,10 +222,14 @@ class AccountEditViewModel @Inject constructor(
     }
 
     fun onDepartmentChange(newDepartment: String) {
+        if (selectedDepartment == newDepartment) return
         selectedDepartment = newDepartment
         departmentError = validateDepartment(newDepartment)
-        selectedCity = ""
-        cityError = null
+        val availableCities = getCitiesForDepartment(newDepartment)
+        if (!availableCities.contains(selectedCity)) {
+            selectedCity = ""
+            cityError = null
+        }
     }
 
     fun onCityChange(newCity: String) {
@@ -163,7 +238,7 @@ class AccountEditViewModel @Inject constructor(
     }
 
     fun saveChanges() {
-        if (!isFormValid) {
+        if (!canSaveChanges) {
             _updateResult.value = RequestResult.Failure(appContext.getString(R.string.vm_account_edit_required_fields))
             return
         }
@@ -174,16 +249,25 @@ class AccountEditViewModel @Inject constructor(
                 session?.userId?.let { userId ->
                     val user = userProfileRepository.getUserById(userId)
                     user?.let {
+                        val baseline = originalSnapshot ?: currentSnapshot()
+                        val current = currentSnapshot()
+                        val mergedCity = "${current.selectedCity}, ${current.selectedDepartment}"
                         val updatedUser = it.copy(
-                            nombre = fullName,
-                            ubicacion = Ubicacion(
-                                latitud = 0.0,
-                                longitud = 0.0,
-                                ciudad = selectedCity
-                            )
+                            nombre = if (current.fullName != baseline.fullName) current.fullName else it.nombre,
+                            telefono = if (current.phone != baseline.phone) current.phone else it.telefono,
+                            direccion = if (current.address != baseline.address) current.address else it.direccion,
+                            departamento = if (current.selectedDepartment != baseline.selectedDepartment) {
+                                current.selectedDepartment
+                            } else {
+                                it.departamento
+                            },
+                            ubicacionExactaActiva = current.addExactLocation,
+                            ubicacion = it.ubicacion?.copy(ciudad = mergedCity)
+                                ?: Ubicacion(latitud = 0.0, longitud = 0.0, ciudad = mergedCity)
                         )
                         val wasUpdated = userProfileRepository.updateUser(updatedUser)
                         _updateResult.value = if (wasUpdated) {
+                            originalSnapshot = current
                             RequestResult.Success(appContext.getString(R.string.vm_account_edit_save_success))
                         } else {
                             RequestResult.Failure(appContext.getString(R.string.vm_account_edit_save_failed))

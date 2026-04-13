@@ -27,12 +27,16 @@ class RegisterViewModel @Inject constructor(
 ) : ViewModel() {
 
     var name by mutableStateOf("")
+    var phone by mutableStateOf("")
     var email by mutableStateOf("")
     var password by mutableStateOf("")
+    var address by mutableStateOf("")
 
     var nameError by mutableStateOf<String?>(null)
+    var phoneError by mutableStateOf<String?>(null)
     var emailError by mutableStateOf<String?>(null)
     var passwordError by mutableStateOf<String?>(null)
+    var addressError by mutableStateOf<String?>(null)
     var departmentError by mutableStateOf<String?>(null)
     var cityError by mutableStateOf<String?>(null)
 
@@ -52,8 +56,10 @@ class RegisterViewModel @Inject constructor(
 
     val isFormValid by derivedStateOf {
         validateName(name) == null &&
+            validatePhone(phone) == null &&
             validateEmail(email) == null &&
             validatePassword(password) == null &&
+            validateAddress(address) == null &&
             validateDepartment(selectedDepartment) == null &&
             validateCity(selectedCity) == null
     }
@@ -70,12 +76,24 @@ class RegisterViewModel @Inject constructor(
         }
     }
 
+    fun validatePhone(value: String): String? {
+        return when {
+            value.isBlank() -> appContext.getString(R.string.vm_register_phone_required)
+            !value.matches(Regex("^[0-9]{7,15}$")) -> appContext.getString(R.string.vm_register_phone_invalid)
+            else -> null
+        }
+    }
+
     fun validatePassword(value: String): String? {
         return when {
             value.isBlank() -> appContext.getString(R.string.vm_register_password_required)
             value.length < 6 -> appContext.getString(R.string.vm_register_password_min_length)
             else -> null
         }
+    }
+
+    fun validateAddress(value: String): String? {
+        return if (value.isBlank()) appContext.getString(R.string.vm_register_address_required) else null
     }
 
     fun validateDepartment(value: String): String? {
@@ -96,9 +114,19 @@ class RegisterViewModel @Inject constructor(
         emailError = validateEmail(newValue)
     }
 
+    fun onPhoneChange(newValue: String) {
+        phone = newValue
+        phoneError = validatePhone(newValue)
+    }
+
     fun onPasswordChange(newValue: String) {
         password = newValue
         passwordError = validatePassword(newValue)
+    }
+
+    fun onAddressChange(newValue: String) {
+        address = newValue
+        addressError = validateAddress(newValue)
     }
 
     fun onDepartmentChange(newDepartment: String) {
@@ -116,8 +144,10 @@ class RegisterViewModel @Inject constructor(
 
     fun validateAll(): Boolean {
         nameError = validateName(name)
+        phoneError = validatePhone(phone)
         emailError = validateEmail(email)
         passwordError = validatePassword(password)
+        addressError = validateAddress(address)
         departmentError = validateDepartment(selectedDepartment)
         cityError = validateCity(selectedCity)
 
@@ -141,7 +171,15 @@ class RegisterViewModel @Inject constructor(
                 nombre = name,
                 password = password,
                 puntos = 0,
-                ubicacion = Ubicacion(latitud = 0.0, longitud = 0.0, ciudad = selectedCity)
+                telefono = phone,
+                direccion = address,
+                departamento = selectedDepartment,
+                ubicacionExactaActiva = addExactLocation,
+                ubicacion = Ubicacion(
+                    latitud = 0.0,
+                    longitud = 0.0,
+                    ciudad = "$selectedCity, $selectedDepartment"
+                )
             )
         )
 

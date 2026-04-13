@@ -26,8 +26,12 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.example.triplink.R
 import com.example.triplink.core.components.PublicationCard
+import com.example.triplink.core.components.common.AppliedFilterChipUi
 import com.example.triplink.core.components.common.CategoryChips
 import com.example.triplink.core.components.common.SearchBar
+import com.example.triplink.core.localization.localizedLabel
+import com.example.triplink.domain.model.enums.RangoPrecios
+import com.example.triplink.domain.model.enums.UbicacionFiltro
 
 @Composable
 fun ExploreScreen(
@@ -38,6 +42,57 @@ fun ExploreScreen(
 ) {
 	val viewModel: ExploreViewModel = hiltViewModel()
 	val publications by viewModel.publications.collectAsState()
+	val appliedFilters by viewModel.appliedFilters.collectAsState()
+	val appliedChips = buildList {
+		appliedFilters.categories.forEach { category ->
+			add(
+				AppliedFilterChipUi(
+					key = "cat-${category.name}",
+					label = category.localizedLabel(),
+					onRemove = { viewModel.removeAppliedCategory(category) }
+				)
+			)
+		}
+		appliedFilters.locations.forEach { location ->
+			val label = when (location) {
+				UbicacionFiltro.CERCANOS -> stringResource(R.string.vm_filters_location_nearby)
+				UbicacionFiltro.CIUDAD -> stringResource(R.string.vm_filters_location_city)
+				UbicacionFiltro.DEPARTAMENTO -> stringResource(R.string.vm_filters_location_department)
+				UbicacionFiltro.PAIS -> stringResource(R.string.vm_filters_location_country)
+			}
+			add(
+				AppliedFilterChipUi(
+					key = "loc-${location.name}",
+					label = label,
+					onRemove = { viewModel.removeAppliedLocation(location) }
+				)
+			)
+		}
+		appliedFilters.prices.forEach { price ->
+			val label = when (price) {
+				RangoPrecios.GRATUITO -> stringResource(R.string.component_publication_price_range_free)
+				RangoPrecios.ECONOMICO -> stringResource(R.string.component_publication_price_range_economic)
+				RangoPrecios.MODERADO -> stringResource(R.string.component_publication_price_range_moderate)
+				RangoPrecios.COSTOSO -> stringResource(R.string.component_publication_price_range_expensive)
+			}
+			add(
+				AppliedFilterChipUi(
+					key = "price-${price.name}",
+					label = label,
+					onRemove = { viewModel.removeAppliedPrice(price) }
+				)
+			)
+		}
+		appliedFilters.ratings.forEach { rating ->
+			add(
+				AppliedFilterChipUi(
+					key = "rating-$rating",
+					label = "$rating★",
+					onRemove = { viewModel.removeAppliedRating(rating) }
+				)
+			)
+		}
+	}
 
 	Scaffold(
 		modifier = Modifier
@@ -62,7 +117,8 @@ fun ExploreScreen(
 				CategoryChips(
 					categories = viewModel.categories,
 					selectedCategory = viewModel.selectedCategory,
-					onCategorySelected = viewModel::onCategorySelected
+					onCategorySelected = viewModel::onCategorySelected,
+					appliedChips = appliedChips
 				)
 			}
 		},

@@ -24,8 +24,12 @@ import com.example.triplink.ui.theme.TextTokens
 @Composable
 fun FiltersScreen(
     onBackClick: () -> Unit,
+    onApplyFilters: () -> Unit,
     viewModel: FiltersViewModel = hiltViewModel()
 ) {
+    LaunchedEffect(Unit) {
+        viewModel.loadFromApplied()
+    }
 
     Scaffold(
         topBar = {
@@ -33,6 +37,21 @@ fun FiltersScreen(
                 title = stringResource(R.string.feature_filters_title),
                 onBack = onBackClick
             )
+        },
+        floatingActionButtonPosition = FabPosition.Center,
+        floatingActionButton = {
+            if (viewModel.hasActiveFilters()) {
+                ExtendedFloatingActionButton(
+                    onClick = {
+                        viewModel.applyFilters()
+                        onApplyFilters()
+                    },
+                    containerColor = MaterialTheme.colorScheme.primary,
+                    contentColor = MaterialTheme.colorScheme.onPrimary
+                ) {
+                    Text(stringResource(R.string.feature_filters_apply_action))
+                }
+            }
         }
     ) { paddingValues ->
         LazyColumn(
@@ -104,7 +123,7 @@ fun FiltersScreen(
                 )
             }
 
-            item { Spacer(modifier = Modifier.height(24.dp)) }
+            item { Spacer(modifier = Modifier.height(88.dp)) }
         }
     }
 }

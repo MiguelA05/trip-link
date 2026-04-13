@@ -340,7 +340,7 @@ fun AccountEditScreen(
                     onClick = {
                         accountEditViewModel.saveChanges()
                     },
-                    enabled = accountEditViewModel.isFormValid
+                    enabled = accountEditViewModel.canSaveChanges
                 )
             }
 

@@ -7,9 +7,13 @@ import androidx.lifecycle.ViewModel
 import com.example.triplink.core.utils.toRatingLabel
 import com.example.triplink.domain.model.PuntoInteres
 import com.example.triplink.domain.model.enums.Categoria
+import com.example.triplink.domain.model.enums.RangoPrecios
+import com.example.triplink.domain.model.enums.UbicacionFiltro
 import com.example.triplink.domain.repository.publication.PublicationRepository
+import com.example.triplink.features.filters.FiltersStore
+import com.example.triplink.features.filters.publicationMatchesFilters
 import dagger.hilt.android.lifecycle.HiltViewModel
-import java.util.Locale
+import kotlinx.coroutines.flow.StateFlow
 import javax.inject.Inject
 
 data class MapMarkerUi(
@@ -22,7 +26,8 @@ data class MapMarkerUi(
 
 @HiltViewModel
 class ExploreMapViewModel @Inject constructor(
-    private val publicationRepository: PublicationRepository
+    private val publicationRepository: PublicationRepository,
+    private val filtersStore: FiltersStore
 ) : ViewModel() {
 
     var query by mutableStateOf("")
@@ -30,6 +35,8 @@ class ExploreMapViewModel @Inject constructor(
 
     var selectedCategory by mutableStateOf<Categoria?>(null)
         private set
+
+    val appliedFilters: StateFlow<com.example.triplink.features.filters.AppliedFilters> = filtersStore.appliedFilters
 
     val categories = listOf(
         Categoria.GASTRONOMIA,
@@ -43,26 +50,21 @@ class ExploreMapViewModel @Inject constructor(
 
     private val filteredPublications: List<PuntoInteres>
         get() {
-            val normalizedQuery = query.trim().lowercase(Locale.ROOT)
+            val applied = appliedFilters.value
             return allPublications.filter { publication ->
                 val categoryMatches = selectedCategory == null || publication.categoria == selectedCategory
 
-                val queryMatches = normalizedQuery.isBlank() ||
-                    publication.titulo.lowercase(Locale.ROOT).contains(normalizedQuery) ||
-                    publication.ubicacion.ciudad.lowercase(Locale.ROOT).contains(normalizedQuery) ||
-                    publication.categoria.label.lowercase(Locale.ROOT).contains(normalizedQuery)
-
-                categoryMatches && queryMatches
+                categoryMatches && publicationMatchesFilters(publication, applied, query)
             }
         }
 
     var selectedPublicationId by mutableStateOf(allPublications.firstOrNull()?.id.orEmpty())
         private set
 
-    val selectedPublication: PuntoInteres
+    val selectedPublication: PuntoInteres?
         get() = filteredPublications.firstOrNull { it.id == selectedPublicationId }
             ?: filteredPublications.firstOrNull()
-            ?: allPublications.first()
+            ?: allPublications.firstOrNull()
 
     val markers: List<MapMarkerUi>
         get() = filteredPublications.mapIndexed { index, publication ->
@@ -78,10 +80,10 @@ class ExploreMapViewModel @Inject constructor(
         }
 
     val selectedMarkerRatingLabel: String
-        get() = averageRatingLabelFor(selectedPublication)
+        get() = selectedPublication?.let(::averageRatingLabelFor) ?: "0.0"
 
     val selectedPublicationReviewCount: Int
-        get() = selectedPublication.commentCount
+        get() = selectedPublication?.commentCount ?: 0
 
     fun onQueryChange(newValue: String) {
         query = newValue
@@ -106,5 +108,25 @@ class ExploreMapViewModel @Inject constructor(
     private fun averageRatingLabelFor(publication: PuntoInteres): String {
         val average = publication.comments.map { it.rating }.average().takeIf { !it.isNaN() } ?: 0.0
         return average.toRatingLabel()
+    }
+
+    fun removeAppliedCategory(category: Categoria) {
+        filtersStore.removeCategory(category)
+        keepValidSelection()
+    }
+
+    fun removeAppliedLocation(location: UbicacionFiltro) {
+        filtersStore.removeLocation(location)
+        keepValidSelection()
+    }
+
+    fun removeAppliedPrice(price: RangoPrecios) {
+        filtersStore.removePrice(price)
+        keepValidSelection()
+    }
+
+    fun removeAppliedRating(rating: Int) {
+        filtersStore.removeRating(rating)
+        keepValidSelection()
     }
 }

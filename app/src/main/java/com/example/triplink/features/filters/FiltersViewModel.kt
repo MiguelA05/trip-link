@@ -11,7 +11,9 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
 @HiltViewModel
-class FiltersViewModel @Inject constructor() : ViewModel() {
+class FiltersViewModel @Inject constructor(
+    private val filtersStore: FiltersStore
+) : ViewModel() {
     var selectedCategories by mutableStateOf(setOf<Categoria>())
     var selectedLocations by mutableStateOf(setOf<UbicacionFiltro>())
     var selectedPrices by mutableStateOf(setOf<RangoPrecios>())
@@ -24,6 +26,16 @@ class FiltersViewModel @Inject constructor() : ViewModel() {
     val priceRanges = RangoPrecios.entries
 
     val ratings = (1..5).toList()
+
+    val appliedFilters = filtersStore.appliedFilters
+
+    fun loadFromApplied() {
+        val applied = filtersStore.appliedFilters.value
+        selectedCategories = applied.categories
+        selectedLocations = applied.locations
+        selectedPrices = applied.prices
+        selectedRatings = applied.ratings
+    }
 
     fun toggleCategory(category: Categoria) {
         selectedCategories = if (selectedCategories.contains(category)) {
@@ -62,6 +74,17 @@ class FiltersViewModel @Inject constructor() : ViewModel() {
         selectedLocations = setOf()
         selectedPrices = setOf()
         selectedRatings = setOf()
+    }
+
+    fun applyFilters() {
+        filtersStore.apply(
+            AppliedFilters(
+                categories = selectedCategories,
+                locations = selectedLocations,
+                prices = selectedPrices,
+                ratings = selectedRatings
+            )
+        )
     }
 
     fun hasActiveFilters(): Boolean {

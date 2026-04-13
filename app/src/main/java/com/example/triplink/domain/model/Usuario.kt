@@ -15,5 +15,10 @@ data class Usuario (
     val nivel: Nivel = Nivel.TURISTA,
     val rol: Rol = Rol.USUARIO,
 
+    val telefono: String = "",
+    val direccion: String = "",
+    val departamento: String = "",
+    val ubicacionExactaActiva: Boolean = false,
+
     val insignias: List<String> = emptyList() // IDs de insignias
 )

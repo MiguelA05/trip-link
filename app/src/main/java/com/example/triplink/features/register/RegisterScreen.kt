@@ -15,6 +15,8 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -150,6 +152,31 @@ fun RegisterScreen(
             )
 
             Spacer(modifier = Modifier.height(24.dp))
+
+            FormField(
+                label = stringResource(R.string.feature_register_phone_label),
+                value = registerViewModel.phone,
+                onValueChange = { registerViewModel.onPhoneChange(it) },
+                placeholder = stringResource(R.string.feature_register_phone_placeholder),
+                modifier = Modifier.fillMaxWidth(),
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
+                isError = registerViewModel.phoneError != null,
+                errorText = registerViewModel.phoneError
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            FormField(
+                label = stringResource(R.string.feature_register_address_label),
+                value = registerViewModel.address,
+                onValueChange = { registerViewModel.onAddressChange(it) },
+                placeholder = stringResource(R.string.feature_register_address_placeholder),
+                modifier = Modifier.fillMaxWidth(),
+                isError = registerViewModel.addressError != null,
+                errorText = registerViewModel.addressError
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
 
             Text(
                 text = stringResource(R.string.feature_register_residence_title),

@@ -195,6 +195,9 @@
     <string name="feature_filters_price_range">Price range</string>
     <!-- resource: feature_filters_minimum_rating -->
     <string name="feature_filters_minimum_rating">Minimum rating</string>
+    <string name="feature_filters_apply_action">Apply filters</string>
+    <string name="feature_filters_remove_chip_content_description">Remove filter</string>
+    <string name="feature_filters_empty_filtered_results">No results match the selected filters</string>
 
     <!-- ENUM: Categoria -->
     <string name="enum_categoria_gastronomia">Gastronomy</string>
@@ -444,6 +447,13 @@
     <string name="feature_register_subtitle">Find unique places and connect with your community.</string>
     <string name="feature_register_full_name_label">Full name</string>
     <string name="feature_register_full_name_placeholder">John Doe</string>
+    <string name="feature_register_phone_label">Phone</string>
+    <string name="feature_register_phone_placeholder">Enter your phone number</string>
+    <string name="feature_register_address_label">Neighborhood, city or reference</string>
+    <string name="feature_register_address_placeholder">Ex. La Candelaria, Bogotá</string>
+    <string name="vm_register_phone_required">Phone is required</string>
+    <string name="vm_register_phone_invalid">Enter a valid phone number</string>
+    <string name="vm_register_address_required">Address is required</string>
     <string name="feature_register_email_label">Email</string>
     <string name="feature_register_email_placeholder">you@mail.com</string>
     <string name="feature_register_password_label">Password</string>

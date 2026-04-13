@@ -9,6 +9,10 @@ import com.example.triplink.core.utils.toRatingLabel
 import com.example.triplink.domain.model.PuntoInteres
 import com.example.triplink.domain.model.enums.Categoria
 import com.example.triplink.domain.model.enums.EstadoPublicacion
+import com.example.triplink.domain.model.enums.RangoPrecios
+import com.example.triplink.domain.model.enums.UbicacionFiltro
+import com.example.triplink.features.filters.FiltersStore
+import com.example.triplink.features.filters.publicationMatchesFilters
 import com.example.triplink.domain.repository.publication.PublicationRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.StateFlow
@@ -17,7 +21,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ExploreViewModel @Inject constructor(
-    private val publicationRepository: PublicationRepository
+    private val publicationRepository: PublicationRepository,
+    private val filtersStore: FiltersStore
 ) : ViewModel() {
 
     val publications: StateFlow<List<PuntoInteres>> = publicationRepository.publications
@@ -31,6 +36,8 @@ class ExploreViewModel @Inject constructor(
     var selectedTabIndex by mutableIntStateOf(1)
         private set
 
+    val appliedFilters = filtersStore.appliedFilters
+
     val categories = listOf(
         Categoria.GASTRONOMIA,
         Categoria.ENTRETENIMIENTO,
@@ -39,17 +46,12 @@ class ExploreViewModel @Inject constructor(
     )
 
     fun filteredPuntoInteres(source: List<PuntoInteres>): List<PuntoInteres> {
-        val normalizedQuery = query.trim().lowercase(Locale.ROOT)
+        val applied = appliedFilters.value
         return source.filter { publication ->
             val isVisible = publication.estado == EstadoPublicacion.VERIFICADA
             val categoryMatches = selectedCategory == null || publication.categoria == selectedCategory
 
-            val queryMatches = normalizedQuery.isBlank() ||
-                publication.titulo.lowercase(Locale.ROOT).contains(normalizedQuery) ||
-                publication.ubicacion.ciudad.lowercase(Locale.ROOT).contains(normalizedQuery) ||
-                publication.categoria.label.lowercase(Locale.ROOT).contains(normalizedQuery)
-
-            isVisible && categoryMatches && queryMatches
+            isVisible && categoryMatches && publicationMatchesFilters(publication, applied, query)
         }
     }
 
@@ -68,5 +70,21 @@ class ExploreViewModel @Inject constructor(
 
     fun onBottomTabSelected(index: Int) {
         selectedTabIndex = index
+    }
+
+    fun removeAppliedCategory(category: Categoria) {
+        filtersStore.removeCategory(category)
+    }
+
+    fun removeAppliedLocation(location: UbicacionFiltro) {
+        filtersStore.removeLocation(location)
+    }
+
+    fun removeAppliedPrice(price: RangoPrecios) {
+        filtersStore.removePrice(price)
+    }
+
+    fun removeAppliedRating(rating: Int) {
+        filtersStore.removeRating(rating)
     }
 }

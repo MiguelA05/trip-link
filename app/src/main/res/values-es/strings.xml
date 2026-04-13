@@ -197,6 +197,9 @@
     <string name="feature_filters_price_range">Rango de precios</string>
     <!-- resource: feature_filters_minimum_rating -->
     <string name="feature_filters_minimum_rating">Calificación mínima</string>
+    <string name="feature_filters_apply_action">Aplicar filtros</string>
+    <string name="feature_filters_remove_chip_content_description">Eliminar filtro</string>
+    <string name="feature_filters_empty_filtered_results">No hay resultados para los filtros seleccionados</string>
 
     <!-- ENUM: Categoria -->
     <string name="enum_categoria_gastronomia">Gastronomía</string>
@@ -446,6 +449,13 @@
     <string name="feature_register_subtitle">Encuentra lugares únicos, conecta con tu comunidad.</string>
     <string name="feature_register_full_name_label">Nombre Completo</string>
     <string name="feature_register_full_name_placeholder">John Doe</string>
+    <string name="feature_register_phone_label">Teléfono</string>
+    <string name="feature_register_phone_placeholder">Ingresa tu número de teléfono</string>
+    <string name="feature_register_address_label">Barrio, ciudad o referencia</string>
+    <string name="feature_register_address_placeholder">Ej. Barrio La Candelaria, Bogotá</string>
+    <string name="vm_register_phone_required">El teléfono es obligatorio</string>
+    <string name="vm_register_phone_invalid">Ingresa un teléfono válido</string>
+    <string name="vm_register_address_required">La dirección es obligatoria</string>
     <string name="feature_register_email_label">Correo electrónico</string>
     <string name="feature_register_email_placeholder">tu@email.com</string>
     <string name="feature_register_password_label">Contraseña</string>
