@@ -8,7 +8,7 @@ import javax.inject.Singleton
 @Singleton
 class AdminReportsStore @Inject constructor() {
     internal val seedState: AdminReportsSeedState = createAdminReportsSeedState()
-    val acceptedReportThreshold: Int = 3
+    val acceptedReportThreshold: Int = 1
 }
 
 

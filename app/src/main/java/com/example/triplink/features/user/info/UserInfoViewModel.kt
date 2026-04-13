@@ -15,6 +15,9 @@ import com.example.triplink.domain.repository.publication.PublicationRepository
 import com.example.triplink.domain.repository.user.UserProfileRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
@@ -55,7 +58,7 @@ class UserInfoViewModel @Inject constructor(
 	var showLogoutDialog by mutableStateOf(false)
 		private set
 
-	var uiState by mutableStateOf(
+	private val _uiState = MutableStateFlow(
 		UserInfoUiState(
 			userName = appContext.getString(R.string.vm_user_info_default_user_name),
 			userInitials = buildInitials(appContext.getString(R.string.vm_user_info_default_user_name)),
@@ -68,7 +71,7 @@ class UserInfoViewModel @Inject constructor(
 			selectedContributionItems = emptyList()
 		)
 	)
-		private set
+	val uiState: StateFlow<UserInfoUiState> = _uiState.asStateFlow()
 
 	private var currentUserId: String? = null
 
@@ -86,12 +89,8 @@ class UserInfoViewModel @Inject constructor(
 	}
 
 	fun onContributionTabSelected(tab: EstadoPublicacion) {
-		uiState = uiState.copy(selectedContributionTab = tab)
+		_uiState.value = _uiState.value.copy(selectedContributionTab = tab)
 		refreshSelectedContributions()
-	}
-
-	fun onBottomTabSelected(index: Int) {
-		uiState = uiState.copy(selectedBottomTabIndex = index)
 	}
 
 	fun onLogoutRequested() {
@@ -122,7 +121,7 @@ class UserInfoViewModel @Inject constructor(
 						it.estado == EstadoPublicacion.RECHAZADA
 				}
 
-				uiState = uiState.copy(
+				_uiState.value = _uiState.value.copy(
 					userName = mappedUser.nombre,
 					userInitials = buildInitials(mappedUser.nombre),
 					roleLabel = mappedUser.rol.localizedLabel(appContext),
@@ -140,10 +139,10 @@ class UserInfoViewModel @Inject constructor(
 		val allUserPublications = publicationRepository.getUserPublications(userId)
 		
 		val filtered = allUserPublications
-			.filter { it.estado == uiState.selectedContributionTab }
+			.filter { it.estado == _uiState.value.selectedContributionTab }
 			.map { it.toContributionItem() }
 
-		uiState = uiState.copy(
+		_uiState.value = _uiState.value.copy(
 			selectedContributionItems = filtered,
 			verifiedCount = allUserPublications.count { it.estado == EstadoPublicacion.VERIFICADA },
 			pendingCount = allUserPublications.count { it.estado == EstadoPublicacion.PENDIENTE },

@@ -20,8 +20,9 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.ArrowBack
 import androidx.compose.material.icons.filled.AccessTime
 import androidx.compose.material.icons.filled.AttachMoney
-import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.LocationOn
+import androidx.compose.material.icons.outlined.ThumbDown
+import androidx.compose.material.icons.outlined.ThumbUp
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
@@ -48,8 +49,7 @@ import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
 import coil3.request.crossfade
 import com.example.triplink.R
-import com.example.triplink.core.components.DestructiveConfirmDialog
-import com.example.triplink.core.components.GeneralAlertDialog
+import com.example.triplink.core.components.ApprovePublicationDialog
 import com.example.triplink.ui.theme.TextColors
 import com.example.triplink.ui.theme.TextTokens
 
@@ -359,30 +359,24 @@ fun AdminReportDetailsScreen(
     }
 
     if (showConfirmDialog) {
-        GeneralAlertDialog(
-            onDismissRequest = { showConfirmDialog = false },
+        ApprovePublicationDialog(
+            publicationTitle = report.title,
+            onDismiss = { showConfirmDialog = false },
             onConfirm = {
                 viewModel.confirmReport(report.id)
+                showConfirmDialog = false
                 onBackClick()
-            },
-            title = stringResource(R.string.feature_admin_report_details_confirm_dialog_title),
-            message = stringResource(R.string.feature_admin_report_details_confirm_dialog_message, report.title),
-            icon = Icons.Default.CheckCircle,
-            buttonText = stringResource(R.string.feature_admin_report_details_confirm_action),
-            dismissButtonText = stringResource(R.string.feature_admin_report_details_cancel_action),
-            onDismissAction = { showConfirmDialog = false }
+            }
         )
     }
 
     if (showRejectDialog) {
-        DestructiveConfirmDialog(
-            title = stringResource(R.string.feature_admin_report_details_reject_dialog_title),
-            message = stringResource(R.string.feature_admin_report_details_reject_dialog_message, report.title),
-            confirmText = stringResource(R.string.feature_admin_report_details_reject_action),
-            dismissText = stringResource(R.string.feature_admin_report_details_cancel_action),
-            onDismissRequest = { showRejectDialog = false },
+        ApprovePublicationDialog(
+            publicationTitle = report.title,
+            onDismiss = { showRejectDialog = false },
             onConfirm = {
                 viewModel.invalidateReport(report.id)
+                showRejectDialog = false
                 onBackClick()
             }
         )

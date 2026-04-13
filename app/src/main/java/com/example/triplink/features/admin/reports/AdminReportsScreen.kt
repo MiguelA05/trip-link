@@ -17,6 +17,10 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -24,6 +28,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.example.triplink.R
+import com.example.triplink.core.components.ApprovePublicationDialog
 import com.example.triplink.core.components.admin.ReportModerationPublicationCard
 import com.example.triplink.ui.theme.TextTokens
 
@@ -34,6 +39,11 @@ fun AdminReportsScreen(
 ) {
     val viewModel: AdminReportsViewModel = hiltViewModel()
     val listState = rememberLazyListState()
+
+    var showConfirmDialog by remember { mutableStateOf(false) }
+    var showRejectDialog by remember { mutableStateOf(false) }
+    var selectedReportId by remember { mutableStateOf("") }
+    var selectedReportTitle by remember { mutableStateOf("") }
 
     Column(
         modifier = Modifier
@@ -66,7 +76,10 @@ fun AdminReportsScreen(
             Surface(
                 shape = RoundedCornerShape(999.dp),
                 color = MaterialTheme.colorScheme.secondaryContainer,
-                border = androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant)
+                border = androidx.compose.foundation.BorderStroke(
+                    1.dp,
+                    MaterialTheme.colorScheme.outlineVariant
+                )
             ) {
                 Text(
                     text = stringResource(R.string.feature_admin_moderation_badge),
@@ -81,7 +94,10 @@ fun AdminReportsScreen(
             modifier = Modifier.fillMaxWidth(),
             shape = RoundedCornerShape(24.dp),
             color = MaterialTheme.colorScheme.tertiaryContainer,
-            border = androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.tertiary)
+            border = androidx.compose.foundation.BorderStroke(
+                1.dp,
+                MaterialTheme.colorScheme.tertiary
+            )
         ) {
             Column(
                 modifier = Modifier.padding(vertical = 18.dp, horizontal = 20.dp),
@@ -110,8 +126,16 @@ fun AdminReportsScreen(
             items(viewModel.reportCards, key = { it.id }) { publication ->
                 ReportModerationPublicationCard(
                     publication = publication.toCardUi(),
-                    onConfirmReport = viewModel::confirmReport,
-                    onInvalidateReport = viewModel::invalidateReport,
+                    onConfirmReport = {
+                        selectedReportId = it
+                        selectedReportTitle = publication.title
+                        showConfirmDialog = true
+                    },
+                    onInvalidateReport = {
+                        selectedReportId = it
+                        selectedReportTitle = publication.title
+                        showRejectDialog = true
+                    },
                     onDetailsClick = { onReportClick(it) },
                 )
             }
@@ -122,7 +146,10 @@ fun AdminReportsScreen(
                         modifier = Modifier.fillMaxWidth(),
                         shape = RoundedCornerShape(18.dp),
                         color = MaterialTheme.colorScheme.surfaceVariant,
-                        border = androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant)
+                        border = androidx.compose.foundation.BorderStroke(
+                            1.dp,
+                            MaterialTheme.colorScheme.outlineVariant
+                        )
                     ) {
                         Text(
                             text = stringResource(R.string.feature_admin_reports_empty_state),
@@ -135,5 +162,39 @@ fun AdminReportsScreen(
                 }
             }
         }
+    }
+
+    if (showConfirmDialog && selectedReportId.isNotEmpty()) {
+        ApprovePublicationDialog(
+            publicationTitle = selectedReportTitle,
+            onDismiss = {
+                showConfirmDialog = false
+                selectedReportId = ""
+                selectedReportTitle = ""
+            },
+            onConfirm = {
+                viewModel.confirmReport(selectedReportId)
+                showConfirmDialog = false
+                selectedReportId = ""
+                selectedReportTitle = ""
+            }
+        )
+    }
+
+    if (showRejectDialog && selectedReportId.isNotEmpty()) {
+        ApprovePublicationDialog(
+            publicationTitle = selectedReportTitle,
+            onDismiss = {
+                showRejectDialog = false
+                selectedReportId = ""
+                selectedReportTitle = ""
+            },
+            onConfirm = {
+                viewModel.invalidateReport(selectedReportId)
+                showRejectDialog = false
+                selectedReportId = ""
+                selectedReportTitle = ""
+            }
+        )
     }
 }
