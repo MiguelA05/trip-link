@@ -13,10 +13,6 @@ import androidx.compose.material.icons.outlined.FavoriteBorder
 import androidx.compose.material.icons.outlined.LocationOn
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -49,7 +45,6 @@ fun PublicationCard(
     onFavoriteToggle: (Boolean) -> Unit = {},
     onCommentsClick: () -> Unit = {}
 ) {
-    var isFavoritedState by remember(puntoInteres.id, isFavorite) { mutableStateOf(isFavorite) }
     val cardBorderColor = if (isSystemInDarkTheme()) {
         MaterialTheme.colorScheme.outline.copy(alpha = 0.92f)
     } else {
@@ -259,17 +254,16 @@ fun PublicationCard(
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         IconButton(
                             onClick = {
-                                isFavoritedState = !isFavoritedState
-                                onFavoriteToggle(isFavoritedState)
+                                onFavoriteToggle(!isFavorite)
                             },
                             modifier = Modifier.size(24.dp)
                         ) {
                             Icon(
-                                 imageVector = if (isFavoritedState) Icons.Filled.Favorite else Icons.Outlined.FavoriteBorder,
+                                 imageVector = if (isFavorite) Icons.Filled.Favorite else Icons.Outlined.FavoriteBorder,
                                 contentDescription = stringResource(
                                     R.string.component_publication_card_add_to_favorites_content_description
                                 ),
-                                tint = if (isFavoritedState) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onSurfaceVariant,
+                                tint = if (isFavorite) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onSurfaceVariant,
                                 modifier = Modifier.size(24.dp)
                             )
                         }

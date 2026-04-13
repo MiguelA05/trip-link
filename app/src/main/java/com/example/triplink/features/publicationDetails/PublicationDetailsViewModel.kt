@@ -65,7 +65,7 @@ class PublicationDetailsViewModel @Inject constructor(
             try {
                 val wasToggled = favoriteRepository.toggleFavorite(userId, publicationId)
                 if (wasToggled) {
-                    isFavorite = !isFavorite
+                    isFavorite = favoriteRepository.isFavorite(userId, publicationId)
                     val message = if (isFavorite) {
                         appContext.getString(R.string.vm_publication_details_favorite_added)
                     } else {

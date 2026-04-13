@@ -73,6 +73,7 @@ fun PublicationDetailsScreen(
     val sessionState by sessionViewModel.sessionState.collectAsState()
     val publication = viewModel.getPublicationById(publicationId)
     val publicationActionResult by viewModel.publicationActionResult.collectAsState()
+    val favoriteToggleResult by viewModel.favoriteToggleResult.collectAsState()
     val commentResult by viewModel.commentResult.collectAsState()
     val reportResult by viewModel.reportResult.collectAsState()
     val snackbarHostState = remember { SnackbarHostState() }
@@ -80,6 +81,11 @@ fun PublicationDetailsScreen(
 
     LaunchedEffect(publicationId) {
         viewModel.loadCommentsForPublication(publicationId)
+    }
+
+    LaunchedEffect(publicationId, sessionState) {
+        val currentUserId = (sessionState as? SessionState.Authenticated)?.session?.userId.orEmpty()
+        viewModel.checkIsFavorite(currentUserId, publicationId)
     }
 
     LaunchedEffect(publicationActionResult) {
@@ -111,6 +117,17 @@ fun PublicationDetailsScreen(
             }
             snackbarHostState.showSnackbar(message)
             viewModel.clearCommentResult()
+        }
+    }
+
+    LaunchedEffect(favoriteToggleResult) {
+        favoriteToggleResult?.let { result ->
+            val message = when (result) {
+                is RequestResult.Success -> result.message
+                is RequestResult.Failure -> result.errorMessage
+            }
+            snackbarHostState.showSnackbar(message)
+            viewModel.clearFavoriteResult()
         }
     }
 
@@ -196,6 +213,17 @@ fun PublicationDetailsScreen(
         bottomBar = {
             BottomActionsBar(
                 isOwnerPublicationView = ownerViewEnabled,
+                isInterested = viewModel.isFavorite,
+                onInterestedClick = {
+                    val userId = (sessionState as? SessionState.Authenticated)?.session?.userId.orEmpty()
+                    if (userId.isBlank()) {
+                        coroutineScope.launch {
+                            snackbarHostState.showSnackbar(loginRequiredForReviewMessage)
+                        }
+                    } else {
+                        viewModel.toggleFavorite(userId, publicationId)
+                    }
+                },
                 onVisitedClick = {
                     if (sessionState is SessionState.Authenticated) {
                         showRatingModal = true
@@ -1040,11 +1068,11 @@ fun ReviewCard(review: Review) {
 @Composable
 fun BottomActionsBar(
     isOwnerPublicationView: Boolean,
+    isInterested: Boolean,
+    onInterestedClick: () -> Unit,
     onVisitedClick: () -> Unit,
     onDeleteClick: () -> Unit = {}
 ) {
-    var isInterested by remember { mutableStateOf(false) }
-
     Surface(
         modifier = Modifier.fillMaxWidth(),
         shadowElevation = 16.dp,
@@ -1077,9 +1105,9 @@ fun BottomActionsBar(
                     )
                 }
             } else {
-                // Botón Me interesa (con lógica de estado)
+                // Botón Me interesa sincronizado con el repositorio compartido
                 Button(
-                    onClick = { isInterested = !isInterested },
+                    onClick = onInterestedClick,
                     modifier = Modifier
                         .weight(1f)
                         .height(54.dp),
