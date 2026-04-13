@@ -204,7 +204,7 @@
     <string name="enum_categoria_historia">History</string>
     <string name="enum_rol_usuario">Traveler</string>
     <string name="enum_rol_moderador">Moderator</string>
-    <string name="enum_razon_reporte_spam">Spam</string>
+    <string name="enum_razon_reporte_ubicacion_erronea">Wrong location</string>
     <string name="enum_razon_reporte_contenido_inapropiado">Inappropriate content</string>
     <string name="enum_razon_reporte_informacion_falsa">False information</string>
     <string name="enum_razon_reporte_lenguaje_ofensivo">Offensive language</string>

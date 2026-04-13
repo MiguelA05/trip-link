@@ -23,7 +23,7 @@ fun RangoPrecios?.localizedLabelOrNoPrice(context: Context): String = when (this
 }
 
 fun RazonReporte.localizedLabel(context: Context): String = when (this) {
-    RazonReporte.SPAM -> context.getString(R.string.enum_razon_reporte_spam)
+    RazonReporte.SPAM -> context.getString(R.string.enum_razon_reporte_ubicacion_erronea)
     RazonReporte.CONTENIDO_INAPROPIADO -> context.getString(R.string.enum_razon_reporte_contenido_inapropiado)
     RazonReporte.INFORMACION_FALSA -> context.getString(R.string.enum_razon_reporte_informacion_falsa)
     RazonReporte.LENGUAJE_OFENSIVO -> context.getString(R.string.enum_razon_reporte_lenguaje_ofensivo)
