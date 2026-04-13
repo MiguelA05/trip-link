@@ -5,6 +5,8 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -202,11 +204,10 @@ fun PublicationDetailsScreen(
                 ImageHeader(
                     categoryLabel = publication.categoria.localizedLabel(),
                     title = publication.titulo,
-                    imageUrl = publication.fotos.firstOrNull().orEmpty(),
+                    imageUrls = publication.fotos,
                     showReportAction = !ownerViewEnabled,
                     reportActionEnabled = canOpenReportModal,
-                    onReportClick = { if (canOpenReportModal) showReportModal = true },
-                    onBackClick = onBackClick
+                    onReportClick = { if (canOpenReportModal) showReportModal = true }
                 )
             }
         },
@@ -330,32 +331,54 @@ fun PublicationDetailsScreen(
 fun ImageHeader(
     categoryLabel: String,
     title: String,
-    imageUrl: String,
+    imageUrls: List<String>,
     showReportAction: Boolean,
     reportActionEnabled: Boolean = true,
-    onReportClick: () -> Unit,
-    onBackClick: () -> Unit
+    onReportClick: () -> Unit
 ) {
+    val images = remember(imageUrls) {
+        imageUrls.filter { it.isNotBlank() }.ifEmpty { listOf("") }
+    }
+    val pagerState = rememberPagerState(pageCount = { images.size })
+    val scope = rememberCoroutineScope()
+    val hasMultipleImages = images.size > 1
+
     Box(
         modifier = Modifier
             .fillMaxWidth()
             .height(300.dp) 
     ) {
-        if (imageUrl.isNotBlank()) {
-            AsyncImage(
-                model = ImageRequest.Builder(LocalContext.current)
-                    .data(imageUrl)
-                    .crossfade(true)
-                    .build(),
-                contentDescription = title,
-                contentScale = ContentScale.Crop,
-                modifier = Modifier.fillMaxSize()
-            )
-        } else {
-            Box(
+        HorizontalPager(
+            state = pagerState,
+            modifier = Modifier.fillMaxSize()
+        ) { page ->
+            val imageUrl = images[page]
+            if (imageUrl.isNotBlank()) {
+                AsyncImage(
+                    model = ImageRequest.Builder(LocalContext.current)
+                        .data(imageUrl)
+                        .crossfade(true)
+                        .build(),
+                    contentDescription = title,
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier.fillMaxSize()
+                )
+            } else {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(MaterialTheme.colorScheme.surfaceVariant)
+                )
+            }
+        }
+
+        if (hasMultipleImages) {
+            DotsIndicator(
+                totalDots = images.size,
+                selectedIndex = pagerState.currentPage,
                 modifier = Modifier
-                    .fillMaxSize()
-                    .background(MaterialTheme.colorScheme.surfaceVariant)
+                    .align(Alignment.TopCenter)
+                    .padding(top = 14.dp)
             )
         }
 
@@ -384,8 +407,21 @@ fun ImageHeader(
             shape = CircleShape,
             color = MaterialTheme.colorScheme.scrim.copy(alpha = 0.4f)
         ) {
-            IconButton(onClick = onBackClick) {
-                Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = null, tint = MaterialTheme.colorScheme.onPrimary)
+            IconButton(
+                enabled = hasMultipleImages && pagerState.currentPage > 0,
+                onClick = {
+                    if (pagerState.currentPage > 0) {
+                        scope.launch { pagerState.animateScrollToPage(pagerState.currentPage - 1) }
+                    }
+                }
+            ) {
+                Icon(
+                    Icons.AutoMirrored.Filled.ArrowBack,
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.onPrimary.copy(
+                        alpha = if (hasMultipleImages && pagerState.currentPage > 0) 1f else 0.45f
+                    )
+                )
             }
         }
 
@@ -397,8 +433,21 @@ fun ImageHeader(
             shape = CircleShape,
             color = MaterialTheme.colorScheme.scrim.copy(alpha = 0.4f)
         ) {
-            IconButton(onClick = { /* TODO */ }) {
-                Icon(Icons.AutoMirrored.Filled.ArrowForward, contentDescription = null, tint = MaterialTheme.colorScheme.onPrimary)
+            IconButton(
+                enabled = hasMultipleImages && pagerState.currentPage < images.lastIndex,
+                onClick = {
+                    if (pagerState.currentPage < images.lastIndex) {
+                        scope.launch { pagerState.animateScrollToPage(pagerState.currentPage + 1) }
+                    }
+                }
+            ) {
+                Icon(
+                    Icons.AutoMirrored.Filled.ArrowForward,
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.onPrimary.copy(
+                        alpha = if (hasMultipleImages && pagerState.currentPage < images.lastIndex) 1f else 0.45f
+                    )
+                )
             }
         }
 
@@ -423,6 +472,28 @@ fun ImageHeader(
                     )
                 }
             }
+        }
+    }
+}
+
+@Composable
+private fun DotsIndicator(
+    totalDots: Int,
+    selectedIndex: Int,
+    modifier: Modifier = Modifier
+) {
+    Row(
+        modifier = modifier,
+        horizontalArrangement = Arrangement.spacedBy(6.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        repeat(totalDots) { index ->
+            val isSelected = index == selectedIndex
+            Surface(
+                modifier = Modifier.size(if (isSelected) 10.dp else 8.dp),
+                shape = CircleShape,
+                color = MaterialTheme.colorScheme.onPrimary.copy(alpha = if (isSelected) 0.95f else 0.45f)
+            ) {}
         }
     }
 }
