@@ -14,7 +14,10 @@ import com.example.triplink.domain.repository.publication.PublicationRepository
 import com.example.triplink.features.filters.FiltersStore
 import com.example.triplink.features.filters.publicationMatchesFilters
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import javax.inject.Inject
@@ -36,8 +39,8 @@ class ExploreMapViewModel @Inject constructor(
     var query by mutableStateOf("")
         private set
 
-    var selectedCategory by mutableStateOf<Categoria?>(null)
-        private set
+    private val _selectedCategory = MutableStateFlow<Categoria?>(null)
+    val selectedCategory: StateFlow<Categoria?> = _selectedCategory.asStateFlow()
 
     val appliedFilters: StateFlow<com.example.triplink.features.filters.AppliedFilters> = filtersStore.appliedFilters
 
@@ -51,10 +54,13 @@ class ExploreMapViewModel @Inject constructor(
     private val allPublications: List<PuntoInteres>
         get() = publicationRepository.explorePublications()
 
-    // Flujo reactivo que combina appliedFilters con la lista de publicaciones
-    val filteredPublications: StateFlow<List<PuntoInteres>> = filtersStore.appliedFilters.map { filters ->
+    // Flujo reactivo que combina appliedFilters, selectedCategory y query
+    val filteredPublications: StateFlow<List<PuntoInteres>> = combine(
+        filtersStore.appliedFilters,
+        _selectedCategory
+    ) { filters, category ->
         allPublications.filter { publication ->
-            val categoryMatches = selectedCategory == null || publication.categoria == selectedCategory
+            val categoryMatches = category == null || publication.categoria == category
             categoryMatches && publicationMatchesFilters(publication, filters, query)
         }
     }.stateIn(viewModelScope, kotlinx.coroutines.flow.SharingStarted.Lazily, emptyList())
@@ -92,7 +98,7 @@ class ExploreMapViewModel @Inject constructor(
     }
 
     fun onCategorySelected(category: Categoria?) {
-        selectedCategory = category
+        _selectedCategory.value = category
         keepValidSelection()
     }
 
