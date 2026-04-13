@@ -970,7 +970,7 @@ fun ReviewsSection(
                     )
                     Spacer(modifier = Modifier.width(4.dp))
                     Text(
-                        text = generalRating.toString(),
+                        text = "%.1f".format(generalRating),
                         style = TextTokens.emphasized(TextTokens.title(), FontWeight.Bold),
                         color = MaterialTheme.colorScheme.onSurface
                     )
