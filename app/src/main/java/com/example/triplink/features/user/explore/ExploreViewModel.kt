@@ -2,7 +2,6 @@ package com.example.triplink.features.user.explore
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -31,8 +30,8 @@ class ExploreViewModel @Inject constructor(
 
     val publications: StateFlow<List<PuntoInteres>> = publicationRepository.publications
 
-    var query by mutableStateOf("")
-        private set
+    private val _query = MutableStateFlow("")
+    val query: StateFlow<String> = _query.asStateFlow()
 
     private val _selectedCategory = MutableStateFlow<Categoria?>(null)
     val selectedCategory: StateFlow<Categoria?> = _selectedCategory.asStateFlow()
@@ -53,8 +52,9 @@ class ExploreViewModel @Inject constructor(
     val filteredPublications: StateFlow<List<PuntoInteres>> = combine(
         publications,
         appliedFilters,
-        _selectedCategory
-    ) { pubs, filters, category ->
+        _selectedCategory,
+        _query
+    ) { pubs, filters, category, query ->
         pubs.filter { publication ->
             val isVisible = publication.estado == EstadoPublicacion.VERIFICADA
             val categoryMatches = category == null || publication.categoria == category
@@ -63,7 +63,7 @@ class ExploreViewModel @Inject constructor(
     }.stateIn(viewModelScope, kotlinx.coroutines.flow.SharingStarted.Lazily, emptyList())
 
     fun onQueryChange(newValue: String) {
-        query = newValue
+        _query.value = newValue
     }
 
     fun onCategorySelected(category: Categoria?) {

@@ -41,10 +41,10 @@ fun ExploreScreen(
 	onFiltersClick: () -> Unit = {}
 ) {
 	val viewModel: ExploreViewModel = hiltViewModel()
-	val publications by viewModel.publications.collectAsState()
 	val filteredPublications by viewModel.filteredPublications.collectAsState()
 	val appliedFilters by viewModel.appliedFilters.collectAsState()
 	val selectedCategory by viewModel.selectedCategory.collectAsState()
+	val query by viewModel.query.collectAsState()
 	val appliedChips = buildList {
 		appliedFilters.categories.forEach { category ->
 			add(
@@ -112,7 +112,7 @@ fun ExploreScreen(
 				verticalArrangement = Arrangement.spacedBy(8.dp)
 			) {
 				SearchBar(
-					query = viewModel.query,
+					query = query,
 					onQueryChange = viewModel::onQueryChange,
 					onFilterClick = onFiltersClick
 				)

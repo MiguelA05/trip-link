@@ -1,13 +1,11 @@
 package com.example.triplink.features.user.exploreMap
 
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.triplink.core.utils.toRatingLabel
 import com.example.triplink.domain.model.PuntoInteres
 import com.example.triplink.domain.model.enums.Categoria
+import com.example.triplink.domain.model.enums.EstadoPublicacion
 import com.example.triplink.domain.model.enums.RangoPrecios
 import com.example.triplink.domain.model.enums.UbicacionFiltro
 import com.example.triplink.domain.repository.publication.PublicationRepository
@@ -15,11 +13,12 @@ import com.example.triplink.features.filters.FiltersStore
 import com.example.triplink.features.filters.publicationMatchesFilters
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 data class MapMarkerUi(
@@ -36,11 +35,13 @@ class ExploreMapViewModel @Inject constructor(
     private val filtersStore: FiltersStore
 ) : ViewModel() {
 
-    var query by mutableStateOf("")
-        private set
+    private val _query = MutableStateFlow("")
+    val query: StateFlow<String> = _query.asStateFlow()
 
     private val _selectedCategory = MutableStateFlow<Categoria?>(null)
     val selectedCategory: StateFlow<Categoria?> = _selectedCategory.asStateFlow()
+
+    private val publications = publicationRepository.publications
 
     val appliedFilters: StateFlow<com.example.triplink.features.filters.AppliedFilters> = filtersStore.appliedFilters
 
@@ -51,30 +52,37 @@ class ExploreMapViewModel @Inject constructor(
         Categoria.CULTURA
     )
 
-    private val allPublications: List<PuntoInteres>
-        get() = publicationRepository.explorePublications()
-
-    // Flujo reactivo que combina appliedFilters, selectedCategory y query
+    // Flujo reactivo que combina publicaciones, appliedFilters, selectedCategory y query
     val filteredPublications: StateFlow<List<PuntoInteres>> = combine(
+        publications,
         filtersStore.appliedFilters,
-        _selectedCategory
-    ) { filters, category ->
-        allPublications.filter { publication ->
+        _selectedCategory,
+        _query
+    ) { pubs, filters, category, query ->
+        pubs.filter { publication ->
+            val isVisible = publication.estado == EstadoPublicacion.VERIFICADA
             val categoryMatches = category == null || publication.categoria == category
-            categoryMatches && publicationMatchesFilters(publication, filters, query)
+            isVisible && categoryMatches && publicationMatchesFilters(publication, filters, query)
         }
-    }.stateIn(viewModelScope, kotlinx.coroutines.flow.SharingStarted.Lazily, emptyList())
+    }.stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
 
-    var selectedPublicationId by mutableStateOf(allPublications.firstOrNull()?.id.orEmpty())
-        private set
+    private val _selectedPublicationId = MutableStateFlow("")
 
-    val selectedPublication: PuntoInteres?
-        get() = filteredPublications.value.firstOrNull { it.id == selectedPublicationId }
-            ?: filteredPublications.value.firstOrNull()
-            ?: allPublications.firstOrNull()
+    val selectedPublication: StateFlow<PuntoInteres?> = combine(
+        filteredPublications,
+        _selectedPublicationId,
+        publications
+    ) { filtered, selectedId, allPublications ->
+        filtered.firstOrNull { it.id == selectedId }
+            ?: filtered.firstOrNull()
+            ?: allPublications.firstOrNull { it.estado == EstadoPublicacion.VERIFICADA }
+    }.stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
-    val markers: List<MapMarkerUi>
-        get() = filteredPublications.value.mapIndexed { index, publication ->
+    val markers: StateFlow<List<MapMarkerUi>> = combine(
+        filteredPublications,
+        _selectedPublicationId
+    ) { filtered, selectedId ->
+        filtered.mapIndexed { index, publication ->
             val x = 0.18f + ((index % 3) * 0.26f)
             val y = 0.28f + ((index / 3) * 0.22f)
             MapMarkerUi(
@@ -82,18 +90,19 @@ class ExploreMapViewModel @Inject constructor(
                 xFraction = x.coerceIn(0.12f, 0.86f),
                 yFraction = y.coerceIn(0.20f, 0.78f),
                 ratingLabel = averageRatingLabelFor(publication),
-                highlighted = publication.id == selectedPublicationId
+                highlighted = publication.id == selectedId
             )
         }
+    }.stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
 
     val selectedMarkerRatingLabel: String
-        get() = selectedPublication?.let(::averageRatingLabelFor) ?: "0.0"
+        get() = selectedPublication.value?.let(::averageRatingLabelFor) ?: "0.0"
 
     val selectedPublicationReviewCount: Int
-        get() = selectedPublication?.commentCount ?: 0
+        get() = selectedPublication.value?.commentCount ?: 0
 
     fun onQueryChange(newValue: String) {
-        query = newValue
+        _query.value = newValue
         keepValidSelection()
     }
 
@@ -103,12 +112,16 @@ class ExploreMapViewModel @Inject constructor(
     }
 
     fun onMarkerSelected(markerId: String) {
-        selectedPublicationId = markerId
+        _selectedPublicationId.value = markerId
     }
 
-    private fun keepValidSelection() {
-        if (filteredPublications.value.none { it.id == selectedPublicationId }) {
-            selectedPublicationId = filteredPublications.value.firstOrNull()?.id.orEmpty()
+    private fun keepValidSelection(filtered: List<PuntoInteres> = filteredPublications.value) {
+        val nextSelectionId = filtered.firstOrNull { it.id == _selectedPublicationId.value }?.id
+            ?: filtered.firstOrNull()?.id
+            ?: ""
+
+        if (nextSelectionId != _selectedPublicationId.value) {
+            _selectedPublicationId.value = nextSelectionId
         }
     }
 
@@ -135,5 +148,13 @@ class ExploreMapViewModel @Inject constructor(
     fun removeAppliedRating(rating: Int) {
         filtersStore.removeRating(rating)
         keepValidSelection()
+    }
+
+    init {
+        viewModelScope.launch {
+            filteredPublications.collect { filtered ->
+                keepValidSelection(filtered)
+            }
+        }
     }
 }

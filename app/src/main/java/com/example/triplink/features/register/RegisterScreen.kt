@@ -8,6 +8,8 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Visibility
+import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.LocationOn
@@ -32,6 +34,8 @@ import com.example.triplink.core.components.LinkTextRow
 import com.example.triplink.core.utils.RequestResult
 import com.example.triplink.ui.theme.TextColors
 import com.example.triplink.ui.theme.TextTokens
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -147,8 +151,21 @@ fun RegisterScreen(
                 onValueChange = { registerViewModel.onPasswordChange(it) },
                 placeholder = stringResource(R.string.feature_register_password_placeholder),
                 modifier = Modifier.fillMaxWidth(),
+                visualTransformation = if (registerViewModel.passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
                 isError = registerViewModel.passwordError != null,
-                errorText = registerViewModel.passwordError
+                errorText = registerViewModel.passwordError,
+                trailingIcon = {
+                    val icon = if (registerViewModel.passwordVisible) Icons.Filled.Visibility else Icons.Filled.VisibilityOff
+                    val description = if (registerViewModel.passwordVisible) {
+                        stringResource(R.string.feature_login_hide_password)
+                    } else {
+                        stringResource(R.string.feature_login_show_password)
+                    }
+
+                    IconButton(onClick = { registerViewModel.togglePasswordVisibility() }) {
+                        Icon(imageVector = icon, contentDescription = description)
+                    }
+                }
             )
 
             Spacer(modifier = Modifier.height(24.dp))

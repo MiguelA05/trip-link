@@ -80,8 +80,10 @@ fun ExploreMapScreen(
 	val coroutineScope = rememberCoroutineScope()
 	var mapSize by remember { mutableStateOf(IntSize.Zero) }
 	val appliedFilters by viewModel.appliedFilters.collectAsState()
-	val filteredPublications by viewModel.filteredPublications.collectAsState()
+	val selectedPublication by viewModel.selectedPublication.collectAsState()
+	val markers by viewModel.markers.collectAsState()
 	val selectedCategory by viewModel.selectedCategory.collectAsState()
+	val query by viewModel.query.collectAsState()
 	val appliedChips = buildList {
 		appliedFilters.categories.forEach { category ->
 			add(
@@ -171,7 +173,7 @@ fun ExploreMapScreen(
 							}
 					)
 
-					viewModel.selectedPublication?.let { selected ->
+					selectedPublication?.let { selected ->
 						ExploreMapPublicationCard(
 							publication = selected,
 							ratingLabel = viewModel.selectedMarkerRatingLabel,
@@ -227,7 +229,7 @@ fun ExploreMapScreen(
 				verticalArrangement = Arrangement.spacedBy(8.dp)
 			) {
 				SearchBar(
-					query = viewModel.query,
+					query = query,
 					onQueryChange = viewModel::onQueryChange,
 					onFilterClick = onFiltersClick
 				)
@@ -244,7 +246,7 @@ fun ExploreMapScreen(
 					.fillMaxSize()
 					.onSizeChanged { newSize -> mapSize = newSize }
 			) {
-				viewModel.markers.forEach { marker ->
+				markers.forEach { marker ->
 					MarkerPin(
 						marker = marker,
 						onClick = {

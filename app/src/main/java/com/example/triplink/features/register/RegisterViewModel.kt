@@ -31,6 +31,7 @@ class RegisterViewModel @Inject constructor(
     var email by mutableStateOf("")
     var password by mutableStateOf("")
     var address by mutableStateOf("")
+    var passwordVisible by mutableStateOf(false)
 
     var nameError by mutableStateOf<String?>(null)
     var phoneError by mutableStateOf<String?>(null)
@@ -122,6 +123,10 @@ class RegisterViewModel @Inject constructor(
     fun onPasswordChange(newValue: String) {
         password = newValue
         passwordError = validatePassword(newValue)
+    }
+
+    fun togglePasswordVisibility() {
+        passwordVisible = !passwordVisible
     }
 
     fun onAddressChange(newValue: String) {
