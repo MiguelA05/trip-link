@@ -21,11 +21,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.example.triplink.R
 import com.example.triplink.core.components.admin.ReportModerationPublicationCard
+import com.example.triplink.ui.theme.TextTokens
 
 @Composable
 fun AdminReportsScreen(
@@ -52,8 +52,7 @@ fun AdminReportsScreen(
             Column {
                 Text(
                     text = stringResource(R.string.feature_admin_reports_title),
-                    style = MaterialTheme.typography.headlineSmall,
-                    fontWeight = FontWeight.Bold,
+                    style = TextTokens.sectionTitle(),
                     color = MaterialTheme.colorScheme.onSurface
                 )
                 Text(
@@ -73,8 +72,7 @@ fun AdminReportsScreen(
                     text = stringResource(R.string.feature_admin_moderation_badge),
                     modifier = Modifier.padding(horizontal = 12.dp, vertical = 7.dp),
                     color = MaterialTheme.colorScheme.onSecondaryContainer,
-                    style = MaterialTheme.typography.labelLarge,
-                    fontWeight = FontWeight.Bold
+                    style = TextTokens.button()
                 )
             }
         }
@@ -92,14 +90,12 @@ fun AdminReportsScreen(
             ) {
                 Text(
                     text = viewModel.pendingCount.toString(),
-                    style = MaterialTheme.typography.displaySmall,
-                    fontWeight = FontWeight.ExtraBold,
+                    style = TextTokens.screenTitle(),
                     color = MaterialTheme.colorScheme.onTertiaryContainer
                 )
                 Text(
                     text = stringResource(R.string.feature_admin_reports_counter_label),
-                    style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.Bold,
+                    style = TextTokens.button(),
                     color = MaterialTheme.colorScheme.onTertiaryContainer,
                     textAlign = TextAlign.Center
                 )

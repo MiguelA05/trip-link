@@ -36,6 +36,7 @@ import androidx.compose.ui.window.Dialog
 import com.example.triplink.R
 import com.example.triplink.features.badges.Badge
 import com.example.triplink.features.badges.BadgeColorRole
+import com.example.triplink.ui.theme.TextTokens
 
 @Composable
 fun BadgeDetailModal(badge: Badge, onDismiss: () -> Unit) {
@@ -134,8 +135,7 @@ fun BadgeDetailModal(badge: Badge, onDismiss: () -> Unit) {
                         Spacer(modifier = Modifier.width(8.dp))
                         Text(
                             text = stringResource(R.string.component_badge_detail_modal_unlocked_label),
-                            style = MaterialTheme.typography.labelLarge,
-                            fontWeight = FontWeight.Bold,
+                            style = TextTokens.emphasized(TextTokens.button(), FontWeight.Bold),
                             color = badgeColor
                         )
                     }
@@ -145,10 +145,8 @@ fun BadgeDetailModal(badge: Badge, onDismiss: () -> Unit) {
 
                 Text(
                     text = badge.name,
-                    style = MaterialTheme.typography.headlineMedium.copy(
-                        fontWeight = FontWeight.ExtraBold,
-                        color = MaterialTheme.colorScheme.primary
-                    ),
+                    style = TextTokens.emphasized(MaterialTheme.typography.headlineMedium, FontWeight.ExtraBold),
+                    color = MaterialTheme.colorScheme.primary,
                     textAlign = TextAlign.Center
                 )
 
@@ -197,8 +195,7 @@ fun BadgeDetailModal(badge: Badge, onDismiss: () -> Unit) {
                         Spacer(modifier = Modifier.width(8.dp))
                         Text(
                             text = stringResource(R.string.component_badge_detail_modal_view_badges_action),
-                            style = MaterialTheme.typography.titleMedium,
-                            fontWeight = FontWeight.Bold
+                            style = TextTokens.emphasized(TextTokens.button(), FontWeight.Bold)
                         )
                     }
                 }

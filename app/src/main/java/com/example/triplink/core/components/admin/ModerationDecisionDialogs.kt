@@ -37,6 +37,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.example.triplink.R
+import com.example.triplink.ui.theme.TextTokens
 
 @Composable
 fun ApprovePublicationDialog(
@@ -96,8 +97,7 @@ fun RejectPublicationDialog(
                 ) {
                     Text(
                         text = stringResource(R.string.component_moderation_decision_dialog_reason_label),
-                        style = MaterialTheme.typography.titleMedium,
-                        fontWeight = FontWeight.Bold,
+                        style = TextTokens.emphasized(TextTokens.title(), FontWeight.SemiBold),
                         color = MaterialTheme.colorScheme.onSurface
                     )
                     OutlinedTextField(
@@ -194,8 +194,7 @@ private fun BaseModerationDialog(
 
                 Text(
                     text = title,
-                    style = MaterialTheme.typography.headlineMedium,
-                    fontWeight = FontWeight.Bold,
+                    style = TextTokens.emphasized(MaterialTheme.typography.headlineMedium, FontWeight.Bold),
                     textAlign = TextAlign.Center,
                     modifier = Modifier.fillMaxWidth()
                 )
@@ -226,8 +225,7 @@ private fun BaseModerationDialog(
                     ) {
                         Text(
                             text = stringResource(R.string.component_moderation_decision_dialog_cancel_action),
-                            fontWeight = FontWeight.Bold,
-                            style = MaterialTheme.typography.titleLarge
+                            style = TextTokens.emphasized(TextTokens.button(), FontWeight.Bold)
                         )
                     }
 
@@ -245,8 +243,7 @@ private fun BaseModerationDialog(
                     ) {
                         Text(
                             text = confirmText,
-                            fontWeight = FontWeight.Bold,
-                            style = MaterialTheme.typography.titleLarge
+                            style = TextTokens.emphasized(TextTokens.button(), FontWeight.Bold)
                         )
                     }
                 }

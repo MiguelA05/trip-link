@@ -34,9 +34,8 @@ fun LinkTextRow(
     ) {
         Text(
             text = text,
-            style = MaterialTheme.typography.bodyLarge.copy(
-                color = textColor
-            )
+            style = MaterialTheme.typography.bodyLarge,
+            color = textColor
         )
         TextButton(
             onClick = onClick,
@@ -51,9 +50,8 @@ fun LinkTextRow(
         ) {
             Text(
                 text = buttonText,
-                style = MaterialTheme.typography.bodyLarge.copy(
-                    color = MaterialTheme.colorScheme.primary
-                )
+                style = MaterialTheme.typography.bodyLarge,
+                color = MaterialTheme.colorScheme.primary
             )
         }
     }

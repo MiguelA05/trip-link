@@ -15,6 +15,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.res.stringResource
 import com.example.triplink.R
@@ -67,12 +68,12 @@ fun PublicationPriceRangeSection(
                     Text(
                         text = selectedLevel,
                         color = MaterialTheme.colorScheme.primary,
-                        style = TextTokens.cardTitle()
+                        style = TextTokens.emphasized(TextTokens.title(), FontWeight.Bold)
                     )
                     Text(
                         text = stringResource(R.string.component_publication_price_range_estimated),
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        style = TextTokens.helperText()
+                        style = TextTokens.bodySecondary()
                     )
                 }
             }
@@ -91,7 +92,7 @@ private fun PriceTag(text: String, isSelected: Boolean) {
             Text(
                 text = text,
                 color = if (isSelected) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurfaceVariant,
-                style = TextTokens.cardTitle()
+                style = TextTokens.emphasized(TextTokens.title(), FontWeight.Bold)
             )
         }
     }

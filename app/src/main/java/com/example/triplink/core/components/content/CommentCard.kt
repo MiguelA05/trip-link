@@ -35,9 +35,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.example.triplink.R
 import com.example.triplink.domain.model.Comentario
+import com.example.triplink.ui.theme.TextTokens
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -85,8 +85,7 @@ fun CommentCard(
                             fallbackInitial = stringResource(R.string.component_comment_card_default_initial)
                         ),
                         color = MaterialTheme.colorScheme.onPrimaryContainer,
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 18.sp
+                        style = TextTokens.emphasized(TextTokens.title(), FontWeight.Bold)
                     )
                 }
 
@@ -95,8 +94,7 @@ fun CommentCard(
                 Column {
                     Text(
                         text = comment.userName,
-                        style = MaterialTheme.typography.titleMedium,
-                        fontWeight = FontWeight.Bold
+                        style = TextTokens.emphasized(TextTokens.title(), FontWeight.Bold)
                     )
                     Text(
                         text = formatDate(comment.date),
@@ -121,8 +119,7 @@ fun CommentCard(
                 Text(
                     text = String.format(Locale.ROOT, "%.1f", comment.rating),
                     color = MaterialTheme.colorScheme.tertiary,
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 14.sp
+                    style = TextTokens.emphasized(TextTokens.label(), FontWeight.Bold)
                 )
             }
 
@@ -130,11 +127,10 @@ fun CommentCard(
 
             Text(
                 text = comment.text,
-                style = MaterialTheme.typography.bodyMedium,
+                style = TextTokens.body(),
                 color = MaterialTheme.colorScheme.onSurface,
                 maxLines = if (isExpanded) Int.MAX_VALUE else 3,
                 overflow = TextOverflow.Ellipsis,
-                lineHeight = 20.sp,
                 onTextLayout = { textLayoutResult ->
                     if (!isExpanded) {
                         hasOverflow = textLayoutResult.hasVisualOverflow
@@ -165,8 +161,7 @@ fun CommentCard(
                             stringResource(R.string.component_comment_card_show_more)
                         },
                         color = MaterialTheme.colorScheme.tertiary,
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 14.sp
+                        style = TextTokens.emphasized(TextTokens.label(), FontWeight.Bold)
                     )
                 }
             }

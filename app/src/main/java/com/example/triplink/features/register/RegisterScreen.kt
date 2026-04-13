@@ -15,9 +15,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -99,8 +97,7 @@ fun RegisterScreen(
 
             Text(
                 text = stringResource(R.string.feature_register_create_account_heading),
-                style = MaterialTheme.typography.headlineSmall,
-                fontWeight = FontWeight.Bold,
+                style = TextTokens.sectionTitle(),
                 color = TextColors.Primary
             )
 
@@ -156,8 +153,7 @@ fun RegisterScreen(
 
             Text(
                 text = stringResource(R.string.feature_register_residence_title),
-                fontWeight = FontWeight.SemiBold,
-                style = MaterialTheme.typography.titleMedium,
+                style = TextTokens.title(),
                 modifier = Modifier.fillMaxWidth(),
                 textAlign = TextAlign.Start
             )

@@ -15,6 +15,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.triplink.R
 import com.example.triplink.ui.theme.TextTokens
@@ -40,12 +41,12 @@ fun StatsRow(
         ) {
             Text(
                 text = points.toString(),
-                style = TextTokens.statValue(),
+                style = TextTokens.emphasized(MaterialTheme.typography.headlineMedium, FontWeight.Bold),
                 color = MaterialTheme.colorScheme.onSurface
             )
             Text(
                 text = stringResource(R.string.component_stats_row_points),
-                style = TextTokens.statLabel(),
+                style = TextTokens.emphasized(TextTokens.title(), FontWeight.Bold),
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
         }
@@ -64,12 +65,12 @@ fun StatsRow(
         ) {
             Text(
                 text = contributions.toString(),
-                style = TextTokens.statValue(),
+                style = TextTokens.emphasized(MaterialTheme.typography.headlineMedium, FontWeight.Bold),
                 color = MaterialTheme.colorScheme.onSurface
             )
             Text(
                 text = stringResource(R.string.component_stats_row_contributions),
-                style = TextTokens.statLabel(),
+                style = TextTokens.emphasized(TextTokens.title(), FontWeight.Bold),
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
         }
@@ -88,12 +89,12 @@ fun StatsRow(
         ) {
             Text(
                 text = activeDays.toString(),
-                style = TextTokens.statValue(),
+                style = TextTokens.emphasized(MaterialTheme.typography.headlineMedium, FontWeight.Bold),
                 color = MaterialTheme.colorScheme.onSurface
             )
             Text(
                 text = stringResource(R.string.component_stats_row_active_days),
-                style = TextTokens.statLabel(),
+                style = TextTokens.emphasized(TextTokens.title(), FontWeight.Bold),
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
         }

@@ -40,7 +40,7 @@ fun GeneralButton(
         }
         Text(
             text = text,
-            style = TextTokens.buttonLabel()
+            style = TextTokens.emphasized(TextTokens.button(), FontWeight.Bold)
         )
     }
 

@@ -65,7 +65,7 @@
 
     <!-- COMPONENT: SearchBar -->
     <!-- resource: component_search_bar_placeholder -->
-    <string name="component_search_bar_placeholder">Search placesâ€¦</string>
+    <string name="component_search_bar_placeholder">Search places</string>
     <!-- resource: component_search_bar_search_content_description -->
     <string name="component_search_bar_search_content_description">Search</string>
     <!-- resource: component_search_bar_filters_content_description -->

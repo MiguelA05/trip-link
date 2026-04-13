@@ -19,6 +19,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.triplink.R
+import com.example.triplink.ui.theme.TextTokens
 
 @Composable
 fun PublicationScheduleSection(
@@ -33,8 +34,7 @@ fun PublicationScheduleSection(
     ) {
         Text(
             text = stringResource(R.string.component_publication_weekly_schedule_title),
-            style = MaterialTheme.typography.titleLarge,
-            fontWeight = FontWeight.Bold,
+            style = TextTokens.emphasized(TextTokens.screenTitle(), FontWeight.Bold),
             color = MaterialTheme.colorScheme.onSurface
         )
 
@@ -56,9 +56,8 @@ fun PublicationScheduleSection(
                 )
                 Text(
                     text = schedule,
-                    style = MaterialTheme.typography.bodyLarge,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    fontWeight = FontWeight.Medium
+                    style = TextTokens.emphasized(TextTokens.body(), FontWeight.Medium),
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
         }

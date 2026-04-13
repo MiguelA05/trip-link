@@ -53,7 +53,7 @@ fun BrandHeader(
                 AppTitle(variant = AppTitleVariant.Compact)
                 Text(
                     text = locationText,
-                    style = TextTokens.cardSubtitle(),
+                    style = TextTokens.bodySecondary(),
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }

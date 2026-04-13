@@ -33,7 +33,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.example.triplink.R
@@ -44,6 +43,7 @@ import com.example.triplink.core.components.RatingSummaryCard
 import com.example.triplink.core.navigation.SessionState
 import com.example.triplink.core.navigation.SessionViewModel
 import com.example.triplink.core.utils.RequestResult
+import com.example.triplink.ui.theme.TextTokens
 
 @Composable
 fun CommentsScreen(
@@ -102,8 +102,8 @@ fun CommentsScreen(
 				Text(
 					text = stringResource(R.string.feature_comments_total_reviews, uiState.totalReviews),
 					modifier = Modifier.fillMaxWidth(),
+					style = TextTokens.emphasized(TextTokens.body()),
 					color = MaterialTheme.colorScheme.onSurfaceVariant,
-					fontWeight = FontWeight.SemiBold
 				)
 			}
 

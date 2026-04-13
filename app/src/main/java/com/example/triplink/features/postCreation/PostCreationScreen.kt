@@ -28,7 +28,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
@@ -37,7 +36,6 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.example.triplink.core.components.FormField
 import com.example.triplink.core.components.GeneralButton
@@ -46,7 +44,6 @@ import com.example.triplink.R
 import com.example.triplink.core.utils.RequestResult
 import com.example.triplink.core.localization.localizedLabel
 import com.example.triplink.core.localization.localizedShortLabel
-import com.example.triplink.domain.model.enums.Categoria
 import com.example.triplink.domain.model.enums.DiaSemana
 import com.example.triplink.domain.model.enums.RangoPrecios
 import com.example.triplink.ui.theme.TextColors
@@ -141,8 +138,7 @@ fun PostCreationScreen(
                 Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                     Text(
                         text = stringResource(R.string.feature_post_creation_description_label),
-                        style = MaterialTheme.typography.labelLarge,
-                        fontWeight = FontWeight.SemiBold
+                        style = TextTokens.label()
                     )
                     OutlinedTextField(
                         value = viewModel.description,
@@ -186,8 +182,7 @@ fun PostCreationScreen(
                 Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                     Text(
                         text = buildRequiredLabel(stringResource(R.string.feature_post_creation_category_label)),
-                        style = MaterialTheme.typography.labelLarge,
-                        fontWeight = FontWeight.SemiBold
+                        style = TextTokens.label()
                     )
                     
                     Box(modifier = Modifier.fillMaxWidth()) {
@@ -248,12 +243,11 @@ fun PostCreationScreen(
                 Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                     Text(
                         text = buildRequiredLabel(stringResource(R.string.feature_post_creation_photos_label)),
-                        style = MaterialTheme.typography.labelLarge,
-                        fontWeight = FontWeight.SemiBold
+                        style = TextTokens.label()
                     )
                     Text(
                         text = stringResource(R.string.feature_post_creation_photos_helper),
-                        style = TextTokens.helperText(),
+                        style = TextTokens.bodySecondary(),
                         color = TextColors.Muted
                     )
                     Row(
@@ -294,7 +288,7 @@ fun PostCreationScreen(
                     }
                     Text(
                         text = stringResource(R.string.feature_post_creation_photos_helper),
-                        style = TextTokens.helperText(),
+                        style = TextTokens.bodySecondary(),
                         color = TextColors.Secondary
                     )
                 }
@@ -305,12 +299,11 @@ fun PostCreationScreen(
                 Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
                     Text(
                         text = buildRequiredLabel(stringResource(R.string.feature_post_creation_location_label)),
-                        style = MaterialTheme.typography.labelLarge,
-                        fontWeight = FontWeight.SemiBold
+                        style = TextTokens.label()
                     )
                     Text(
                         text = stringResource(R.string.feature_post_creation_location_helper),
-                        style = TextTokens.helperText(),
+                        style = TextTokens.bodySecondary(),
                         color = TextColors.Secondary
                     )
                     // Placeholder mapa
@@ -345,7 +338,7 @@ fun PostCreationScreen(
                             text = stringResource(R.string.feature_post_creation_location_city),
                             modifier = Modifier.padding(8.dp),
                             color = TextColors.Secondary,
-                            style = TextTokens.helperText()
+                            style = TextTokens.bodySecondary()
                         )
 
                         // Button Overlay
@@ -365,7 +358,7 @@ fun PostCreationScreen(
                                 modifier = Modifier.size(18.dp)
                             )
                             ClarifierSpacer(Modifier.width(8.dp))
-                                Text(text = stringResource(R.string.feature_post_creation_location_mark_action), style = TextTokens.buttonLabel())
+                                Text(text = stringResource(R.string.feature_post_creation_location_mark_action), style = TextTokens.button())
                         }
                     }
 
@@ -388,7 +381,7 @@ fun PostCreationScreen(
                             Text(
                                 text = stringResource(R.string.feature_post_creation_location_address_placeholder),
                                 color = TextColors.Muted,
-                                style = TextTokens.inputText()
+                                style = TextTokens.body()
                             )
                         }
                     }
@@ -398,7 +391,7 @@ fun PostCreationScreen(
             // Horarios de atención
             Text(
                 text = stringResource(R.string.feature_post_creation_schedule_title),
-                style = TextTokens.sectionAction(),
+                style = TextTokens.title(),
                 modifier = Modifier.padding(top = 8.dp)
             )
 
@@ -419,7 +412,7 @@ fun PostCreationScreen(
                             ClarifierSpacer(Modifier.width(8.dp))
                             Text(
                                 text = stringResource(R.string.feature_post_creation_open_every_day),
-                                style = TextTokens.inputText()
+                                style = TextTokens.body()
                             )
                         }
                         Switch(
@@ -501,7 +494,7 @@ fun PostCreationScreen(
                     )
                     Text(
                         text = buildAnnotatedString {
-                            withStyle(SpanStyle(fontWeight = FontWeight.Bold)) {
+                            withStyle(TextTokens.boldSpanStyle()) {
                                 append(stringResource(R.string.feature_post_creation_required_fields_warning_prefix))
                             }
                             append(" ")
@@ -589,7 +582,7 @@ fun PostSuccessBottomSheet(
                     Text(
                                 text = stringResource(R.string.feature_post_creation_success_subtitle),
                         color = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.9f),
-                                style = TextTokens.inputText()
+                                style = TextTokens.body()
                     )
                 }
             }
@@ -602,9 +595,8 @@ fun PostSuccessBottomSheet(
             ) {
                 Text(
                     text = stringResource(R.string.feature_post_creation_process_title),
-                    style = TextTokens.counterLabel(),
-                    color = TextColors.Secondary,
-                    letterSpacing = 1.sp
+                    style = TextTokens.emphasized(TextTokens.caption(), FontWeight.Bold),
+                    color = TextColors.Secondary
                 )
 
                 // Paso 1: Enviada
@@ -644,8 +636,7 @@ fun PostSuccessBottomSheet(
                 ) {
                     Text(
                         text = stringResource(R.string.feature_post_creation_accept_action),
-                        style = TextTokens.buttonLabel(),
-                        fontWeight = FontWeight.Bold
+                        style = TextTokens.emphasized(TextTokens.button(), FontWeight.Bold)
                     )
                 }
 
@@ -666,8 +657,7 @@ fun PostSuccessBottomSheet(
                         Spacer(Modifier.width(8.dp))
                         Text(
                             text = stringResource(R.string.feature_post_creation_view_publications_action),
-                            style = TextTokens.buttonLabel(),
-                            fontWeight = FontWeight.Bold
+                            style = TextTokens.emphasized(TextTokens.button(), FontWeight.Bold)
                         )
                     }
                 }
@@ -729,8 +719,7 @@ fun StepRow(
         Column {
             Text(
                 text = title,
-                style = MaterialTheme.typography.titleSmall,
-                fontWeight = FontWeight.Bold,
+                style = TextTokens.emphasized(MaterialTheme.typography.titleSmall, FontWeight.Bold),
                 color = if (status == StepStatus.INACTIVE) TextColors.Muted else TextColors.Primary
             )
             Text(
@@ -761,8 +750,7 @@ fun DayScheduleRow(
     ) {
         Text(
             text = schedule.day.localizedShortLabel(),
-            style = MaterialTheme.typography.bodyMedium,
-            fontWeight = FontWeight.Bold,
+            style = TextTokens.emphasized(TextTokens.body(), FontWeight.Bold),
             color = MaterialTheme.colorScheme.primary,
             modifier = Modifier.width(35.dp)
         )
@@ -821,10 +809,9 @@ fun TimeInputBox(
             onValueChange = { if (it.length <= 5) onValueChange(it) },
             enabled = enabled,
             singleLine = true,
-            textStyle = TextStyle(
-                textAlign = TextAlign.Center,
-                fontWeight = FontWeight.Medium,
-                color = if (enabled) TextColors.Primary else TextColors.Secondary
+            textStyle = TextTokens.colored(
+                TextTokens.centered(TextTokens.emphasized(TextTokens.body(), FontWeight.Medium)),
+                if (enabled) TextColors.Primary else TextColors.Secondary
             ),
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
             cursorBrush = SolidColor(MaterialTheme.colorScheme.primary),
@@ -832,7 +819,7 @@ fun TimeInputBox(
                 if (value.isEmpty()) {
                     Text(
                         stringResource(R.string.feature_post_creation_time_placeholder),
-                        style = TextTokens.inputText(),
+                        style = TextTokens.body(),
                         color = TextColors.Muted,
                         textAlign = TextAlign.Center,
                         modifier = Modifier.fillMaxWidth()
@@ -863,8 +850,7 @@ fun PriceOption(icon: String, label: String, isSelected: Boolean, onClick: () ->
             Box(contentAlignment = Alignment.Center) {
                 Text(
                     text = icon,
-                    style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.Bold,
+                    style = TextTokens.emphasized(TextTokens.title(), FontWeight.Bold),
                     color = if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface
                 )
             }

@@ -29,7 +29,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
@@ -48,6 +47,7 @@ import com.example.triplink.core.localization.localizedLabel
 import com.example.triplink.core.localization.localizedLabelOrNoPrice
 import com.example.triplink.domain.model.enums.EstadoPublicacion
 import com.example.triplink.domain.model.enums.moderator.DecisionModerador
+import com.example.triplink.ui.theme.TextTokens
 
 @Composable
 fun ModerationPublicationDetailsScreen(
@@ -69,8 +69,7 @@ fun ModerationPublicationDetailsScreen(
         ) {
             Text(
                 text = stringResource(R.string.feature_publication_details_not_found),
-                style = MaterialTheme.typography.headlineSmall,
-                fontWeight = FontWeight.Bold,
+                style = TextTokens.sectionTitle(),
                 color = MaterialTheme.colorScheme.onSurface
             )
         }
@@ -159,9 +158,8 @@ fun ModerationPublicationDetailsScreen(
                     if (!interactionEnabled) {
                         Text(
                             text = stringResource(R.string.feature_moderation_publication_details_already_reviewed),
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                            fontWeight = FontWeight.SemiBold
+                            style = TextTokens.body(),
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
                     }
 
@@ -184,7 +182,7 @@ fun ModerationPublicationDetailsScreen(
                         ) {
                             Text(
                                 text = stringResource(R.string.feature_moderation_publication_details_reject_action),
-                                fontWeight = FontWeight.Bold
+                                style = TextTokens.button()
                             )
                         }
 
@@ -203,7 +201,7 @@ fun ModerationPublicationDetailsScreen(
                             Text(
                                 text = stringResource(R.string.feature_moderation_publication_details_approve_action),
                                 color = MaterialTheme.colorScheme.onPrimary,
-                                fontWeight = FontWeight.Bold
+                                style = TextTokens.button()
                             )
                         }
                     }

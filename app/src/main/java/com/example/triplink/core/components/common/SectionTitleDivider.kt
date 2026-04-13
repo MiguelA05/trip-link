@@ -11,7 +11,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
+import com.example.triplink.ui.theme.TextTokens
 
 @Composable
 fun SectionTitleDivider(
@@ -28,11 +28,8 @@ fun SectionTitleDivider(
         Text(
             text = title,
             modifier = Modifier.padding(horizontal = 8.dp),
-            style = MaterialTheme.typography.labelLarge.copy(
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                fontWeight = FontWeight.SemiBold,
-                letterSpacing = 0.8.sp
-            )
+            style = TextTokens.emphasized(TextTokens.label(), FontWeight.SemiBold),
+            color = MaterialTheme.colorScheme.onSurfaceVariant
         )
         HorizontalDivider(modifier = Modifier.weight(1f), color = MaterialTheme.colorScheme.outlineVariant)
     }

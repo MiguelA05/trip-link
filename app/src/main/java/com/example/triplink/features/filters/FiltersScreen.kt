@@ -160,7 +160,7 @@ fun FilterChipItem(
         Text(
             text = text,
             modifier = Modifier.padding(horizontal = 16.dp, vertical = 10.dp),
-            style = TextTokens.inputText().copy(fontWeight = FontWeight.Medium),
+            style = TextTokens.emphasized(TextTokens.body(), FontWeight.Medium),
             color = if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant
         )
     }

@@ -20,11 +20,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.example.triplink.R
 import com.example.triplink.core.components.FormField
@@ -108,8 +106,7 @@ fun AccountEditScreen(
             ) {
                 Text(
                     text = accountEditViewModel.getUserInitials(),
-                    style = MaterialTheme.typography.displaySmall,
-                    fontWeight = FontWeight.Bold,
+                    style = TextTokens.screenTitle(),
                     color = MaterialTheme.colorScheme.onPrimaryContainer,
                     textAlign = TextAlign.Center
                 )
@@ -236,8 +233,7 @@ fun AccountEditScreen(
             ) {
                 Text(
                     text = stringResource(R.string.feature_account_edit_email_label),
-                    fontWeight = FontWeight.SemiBold,
-                    style = MaterialTheme.typography.titleMedium,
+                    style = TextTokens.title(),
                     color = TextColors.Secondary,
                     modifier = Modifier.fillMaxWidth()
                 )
@@ -266,7 +262,7 @@ fun AccountEditScreen(
                     },
                     textStyle = LocalTextStyle.current.copy(
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        fontSize = TextTokens.inputText().fontSize
+                        fontSize = TextTokens.body().fontSize
                     ),
                     shape = RoundedCornerShape(18.dp),
                     colors = OutlinedTextFieldDefaults.colors(
@@ -295,8 +291,7 @@ fun AccountEditScreen(
 
                 Text(
                     text = stringResource(R.string.feature_account_edit_password_label),
-                    fontWeight = FontWeight.SemiBold,
-                    style = MaterialTheme.typography.titleMedium,
+                    style = TextTokens.title(),
                     color = TextColors.Secondary,
                     modifier = Modifier.fillMaxWidth()
                 )
@@ -320,7 +315,7 @@ fun AccountEditScreen(
                 ) {
                     Text(
                         text = stringResource(R.string.feature_account_edit_change_password_action),
-                        style = TextTokens.buttonLabel()
+                        style = TextTokens.button()
                     )
                 }
 
@@ -366,8 +361,7 @@ fun AccountEditScreen(
             ) {
                 Text(
                     text = stringResource(R.string.feature_account_edit_delete_account_action),
-                    style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.Medium
+                    style = TextTokens.title()
                 )
             }
 
@@ -409,8 +403,7 @@ private fun AccountSectionContainer(
         ) {
             Text(
                 text = title,
-                fontWeight = FontWeight.SemiBold,
-                style = MaterialTheme.typography.labelLarge,
+                style = TextTokens.label(),
                 color = MaterialTheme.colorScheme.primary,
                 modifier = Modifier.fillMaxWidth(),
                 textAlign = TextAlign.Start
@@ -446,7 +439,7 @@ fun SelectableDropdown(
             Text(
                 text = selectedValue.ifEmpty { label },
                 color = if (selectedValue.isEmpty()) MaterialTheme.colorScheme.onSurfaceVariant else MaterialTheme.colorScheme.onSurface,
-                style = TextTokens.inputText(),
+                style = TextTokens.body(),
                 maxLines = 1
             )
             Icon(

@@ -3,7 +3,6 @@ package com.example.triplink.core.components
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.MaterialTheme
@@ -16,6 +15,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.example.triplink.ui.theme.TextTokens
 
 @Composable
 fun FormField(
@@ -38,10 +38,8 @@ fun FormField(
             modifier = Modifier.fillMaxWidth(),
             textAlign = TextAlign.Left,
             text = label,
-            style = MaterialTheme.typography.labelLarge.copy(
-                fontWeight = FontWeight.SemiBold,
-                color = MaterialTheme.colorScheme.onSurface
-            )
+            style = TextTokens.emphasized(TextTokens.label(), FontWeight.SemiBold),
+            color = MaterialTheme.colorScheme.onSurface
         )
 
         OutlinedTextField(
@@ -51,10 +49,9 @@ fun FormField(
             placeholder = { 
                 Text(
                     text = placeholder,
-                    style = MaterialTheme.typography.bodyLarge.copy(
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
-                ) 
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
             },
             keyboardOptions = keyboardOptions,
             visualTransformation = visualTransformation,
@@ -69,7 +66,7 @@ fun FormField(
                 }
             } else null,
             trailingIcon = trailingIcon,
-            textStyle = MaterialTheme.typography.bodyLarge.copy(color = MaterialTheme.colorScheme.onSurface),
+            textStyle = MaterialTheme.typography.bodyLarge,
             singleLine = true,
             shape = RoundedCornerShape(12.dp),
             colors = OutlinedTextFieldDefaults.colors(

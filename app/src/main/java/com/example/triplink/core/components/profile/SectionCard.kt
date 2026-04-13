@@ -15,6 +15,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.triplink.ui.theme.TextTokens
 
@@ -49,7 +50,7 @@ fun SectionCard(
                 Text(
                     text = actionLabel,
                     color = MaterialTheme.colorScheme.primary,
-                    style = TextTokens.sectionAction(),
+                    style = TextTokens.emphasized(TextTokens.title(), FontWeight.SemiBold),
                     modifier = Modifier.clickable(onClick = onActionClick)
                 )
             }

@@ -42,11 +42,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
@@ -56,6 +54,7 @@ import com.example.triplink.core.components.ExploreMapPublicationCard
 import com.example.triplink.core.components.common.CategoryChips
 import com.example.triplink.core.components.common.SearchBar
 import com.example.triplink.ui.theme.TextColors
+import com.example.triplink.ui.theme.TextTokens
 import kotlin.math.roundToInt
 import kotlinx.coroutines.launch
 
@@ -231,8 +230,7 @@ private fun MarkerPin(
 				)
 				Text(
 					text = marker.ratingLabel,
-					style = MaterialTheme.typography.bodyMedium,
-					fontWeight = FontWeight.Bold,
+					style = TextTokens.body(),
 					color = TextColors.Primary
 				)
 			}

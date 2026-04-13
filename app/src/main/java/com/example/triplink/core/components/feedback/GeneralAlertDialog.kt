@@ -29,14 +29,13 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.example.triplink.R
+import com.example.triplink.ui.theme.TextTokens
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -108,20 +107,16 @@ fun GeneralAlertDialog(
                     // Título
                     Text(
                         text = title,
-                        style = MaterialTheme.typography.headlineSmall.copy(
-                            fontWeight = FontWeight.Bold,
-                            textAlign = TextAlign.Center
-                        )
+                        style = TextTokens.emphasized(TextTokens.sectionTitle(), FontWeight.Bold),
+                        textAlign = TextAlign.Center
                     )
 
                     // Mensaje
                     Text(
                         text = message,
-                        style = MaterialTheme.typography.bodyMedium.copy(
-                            textAlign = TextAlign.Center,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                            lineHeight = 20.sp
-                        ),
+                        style = TextTokens.body(),
+                        textAlign = TextAlign.Center,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
                         modifier = Modifier.padding(horizontal = 16.dp)
                     )
 
@@ -146,9 +141,7 @@ fun GeneralAlertDialog(
                             ) {
                                 Text(
                                     text = dismissButtonText,
-                                    style = MaterialTheme.typography.titleMedium.copy(
-                                        fontWeight = FontWeight.Bold
-                                    )
+                                    style = TextTokens.emphasized(TextTokens.button(), FontWeight.Bold)
                                 )
                             }
 
@@ -164,10 +157,8 @@ fun GeneralAlertDialog(
                             ) {
                                 Text(
                                     text = resolvedButtonText,
-                                    style = MaterialTheme.typography.titleMedium.copy(
-                                        fontWeight = FontWeight.Bold,
-                                        color = MaterialTheme.colorScheme.onPrimary
-                                    )
+                                    style = TextTokens.emphasized(TextTokens.button(), FontWeight.Bold),
+                                    color = MaterialTheme.colorScheme.onPrimary
                                 )
                             }
                         }
@@ -185,10 +176,8 @@ fun GeneralAlertDialog(
                         ) {
                             Text(
                                 text = resolvedButtonText,
-                                style = MaterialTheme.typography.titleMedium.copy(
-                                    fontWeight = FontWeight.Bold,
-                                    color = MaterialTheme.colorScheme.onPrimary
-                                )
+                                style = TextTokens.emphasized(TextTokens.button(), FontWeight.Bold),
+                                color = MaterialTheme.colorScheme.onPrimary
                             )
                         }
                     }

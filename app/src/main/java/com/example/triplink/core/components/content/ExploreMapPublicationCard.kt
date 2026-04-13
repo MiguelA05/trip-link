@@ -28,6 +28,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
@@ -79,7 +80,7 @@ fun ExploreMapPublicationCard(
                     Text(
                         text = publication.categoria.localizedLabel(),
                         modifier = Modifier.padding(horizontal = 10.dp, vertical = 5.dp),
-                        style = TextTokens.chipLabel(),
+                        style = TextTokens.emphasized(TextTokens.chip()),
                         color = MaterialTheme.colorScheme.onSecondaryContainer,
                     )
                 }
@@ -107,7 +108,7 @@ fun ExploreMapPublicationCard(
             ) {
                 Text(
                     text = publication.titulo,
-                    style = TextTokens.cardTitle(),
+                    style = TextTokens.emphasized(TextTokens.title(), FontWeight.Bold),
                     color = TextColors.Primary
                 )
 
@@ -132,7 +133,7 @@ fun ExploreMapPublicationCard(
                                 ratingLabel,
                                 reviewCount
                             ),
-                            style = TextTokens.chipLabel(),
+                            style = TextTokens.emphasized(TextTokens.chip()),
                             color = TextColors.Primary
                         )
                     }
@@ -152,7 +153,7 @@ fun ExploreMapPublicationCard(
                 Text(
                     text = publication.ubicacion.ciudad,
                     color = TextColors.Secondary,
-                    style = TextTokens.cardSubtitle()
+                    style = TextTokens.bodySecondary()
                 )
             }
 
@@ -170,13 +171,13 @@ fun ExploreMapPublicationCard(
                     Text(
                         text = stringResource(R.string.component_explore_map_publication_card_duration),
                         color = TextColors.Secondary,
-                        style = TextTokens.chipLabel()
+                        style = TextTokens.emphasized(TextTokens.chip())
                     )
                 }
 
                 Text(
                     text = publication.informacion,
-                    style = TextTokens.cardTitle(),
+                    style = TextTokens.title(),
                     color = TextColors.Secondary
                 )
 

@@ -75,13 +75,13 @@ fun PublicationPreviewHero(
             androidx.compose.material3.Text(
                 text = categoryLabel.uppercase(),
                 color = MaterialTheme.colorScheme.secondary,
-                style = TextTokens.chipLabel()
+                style = TextTokens.emphasized(TextTokens.chip())
             )
             androidx.compose.material3.Text(
                 text = title,
                 color = MaterialTheme.colorScheme.onPrimary,
-                style = TextTokens.heroTitle(),
-                lineHeight = TextTokens.heroTitle().lineHeight
+                style = TextTokens.emphasized(TextTokens.title(), FontWeight.Bold),
+                lineHeight = TextTokens.title().lineHeight
             )
         }
     }

@@ -26,6 +26,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
@@ -88,7 +89,7 @@ fun PublicationCard(
                             fallbackInitial = stringResource(R.string.component_publication_card_default_initial)
                         ),
                         color = TextColors.Accent,
-                        style = TextTokens.avatarInitial()
+                        style = TextTokens.emphasized(TextTokens.title(), FontWeight.Bold)
                     )
                 }
 
@@ -97,12 +98,12 @@ fun PublicationCard(
                 Column(modifier = Modifier.weight(1f)) {
                     Text(
                         text = formatAuthorName(puntoInteres.usuarioAutorId),
-                        style = TextTokens.cardTitle(),
+                        style = TextTokens.emphasized(TextTokens.title(), FontWeight.Bold),
                         color = TextColors.Primary
                     )
                     Text(
                         text = puntoInteres.fechaCreacion.toRelativeTimeLabel(),
-                        style = TextTokens.cardSubtitle(),
+                        style = TextTokens.bodySecondary(),
                         color = TextColors.Secondary
                     )
                 }
@@ -116,7 +117,7 @@ fun PublicationCard(
                         text = stringResource(R.string.component_publication_card_near_you),
                         modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp),
                         color = MaterialTheme.colorScheme.onSecondaryContainer,
-                        style = TextTokens.chipLabel()
+                        style = TextTokens.emphasized(TextTokens.chip())
                     )
                 }
             }
@@ -152,7 +153,7 @@ fun PublicationCard(
                         text = puntoInteres.categoria.localizedLabel(),
                         modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp),
                         color = MaterialTheme.colorScheme.onSecondary,
-                        style = TextTokens.chipLabel()
+                        style = TextTokens.emphasized(TextTokens.chip())
                     )
                 }
 
@@ -177,7 +178,7 @@ fun PublicationCard(
                         )
                         Text(
                             text = ratingLabel,
-                            style = TextTokens.chipLabel(),
+                            style = TextTokens.emphasized(TextTokens.chip()),
                             color = TextColors.Primary
                         )
                     }
@@ -202,7 +203,7 @@ fun PublicationCard(
                         Text(
                             text = puntoInteres.titulo,
                             color = TextColors.OnImage,
-                            style = TextTokens.cardTitle(),
+                            style = TextTokens.emphasized(TextTokens.title(), FontWeight.Bold),
                             maxLines = 1
                         )
                         Row(verticalAlignment = Alignment.CenterVertically) {
@@ -216,7 +217,7 @@ fun PublicationCard(
                             Text(
                                 text = puntoInteres.ubicacion.ciudad,
                                 color = TextColors.OnImage,
-                                style = TextTokens.cardSubtitle(),
+                                style = TextTokens.bodySecondary(),
                                 maxLines = 1
                             )
                         }

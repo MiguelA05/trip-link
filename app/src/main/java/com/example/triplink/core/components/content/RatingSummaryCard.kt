@@ -28,8 +28,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.example.triplink.R
+import com.example.triplink.ui.theme.TextTokens
 import java.util.Locale
 
 @Composable
@@ -58,9 +58,7 @@ fun RatingSummaryCard(
                 Text(
                     text = String.format(Locale.ROOT, "%.1f", average),
                     color = MaterialTheme.colorScheme.tertiary,
-                    fontSize = 56.sp,
-                    fontWeight = FontWeight.ExtraBold,
-                    lineHeight = 56.sp
+                    style = TextTokens.emphasized(MaterialTheme.typography.displayLarge, FontWeight.ExtraBold)
                 )
                 Spacer(modifier = Modifier.height(6.dp))
                 Row(horizontalArrangement = Arrangement.spacedBy(2.dp)) {
@@ -85,8 +83,7 @@ fun RatingSummaryCard(
                         totalReviews,
                         totalReviews
                     ),
-                    style = MaterialTheme.typography.bodyMedium,
-                    fontWeight = FontWeight.Bold,
+                    style = TextTokens.emphasized(TextTokens.body(), FontWeight.Bold),
                     color = MaterialTheme.colorScheme.onSurface
                 )
             }
@@ -126,9 +123,8 @@ private fun RatingDistributionRow(
     ) {
         Text(
             text = "${item.stars}",
-            style = MaterialTheme.typography.bodyMedium,
+            style = TextTokens.emphasized(TextTokens.label(), FontWeight.SemiBold),
             color = MaterialTheme.colorScheme.onSurface,
-            fontWeight = FontWeight.SemiBold
         )
         Spacer(modifier = Modifier.width(3.dp))
         Icon(
@@ -156,9 +152,8 @@ private fun RatingDistributionRow(
         Spacer(modifier = Modifier.width(8.dp))
         Text(
             text = item.count.toString(),
-            style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-            fontWeight = FontWeight.Medium
+            style = TextTokens.emphasized(TextTokens.body(), FontWeight.Medium),
+            color = MaterialTheme.colorScheme.onSurfaceVariant
         )
     }
 }

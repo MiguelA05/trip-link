@@ -17,12 +17,9 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.example.triplink.R
 import com.example.triplink.core.components.GeneralTopBar
@@ -84,18 +81,16 @@ fun EmptyNotificationsView() {
         Spacer(modifier = Modifier.height(24.dp))
         Text(
             text = stringResource(R.string.feature_notifications_empty_title),
-            style = MaterialTheme.typography.headlineSmall,
-            fontWeight = FontWeight.Bold,
+            style = TextTokens.sectionTitle(),
             color = MaterialTheme.colorScheme.onSurface,
             textAlign = TextAlign.Center
         )
         Spacer(modifier = Modifier.height(12.dp))
         Text(
             text = stringResource(R.string.feature_notifications_empty_subtitle),
-            style = MaterialTheme.typography.bodyLarge,
+            style = TextTokens.body(),
             color = MaterialTheme.colorScheme.onSurfaceVariant,
-            textAlign = TextAlign.Center,
-            lineHeight = 22.sp
+            textAlign = TextAlign.Center
         )
     }
 }
@@ -129,9 +124,8 @@ fun NotificationsList(
                     Spacer(modifier = Modifier.width(8.dp))
                     Text(
                         text = stringResource(R.string.feature_notifications_mark_all_as_read_action),
-                        style = MaterialTheme.typography.labelLarge,
+                        style = TextTokens.button(),
                         color = MaterialTheme.colorScheme.primary,
-                        fontWeight = FontWeight.Bold
                     )
                 }
             }
@@ -192,7 +186,7 @@ fun NotificationCard(
                 ) {
                     Text(
                         text = notification.title,
-                        style = TextTokens.cardTitle(),
+                        style = TextTokens.title(),
                         color = MaterialTheme.colorScheme.onSurface
                     )
                     // Punto azul de no leído
@@ -207,7 +201,7 @@ fun NotificationCard(
 
                 Text(
                     text = notification.description,
-                    style = TextTokens.cardSubtitle(),
+                    style = TextTokens.bodySecondary(),
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
 
@@ -215,7 +209,7 @@ fun NotificationCard(
 
                 Text(
                     text = notification.time,
-                    style = TextTokens.helperText(),
+                    style = TextTokens.bodySecondary(),
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }

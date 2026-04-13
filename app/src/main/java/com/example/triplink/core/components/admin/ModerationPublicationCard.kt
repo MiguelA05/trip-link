@@ -48,6 +48,7 @@ import com.example.triplink.R
 import com.example.triplink.features.admin.moderation.ModerationPublicationCardStatus
 import com.example.triplink.features.admin.moderation.ModerationPublicationCardUi
 import com.example.triplink.ui.theme.TextColors
+import com.example.triplink.ui.theme.TextTokens
 
 @Composable
 fun ModerationPublicationCard(
@@ -165,17 +166,15 @@ fun ModerationPublicationCard(
                                 Text(
                                     text = publication.authorName.split(" ").take(2).joinToString("") { it.first().uppercase() },
                                     color = MaterialTheme.colorScheme.onTertiary,
-                                    style = MaterialTheme.typography.labelSmall,
-                                    fontWeight = FontWeight.Bold
+                                    style = TextTokens.emphasized(TextTokens.caption(), FontWeight.Bold)
                                 )
                             }
 
                             Column {
                                 Text(
                                     text = publication.authorName,
-                                    style = MaterialTheme.typography.labelMedium,
+                                    style = TextTokens.emphasized(TextTokens.chip(), FontWeight.SemiBold),
                                     color = MaterialTheme.colorScheme.onPrimary,
-                                    fontWeight = FontWeight.SemiBold
                                 )
                                 Text(
                                     text = publication.timeLabel,
@@ -210,8 +209,7 @@ fun ModerationPublicationCard(
                                 )
                             },
                             modifier = Modifier.padding(horizontal = 10.dp, vertical = 5.dp),
-                            style = MaterialTheme.typography.labelMedium,
-                            fontWeight = FontWeight.Bold,
+                            style = TextTokens.emphasized(TextTokens.button(), FontWeight.Bold),
                             color = when (publication.status) {
                                 ModerationPublicationCardStatus.PENDING -> MaterialTheme.colorScheme.onTertiaryContainer
                                 ModerationPublicationCardStatus.VERIFIED -> MaterialTheme.colorScheme.onPrimaryContainer
@@ -229,8 +227,7 @@ fun ModerationPublicationCard(
                 ) {
                     Text(
                         text = publication.title,
-                        style = MaterialTheme.typography.titleLarge,
-                        fontWeight = FontWeight.Bold,
+                        style = TextTokens.emphasized(TextTokens.screenTitle(), FontWeight.Bold),
                         color = TextColors.Primary
                     )
 
@@ -251,9 +248,8 @@ fun ModerationPublicationCard(
                             Text(
                                 text = publication.categoryLabel,
                                 modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
-                                style = MaterialTheme.typography.labelMedium,
-                                color = MaterialTheme.colorScheme.onTertiaryContainer,
-                                fontWeight = FontWeight.SemiBold
+                                style = TextTokens.emphasized(TextTokens.chip(), FontWeight.SemiBold),
+                                color = MaterialTheme.colorScheme.onTertiaryContainer
                             )
                         }
 
@@ -265,9 +261,8 @@ fun ModerationPublicationCard(
                                 Text(
                                     text = acceptedReportsText,
                                     modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
-                                    style = MaterialTheme.typography.labelMedium,
-                                    color = MaterialTheme.colorScheme.onTertiaryContainer,
-                                    fontWeight = FontWeight.SemiBold
+                                    style = TextTokens.emphasized(TextTokens.chip(), FontWeight.SemiBold),
+                                    color = MaterialTheme.colorScheme.onTertiaryContainer
                                 )
                             }
                         }
@@ -298,23 +293,20 @@ fun ModerationPublicationCard(
                         ) {
                             Text(
                                 text = "\$",
-                                style = MaterialTheme.typography.bodyLarge,
+                                style = TextTokens.emphasized(TextTokens.body(), FontWeight.Bold),
                                 color = MaterialTheme.colorScheme.primary,
-                                fontWeight = FontWeight.Bold
                             )
                             Spacer(modifier = Modifier.size(6.dp))
                             Text(
                                 text = publication.priceLabel,
-                                style = MaterialTheme.typography.bodyLarge,
+                                style = TextTokens.emphasized(TextTokens.body(), FontWeight.Bold),
                                 color = MaterialTheme.colorScheme.primary,
-                                fontWeight = FontWeight.Bold
                             )
                             Spacer(modifier = Modifier.size(12.dp))
                             Text(
                                 text = "|",
-                                style = MaterialTheme.typography.bodyLarge,
+                                style = TextTokens.emphasized(TextTokens.body(), FontWeight.Bold),
                                 color = MaterialTheme.colorScheme.outlineVariant,
-                                fontWeight = FontWeight.Bold
                             )
                             Spacer(modifier = Modifier.size(12.dp))
                             Icon(
@@ -326,9 +318,8 @@ fun ModerationPublicationCard(
                             Spacer(modifier = Modifier.size(6.dp))
                             Text(
                                 text = publication.scheduleLabel,
-                                style = MaterialTheme.typography.bodyMedium,
-                                color = TextColors.Secondary,
-                                fontWeight = FontWeight.Medium
+                                style = TextTokens.emphasized(TextTokens.body(), FontWeight.Medium),
+                                color = TextColors.Secondary
                             )
                         }
                     }
@@ -353,9 +344,8 @@ fun ModerationPublicationCard(
                                         R.string.component_moderation_publication_card_reason_prefix,
                                         message
                                     ),
-                                    style = MaterialTheme.typography.bodySmall,
+                                    style = TextTokens.emphasized(TextTokens.chip(), FontWeight.SemiBold),
                                     color = MaterialTheme.colorScheme.onErrorContainer,
-                                    fontWeight = FontWeight.SemiBold
                                 )
                             }
                         }
@@ -398,7 +388,7 @@ fun ModerationPublicationCard(
                                         R.string.component_moderation_publication_card_view_detail_action
                                     ),
                                     color = MaterialTheme.colorScheme.primary,
-                                    fontWeight = FontWeight.SemiBold
+                                    style = TextTokens.emphasized(TextTokens.label(), FontWeight.SemiBold)
                                 )
                             }
 

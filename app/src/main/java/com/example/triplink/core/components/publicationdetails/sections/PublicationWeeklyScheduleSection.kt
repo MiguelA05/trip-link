@@ -18,6 +18,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.res.stringResource
 import com.example.triplink.R
@@ -87,7 +88,7 @@ fun PublicationWeeklyScheduleSection(
                             Text(
                                 text = item.day,
                                 color = if (isToday) MaterialTheme.colorScheme.primary else if (item.isClosed) MaterialTheme.colorScheme.onSurfaceVariant else MaterialTheme.colorScheme.onSurface,
-                                style = TextTokens.cardTitle()
+                                style = TextTokens.emphasized(TextTokens.title(), FontWeight.Bold)
                             )
 
                             if (isToday) {
@@ -100,7 +101,7 @@ fun PublicationWeeklyScheduleSection(
                                         text = stringResource(R.string.component_publication_weekly_schedule_today),
                                         modifier = Modifier.padding(horizontal = 8.dp, vertical = 2.dp),
                                         color = MaterialTheme.colorScheme.onPrimaryContainer,
-                                        style = TextTokens.counterLabel()
+                                        style = TextTokens.emphasized(TextTokens.caption(), FontWeight.Bold)
                                     )
                                 }
                             }
@@ -109,7 +110,7 @@ fun PublicationWeeklyScheduleSection(
                         Text(
                             text = item.hours,
                             color = if (isToday) MaterialTheme.colorScheme.primary else if (item.isClosed) MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f) else MaterialTheme.colorScheme.onSurfaceVariant,
-                            style = TextTokens.helperText()
+                            style = TextTokens.bodySecondary()
                         )
                     }
                 }

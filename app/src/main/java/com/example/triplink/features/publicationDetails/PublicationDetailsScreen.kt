@@ -19,7 +19,6 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -27,7 +26,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
@@ -341,14 +339,12 @@ fun ImageHeader(
             Text(
                 text = categoryLabel.uppercase(),
                 color = MaterialTheme.colorScheme.secondary,
-                style = TextTokens.chipLabel(),
-                fontWeight = FontWeight.Bold
+                style = TextTokens.emphasized(TextTokens.button(), FontWeight.Bold)
             )
             Text(
                 text = title,
                 color = TextColors.OnImage,
-                style = MaterialTheme.typography.headlineMedium,
-                fontWeight = FontWeight.Bold
+                style = TextTokens.emphasized(MaterialTheme.typography.headlineMedium, FontWeight.Bold)
             )
         }
 
@@ -437,8 +433,7 @@ fun RatingModal(
         ) {
             Text(
                 text = stringResource(R.string.feature_publication_details_rating_modal_title),
-                style = MaterialTheme.typography.headlineSmall,
-                fontWeight = FontWeight.Bold,
+                style = TextTokens.emphasized(TextTokens.sectionTitle(), FontWeight.Bold),
                 textAlign = TextAlign.Center
             )
             Text(
@@ -456,7 +451,7 @@ fun RatingModal(
             ) {
                 Text(
                     text = stringResource(R.string.feature_publication_details_rating_label),
-                    style = TextTokens.chipLabel()
+                    style = TextTokens.emphasized(TextTokens.chip())
                 )
                 Spacer(modifier = Modifier.width(8.dp))
                 Surface(
@@ -467,7 +462,7 @@ fun RatingModal(
                         text = stringResource(R.string.feature_publication_details_required_label),
                         modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp),
                         color = MaterialTheme.colorScheme.onErrorContainer,
-                        style = TextTokens.counterLabel()
+                            style = TextTokens.emphasized(TextTokens.caption(), FontWeight.Bold)
                     )
                 }
             }
@@ -494,7 +489,7 @@ fun RatingModal(
             Spacer(modifier = Modifier.height(8.dp))
             Text(
                 text = stringResource(R.string.feature_publication_details_review_rating_note),
-                style = TextTokens.helperText(),
+                style = TextTokens.bodySecondary(),
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
 
@@ -508,7 +503,7 @@ fun RatingModal(
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Text(
                         text = stringResource(R.string.feature_publication_details_comment_label),
-                        style = TextTokens.chipLabel()
+                        style = TextTokens.emphasized(TextTokens.chip())
                     )
                     Spacer(modifier = Modifier.width(8.dp))
                     Surface(
@@ -519,13 +514,13 @@ fun RatingModal(
                             text = stringResource(R.string.feature_publication_details_comment_optional_label),
                             modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp),
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
-                            style = TextTokens.counterLabel()
+                            style = TextTokens.emphasized(TextTokens.caption(), FontWeight.Bold)
                         )
                     }
                 }
                 Text(
                     text = stringResource(R.string.feature_publication_details_comment_counter, comment.length, maxChars),
-                    style = TextTokens.helperText(),
+                    style = TextTokens.bodySecondary(),
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
@@ -568,7 +563,7 @@ fun RatingModal(
             TextButton(onClick = onDismiss) {
                 Text(
                     text = stringResource(R.string.feature_publication_details_cancel),
-                    style = TextTokens.buttonLabel(),
+                    style = TextTokens.emphasized(TextTokens.button(), FontWeight.Bold),
                     color = MaterialTheme.colorScheme.primary
                 )
             }
@@ -644,15 +639,14 @@ fun InappropriateContentModal(onDismiss: () -> Unit, onReplace: () -> Unit) {
                     Text(
                         text = stringResource(R.string.feature_publication_details_inappropriate_title),
                         style = TextTokens.sectionTitle(),
-                        textAlign = TextAlign.Center,
-                        lineHeight = 28.sp
+                        textAlign = TextAlign.Center
                     )
 
                     Spacer(modifier = Modifier.height(16.dp))
 
                     Text(
                         text = stringResource(R.string.feature_publication_details_inappropriate_message),
-                        style = TextTokens.cardSubtitle(),
+                        style = TextTokens.bodySecondary(),
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                         textAlign = TextAlign.Center
                     )
@@ -670,7 +664,7 @@ fun InappropriateContentModal(onDismiss: () -> Unit, onReplace: () -> Unit) {
                             text = stringResource(R.string.feature_publication_details_inappropriate_suggestion),
                             modifier = Modifier.padding(16.dp),
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
-                            style = TextTokens.inputText()
+                            style = TextTokens.body()
                         )
                     }
 
@@ -688,7 +682,7 @@ fun InappropriateContentModal(onDismiss: () -> Unit, onReplace: () -> Unit) {
                         ) {
                             Text(
                                 text = stringResource(R.string.feature_publication_details_cancel),
-                                style = TextTokens.buttonLabel(),
+                                style = TextTokens.emphasized(TextTokens.button(), FontWeight.Bold),
                                 color = MaterialTheme.colorScheme.primary
                             )
                         }
@@ -701,7 +695,7 @@ fun InappropriateContentModal(onDismiss: () -> Unit, onReplace: () -> Unit) {
                         ) {
                             Text(
                                 text = stringResource(R.string.feature_publication_details_replace),
-                                style = TextTokens.buttonLabel(),
+                                style = TextTokens.emphasized(TextTokens.button(), FontWeight.Bold),
                                 color = MaterialTheme.colorScheme.onError
                             )
                         }
@@ -782,8 +776,7 @@ fun ReportModal(
                         Spacer(modifier = Modifier.width(12.dp))
                         Text(
                             text = stringResource(R.string.feature_publication_details_report_modal_title),
-                            style = MaterialTheme.typography.titleLarge,
-                            fontWeight = FontWeight.Bold
+                            style = TextTokens.emphasized(TextTokens.screenTitle(), FontWeight.Bold)
                         )
                     }
                     IconButton(
@@ -848,9 +841,8 @@ fun ReportModal(
                         Spacer(modifier = Modifier.width(12.dp))
                         Text(
                                 text = stringResource(R.string.feature_publication_details_report_reviewed_by_moderation),
-                                style = TextTokens.helperText(),
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                            lineHeight = 16.sp
+                                style = TextTokens.bodySecondary(),
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
                     }
                 }
@@ -879,7 +871,7 @@ fun ReportModal(
                 TextButton(onClick = onDismiss) {
                     Text(
                         text = stringResource(R.string.feature_publication_details_cancel),
-                        style = TextTokens.buttonLabel(),
+                        style = TextTokens.emphasized(TextTokens.button(), FontWeight.Bold),
                         color = MaterialTheme.colorScheme.primary
                     )
                 }
@@ -918,14 +910,13 @@ fun ReportOptionItem(option: ReportOptionData, isSelected: Boolean, onClick: () 
             Column(modifier = Modifier.weight(1f)) {
                 Text(
                     text = option.title,
-                    style = TextTokens.cardTitle(),
+                    style = TextTokens.emphasized(TextTokens.title(), FontWeight.Bold),
                     color = if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface
                 )
                 Text(
                     text = option.subtitle,
-                    style = TextTokens.helperText(),
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    lineHeight = 14.sp
+                    style = TextTokens.bodySecondary(),
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
             RadioButton(
@@ -980,7 +971,7 @@ fun ReviewsSection(
                     Spacer(modifier = Modifier.width(4.dp))
                     Text(
                         text = generalRating.toString(),
-                        style = TextTokens.cardTitle(),
+                        style = TextTokens.emphasized(TextTokens.title(), FontWeight.Bold),
                         color = MaterialTheme.colorScheme.onSurface
                     )
                 }
@@ -1022,7 +1013,7 @@ fun ReviewCard(review: Review) {
             ) {
                 Text(
                     text = review.username,
-                    style = TextTokens.sectionAction(),
+                    style = TextTokens.emphasized(TextTokens.title()),
                     color = MaterialTheme.colorScheme.onSurface
                 )
                 Row {
@@ -1040,8 +1031,7 @@ fun ReviewCard(review: Review) {
             Text(
                 text = review.comment,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
-                style = TextTokens.inputText(),
-                lineHeight = 22.sp
+                style = TextTokens.body()
             )
         }
     }
@@ -1083,7 +1073,7 @@ fun BottomActionsBar(
                     Spacer(modifier = Modifier.width(8.dp))
                     Text(
                         text = stringResource(R.string.feature_publication_details_delete_publication),
-                        style = TextTokens.buttonLabel()
+                        style = TextTokens.emphasized(TextTokens.button(), FontWeight.Bold)
                     )
                 }
             } else {
@@ -1107,7 +1097,7 @@ fun BottomActionsBar(
                     Spacer(modifier = Modifier.width(8.dp))
                     Text(
                         stringResource(R.string.feature_publication_details_interested_action),
-                        style = TextTokens.buttonLabel()
+                        style = TextTokens.emphasized(TextTokens.button(), FontWeight.Bold)
                     )
                 }
 
@@ -1125,7 +1115,7 @@ fun BottomActionsBar(
                     Spacer(modifier = Modifier.width(8.dp))
                     Text(
                         stringResource(R.string.feature_publication_details_visited_action),
-                        style = TextTokens.buttonLabel()
+                        style = TextTokens.emphasized(TextTokens.button(), FontWeight.Bold)
                     )
                 }
             }

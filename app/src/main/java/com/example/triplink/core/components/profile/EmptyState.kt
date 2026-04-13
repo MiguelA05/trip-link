@@ -34,7 +34,8 @@ fun EmptyState(
         )
         Text(
             text = message,
-            style = MaterialTheme.typography.titleLarge.copy(color = MaterialTheme.colorScheme.onSurfaceVariant)
+            style = MaterialTheme.typography.titleLarge,
+            color = MaterialTheme.colorScheme.onSurfaceVariant
         )
     }
 }

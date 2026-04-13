@@ -20,11 +20,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.example.triplink.R
 import com.example.triplink.core.components.GeneralTopBar
 import com.example.triplink.core.components.feedback.BadgeDetailModal
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import com.example.triplink.ui.theme.TextTokens
 
 
 @Composable
@@ -58,8 +58,7 @@ fun BadgesScreen(
 
                 Text(
                     text = stringResource(R.string.feature_badges_title),
-                    style = MaterialTheme.typography.titleLarge,
-                    fontWeight = FontWeight.Bold,
+                    style = TextTokens.emphasized(TextTokens.screenTitle(), FontWeight.Bold),
                     modifier = Modifier.fillMaxWidth()
                 )
 
@@ -121,15 +120,13 @@ fun UserStatusCard() {
 
             Text(
                 text = stringResource(R.string.feature_badges_current_level_name),
-                style = MaterialTheme.typography.headlineMedium,
-                fontWeight = FontWeight.Bold
+                style = TextTokens.emphasized(MaterialTheme.typography.headlineMedium, FontWeight.Bold)
             )
 
             Text(
                 text = stringResource(R.string.feature_badges_current_level_label),
-                style = MaterialTheme.typography.labelSmall,
+                style = TextTokens.emphasized(TextTokens.caption(), FontWeight.Bold),
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
-                letterSpacing = 1.sp
             )
 
             Spacer(modifier = Modifier.height(24.dp))
@@ -145,8 +142,7 @@ fun UserStatusCard() {
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                     Text(
                         text = "0",
-                        style = MaterialTheme.typography.headlineSmall,
-                        fontWeight = FontWeight.Bold,
+                        style = TextTokens.emphasized(TextTokens.sectionTitle(), FontWeight.Bold),
                         color = MaterialTheme.colorScheme.primary
                     )
                     Text(
@@ -164,8 +160,7 @@ fun UserStatusCard() {
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                     Text(
                         text = "0",
-                        style = MaterialTheme.typography.headlineSmall,
-                        fontWeight = FontWeight.Bold,
+                        style = TextTokens.emphasized(TextTokens.sectionTitle(), FontWeight.Bold),
                         color = MaterialTheme.colorScheme.primary
                     )
                     Text(
@@ -240,10 +235,8 @@ fun BadgeItem(badge: Badge, onClick: () -> Unit) {
 
         Text(
             text = badge.name,
-            style = MaterialTheme.typography.bodySmall,
-            textAlign = TextAlign.Center,
-            fontWeight = FontWeight.Medium,
-            lineHeight = 14.sp
+            style = TextTokens.emphasized(TextTokens.bodySecondary(), FontWeight.Medium),
+            textAlign = TextAlign.Center
         )
     }
 }

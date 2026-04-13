@@ -20,6 +20,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.triplink.R
 import com.example.triplink.domain.model.enums.EstadoPublicacion
@@ -82,7 +83,7 @@ fun StatusTabs(
             ) {
                 Text(
                     text = label,
-                    style = TextTokens.chipLabel(),
+                    style = TextTokens.emphasized(TextTokens.chip()),
                     color = if (selected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant
                 )
                 
@@ -96,7 +97,7 @@ fun StatusTabs(
                 ) {
                     Text(
                         text = count.toString(),
-                        style = TextTokens.counterLabel(),
+                        style = TextTokens.emphasized(TextTokens.caption(), FontWeight.Bold),
                         color = badgeTextColor
                     )
                 }

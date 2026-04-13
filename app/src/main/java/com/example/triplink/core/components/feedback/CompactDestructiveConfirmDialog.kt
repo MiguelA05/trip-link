@@ -36,6 +36,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.example.triplink.R
+import com.example.triplink.ui.theme.TextTokens
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -95,8 +96,7 @@ fun CompactDestructiveConfirmDialog(
 
                     Text(
                         text = title,
-                        style = MaterialTheme.typography.titleLarge,
-                        fontWeight = FontWeight.Bold,
+                        style = TextTokens.emphasized(TextTokens.screenTitle(), FontWeight.Bold),
                         textAlign = TextAlign.Center,
                         color = MaterialTheme.colorScheme.onSurface
                     )
@@ -125,8 +125,7 @@ fun CompactDestructiveConfirmDialog(
                         ) {
                             Text(
                                 text = dismissText,
-                                fontWeight = FontWeight.Bold,
-                                style = MaterialTheme.typography.titleMedium
+                                style = TextTokens.emphasized(TextTokens.button(), FontWeight.Bold)
                             )
                         }
 
@@ -140,9 +139,8 @@ fun CompactDestructiveConfirmDialog(
                         ) {
                             Text(
                                 text = confirmText,
-                                fontWeight = FontWeight.Bold,
+                                style = TextTokens.emphasized(TextTokens.button(), FontWeight.Bold),
                                 color = MaterialTheme.colorScheme.onError,
-                                style = MaterialTheme.typography.titleMedium
                             )
                         }
                     }

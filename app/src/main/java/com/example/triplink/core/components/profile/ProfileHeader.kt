@@ -23,12 +23,11 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.example.triplink.R
+import com.example.triplink.ui.theme.TextTokens
 
 @Composable
 fun ProfileHeader(
@@ -96,19 +95,15 @@ fun ProfileHeader(
             ) {
                 Text(
                     text = initials,
-                    style = MaterialTheme.typography.headlineMedium.copy(
-                        fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colorScheme.onPrimaryContainer
-                    )
+                    style = TextTokens.emphasized(MaterialTheme.typography.headlineMedium, FontWeight.Bold),
+                    color = MaterialTheme.colorScheme.onPrimaryContainer
                 )
             }
 
             Text(
                 text = userName,
-                style = MaterialTheme.typography.headlineSmall.copy(
-                    color = MaterialTheme.colorScheme.onPrimary,
-                    fontWeight = FontWeight.Bold
-                )
+                style = TextTokens.emphasized(TextTokens.sectionTitle(), FontWeight.Bold),
+                color = MaterialTheme.colorScheme.onPrimary
             )
 
             Surface(
@@ -128,11 +123,8 @@ fun ProfileHeader(
                     )
                     Text(
                         text = roleLabel,
-                        style = MaterialTheme.typography.labelLarge.copy(
-                            color = MaterialTheme.colorScheme.onTertiary,
-                            fontWeight = FontWeight.Bold,
-                            letterSpacing = 0.5.sp
-                        )
+                        style = TextTokens.emphasized(TextTokens.label(), FontWeight.Bold),
+                        color = MaterialTheme.colorScheme.onTertiary
                     )
                 }
             }

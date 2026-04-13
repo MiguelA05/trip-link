@@ -10,7 +10,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
+import com.example.triplink.ui.theme.TextTokens
 
 @Composable
 fun PublicationTextSection(
@@ -26,15 +26,13 @@ fun PublicationTextSection(
     ) {
         Text(
             text = title,
-            style = MaterialTheme.typography.titleLarge,
-            fontWeight = FontWeight.Bold,
+            style = TextTokens.emphasized(TextTokens.screenTitle(), FontWeight.Bold),
             color = MaterialTheme.colorScheme.onSurface
         )
         Text(
             text = body,
-            style = MaterialTheme.typography.bodyLarge,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-            lineHeight = 22.sp
+            style = TextTokens.body(),
+            color = MaterialTheme.colorScheme.onSurfaceVariant
         )
     }
 }

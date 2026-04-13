@@ -156,14 +156,13 @@ fun AdminReportDetailsScreen(
                 ) {
                     Text(
                         text = stringResource(R.string.feature_admin_report_details_publication_info_title),
-                        style = TextTokens.cardTitle(),
+                        style = TextTokens.emphasized(TextTokens.title(), FontWeight.Bold),
                         color = TextColors.Primary
                     )
 
                     Text(
                         text = report.title,
-                        style = MaterialTheme.typography.titleLarge,
-                        fontWeight = FontWeight.Bold,
+                        style = TextTokens.emphasized(TextTokens.screenTitle(), FontWeight.Bold),
                         color = TextColors.Primary
                     )
 
@@ -171,7 +170,7 @@ fun AdminReportDetailsScreen(
                         Text(
                             text = report.categoryLabel,
                             modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
-                            style = TextTokens.chipLabel(),
+                            style = TextTokens.emphasized(TextTokens.chip()),
                             color = MaterialTheme.colorScheme.onTertiaryContainer
                         )
                     }
@@ -205,9 +204,8 @@ fun AdminReportDetailsScreen(
                         )
                         Text(
                             text = report.priceLabel,
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = MaterialTheme.colorScheme.primary,
-                            fontWeight = FontWeight.SemiBold
+                            style = TextTokens.emphasized(TextTokens.body()),
+                            color = MaterialTheme.colorScheme.primary
                         )
                     }
 
@@ -242,7 +240,7 @@ fun AdminReportDetailsScreen(
                 ) {
                     Text(
                         text = stringResource(R.string.feature_admin_report_details_report_info_title),
-                        style = TextTokens.cardTitle(),
+                        style = TextTokens.emphasized(TextTokens.title(), FontWeight.Bold),
                         color = TextColors.Primary
                     )
 
@@ -253,9 +251,8 @@ fun AdminReportDetailsScreen(
                         ) {
                             Text(
                                 text = stringResource(R.string.feature_admin_report_details_report_reason_label),
-                                style = MaterialTheme.typography.labelMedium,
-                                color = MaterialTheme.colorScheme.onErrorContainer,
-                                fontWeight = FontWeight.SemiBold
+                                style = TextTokens.emphasized(TextTokens.chip(), FontWeight.SemiBold),
+                                color = MaterialTheme.colorScheme.onErrorContainer
                             )
                             Text(
                                 text = report.reasonMessage,
@@ -268,9 +265,8 @@ fun AdminReportDetailsScreen(
                     Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
                         Text(
                             text = stringResource(R.string.feature_admin_report_details_reported_by_label),
-                            style = MaterialTheme.typography.labelMedium,
-                            color = TextColors.Secondary,
-                            fontWeight = FontWeight.SemiBold
+                            style = TextTokens.emphasized(TextTokens.chip(), FontWeight.SemiBold),
+                            color = TextColors.Secondary
                         )
                         Text(
                             text = report.authorName,
@@ -282,9 +278,8 @@ fun AdminReportDetailsScreen(
                     Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
                         Text(
                             text = stringResource(R.string.feature_admin_report_details_report_date_label),
-                            style = MaterialTheme.typography.labelMedium,
-                            color = TextColors.Secondary,
-                            fontWeight = FontWeight.SemiBold
+                            style = TextTokens.emphasized(TextTokens.chip(), FontWeight.SemiBold),
+                            color = TextColors.Secondary
                         )
                         Text(
                             text = report.timeLabel,
@@ -296,9 +291,8 @@ fun AdminReportDetailsScreen(
                     Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
                         Text(
                             text = stringResource(R.string.feature_admin_report_details_accepted_reports_label),
-                            style = MaterialTheme.typography.labelMedium,
-                            color = TextColors.Secondary,
-                            fontWeight = FontWeight.SemiBold
+                            style = TextTokens.emphasized(TextTokens.chip(), FontWeight.SemiBold),
+                            color = TextColors.Secondary
                         )
                         Text(
                             text = stringResource(
@@ -306,9 +300,8 @@ fun AdminReportDetailsScreen(
                                 report.acceptedReportsCount,
                                 3
                             ),
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = TextColors.Primary,
-                            fontWeight = FontWeight.Bold
+                            style = TextTokens.emphasized(TextTokens.body(), FontWeight.Bold),
+                            color = TextColors.Primary
                         )
                     }
                 }
@@ -336,8 +329,8 @@ fun AdminReportDetailsScreen(
                     ) {
                         Text(
                             text = stringResource(R.string.feature_admin_report_details_reject_action),
-                            color = MaterialTheme.colorScheme.onError,
-                            fontWeight = FontWeight.Bold
+                            style = TextTokens.emphasized(TextTokens.button(), FontWeight.Bold),
+                            color = MaterialTheme.colorScheme.onError
                         )
                     }
                 }
@@ -356,8 +349,8 @@ fun AdminReportDetailsScreen(
                     ) {
                         Text(
                             text = stringResource(R.string.feature_admin_report_details_confirm_action),
-                            color = MaterialTheme.colorScheme.onPrimary,
-                            fontWeight = FontWeight.Bold
+                            style = TextTokens.emphasized(TextTokens.button(), FontWeight.Bold),
+                            color = MaterialTheme.colorScheme.onPrimary
                         )
                     }
                 }

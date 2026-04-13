@@ -30,9 +30,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
@@ -155,8 +153,7 @@ fun UserInfoScreen(
 							Text(
 								text = emptyMessage,
 								color = MaterialTheme.colorScheme.onSurfaceVariant,
-								style = MaterialTheme.typography.headlineSmall,
-								fontWeight = FontWeight.Medium,
+											style = TextTokens.sectionTitle(),
 								textAlign = TextAlign.Center
 							)
 
@@ -265,7 +262,7 @@ fun ContributionCard(
 				) {
 					Text(
 						text = contribution.title,
-						style = TextTokens.cardTitle(),
+						style = TextTokens.title(),
 						color = TextColors.Primary,
 						modifier = Modifier.weight(1f)
 					)
@@ -278,8 +275,7 @@ fun ContributionCard(
 							text = statusLabel,
 							modifier = Modifier.padding(horizontal = 12.dp, vertical = 4.dp),
 							color = badgeTextColor,
-							style = TextTokens.counterLabel(),
-							fontWeight = FontWeight.Bold
+							style = TextTokens.caption()
 						)
 					}
 				}

@@ -26,7 +26,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.example.triplink.R
@@ -37,6 +36,7 @@ import com.example.triplink.core.components.common.CategoryChips
 import com.example.triplink.domain.model.enums.moderator.DecisionModerador
 import com.example.triplink.domain.model.enums.moderator.ModerationFilter
 import com.example.triplink.domain.model.moderator.ModerationPublication
+import com.example.triplink.ui.theme.TextTokens
 import kotlinx.coroutines.launch
 import androidx.compose.runtime.rememberCoroutineScope
 
@@ -98,12 +98,11 @@ fun ModerationScreen(
             Column {
                 Text(
                     text = stringResource(R.string.feature_admin_moderation_title),
-                    style = MaterialTheme.typography.headlineSmall,
-                    fontWeight = FontWeight.Bold
+                    style = TextTokens.sectionTitle()
                 )
                 Text(
                     text = stringResource(R.string.feature_admin_moderation_subtitle),
-                    style = MaterialTheme.typography.bodyMedium,
+                    style = TextTokens.body(),
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
@@ -116,8 +115,7 @@ fun ModerationScreen(
                     text = stringResource(R.string.feature_admin_moderation_badge),
                     modifier = Modifier.padding(horizontal = 12.dp, vertical = 7.dp),
                     color = MaterialTheme.colorScheme.onSecondaryContainer,
-                    style = MaterialTheme.typography.labelLarge,
-                    fontWeight = FontWeight.Bold
+                    style = TextTokens.button()
                 )
             }
         }
@@ -186,7 +184,7 @@ fun ModerationScreen(
                         Text(
                             text = stringResource(R.string.feature_admin_moderation_empty_state),
                             modifier = Modifier.padding(20.dp),
-                            style = MaterialTheme.typography.bodyLarge,
+                            style = TextTokens.input(),
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
                     }
@@ -256,15 +254,13 @@ private fun StatItem(
         ) {
             Text(
                 text = value,
-                style = MaterialTheme.typography.titleLarge,
-                color = color,
-                fontWeight = FontWeight.Bold
+                style = TextTokens.screenTitle(),
+                color = color
             )
             Text(
                 text = label,
-                style = MaterialTheme.typography.labelMedium,
-                color = color,
-                fontWeight = FontWeight.SemiBold
+                style = TextTokens.label(),
+                color = color
             )
         }
     }
