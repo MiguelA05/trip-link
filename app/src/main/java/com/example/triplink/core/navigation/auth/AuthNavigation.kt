@@ -50,6 +50,12 @@ fun AuthNavigation() {
                 },
                 onLoginClick = {
                     navController.navigate(MainRoutes.Login)
+                },
+                onRegisterSuccess = {
+                    navController.navigate(MainRoutes.Login) {
+                        popUpTo(MainRoutes.Register) { inclusive = true }
+                        launchSingleTop = true
+                    }
                 }
             )
         }

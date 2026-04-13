@@ -480,6 +480,7 @@
     <string name="feature_register_map_placeholder_label">Mapa (Próximamente)</string>
     <string name="feature_register_have_account">¿Tienes una cuenta?</string>
     <string name="feature_register_login_action">Iniciar sesión</string>
+    <string name="feature_register_success_dialog_title">Registro exitoso</string>
 
     <!-- FEATURE: RecoveryPassword -->
     <string name="feature_recovery_password_title">Recuperar Contraseña</string>

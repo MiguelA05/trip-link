@@ -478,6 +478,7 @@
     <string name="feature_register_map_placeholder_label">Map (Coming soon)</string>
     <string name="feature_register_have_account">Already have an account?</string>
     <string name="feature_register_login_action">Sign in</string>
+    <string name="feature_register_success_dialog_title">Registration successful</string>
 
     <!-- FEATURE: RecoveryPassword -->
     <string name="feature_recovery_password_title">Recover password</string>

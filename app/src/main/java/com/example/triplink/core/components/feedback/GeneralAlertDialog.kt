@@ -34,6 +34,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.DialogProperties
 import com.example.triplink.R
 import com.example.triplink.ui.theme.TextTokens
 
@@ -47,14 +48,21 @@ fun GeneralAlertDialog(
     icon: ImageVector = Icons.Default.Email,
     buttonText: String? = null,
     dismissButtonText: String? = null,
-    onDismissAction: (() -> Unit)? = null
+    onDismissAction: (() -> Unit)? = null,
+    dismissOnBackPress: Boolean = true,
+    dismissOnClickOutside: Boolean = true,
+    showCloseButton: Boolean = true
 ) {
     val resolvedButtonText = buttonText ?: stringResource(
         R.string.component_general_alert_dialog_confirm_action
     )
 
     BasicAlertDialog(
-        onDismissRequest = onDismissRequest
+        onDismissRequest = onDismissRequest,
+        properties = DialogProperties(
+            dismissOnBackPress = dismissOnBackPress,
+            dismissOnClickOutside = dismissOnClickOutside
+        )
     ) {
         Surface(
             modifier = Modifier.fillMaxWidth(),
@@ -63,23 +71,25 @@ fun GeneralAlertDialog(
         ) {
             Box(modifier = Modifier.padding(16.dp)) {
                 // Botón de cerrar en la esquina superior derecha
-                IconButton(
-                    onClick = onDismissRequest,
-                    modifier = Modifier
-                        .align(Alignment.TopEnd)
-                        .size(32.dp),
-                    colors = IconButtonDefaults.iconButtonColors(
-                        containerColor = MaterialTheme.colorScheme.surfaceVariant
-                    )
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.Close,
-                        contentDescription = stringResource(
-                            R.string.component_general_alert_dialog_close_content_description
-                        ),
-                        modifier = Modifier.size(16.dp),
-                        tint = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
+                if (showCloseButton) {
+                    IconButton(
+                        onClick = onDismissRequest,
+                        modifier = Modifier
+                            .align(Alignment.TopEnd)
+                            .size(32.dp),
+                        colors = IconButtonDefaults.iconButtonColors(
+                            containerColor = MaterialTheme.colorScheme.surfaceVariant
+                        )
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Close,
+                            contentDescription = stringResource(
+                                R.string.component_general_alert_dialog_close_content_description
+                            ),
+                            modifier = Modifier.size(16.dp),
+                            tint = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
                 }
 
                 Column(

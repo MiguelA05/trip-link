@@ -10,6 +10,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
+import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.LocationOn
@@ -29,6 +30,7 @@ import com.example.triplink.core.components.common.AppTitle
 import com.example.triplink.ui.theme.AppTitleVariant
 
 import com.example.triplink.core.components.FormField
+import com.example.triplink.core.components.GeneralAlertDialog
 import com.example.triplink.core.components.GeneralButton
 import com.example.triplink.core.components.LinkTextRow
 import com.example.triplink.core.utils.RequestResult
@@ -42,17 +44,20 @@ import androidx.compose.ui.text.input.VisualTransformation
 fun RegisterScreen(
     registerViewModel: RegisterViewModel = hiltViewModel(),
     onBackClick: () -> Unit = {},
-    onLoginClick: () -> Unit = {}
+    onLoginClick: () -> Unit = {},
+    onRegisterSuccess: () -> Unit = {}
 ) {
     val snackbarHostState = remember { SnackbarHostState() }
     val registerResult by registerViewModel.registerResult.collectAsState()
+    var showSuccessDialog by remember { mutableStateOf(false) }
+    var successMessage by remember { mutableStateOf("") }
 
     LaunchedEffect(registerResult) {
         registerResult?.let { result ->
             when (result) {
                 is RequestResult.Success -> {
-                    snackbarHostState.showSnackbar(result.message)
-                    // Optional: Navigate or clear state here
+                    successMessage = result.message
+                    showSuccessDialog = true
                 }
                 is RequestResult.Failure -> {
                     snackbarHostState.showSnackbar(result.errorMessage)
@@ -270,27 +275,6 @@ fun RegisterScreen(
 
             Spacer(modifier = Modifier.height(32.dp))
 
-            // Result message display as per your example
-            registerResult?.let { result ->
-                when (result) {
-                    is RequestResult.Success -> {
-                        Text(
-                            text = result.message,
-                            color = MaterialTheme.colorScheme.primary,
-                            style = TextTokens.body(),
-                            modifier = Modifier.padding(bottom = 8.dp)
-                        )
-                    }
-                    is RequestResult.Failure -> {
-                        Text(
-                            text = result.errorMessage,
-                            color = MaterialTheme.colorScheme.error,
-                            style = TextTokens.body(),
-                            modifier = Modifier.padding(bottom = 8.dp)
-                        )
-                    }
-                }
-            }
 
             GeneralButton(
                 text = stringResource(R.string.feature_register_create_account_heading),
@@ -307,6 +291,23 @@ fun RegisterScreen(
                 modifier = Modifier.padding(vertical = 16.dp)
             )
         }
+    }
+
+    if (showSuccessDialog) {
+        GeneralAlertDialog(
+            onDismissRequest = {},
+            onConfirm = {
+                showSuccessDialog = false
+                onRegisterSuccess()
+            },
+            title = stringResource(R.string.feature_register_success_dialog_title),
+            message = successMessage,
+            icon = Icons.Default.CheckCircle,
+            buttonText = stringResource(R.string.feature_register_login_action),
+            dismissOnBackPress = false,
+            dismissOnClickOutside = false,
+            showCloseButton = false
+        )
     }
 }
 
