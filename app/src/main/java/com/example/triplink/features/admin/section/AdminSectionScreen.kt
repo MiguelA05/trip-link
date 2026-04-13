@@ -41,33 +41,40 @@ fun AdminSectionScreen(
         else -> 1
     }
 
+    // Detectar si la ruta actual es una de las "principales" (Moderación o Reportes)
+    val isMainRoute = currentDestination?.hasRoute(AdminRoutes.Moderation::class) == true ||
+            currentDestination?.hasRoute(AdminRoutes.Reports::class) == true
+
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         contentWindowInsets = WindowInsets(0, 0, 0, 0),
         bottomBar = {
-            BottomBar(
-                items = navItems,
-                selectedIndex = selectedIndex,
-                onItemSelected = { index ->
-                    when (index) {
-                        0 -> showLogoutDialog = true
-                        1 -> navController.navigate(routesForTabs[0]) {
-                            popUpTo(navController.graph.findStartDestination().id) {
-                                saveState = true
+            if (isMainRoute) {
+                BottomBar(
+                    items = navItems,
+                    selectedIndex = selectedIndex,
+                    onItemSelected = { index ->
+                        when (index) {
+                            0 -> showLogoutDialog = true
+                            1 -> navController.navigate(routesForTabs[0]) {
+                                popUpTo(navController.graph.findStartDestination().id) {
+                                    saveState = true
+                                }
+                                launchSingleTop = true
+                                restoreState = true
                             }
-                            launchSingleTop = true
-                            restoreState = true
-                        }
-                        2 -> navController.navigate(routesForTabs[1]) {
-                            popUpTo(navController.graph.findStartDestination().id) {
-                                saveState = true
+
+                            2 -> navController.navigate(routesForTabs[1]) {
+                                popUpTo(navController.graph.findStartDestination().id) {
+                                    saveState = true
+                                }
+                                launchSingleTop = true
+                                restoreState = true
                             }
-                            launchSingleTop = true
-                            restoreState = true
                         }
                     }
-                }
-            )
+                )
+            }
         }
     ) { paddingValues ->
         AdminNavigation(
