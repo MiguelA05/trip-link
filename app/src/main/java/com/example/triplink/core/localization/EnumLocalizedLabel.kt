@@ -6,6 +6,7 @@ import androidx.compose.ui.res.stringResource
 import com.example.triplink.R
 import com.example.triplink.domain.model.enums.Categoria
 import com.example.triplink.domain.model.enums.DiaSemana
+import com.example.triplink.domain.model.enums.Nivel
 import com.example.triplink.domain.model.enums.RangoPrecios
 import com.example.triplink.domain.model.enums.Rol
 
@@ -65,6 +66,21 @@ fun Rol.localizedLabel(): String = when (this) {
 fun Rol.localizedLabel(context: Context): String = when (this) {
     Rol.USUARIO -> context.getString(R.string.enum_rol_usuario)
     Rol.MODERADOR -> context.getString(R.string.enum_rol_moderador)
+}
+
+@Composable
+fun Nivel.localizedLabel(): String = when (this) {
+    Nivel.TURISTA -> stringResource(R.string.enum_nivel_turista)
+    Nivel.EXPLORADOR -> stringResource(R.string.enum_nivel_explorador)
+    Nivel.AVENTURARO -> stringResource(R.string.enum_nivel_aventurero)
+    Nivel.EMBAJADOR_LOCAL -> stringResource(R.string.enum_nivel_embajador_local)
+}
+
+fun Nivel.localizedLabel(context: Context): String = when (this) {
+    Nivel.TURISTA -> context.getString(R.string.enum_nivel_turista)
+    Nivel.EXPLORADOR -> context.getString(R.string.enum_nivel_explorador)
+    Nivel.AVENTURARO -> context.getString(R.string.enum_nivel_aventurero)
+    Nivel.EMBAJADOR_LOCAL -> context.getString(R.string.enum_nivel_embajador_local)
 }
 
 

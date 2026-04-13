@@ -20,6 +20,7 @@ class UserRepositoryStore @Inject constructor() {
     val publications: StateFlow<List<PuntoInteres>> = _publications.asStateFlow()
 
     val favorites = mutableMapOf<String, MutableSet<String>>()
+    val badgeUnlocksByUser = mutableMapOf<String, MutableMap<String, Long>>()
     val comments = _publications.value.associate { publication ->
         publication.id to publication.comments.toMutableList()
     }.toMutableMap()

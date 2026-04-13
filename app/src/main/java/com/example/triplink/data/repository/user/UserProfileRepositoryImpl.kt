@@ -33,8 +33,10 @@ class UserProfileRepositoryImpl @Inject constructor(
 
     override fun deleteUser(email: String): Boolean {
         val initialSize = store.users.value.size
-        store.setUsers(store.users.value.filter { !it.email.equals(email, ignoreCase = true) })
-        store.favorites.remove(email)
+        val normalizedEmail = email.trim().lowercase()
+        store.setUsers(store.users.value.filter { !it.email.equals(normalizedEmail, ignoreCase = true) })
+        store.favorites.remove(normalizedEmail)
+        store.badgeUnlocksByUser.remove(normalizedEmail)
         return store.users.value.size < initialSize
     }
 }

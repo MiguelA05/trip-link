@@ -8,9 +8,12 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.triplink.R
 import com.example.triplink.core.localization.localizedLabel
+import com.example.triplink.core.localization.localizedName
 import com.example.triplink.data.datastore.SessionDataStore
+import com.example.triplink.domain.model.InsigniaIconKey
 import com.example.triplink.domain.model.PuntoInteres
 import com.example.triplink.domain.model.enums.EstadoPublicacion
+import com.example.triplink.domain.repository.badge.BadgeRepository
 import com.example.triplink.domain.repository.publication.PublicationRepository
 import com.example.triplink.domain.repository.user.UserProfileRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -32,6 +35,13 @@ data class UserContributionItem(
 	val createdAt: Long
 )
 
+data class UserRecentBadgeItem(
+	val id: String,
+	val name: String,
+	val iconKey: InsigniaIconKey,
+	val points: Int
+)
+
 data class UserInfoUiState(
 	val userName: String,
 	val userInitials: String,
@@ -42,6 +52,7 @@ data class UserInfoUiState(
 	val selectedContributionTab: EstadoPublicacion,
 	val selectedBottomTabIndex: Int,
 	val selectedContributionItems: List<UserContributionItem>,
+	val recentBadges: List<UserRecentBadgeItem> = emptyList(),
 	val verifiedCount: Int = 0,
 	val pendingCount: Int = 0,
 	val rejectedCount: Int = 0
@@ -52,6 +63,7 @@ class UserInfoViewModel @Inject constructor(
 	@param:ApplicationContext private val appContext: Context,
 	private val userProfileRepository: UserProfileRepository,
 	private val publicationRepository: PublicationRepository,
+	private val badgeRepository: BadgeRepository,
 	private val sessionDataStore: SessionDataStore
 ) : ViewModel() {
 
@@ -83,7 +95,7 @@ class UserInfoViewModel @Inject constructor(
 	private fun observePublications() {
 		viewModelScope.launch {
 			publicationRepository.publications.collectLatest {
-				refreshSelectedContributions()
+				loadUserData()
 			}
 		}
 	}
@@ -113,21 +125,30 @@ class UserInfoViewModel @Inject constructor(
 
 			user?.let { mappedUser ->
 				currentUserId = mappedUser.email
-				
-				val contributionsByUser = publicationRepository.getUserPublications(mappedUser.email)
-				val contributionCount = contributionsByUser.count {
-					it.estado == EstadoPublicacion.VERIFICADA ||
-						it.estado == EstadoPublicacion.PENDIENTE ||
-						it.estado == EstadoPublicacion.RECHAZADA
-				}
+
+				val sync = badgeRepository.syncUserProgress(mappedUser.email)
+				val recentBadges = badgeRepository
+					.userBadgeProgress(mappedUser.email)
+					.filter { it.isUnlocked }
+					.sortedByDescending { it.unlockedAtMillis ?: Long.MIN_VALUE }
+					.take(3)
+					.map {
+						UserRecentBadgeItem(
+							id = it.insignia.id,
+							name = it.insignia.localizedName(appContext),
+							iconKey = it.insignia.iconKey,
+							points = it.insignia.puntos
+						)
+					}
 
 				_uiState.value = _uiState.value.copy(
 					userName = mappedUser.nombre,
 					userInitials = buildInitials(mappedUser.nombre),
-					roleLabel = mappedUser.rol.localizedLabel(appContext),
-					points = mappedUser.puntos,
-					contributions = contributionCount,
-					activeDays = maxOf(contributionCount, 1)
+					roleLabel = sync.level.localizedLabel(appContext),
+					points = sync.points,
+					contributions = sync.contributions,
+					activeDays = maxOf(sync.contributions, 1),
+					recentBadges = recentBadges
 				)
 				refreshSelectedContributions()
 			}

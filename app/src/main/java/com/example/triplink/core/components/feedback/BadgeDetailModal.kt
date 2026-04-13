@@ -1,22 +1,26 @@
 package com.example.triplink.core.components.feedback
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Celebration
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Explore
+import androidx.compose.material.icons.filled.LocalDining
 import androidx.compose.material.icons.filled.MilitaryTech
+import androidx.compose.material.icons.filled.PhotoCamera
+import androidx.compose.material.icons.filled.Stars
+import androidx.compose.material.icons.filled.Terrain
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
@@ -27,41 +31,41 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import com.example.triplink.R
-import com.example.triplink.features.badges.Badge
-import com.example.triplink.features.badges.BadgeColorRole
+import com.example.triplink.domain.model.InsigniaIconKey
+import com.example.triplink.features.badges.BadgeUi
 import com.example.triplink.ui.theme.TextTokens
 
 @Composable
-fun BadgeDetailModal(badge: Badge, onDismiss: () -> Unit) {
-    val badgeColor = when (badge.colorRole) {
-        BadgeColorRole.PRIMARY -> MaterialTheme.colorScheme.primary
-        BadgeColorRole.SECONDARY -> MaterialTheme.colorScheme.secondary
-        BadgeColorRole.TERTIARY -> MaterialTheme.colorScheme.tertiary
-        BadgeColorRole.ERROR -> MaterialTheme.colorScheme.error
+fun BadgeDetailModal(
+    badge: BadgeUi,
+    totalPoints: Int,
+    levelLabel: String,
+    onDismiss: () -> Unit
+) {
+    val badgeColor = when (badge.iconKey) {
+        InsigniaIconKey.SPARK -> MaterialTheme.colorScheme.primary
+        InsigniaIconKey.COMPASS -> MaterialTheme.colorScheme.secondary
+        InsigniaIconKey.CAMERA -> MaterialTheme.colorScheme.tertiary
+        InsigniaIconKey.FOOD -> MaterialTheme.colorScheme.error
+        InsigniaIconKey.PATH -> MaterialTheme.colorScheme.primary
+        InsigniaIconKey.TROPHY -> MaterialTheme.colorScheme.tertiary
     }
 
     Dialog(onDismissRequest = onDismiss) {
         Surface(
-            modifier = Modifier
-                .fillMaxWidth()
-                .wrapContentHeight(),
+            modifier = Modifier.fillMaxWidth(),
             shape = RoundedCornerShape(28.dp),
             color = MaterialTheme.colorScheme.surface
         ) {
             Column(
-                modifier = Modifier
-                    .padding(24.dp)
-                    .fillMaxWidth(),
-                horizontalAlignment = Alignment.CenterHorizontally
+                modifier = Modifier.padding(24.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
-                // Close button
                 Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.TopEnd) {
                     IconButton(
                         onClick = onDismiss,
@@ -78,126 +82,88 @@ fun BadgeDetailModal(badge: Badge, onDismiss: () -> Unit) {
                     }
                 }
 
-                // Badge Icon
-                Box(
-                    modifier = Modifier
-                        .size(140.dp)
-                        .background(MaterialTheme.colorScheme.surface, CircleShape)
-                        .shadow(0.dp, CircleShape)
-                        .background(MaterialTheme.colorScheme.surface, CircleShape)
-                        .padding(4.dp)
+                Surface(
+                    shape = CircleShape,
+                    color = badgeColor.copy(alpha = 0.12f)
                 ) {
                     Box(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .background(MaterialTheme.colorScheme.surface, CircleShape)
-                            .padding(8.dp)
-                            .background(MaterialTheme.colorScheme.surface.copy(alpha = 0f), CircleShape)
-                            .align(Alignment.Center),
+                        modifier = Modifier.size(88.dp),
                         contentAlignment = Alignment.Center
                     ) {
-                        Surface(
-                            modifier = Modifier.fillMaxSize(),
-                            shape = CircleShape,
-                            color = MaterialTheme.colorScheme.surface,
-                            border = androidx.compose.foundation.BorderStroke(4.dp, badgeColor)
-                        ) {
-                            Box(contentAlignment = Alignment.Center) {
-                                Icon(
-                                    imageVector = badge.icon,
-                                    contentDescription = null,
-                                    tint = badgeColor,
-                                    modifier = Modifier.size(64.dp)
-                                )
-                            }
-                        }
-                    }
-                }
-
-                Spacer(modifier = Modifier.height(24.dp))
-
-                // Tag
-                Surface(
-                    color = badgeColor.copy(alpha = 0.12f),
-                    shape = RoundedCornerShape(12.dp),
-                    border = androidx.compose.foundation.BorderStroke(1.dp, badgeColor.copy(alpha = 0.3f))
-                ) {
-                    Row(
-                        modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
                         Icon(
-                            imageVector = Icons.Default.MilitaryTech,
+                            imageVector = when (badge.iconKey) {
+                                InsigniaIconKey.SPARK -> Icons.Default.Stars
+                                InsigniaIconKey.COMPASS -> Icons.Default.Explore
+                                InsigniaIconKey.CAMERA -> Icons.Default.PhotoCamera
+                                InsigniaIconKey.FOOD -> Icons.Default.LocalDining
+                                InsigniaIconKey.PATH -> Icons.Default.Terrain
+                                InsigniaIconKey.TROPHY -> Icons.Default.MilitaryTech
+                            },
                             contentDescription = null,
                             tint = badgeColor,
-                            modifier = Modifier.size(18.dp)
-                        )
-                        Spacer(modifier = Modifier.width(8.dp))
-                        Text(
-                            text = stringResource(R.string.component_badge_detail_modal_unlocked_label),
-                            style = TextTokens.emphasized(TextTokens.button(), FontWeight.Bold),
-                            color = badgeColor
+                            modifier = Modifier.size(44.dp)
                         )
                     }
                 }
 
-                Spacer(modifier = Modifier.height(16.dp))
+                Text(
+                    text = stringResource(R.string.badge_unlock_title),
+                    style = TextTokens.emphasized(TextTokens.sectionTitle(), androidx.compose.ui.text.font.FontWeight.Bold),
+                    color = MaterialTheme.colorScheme.onSurface,
+                    textAlign = androidx.compose.ui.text.style.TextAlign.Center
+                )
 
                 Text(
                     text = badge.name,
-                    style = TextTokens.emphasized(TextTokens.screenTitle(), FontWeight.ExtraBold),
-                    color = MaterialTheme.colorScheme.primary,
-                    textAlign = TextAlign.Center
+                    style = TextTokens.emphasized(TextTokens.screenTitle(), androidx.compose.ui.text.font.FontWeight.Bold),
+                    color = badgeColor,
+                    textAlign = androidx.compose.ui.text.style.TextAlign.Center
+                )
+
+                Surface(
+                    shape = RoundedCornerShape(10.dp),
+                    color = MaterialTheme.colorScheme.tertiaryContainer
+                ) {
+                    Row(
+                        modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(6.dp)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Celebration,
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.onTertiaryContainer,
+                            modifier = Modifier.size(16.dp)
+                        )
+                        Text(
+                            text = stringResource(R.string.badge_unlock_points, badge.points),
+                            style = TextTokens.emphasized(TextTokens.button(), androidx.compose.ui.text.font.FontWeight.Bold),
+                            color = MaterialTheme.colorScheme.onTertiaryContainer
+                        )
+                    }
+                }
+
+                Text(
+                    text = stringResource(R.string.badge_unlock_progress, totalPoints, levelLabel),
+                    style = TextTokens.body(),
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    textAlign = androidx.compose.ui.text.style.TextAlign.Center
                 )
 
                 Spacer(modifier = Modifier.height(8.dp))
-
-                // Category Tag
-                Surface(
-                    color = MaterialTheme.colorScheme.surfaceVariant,
-                    shape = RoundedCornerShape(8.dp)
-                ) {
-                    Text(
-                        text = badge.category,
-                        modifier = Modifier.padding(horizontal = 12.dp, vertical = 4.dp),
-                        style = TextTokens.chip(),
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
-                }
-
-                Spacer(modifier = Modifier.height(16.dp))
-
-                Text(
-                    text = badge.description,
-                    style = TextTokens.input(),
-                    textAlign = TextAlign.Center,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    modifier = Modifier.padding(horizontal = 8.dp)
-                )
-
-                Spacer(modifier = Modifier.height(32.dp))
 
                 Button(
                     onClick = onDismiss,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(56.dp),
+                        .height(52.dp),
                     colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary),
-                    shape = RoundedCornerShape(16.dp)
+                    shape = RoundedCornerShape(14.dp)
                 ) {
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Icon(
-                            imageVector = Icons.Default.MilitaryTech,
-                            contentDescription = null,
-                            tint = MaterialTheme.colorScheme.onPrimary,
-                            modifier = Modifier.size(20.dp)
-                        )
-                        Spacer(modifier = Modifier.width(8.dp))
-                        Text(
-                            text = stringResource(R.string.component_badge_detail_modal_view_badges_action),
-                            style = TextTokens.emphasized(TextTokens.button(), FontWeight.Bold)
-                        )
-                    }
+                    Text(
+                        text = stringResource(R.string.component_badge_detail_modal_view_badges_action),
+                        style = TextTokens.emphasized(TextTokens.button(), androidx.compose.ui.text.font.FontWeight.Bold)
+                    )
                 }
             }
         }

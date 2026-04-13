@@ -2,6 +2,7 @@ package com.example.triplink.core.localization
 
 import android.content.Context
 import com.example.triplink.R
+import com.example.triplink.domain.model.Insignia
 import com.example.triplink.domain.model.enums.Categoria
 import com.example.triplink.domain.model.enums.RangoPrecios
 import com.example.triplink.domain.model.enums.RazonReporte
@@ -30,6 +31,10 @@ fun RazonReporte.localizedLabel(context: Context): String = when (this) {
     RazonReporte.VIOLENCIA -> context.getString(R.string.enum_razon_reporte_violencia)
     RazonReporte.OTRO -> context.getString(R.string.enum_razon_reporte_otro)
 }
+
+fun Insignia.localizedName(context: Context): String = context.getString(nameResId)
+
+fun Insignia.localizedDescription(context: Context): String = context.getString(descriptionResId)
 
 fun Long.localizedRelativeTimeLabel(context: Context, now: Long = System.currentTimeMillis()): String {
     val delta = (now - this).coerceAtLeast(0L)

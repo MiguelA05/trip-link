@@ -726,4 +726,44 @@
     <string name="feature_admin_moderation_filter_rejected">Rejected</string>
     <string name="feature_admin_moderation_empty_state">There are no publications to display for this filter</string>
 
+    <!-- ENUM: Level -->
+    <string name="enum_nivel_turista">Traveler</string>
+    <string name="enum_nivel_explorador">Explorer</string>
+    <string name="enum_nivel_aventurero">Adventurer</string>
+    <string name="enum_nivel_embajador_local">Local Ambassador</string>
+
+    <!-- FEATURE: Badges Progress -->
+    <string name="feature_badges_unlocked_section_title">Unlocked badges</string>
+    <string name="feature_badges_locked_section_title">Locked badges</string>
+    <string name="feature_badges_unlocked_empty">You have not unlocked badges yet. Publish your first contribution.</string>
+    <string name="feature_badges_locked_empty">You already unlocked all available badges.</string>
+    <string name="feature_badges_hint_progress">Keep contributing to unlock more badges and level up.</string>
+
+    <!-- COMPONENT: Badge modals -->
+    <string name="component_badge_detail_modal_points">%1$d pts</string>
+    <string name="component_badge_detail_modal_detail_label">Badge details</string>
+    <string name="component_badge_detail_modal_close_action">Close</string>
+    <string name="badge_unlock_title">Badge unlocked!</string>
+    <string name="badge_unlock_points">+%1$d points</string>
+    <string name="badge_unlock_progress">You now have %1$d points and reached level %2$s.</string>
+    <string name="badge_unlock_action">Awesome</string>
+
+    <!-- BADGES: Definitions -->
+    <string name="badge_first_step_name">First Step</string>
+    <string name="badge_first_step_description">You started your journey by publishing your first place.</string>
+    <string name="badge_route_starter_name">Route Starter</string>
+    <string name="badge_route_starter_description">You already shared two useful places.</string>
+    <string name="badge_photo_hunter_name">Photo Hunter</string>
+    <string name="badge_photo_hunter_description">Your photos have inspired 3+ people to visit these places.</string>
+    <string name="badge_local_taster_name">Local Recommender</string>
+    <string name="badge_local_taster_description">Community members have shared 2+ comments on your recommendations.</string>
+    <string name="badge_trail_keeper_name">Consistent Guide</string>
+    <string name="badge_trail_keeper_description">Five of your publications have been verified by moderation.</string>
+    <string name="badge_verified_voice_name">Verified Voice</string>
+    <string name="badge_verified_voice_description">3+ verified publications and 10+ community likes show your influence.</string>
+    <string name="badge_requirement_contributions">Publish at least %1$d contributions.</string>
+    <string name="badge_requirement_verified">Publish %1$d contributions and get %2$d verified.</string>
+    <string name="badge_requirement_favorites">Receive %1$d likes/favorites on your places.</string>
+    <string name="badge_requirement_comments">Receive %1$d comments on your places.</string>
+
 </resources>

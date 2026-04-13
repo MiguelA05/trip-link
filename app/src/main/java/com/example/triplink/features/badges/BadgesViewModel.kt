@@ -1,92 +1,163 @@
 package com.example.triplink.features.badges
 
 import android.content.Context
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.CameraAlt
-import androidx.compose.material.icons.filled.Coffee
-import androidx.compose.material.icons.filled.Explore
-import androidx.compose.material.icons.filled.HistoryEdu
-import androidx.compose.material.icons.filled.Restaurant
-import androidx.compose.material.icons.filled.Terrain
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.triplink.R
+import com.example.triplink.core.localization.localizedLabel
+import com.example.triplink.core.localization.localizedDescription
+import com.example.triplink.core.localization.localizedName
+import com.example.triplink.data.datastore.SessionDataStore
+import com.example.triplink.domain.model.Insignia
+import com.example.triplink.domain.model.InsigniaIconKey
+import com.example.triplink.domain.model.UserInsigniaProgress
+import com.example.triplink.domain.repository.badge.BadgeRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-data class Badge(
+data class BadgeUi(
+    val id: String,
     val name: String,
     val description: String,
-    val category: String,
-    val icon: ImageVector,
-    val colorRole: BadgeColorRole
+    val requirement: String,
+    val points: Int,
+    val iconKey: InsigniaIconKey,
+    val isUnlocked: Boolean,
+    val unlockedAtMillis: Long?
 )
 
-enum class BadgeColorRole {
-    PRIMARY,
-    SECONDARY,
-    TERTIARY,
-    ERROR
-}
+data class BadgeUnlockUi(
+    val badge: BadgeUi,
+    val totalPoints: Int,
+    val currentLevel: String
+)
+
+data class BadgesUiState(
+    val currentLevel: String,
+    val points: Int,
+    val contributions: Int,
+    val unlockedBadges: List<BadgeUi>,
+    val lockedBadges: List<BadgeUi>,
+    val selectedBadge: BadgeUi? = null,
+    val unlockDialog: BadgeUnlockUi? = null
+)
 
 @HiltViewModel
- class BadgesViewModel @Inject constructor(
-    @param:ApplicationContext private val appContext: Context
+class BadgesViewModel @Inject constructor(
+    @param:ApplicationContext private val appContext: Context,
+    private val badgeRepository: BadgeRepository,
+    private val sessionDataStore: SessionDataStore
 ) : ViewModel() {
 
-    var selectedBadge by  mutableStateOf<Badge?>(null)
+    private val _uiState = MutableStateFlow(
+        BadgesUiState(
+            currentLevel = appContext.getString(R.string.enum_nivel_turista),
+            points = 0,
+            contributions = 0,
+            unlockedBadges = emptyList(),
+            lockedBadges = emptyList()
+        )
+    )
+    val uiState: StateFlow<BadgesUiState> = _uiState.asStateFlow()
 
-    val badges = obtainBadges()
+    init {
+        refresh()
+    }
 
-    fun obtainBadges(): List<Badge> {
-        return listOf(
-            Badge(
-                appContext.getString(R.string.vm_badges_item_1_name),
-                appContext.getString(R.string.vm_badges_item_1_description),
-                appContext.getString(R.string.vm_badges_item_1_category),
-                Icons.Default.Explore,
-                BadgeColorRole.PRIMARY
-            ),
-            Badge(
-                appContext.getString(R.string.vm_badges_item_2_name),
-                appContext.getString(R.string.vm_badges_item_2_description),
-                appContext.getString(R.string.vm_badges_item_2_category),
-                Icons.Default.Restaurant,
-                BadgeColorRole.TERTIARY
-            ),
-            Badge(
-                appContext.getString(R.string.vm_badges_item_3_name),
-                appContext.getString(R.string.vm_badges_item_3_description),
-                appContext.getString(R.string.vm_badges_item_3_category),
-                Icons.Default.CameraAlt,
-                BadgeColorRole.TERTIARY
-            ),
-            Badge(
-                appContext.getString(R.string.vm_badges_item_4_name),
-                appContext.getString(R.string.vm_badges_item_4_description),
-                appContext.getString(R.string.vm_badges_item_4_category),
-                Icons.Default.Terrain,
-                BadgeColorRole.SECONDARY
-            ),
-            Badge(
-                appContext.getString(R.string.vm_badges_item_5_name),
-                appContext.getString(R.string.vm_badges_item_5_description),
-                appContext.getString(R.string.vm_badges_item_5_category),
-                Icons.Default.HistoryEdu,
-                BadgeColorRole.PRIMARY
-            ),
-            Badge(
-                appContext.getString(R.string.vm_badges_item_6_name),
-                appContext.getString(R.string.vm_badges_item_6_description),
-                appContext.getString(R.string.vm_badges_item_6_category),
-                Icons.Default.Coffee,
-                BadgeColorRole.ERROR
-            )
+    fun refresh() {
+        viewModelScope.launch {
+            val session = sessionDataStore.sessionFlow.first()
+            val userId = session?.userId ?: return@launch
+            syncForUser(userId)
+        }
+    }
+
+    fun onBadgeClick(badge: BadgeUi) {
+        _uiState.value = _uiState.value.copy(selectedBadge = badge)
+    }
+
+    fun dismissBadgeDetail() {
+        _uiState.value = _uiState.value.copy(selectedBadge = null)
+    }
+
+    fun dismissUnlockDialog() {
+        _uiState.value = _uiState.value.copy(unlockDialog = null)
+    }
+
+    private fun syncForUser(userId: String) {
+        val sync = badgeRepository.syncUserProgress(userId)
+        val progress = badgeRepository.userBadgeProgress(userId)
+            .map { it.toUi() }
+            .sortedByDescending { it.unlockedAtMillis ?: Long.MIN_VALUE }
+
+        val unlocked = progress.filter { it.isUnlocked }
+        val locked = progress.filterNot { it.isUnlocked }
+
+        val latestUnlocked = sync.newlyUnlockedBadgeIds.firstOrNull()
+            ?.let { badgeId ->
+                unlocked.firstOrNull { it.id == badgeId }?.let { badgeUi ->
+                    BadgeUnlockUi(
+                        badge = badgeUi,
+                        totalPoints = sync.points,
+                        currentLevel = sync.level.localizedLabel(appContext)
+                    )
+                }
+            }
+
+        _uiState.value = _uiState.value.copy(
+            currentLevel = sync.level.localizedLabel(appContext),
+            points = sync.points,
+            contributions = sync.contributions,
+            unlockedBadges = unlocked,
+            lockedBadges = locked,
+            unlockDialog = latestUnlocked
         )
     }
 
+    private fun UserInsigniaProgress.toUi(): BadgeUi {
+        val definition = insignia
+        return BadgeUi(
+            id = definition.id,
+            name = definition.localizedName(appContext),
+            description = definition.localizedDescription(appContext),
+            requirement = definition.requirement(appContext),
+            points = definition.puntos,
+            iconKey = definition.iconKey,
+            isUnlocked = isUnlocked,
+            unlockedAtMillis = unlockedAtMillis
+        )
+    }
+
+    private fun Insignia.requirement(context: Context): String {
+        val requirements = mutableListOf<String>()
+
+        if (requiredContributions > 0) {
+            requirements.add(
+                context.getString(R.string.badge_requirement_contributions, requiredContributions)
+            )
+        }
+        if (requiredVerifiedContributions > 0) {
+            requirements.add(
+                context.getString(R.string.badge_requirement_verified, requiredContributions, requiredVerifiedContributions)
+            )
+        }
+        if (requiredFavorites > 0) {
+            requirements.add(
+                context.getString(R.string.badge_requirement_favorites, requiredFavorites)
+            )
+        }
+        if (requiredComments > 0) {
+            requirements.add(
+                context.getString(R.string.badge_requirement_comments, requiredComments)
+            )
+        }
+
+        return if (requirements.isEmpty()) "" else requirements.joinToString("\n")
+    }
 }
