@@ -4,6 +4,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.triplink.core.utils.toRatingLabel
 import com.example.triplink.domain.model.PuntoInteres
 import com.example.triplink.domain.model.enums.Categoria
@@ -14,6 +15,8 @@ import com.example.triplink.features.filters.FiltersStore
 import com.example.triplink.features.filters.publicationMatchesFilters
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 import javax.inject.Inject
 
 data class MapMarkerUi(
@@ -48,26 +51,24 @@ class ExploreMapViewModel @Inject constructor(
     private val allPublications: List<PuntoInteres>
         get() = publicationRepository.explorePublications()
 
-    private val filteredPublications: List<PuntoInteres>
-        get() {
-            val applied = appliedFilters.value
-            return allPublications.filter { publication ->
-                val categoryMatches = selectedCategory == null || publication.categoria == selectedCategory
-
-                categoryMatches && publicationMatchesFilters(publication, applied, query)
-            }
+    // Flujo reactivo que combina appliedFilters con la lista de publicaciones
+    val filteredPublications: StateFlow<List<PuntoInteres>> = filtersStore.appliedFilters.map { filters ->
+        allPublications.filter { publication ->
+            val categoryMatches = selectedCategory == null || publication.categoria == selectedCategory
+            categoryMatches && publicationMatchesFilters(publication, filters, query)
         }
+    }.stateIn(viewModelScope, kotlinx.coroutines.flow.SharingStarted.Lazily, emptyList())
 
     var selectedPublicationId by mutableStateOf(allPublications.firstOrNull()?.id.orEmpty())
         private set
 
     val selectedPublication: PuntoInteres?
-        get() = filteredPublications.firstOrNull { it.id == selectedPublicationId }
-            ?: filteredPublications.firstOrNull()
+        get() = filteredPublications.value.firstOrNull { it.id == selectedPublicationId }
+            ?: filteredPublications.value.firstOrNull()
             ?: allPublications.firstOrNull()
 
     val markers: List<MapMarkerUi>
-        get() = filteredPublications.mapIndexed { index, publication ->
+        get() = filteredPublications.value.mapIndexed { index, publication ->
             val x = 0.18f + ((index % 3) * 0.26f)
             val y = 0.28f + ((index / 3) * 0.22f)
             MapMarkerUi(
@@ -100,8 +101,8 @@ class ExploreMapViewModel @Inject constructor(
     }
 
     private fun keepValidSelection() {
-        if (filteredPublications.none { it.id == selectedPublicationId }) {
-            selectedPublicationId = filteredPublications.firstOrNull()?.id.orEmpty()
+        if (filteredPublications.value.none { it.id == selectedPublicationId }) {
+            selectedPublicationId = filteredPublications.value.firstOrNull()?.id.orEmpty()
         }
     }
 

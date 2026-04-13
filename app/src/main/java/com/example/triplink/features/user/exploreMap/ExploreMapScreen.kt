@@ -80,6 +80,7 @@ fun ExploreMapScreen(
 	val coroutineScope = rememberCoroutineScope()
 	var mapSize by remember { mutableStateOf(IntSize.Zero) }
 	val appliedFilters by viewModel.appliedFilters.collectAsState()
+	val filteredPublications by viewModel.filteredPublications.collectAsState()
 	val appliedChips = buildList {
 		appliedFilters.categories.forEach { category ->
 			add(

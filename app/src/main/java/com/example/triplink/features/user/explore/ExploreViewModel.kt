@@ -5,6 +5,7 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.triplink.core.utils.toRatingLabel
 import com.example.triplink.domain.model.PuntoInteres
 import com.example.triplink.domain.model.enums.Categoria
@@ -16,13 +17,14 @@ import com.example.triplink.features.filters.publicationMatchesFilters
 import com.example.triplink.domain.repository.publication.PublicationRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.StateFlow
-import java.util.Locale
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.stateIn
 import javax.inject.Inject
 
 @HiltViewModel
 class ExploreViewModel @Inject constructor(
-    private val publicationRepository: PublicationRepository,
-    private val filtersStore: FiltersStore
+    private val filtersStore: FiltersStore,
+    publicationRepository: PublicationRepository
 ) : ViewModel() {
 
     val publications: StateFlow<List<PuntoInteres>> = publicationRepository.publications
@@ -45,15 +47,17 @@ class ExploreViewModel @Inject constructor(
         Categoria.CULTURA
     )
 
-    fun filteredPuntoInteres(source: List<PuntoInteres>): List<PuntoInteres> {
-        val applied = appliedFilters.value
-        return source.filter { publication ->
+    // Flujo reactivo que combina publications y appliedFilters
+    val filteredPublications: StateFlow<List<PuntoInteres>> = combine(
+        publications,
+        appliedFilters
+    ) { pubs, filters ->
+        pubs.filter { publication ->
             val isVisible = publication.estado == EstadoPublicacion.VERIFICADA
             val categoryMatches = selectedCategory == null || publication.categoria == selectedCategory
-
-            isVisible && categoryMatches && publicationMatchesFilters(publication, applied, query)
+            isVisible && categoryMatches && publicationMatchesFilters(publication, filters, query)
         }
-    }
+    }.stateIn(viewModelScope, kotlinx.coroutines.flow.SharingStarted.Lazily, emptyList())
 
     fun onQueryChange(newValue: String) {
         query = newValue
@@ -68,9 +72,6 @@ class ExploreViewModel @Inject constructor(
         return average.toRatingLabel()
     }
 
-    fun onBottomTabSelected(index: Int) {
-        selectedTabIndex = index
-    }
 
     fun removeAppliedCategory(category: Categoria) {
         filtersStore.removeCategory(category)

@@ -42,6 +42,7 @@ fun ExploreScreen(
 ) {
 	val viewModel: ExploreViewModel = hiltViewModel()
 	val publications by viewModel.publications.collectAsState()
+	val filteredPublications by viewModel.filteredPublications.collectAsState()
 	val appliedFilters by viewModel.appliedFilters.collectAsState()
 	val appliedChips = buildList {
 		appliedFilters.categories.forEach { category ->
@@ -142,7 +143,7 @@ fun ExploreScreen(
 			contentPadding = PaddingValues(horizontal = 8.dp, vertical = 8.dp),
 			verticalArrangement = Arrangement.spacedBy(6.dp)
 		) {
-			items(viewModel.filteredPuntoInteres(publications), key = { it.id }) { publication ->
+			items(filteredPublications, key = { it.id }) { publication ->
 				PublicationCard(
 					puntoInteres = publication,
 					ratingLabel = viewModel.ratingLabelForPublication(publication),
