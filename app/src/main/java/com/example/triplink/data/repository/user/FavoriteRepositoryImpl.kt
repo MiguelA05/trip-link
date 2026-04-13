@@ -11,32 +11,24 @@ class FavoriteRepositoryImpl @Inject constructor(
 ) : FavoriteRepository {
 
     override fun toggleFavorite(userId: String, publicationId: String): Boolean {
-        val normalizedUserId = userId.trim().lowercase()
         if (store.publications.value.none { it.id == publicationId }) return false
 
-        val favorites = store.favorites.getOrPut(normalizedUserId) { mutableSetOf() }
-        val toggled = if (favorites.contains(publicationId)) {
-            favorites.remove(publicationId)
-        } else {
-            favorites.add(publicationId)
-        }
-
-        val favoriteCount = store.favorites.values.count { userFavorites -> publicationId in userFavorites }
+        val toggled = store.toggleFavorite(userId, publicationId)
+        val favoriteCount = store.favoriteCountForPublication(publicationId)
         val updatedPublications = store.publications.value.map { publication ->
             if (publication.id == publicationId) publication.copy(favoriteCount = favoriteCount) else publication
         }
         store.setPublications(updatedPublications)
-        store.persistState()
         return toggled
     }
 
     override fun getFavoritePublications(userId: String): List<PuntoInteres> {
-        val favorites = store.favorites[userId.trim().lowercase()] ?: return emptyList()
+        val favorites = store.favoritePublicationIds(userId)
         return store.publications.value.filter { it.id in favorites }
     }
 
     override fun isFavorite(userId: String, publicationId: String): Boolean {
-        return store.favorites[userId.trim().lowercase()]?.contains(publicationId) ?: false
+        return store.isFavorite(userId, publicationId)
     }
 }
 

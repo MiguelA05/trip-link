@@ -48,7 +48,7 @@ class BadgeRepositoryImpl @Inject constructor(
         // Contar comentarios totales que ha recibido el usuario en sus publicaciones
         val totalCommentsReceived = userPublications.sumOf { it.comments.size }
 
-        val unlockMap = store.badgeUnlocksByUser.getOrPut(normalizedUserId) { mutableMapOf() }
+        val unlockMap = store.badgeUnlocksFor(normalizedUserId)
         val previousUnlocked = unlockMap.keys.toSet()
 
         badges.forEach { badge ->
@@ -58,11 +58,11 @@ class BadgeRepositoryImpl @Inject constructor(
             val meetsComments = totalCommentsReceived >= badge.requiredComments
 
             if (meetsContributions && meetsVerified && meetsFavorites && meetsComments && unlockMap[badge.id] == null) {
-                unlockMap[badge.id] = System.currentTimeMillis()
+                store.unlockBadge(normalizedUserId, badge.id)
             }
         }
 
-        val unlockedBadgeIds = unlockMap.keys.toSet()
+        val unlockedBadgeIds = store.badgeUnlocksFor(normalizedUserId).keys.toSet()
         val newlyUnlockedIds = unlockedBadgeIds.minus(previousUnlocked).toList()
 
         val points = badges
@@ -95,7 +95,7 @@ class BadgeRepositoryImpl @Inject constructor(
     }
 
     override fun userBadgeProgress(userId: String): List<UserInsigniaProgress> {
-        val unlocks = store.badgeUnlocksByUser[userId.trim().lowercase()].orEmpty()
+        val unlocks = store.badgeUnlocksFor(userId).toMap()
         return badges.map { badge ->
             UserInsigniaProgress(
                 insignia = badge,
@@ -105,7 +105,7 @@ class BadgeRepositoryImpl @Inject constructor(
     }
 
     override fun recentUnlockedBadgeIds(userId: String, limit: Int): List<String> {
-        val unlocks = store.badgeUnlocksByUser[userId.trim().lowercase()].orEmpty()
+        val unlocks = store.badgeUnlocksFor(userId).toMap()
         return unlocks.entries
             .sortedByDescending { it.value }
             .take(limit)

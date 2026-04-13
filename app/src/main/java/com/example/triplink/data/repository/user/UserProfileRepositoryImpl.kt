@@ -40,9 +40,7 @@ class UserProfileRepositoryImpl @Inject constructor(
             publicationRepository.deletePublicationById(publication.id)
         }
         store.setUsers(store.users.value.filter { !it.email.equals(normalizedEmail, ignoreCase = true) })
-        store.favorites.remove(normalizedEmail)
-        store.badgeUnlocksByUser.remove(normalizedEmail)
-        store.persistState()
+        store.removeUserData(normalizedEmail)
         return store.users.value.size < initialSize
     }
 }

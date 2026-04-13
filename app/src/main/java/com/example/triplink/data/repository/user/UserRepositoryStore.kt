@@ -21,8 +21,8 @@ class UserRepositoryStore @Inject constructor(
     private val _publications = MutableStateFlow<List<PuntoInteres>>(emptyList())
     val publications: StateFlow<List<PuntoInteres>> = _publications.asStateFlow()
 
-    val favorites = mutableMapOf<String, MutableSet<String>>()
-    val badgeUnlocksByUser = mutableMapOf<String, MutableMap<String, Long>>()
+    private val favorites = mutableMapOf<String, MutableSet<String>>()
+    private val badgeUnlocksByUser = mutableMapOf<String, MutableMap<String, Long>>()
 
     init {
         val snapshot = storage.loadOrDefault()
@@ -42,6 +42,56 @@ class UserRepositoryStore @Inject constructor(
         persistState()
     }
 
+    fun ensureFavoriteBucket(userId: String): MutableSet<String> {
+        return favorites.getOrPut(normalize(userId)) { mutableSetOf() }
+    }
+
+    fun isFavorite(userId: String, publicationId: String): Boolean {
+        return favorites[normalize(userId)]?.contains(publicationId) ?: false
+    }
+
+    fun toggleFavorite(userId: String, publicationId: String): Boolean {
+        val bucket = ensureFavoriteBucket(userId)
+        val toggled = if (bucket.contains(publicationId)) {
+            bucket.remove(publicationId)
+        } else {
+            bucket.add(publicationId)
+        }
+        persistState()
+        return toggled
+    }
+
+    fun favoriteCountForPublication(publicationId: String): Int {
+        return favorites.values.count { publicationId in it }
+    }
+
+    fun favoritePublicationIds(userId: String): Set<String> {
+        return favorites[normalize(userId)].orEmpty()
+    }
+
+    fun removePublicationFromFavorites(publicationId: String) {
+        favorites.values.forEach { it.remove(publicationId) }
+        persistState()
+    }
+
+    fun badgeUnlocksFor(userId: String): MutableMap<String, Long> {
+        return badgeUnlocksByUser.getOrPut(normalize(userId)) { mutableMapOf() }
+    }
+
+    fun unlockBadge(userId: String, badgeId: String, timestamp: Long = System.currentTimeMillis()): Boolean {
+        val unlocks = badgeUnlocksFor(userId)
+        val inserted = unlocks.putIfAbsent(badgeId, timestamp) == null
+        if (inserted) persistState()
+        return inserted
+    }
+
+    fun removeUserData(userId: String) {
+        val normalized = normalize(userId)
+        favorites.remove(normalized)
+        badgeUnlocksByUser.remove(normalized)
+        persistState()
+    }
+
     fun persistState() {
         storage.save(
             UserStateSnapshot(
@@ -52,6 +102,8 @@ class UserRepositoryStore @Inject constructor(
             )
         )
     }
+
+    private fun normalize(value: String): String = value.trim().lowercase()
 }
 
 

@@ -52,7 +52,7 @@ class PublicationRepositoryImpl @Inject constructor(
     override fun deletePublicationById(publicationId: String): Boolean {
         val initialSize = store.publications.value.size
         store.setPublications(store.publications.value.filter { it.id != publicationId })
-        store.favorites.values.forEach { it.remove(publicationId) }
+        store.removePublicationFromFavorites(publicationId)
         store.persistState()
         return store.publications.value.size < initialSize
     }

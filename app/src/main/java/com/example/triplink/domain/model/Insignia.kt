@@ -9,8 +9,8 @@ data class Insignia(
     val requiredVerifiedContributions: Int = 0,
     val requiredFavorites: Int = 0,
     val requiredComments: Int = 0,
-    @StringRes val nameResId: Int,
-    @StringRes val descriptionResId: Int,
+    @param:StringRes val nameResId: Int,
+    @param:StringRes val descriptionResId: Int,
     val iconKey: InsigniaIconKey
 )
 

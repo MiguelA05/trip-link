@@ -18,7 +18,7 @@ data class NotificationItem(
 )
 
 @HiltViewModel
- class NotificationsViewModel @Inject constructor(
+class NotificationsViewModel @Inject constructor(
     @param:ApplicationContext private val appContext: Context
 ) : ViewModel() {
 
