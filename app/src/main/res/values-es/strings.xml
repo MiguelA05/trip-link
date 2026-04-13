@@ -161,11 +161,11 @@
 
     <!-- COMPONENT: StatsRow -->
     <!-- resource: component_stats_row_points -->
-    <string name="component_stats_row_points">PUNTOS</string>
+    <string name="component_stats_row_points">Puntos</string>
     <!-- resource: component_stats_row_contributions -->
-    <string name="component_stats_row_contributions">APORTES</string>
+    <string name="component_stats_row_contributions">Aportes</string>
     <!-- resource: component_stats_row_active_days -->
-    <string name="component_stats_row_active_days">DIAS ACTIVOS</string>
+    <string name="component_stats_row_active_days">Días activo</string>
 
     <!-- COMPONENT: StatusTabs -->
     <!-- resource: component_status_tabs_verified -->
