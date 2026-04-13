@@ -1,11 +1,16 @@
 package com.example.triplink.core.navigation.main
 
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.triplink.data.model.UserSession
 import com.example.triplink.domain.model.enums.Rol
+import com.example.triplink.core.navigation.user.UserSectionRoutes
+import com.example.triplink.features.badges.BadgeUnlockNotificationHost
 import com.example.triplink.features.admin.section.AdminSectionScreen
 import com.example.triplink.features.user.section.UserSectionScreen
 
@@ -22,24 +27,33 @@ fun MainNavigation(
         Rol.USUARIO -> MainRoutes.UserSection
     }
 
-    NavHost(
-        navController = navController,
-        startDestination = startDestination
-    ) {
-        composable<MainRoutes.UserSection> {
-            // Se pasa el callback de logout para cerrar sesión, úselo dentro de UserScreen
-            UserSectionScreen(
-                onLogout = onLogout
-            )
+    Box(modifier = Modifier.fillMaxSize()) {
+        NavHost(
+            navController = navController,
+            startDestination = startDestination
+        ) {
+            composable<MainRoutes.UserSection> {
+                // Se pasa el callback de logout para cerrar sesión, úselo dentro de UserScreen
+                UserSectionScreen(
+                    onLogout = onLogout
+                )
+            }
+
+            composable<MainRoutes.AdminSection> {
+                // Si no tiene AdminScreen debe crearlo, se pasa el callback de logout para cerrar sesión, úselo dentro de AdminScreen
+                AdminSectionScreen(
+                    onLogout = onLogout
+                )
+            }
         }
 
-        composable<MainRoutes.AdminSection> {
-            // Si no tiene AdminScreen debe crearlo, se pasa el callback de logout para cerrar sesión, úselo dentro de AdminScreen
-            AdminSectionScreen(
-                onLogout = onLogout
-            )
-        }
-
-
+        BadgeUnlockNotificationHost(
+            userId = session.userId,
+            onViewBadges = {
+                navController.navigate(UserSectionRoutes.Bagdes) {
+                    launchSingleTop = true
+                }
+            }
+        )
     }
 }

@@ -126,38 +126,11 @@ class BadgesViewModel @Inject constructor(
             id = definition.id,
             name = definition.localizedName(appContext),
             description = definition.localizedDescription(appContext),
-            requirement = definition.requirement(appContext),
+            requirement = definition.requirementLabel(appContext),
             points = definition.puntos,
             iconKey = definition.iconKey,
             isUnlocked = isUnlocked,
             unlockedAtMillis = unlockedAtMillis
         )
-    }
-
-    private fun Insignia.requirement(context: Context): String {
-        val requirements = mutableListOf<String>()
-
-        if (requiredContributions > 0) {
-            requirements.add(
-                context.getString(R.string.badge_requirement_contributions, requiredContributions)
-            )
-        }
-        if (requiredVerifiedContributions > 0) {
-            requirements.add(
-                context.getString(R.string.badge_requirement_verified, requiredContributions, requiredVerifiedContributions)
-            )
-        }
-        if (requiredFavorites > 0) {
-            requirements.add(
-                context.getString(R.string.badge_requirement_favorites, requiredFavorites)
-            )
-        }
-        if (requiredComments > 0) {
-            requirements.add(
-                context.getString(R.string.badge_requirement_comments, requiredComments)
-            )
-        }
-
-        return if (requirements.isEmpty()) "" else requirements.joinToString("\n")
     }
 }

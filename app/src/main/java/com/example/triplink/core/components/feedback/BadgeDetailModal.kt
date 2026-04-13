@@ -44,7 +44,8 @@ fun BadgeDetailModal(
     badge: BadgeUi,
     totalPoints: Int,
     levelLabel: String,
-    onDismiss: () -> Unit
+    onDismiss: () -> Unit,
+    onViewBadges: () -> Unit = onDismiss
 ) {
     val badgeColor = when (badge.iconKey) {
         InsigniaIconKey.SPARK -> MaterialTheme.colorScheme.primary
@@ -153,7 +154,7 @@ fun BadgeDetailModal(
                 Spacer(modifier = Modifier.height(8.dp))
 
                 Button(
-                    onClick = onDismiss,
+                    onClick = onViewBadges,
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(52.dp),

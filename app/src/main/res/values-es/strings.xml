@@ -777,6 +777,7 @@
     <string name="badge_verified_voice_description">3+ publicaciones verificadas y 10+ likes de la comunidad muestran tu influencia.</string>
     <string name="badge_requirement_contributions">Publica al menos %1$d aportes.</string>
     <string name="badge_requirement_verified">Publica %1$d aportes y consigue %2$d verificado.</string>
+    <string name="badge_requirement_verified_only">Consigue %1$d publicaciones verificadas.</string>
     <string name="badge_requirement_favorites">Recibe %1$d me gusta/favoritos en tus lugares.</string>
     <string name="badge_requirement_comments">Recibe %1$d comentarios en tus lugares.</string>
 
