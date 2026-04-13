@@ -343,7 +343,7 @@ fun ImageHeader(
             )
             Text(
                 text = title,
-                color = TextColors.OnImage,
+                color = MaterialTheme.colorScheme.onSurface,
                 style = TextTokens.emphasized(TextTokens.screenTitle(), FontWeight.Bold)
             )
         }

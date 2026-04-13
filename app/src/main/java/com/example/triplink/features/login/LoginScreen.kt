@@ -192,6 +192,7 @@ fun LoginScreen(
             LinkTextRow(
                 text = stringResource(R.string.feature_login_no_account),
                 buttonText = stringResource(R.string.feature_login_create_account),
+                textColor = MaterialTheme.colorScheme.onSurface,
                 onClick = onNavigateToRegister
 
             )

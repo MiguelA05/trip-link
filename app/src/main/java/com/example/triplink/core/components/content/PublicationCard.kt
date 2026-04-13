@@ -217,7 +217,7 @@ fun PublicationCard(
                             Spacer(modifier = Modifier.width(4.dp))
                             Text(
                                 text = puntoInteres.ubicacion.ciudad,
-                                color = TextColors.OnImage,
+                                color = MaterialTheme.colorScheme.onSurface,
                                 style = TextTokens.bodySecondary(),
                                 maxLines = 1
                             )
