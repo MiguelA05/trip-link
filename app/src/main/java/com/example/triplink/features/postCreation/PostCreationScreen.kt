@@ -125,7 +125,7 @@ fun PostCreationScreen(
                                 viewModel.placeName.value.length,
                                 80
                             ),
-                            style = MaterialTheme.typography.bodySmall,
+                                style = TextTokens.caption(),
                             color = TextColors.Muted,
                             modifier = Modifier.padding(end = 8.dp)
                         )
@@ -167,7 +167,7 @@ fun PostCreationScreen(
                                         viewModel.description.length,
                                         300
                                     ),
-                                    style = MaterialTheme.typography.bodySmall,
+                                    style = TextTokens.caption(),
                                     color = TextColors.Muted
                                 )
                             }
@@ -232,7 +232,7 @@ fun PostCreationScreen(
                         Text(
                             text = viewModel.selectedCategory.error!!,
                             color = MaterialTheme.colorScheme.error,
-                            style = MaterialTheme.typography.bodySmall
+                            style = TextTokens.caption()
                         )
                     }
                 }
@@ -500,7 +500,7 @@ fun PostCreationScreen(
                             append(" ")
                             append(stringResource(R.string.feature_post_creation_required_fields_warning_body))
                         },
-                        style = MaterialTheme.typography.bodySmall,
+                        style = TextTokens.caption(),
                         color = MaterialTheme.colorScheme.onTertiaryContainer
                     )
                 }
@@ -719,12 +719,12 @@ fun StepRow(
         Column {
             Text(
                 text = title,
-                style = TextTokens.emphasized(MaterialTheme.typography.titleSmall, FontWeight.Bold),
+                style = TextTokens.emphasized(TextTokens.title(), FontWeight.Bold),
                 color = if (status == StepStatus.INACTIVE) TextColors.Muted else TextColors.Primary
             )
             Text(
                 text = subtitle,
-                style = MaterialTheme.typography.bodySmall,
+                style = TextTokens.caption(),
                 color = if (status == StepStatus.ACTIVE) MaterialTheme.colorScheme.tertiary else TextColors.Secondary
             )
         }
@@ -857,7 +857,7 @@ fun PriceOption(icon: String, label: String, isSelected: Boolean, onClick: () ->
         }
         Text(
             text = label,
-            style = MaterialTheme.typography.labelMedium,
+            style = TextTokens.chip(),
             color = if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant
         )
     }

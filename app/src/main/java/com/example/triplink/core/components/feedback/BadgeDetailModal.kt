@@ -145,7 +145,7 @@ fun BadgeDetailModal(badge: Badge, onDismiss: () -> Unit) {
 
                 Text(
                     text = badge.name,
-                    style = TextTokens.emphasized(MaterialTheme.typography.headlineMedium, FontWeight.ExtraBold),
+                    style = TextTokens.emphasized(TextTokens.screenTitle(), FontWeight.ExtraBold),
                     color = MaterialTheme.colorScheme.primary,
                     textAlign = TextAlign.Center
                 )
@@ -160,7 +160,7 @@ fun BadgeDetailModal(badge: Badge, onDismiss: () -> Unit) {
                     Text(
                         text = badge.category,
                         modifier = Modifier.padding(horizontal = 12.dp, vertical = 4.dp),
-                        style = MaterialTheme.typography.labelMedium,
+                        style = TextTokens.chip(),
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }
@@ -169,7 +169,7 @@ fun BadgeDetailModal(badge: Badge, onDismiss: () -> Unit) {
 
                 Text(
                     text = badge.description,
-                    style = MaterialTheme.typography.bodyLarge,
+                    style = TextTokens.input(),
                     textAlign = TextAlign.Center,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     modifier = Modifier.padding(horizontal = 8.dp)

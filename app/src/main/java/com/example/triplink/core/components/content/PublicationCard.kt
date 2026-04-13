@@ -251,7 +251,7 @@ fun PublicationCard(
                         Text(
                             text = puntoInteres.commentCount.toString(),
                             color = TextColors.Secondary,
-                            style = MaterialTheme.typography.bodyMedium
+                            style = TextTokens.body()
                         )
                     }
 
@@ -276,7 +276,7 @@ fun PublicationCard(
                         Text(
                             text = puntoInteres.favoriteCount.toString(),
                             color = TextColors.Secondary,
-                            style = MaterialTheme.typography.bodyMedium
+                            style = TextTokens.body()
                         )
                     }
                 }

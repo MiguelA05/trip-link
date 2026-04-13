@@ -126,7 +126,7 @@ fun RejectPublicationDialog(
                             reason.length,
                             300
                         ),
-                        style = MaterialTheme.typography.labelMedium,
+                        style = TextTokens.chip(),
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                         modifier = Modifier.align(Alignment.End)
                     )
@@ -194,14 +194,14 @@ private fun BaseModerationDialog(
 
                 Text(
                     text = title,
-                    style = TextTokens.emphasized(MaterialTheme.typography.headlineMedium, FontWeight.Bold),
+                    style = TextTokens.emphasized(TextTokens.sectionTitle(), FontWeight.Bold),
                     textAlign = TextAlign.Center,
                     modifier = Modifier.fillMaxWidth()
                 )
 
                 Text(
                     text = message,
-                    style = MaterialTheme.typography.bodyLarge,
+                    style = TextTokens.input(),
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     textAlign = TextAlign.Center,
                     modifier = Modifier.fillMaxWidth()

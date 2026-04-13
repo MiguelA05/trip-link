@@ -103,7 +103,7 @@ fun RegisterScreen(
 
             Text(
                 text = stringResource(R.string.feature_register_subtitle),
-                style = MaterialTheme.typography.bodyMedium,
+                style = TextTokens.body(),
                 color = TextColors.Secondary,
                 textAlign = TextAlign.Center,
                 modifier = Modifier.padding(top = 8.dp, bottom = 24.dp)
@@ -194,7 +194,7 @@ fun RegisterScreen(
                 )
                 Text(
                     text = stringResource(R.string.feature_register_add_exact_location),
-                    style = MaterialTheme.typography.bodyMedium,
+                    style = TextTokens.body(),
                     color = TextColors.Secondary
                 )
             }
@@ -233,7 +233,7 @@ fun RegisterScreen(
                         Text(
                             text = result.message,
                             color = MaterialTheme.colorScheme.primary,
-                            style = MaterialTheme.typography.bodyMedium,
+                            style = TextTokens.body(),
                             modifier = Modifier.padding(bottom = 8.dp)
                         )
                     }
@@ -241,7 +241,7 @@ fun RegisterScreen(
                         Text(
                             text = result.errorMessage,
                             color = MaterialTheme.colorScheme.error,
-                            style = MaterialTheme.typography.bodyMedium,
+                            style = TextTokens.body(),
                             modifier = Modifier.padding(bottom = 8.dp)
                         )
                     }
@@ -290,7 +290,7 @@ fun SelectableDropdown(
             Text(
                 text = selectedValue.ifEmpty { label },
                 color = if (selectedValue.isEmpty()) TextColors.Muted else TextColors.Primary,
-                style = MaterialTheme.typography.bodyMedium,
+                style = TextTokens.body(),
                 maxLines = 1
             )
             Icon(

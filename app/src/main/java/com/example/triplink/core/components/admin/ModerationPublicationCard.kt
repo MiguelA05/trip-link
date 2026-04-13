@@ -178,7 +178,7 @@ fun ModerationPublicationCard(
                                 )
                                 Text(
                                     text = publication.timeLabel,
-                                    style = MaterialTheme.typography.labelSmall,
+                                    style = TextTokens.caption(),
                                     color = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.85f)
                                 )
                             }
@@ -278,7 +278,7 @@ fun ModerationPublicationCard(
                         Spacer(modifier = Modifier.size(4.dp))
                         Text(
                             text = publication.cityLabel,
-                            style = MaterialTheme.typography.bodyLarge,
+                            style = TextTokens.input(),
                             color = TextColors.Secondary
                         )
                     }
@@ -410,7 +410,7 @@ fun ModerationPublicationCard(
 
                         Text(
                             text = resolvedSwipeHintText,
-                            style = MaterialTheme.typography.labelSmall,
+                            style = TextTokens.caption(),
                             color = TextColors.Muted,
                             modifier = Modifier.align(Alignment.CenterHorizontally)
                         )

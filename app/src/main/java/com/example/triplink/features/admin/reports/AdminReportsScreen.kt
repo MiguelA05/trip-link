@@ -57,7 +57,7 @@ fun AdminReportsScreen(
                 )
                 Text(
                     text = stringResource(R.string.feature_admin_reports_subtitle),
-                    style = MaterialTheme.typography.bodyLarge,
+                    style = TextTokens.input(),
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     modifier = Modifier.padding(top = 4.dp)
                 )
@@ -127,7 +127,7 @@ fun AdminReportsScreen(
                         Text(
                             text = stringResource(R.string.feature_admin_reports_empty_state),
                             modifier = Modifier.padding(20.dp),
-                            style = MaterialTheme.typography.bodyLarge,
+                            style = TextTokens.input(),
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
                             textAlign = TextAlign.Center
                         )

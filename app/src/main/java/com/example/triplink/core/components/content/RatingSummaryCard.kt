@@ -58,7 +58,7 @@ fun RatingSummaryCard(
                 Text(
                     text = String.format(Locale.ROOT, "%.1f", average),
                     color = MaterialTheme.colorScheme.tertiary,
-                    style = TextTokens.emphasized(MaterialTheme.typography.displayLarge, FontWeight.ExtraBold)
+                    style = TextTokens.emphasized(TextTokens.screenTitle(), FontWeight.ExtraBold)
                 )
                 Spacer(modifier = Modifier.height(6.dp))
                 Row(horizontalArrangement = Arrangement.spacedBy(2.dp)) {
@@ -74,7 +74,7 @@ fun RatingSummaryCard(
                 Spacer(modifier = Modifier.height(8.dp))
                 Text(
                     text = stringResource(R.string.component_rating_summary_card_based_on),
-                    style = MaterialTheme.typography.bodyMedium,
+                    style = TextTokens.bodySecondary(),
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
                 Text(

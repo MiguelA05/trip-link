@@ -191,7 +191,7 @@ fun AccountEditScreen(
                     )
                     Text(
                         text = stringResource(R.string.feature_account_edit_add_exact_location),
-                        style = MaterialTheme.typography.bodyMedium,
+                        style = TextTokens.body(),
                         color = TextColors.Secondary
                     )
                 }
@@ -281,7 +281,7 @@ fun AccountEditScreen(
 
                 Text(
                     text = stringResource(R.string.feature_account_edit_email_helper),
-                    style = MaterialTheme.typography.bodyMedium,
+                    style = TextTokens.body(),
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     modifier = Modifier.fillMaxWidth(),
                     textAlign = TextAlign.Start
@@ -323,7 +323,7 @@ fun AccountEditScreen(
 
                 Text(
                     text = stringResource(R.string.feature_account_edit_password_helper),
-                    style = MaterialTheme.typography.bodyMedium,
+                    style = TextTokens.body(),
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     modifier = Modifier.fillMaxWidth(),
                     textAlign = TextAlign.Start

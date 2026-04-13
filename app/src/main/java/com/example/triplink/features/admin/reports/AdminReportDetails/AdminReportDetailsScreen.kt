@@ -187,7 +187,7 @@ fun AdminReportDetailsScreen(
                         )
                         Text(
                             text = report.cityLabel,
-                            style = MaterialTheme.typography.bodyMedium,
+                            style = TextTokens.body(),
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
                     }
@@ -221,7 +221,7 @@ fun AdminReportDetailsScreen(
                         )
                         Text(
                             text = report.scheduleLabel,
-                            style = MaterialTheme.typography.bodyMedium,
+                            style = TextTokens.body(),
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
                     }
@@ -256,7 +256,7 @@ fun AdminReportDetailsScreen(
                             )
                             Text(
                                 text = report.reasonMessage,
-                                style = MaterialTheme.typography.bodyMedium,
+                                style = TextTokens.body(),
                                 color = TextColors.Primary
                             )
                         }
@@ -270,7 +270,7 @@ fun AdminReportDetailsScreen(
                         )
                         Text(
                             text = report.authorName,
-                            style = MaterialTheme.typography.bodyMedium,
+                            style = TextTokens.body(),
                             color = TextColors.Primary
                         )
                     }
@@ -283,7 +283,7 @@ fun AdminReportDetailsScreen(
                         )
                         Text(
                             text = report.timeLabel,
-                            style = MaterialTheme.typography.bodyMedium,
+                            style = TextTokens.body(),
                             color = TextColors.Primary
                         )
                     }

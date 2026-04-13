@@ -95,7 +95,7 @@ fun ProfileHeader(
             ) {
                 Text(
                     text = initials,
-                    style = TextTokens.emphasized(MaterialTheme.typography.headlineMedium, FontWeight.Bold),
+                    style = TextTokens.emphasized(TextTokens.screenTitle(), FontWeight.Bold),
                     color = MaterialTheme.colorScheme.onPrimaryContainer
                 )
             }

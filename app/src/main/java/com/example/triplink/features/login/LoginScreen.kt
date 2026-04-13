@@ -38,6 +38,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
@@ -90,7 +91,7 @@ fun LoginScreen(
                 ) {
                     Text(
                         text = data.visuals.message,
-                        style = MaterialTheme.typography.bodyMedium
+                        style = TextTokens.body()
                     )
                 }
             }
@@ -174,7 +175,7 @@ fun LoginScreen(
             ) {
                 Text(
                     text = stringResource(R.string.feature_login_forgot_password),
-                    style = MaterialTheme.typography.bodyLarge,
+                    style = TextTokens.emphasized(TextTokens.button(), FontWeight.Bold),
                     color = MaterialTheme.colorScheme.primary
                 )
             }

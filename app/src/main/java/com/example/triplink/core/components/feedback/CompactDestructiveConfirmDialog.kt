@@ -103,7 +103,7 @@ fun CompactDestructiveConfirmDialog(
 
                     Text(
                         text = message,
-                        style = MaterialTheme.typography.bodyMedium,
+                        style = TextTokens.body(),
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                         textAlign = TextAlign.Center,
                         modifier = Modifier.padding(horizontal = 6.dp)

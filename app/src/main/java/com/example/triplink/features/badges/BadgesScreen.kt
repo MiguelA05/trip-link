@@ -120,7 +120,7 @@ fun UserStatusCard() {
 
             Text(
                 text = stringResource(R.string.feature_badges_current_level_name),
-                style = TextTokens.emphasized(MaterialTheme.typography.headlineMedium, FontWeight.Bold)
+                style = TextTokens.emphasized(TextTokens.sectionTitle(), FontWeight.Bold)
             )
 
             Text(
@@ -147,7 +147,7 @@ fun UserStatusCard() {
                     )
                     Text(
                         text = stringResource(R.string.feature_badges_total_points_label),
-                        style = MaterialTheme.typography.bodySmall,
+                        style = TextTokens.caption(),
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }
@@ -165,7 +165,7 @@ fun UserStatusCard() {
                     )
                     Text(
                         text = stringResource(R.string.feature_badges_contributions_label),
-                        style = MaterialTheme.typography.bodySmall,
+                        style = TextTokens.caption(),
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }
@@ -192,7 +192,7 @@ fun UserStatusCard() {
                             R.string.feature_badges_last_activity,
                             "22/02/2026"
                         ),
-                        style = MaterialTheme.typography.bodySmall,
+                        style = TextTokens.caption(),
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }

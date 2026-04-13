@@ -41,7 +41,7 @@ fun StatsRow(
         ) {
             Text(
                 text = points.toString(),
-                style = TextTokens.emphasized(MaterialTheme.typography.headlineMedium, FontWeight.Bold),
+                style = TextTokens.emphasized(TextTokens.screenTitle(), FontWeight.Bold),
                 color = MaterialTheme.colorScheme.onSurface
             )
             Text(
@@ -65,7 +65,7 @@ fun StatsRow(
         ) {
             Text(
                 text = contributions.toString(),
-                style = TextTokens.emphasized(MaterialTheme.typography.headlineMedium, FontWeight.Bold),
+                style = TextTokens.emphasized(TextTokens.screenTitle(), FontWeight.Bold),
                 color = MaterialTheme.colorScheme.onSurface
             )
             Text(
@@ -89,7 +89,7 @@ fun StatsRow(
         ) {
             Text(
                 text = activeDays.toString(),
-                style = TextTokens.emphasized(MaterialTheme.typography.headlineMedium, FontWeight.Bold),
+                style = TextTokens.emphasized(TextTokens.screenTitle(), FontWeight.Bold),
                 color = MaterialTheme.colorScheme.onSurface
             )
             Text(

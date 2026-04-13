@@ -344,7 +344,7 @@ fun ImageHeader(
             Text(
                 text = title,
                 color = TextColors.OnImage,
-                style = TextTokens.emphasized(MaterialTheme.typography.headlineMedium, FontWeight.Bold)
+                style = TextTokens.emphasized(TextTokens.screenTitle(), FontWeight.Bold)
             )
         }
 
@@ -438,7 +438,7 @@ fun RatingModal(
             )
             Text(
                 text = stringResource(R.string.feature_publication_details_rating_modal_subtitle),
-                style = MaterialTheme.typography.bodyMedium,
+                style = TextTokens.body(),
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 textAlign = TextAlign.Center
             )
@@ -797,7 +797,7 @@ fun ReportModal(
                 Spacer(modifier = Modifier.height(8.dp))
                 Text(
                     text = stringResource(R.string.feature_publication_details_report_modal_subtitle),
-                    style = MaterialTheme.typography.bodyMedium,
+                    style = TextTokens.body(),
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     modifier = Modifier.fillMaxWidth()
                 )

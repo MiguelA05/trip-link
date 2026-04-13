@@ -44,6 +44,7 @@ import com.example.triplink.core.components.FormField
 import com.example.triplink.core.components.GeneralButton
 import com.example.triplink.core.components.GeneralTopBar
 import com.example.triplink.core.utils.RequestResult
+import com.example.triplink.ui.theme.TextTokens
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -72,7 +73,7 @@ fun ResetPasswordScreen(
                     containerColor = if (isError) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.primary,
                     contentColor = if (isError) MaterialTheme.colorScheme.onError else MaterialTheme.colorScheme.onPrimary
                 ) {
-                    Text(text = data.visuals.message, style = MaterialTheme.typography.bodyMedium)
+                    Text(text = data.visuals.message, style = TextTokens.body())
                 }
             }
         },
@@ -102,7 +103,7 @@ fun ResetPasswordScreen(
             Text(
                 textAlign = TextAlign.Center,
                 text = stringResource(R.string.feature_reset_password_message),
-                style = MaterialTheme.typography.bodyLarge
+                style = TextTokens.input()
             )
 
             FormField(

@@ -98,7 +98,7 @@ fun CommentCard(
                     )
                     Text(
                         text = formatDate(comment.date),
-                        style = MaterialTheme.typography.bodySmall,
+                        style = TextTokens.caption(),
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }

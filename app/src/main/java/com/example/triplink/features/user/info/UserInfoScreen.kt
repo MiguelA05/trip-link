@@ -283,14 +283,14 @@ fun ContributionCard(
 				Text(
 					text = dateString,
 					color = TextColors.Secondary,
-					style = MaterialTheme.typography.bodyMedium
+					style = TextTokens.body()
 				)
 
 				if (contribution.status == EstadoPublicacion.RECHAZADA && !contribution.rejectReason.isNullOrBlank()) {
 					Text(
 						text = stringResource(R.string.feature_user_info_reject_reason_prefix, contribution.rejectReason.orEmpty()),
 						color = TextColors.Secondary,
-						style = MaterialTheme.typography.bodyMedium
+						style = TextTokens.body()
 					)
 				}
 

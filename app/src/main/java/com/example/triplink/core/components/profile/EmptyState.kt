@@ -13,6 +13,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.example.triplink.ui.theme.TextTokens
 
 @Composable
 fun EmptyState(
@@ -34,7 +35,7 @@ fun EmptyState(
         )
         Text(
             text = message,
-            style = MaterialTheme.typography.titleLarge,
+            style = TextTokens.screenTitle(),
             color = MaterialTheme.colorScheme.onSurfaceVariant
         )
     }

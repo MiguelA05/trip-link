@@ -16,6 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.example.triplink.core.localization.localizedLabelOrAll
 import com.example.triplink.domain.model.enums.Categoria
+import com.example.triplink.ui.theme.TextTokens
 
 
 @Composable
@@ -39,7 +40,7 @@ fun <T> CategoryChips(
                 label = {
                     Text(
                         text = label(category),
-                        style = MaterialTheme.typography.labelMedium
+                        style = TextTokens.chip()
                     )
                 },
                 shape = RoundedCornerShape(8.dp),
@@ -77,7 +78,7 @@ fun CategoryChips(
                 label = {
                     Text(
                         text = category.localizedLabelOrAll(),
-                        style = MaterialTheme.typography.labelMedium
+                        style = TextTokens.chip()
                     )
                 },
                 shape = RoundedCornerShape(8.dp),

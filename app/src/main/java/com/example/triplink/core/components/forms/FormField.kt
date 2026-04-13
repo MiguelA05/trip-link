@@ -49,7 +49,7 @@ fun FormField(
             placeholder = { 
                 Text(
                     text = placeholder,
-                    style = MaterialTheme.typography.bodyLarge,
+                    style = TextTokens.input(),
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             },
@@ -60,13 +60,13 @@ fun FormField(
                 { 
                     Text(
                         text = errorText, 
-                        style = MaterialTheme.typography.bodySmall,
+                        style = TextTokens.caption(),
                         color = MaterialTheme.colorScheme.error
                     )
                 }
             } else null,
             trailingIcon = trailingIcon,
-            textStyle = MaterialTheme.typography.bodyLarge,
+            textStyle = TextTokens.input(),
             singleLine = true,
             shape = RoundedCornerShape(12.dp),
             colors = OutlinedTextFieldDefaults.colors(

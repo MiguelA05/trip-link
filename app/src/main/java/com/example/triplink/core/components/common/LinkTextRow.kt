@@ -15,7 +15,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.example.triplink.ui.theme.TextTokens
 
 @Composable
 fun LinkTextRow(
@@ -34,7 +36,7 @@ fun LinkTextRow(
     ) {
         Text(
             text = text,
-            style = MaterialTheme.typography.bodyLarge,
+            style = TextTokens.input(),
             color = textColor
         )
         TextButton(
@@ -50,7 +52,7 @@ fun LinkTextRow(
         ) {
             Text(
                 text = buttonText,
-                style = MaterialTheme.typography.bodyLarge,
+                style = TextTokens.emphasized(TextTokens.button(), FontWeight.Bold),
                 color = MaterialTheme.colorScheme.primary
             )
         }

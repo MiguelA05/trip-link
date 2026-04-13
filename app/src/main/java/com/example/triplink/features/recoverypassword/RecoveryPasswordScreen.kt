@@ -39,6 +39,7 @@ import com.example.triplink.core.components.GeneralTopBar
 import com.example.triplink.core.utils.RequestResult
 import kotlinx.coroutines.delay
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import com.example.triplink.ui.theme.TextTokens
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -77,7 +78,7 @@ fun RecoveryPasswordScreen(
                 ) {
                     Text(
                         text = data.visuals.message,
-                        style = MaterialTheme.typography.bodyMedium
+                        style = TextTokens.body()
                     )
                 }
             }
@@ -109,7 +110,7 @@ fun RecoveryPasswordScreen(
             Text(
                 textAlign = TextAlign.Center,
                 text = if (!viewModel.isEmailSent) recoveryMessage else recoveryResendMessage,
-                style = MaterialTheme.typography.bodyLarge
+                style = TextTokens.input()
             )
 
             FormField(
