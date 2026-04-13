@@ -87,21 +87,10 @@ class ReportRepositoryImpl @Inject constructor(
         store.seedState.pendingReports.removeAt(index)
 
         if (updatedCount >= store.acceptedReportThreshold) {
-            val publication = publicationRepository.getPublicationById(publicationId)
-            if (publication != null) {
-                val reportDetail = entry.report.descripcion?.trim().orEmpty()
-                val specificReason = if (reportDetail.isBlank()) {
-                    entry.report.motivo.name.replace('_', ' ')
-                } else {
-                    "${entry.report.motivo.name.replace('_', ' ')}: $reportDetail"
-                }
-                publicationRepository.updatePuntoInteres(
-                    publication.copy(
-                        estado = EstadoPublicacion.RECHAZADA,
-                        motivoRechazo = "Retirada por reportes verificados ($updatedCount): $specificReason"
-                    )
-                )
-            }
+            // Eliminar completamente la publicación cuando alcanza el umbral de reportes
+            publicationRepository.deletePublicationById(publicationId)
+
+            // Limpiar todos los reportes pendientes relacionados con esta publicación
             store.seedState.pendingReports.removeAll { it.pointOfInterest.id == publicationId }
         }
     }
