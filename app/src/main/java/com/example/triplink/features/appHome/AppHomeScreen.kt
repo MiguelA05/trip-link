@@ -83,11 +83,12 @@ fun HomeScreen(
                 Text(
                     text = stringResource(R.string.feature_app_home_hero_line_1),
                     style = TextTokens.sectionTitle(),
-                    color = MaterialTheme.colorScheme.surface                )
+                    color = Color.White
+                )
                 Text(
                     text = stringResource(R.string.feature_app_home_hero_line_2),
                     style = TextTokens.sectionTitle(),
-                    color = MaterialTheme.colorScheme.surface
+                    color = Color.White
                 )
             }
 
@@ -113,7 +114,7 @@ fun HomeScreen(
             LinkTextRow(
                 text = stringResource(R.string.feature_app_home_have_account),
                 buttonText = stringResource(R.string.feature_app_home_login_action),
-                textColor = MaterialTheme.colorScheme.onPrimary,
+                textColor = Color.White,
                 onClick = onNavigateToLogin
 
             )

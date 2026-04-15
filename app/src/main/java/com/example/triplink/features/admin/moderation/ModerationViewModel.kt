@@ -1,13 +1,19 @@
 package com.example.triplink.features.admin.moderation
 
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.triplink.domain.model.enums.moderator.DecisionModerador
 import com.example.triplink.domain.model.enums.moderator.ModerationFilter
+import com.example.triplink.domain.model.enums.EstadoPublicacion
+import com.example.triplink.domain.model.moderator.ModerationPublication
 import com.example.triplink.domain.repository.admin.ModerationRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 import javax.inject.Inject
 
 @HiltViewModel
@@ -15,22 +21,34 @@ class ModerationViewModel @Inject constructor(
     private val repository: ModerationRepository
 ) : ViewModel() {
 
-    var selectedFilter by mutableStateOf(ModerationFilter.ALL)
-        private set
+    private val selectedFilterState = MutableStateFlow(ModerationFilter.ALL)
+    val selectedFilter: StateFlow<ModerationFilter> = selectedFilterState
 
-    val pendingCount: Int
-        get() = repository.pendingModerationCount
+    val filteredPublications: StateFlow<List<ModerationPublication>> = combine(
+        repository.moderationPublications,
+        selectedFilterState
+    ) { _, filter ->
+        repository.moderationPublicationsFor(filter)
+    }.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(5_000),
+        initialValue = repository.moderationPublicationsFor(ModerationFilter.ALL)
+    )
 
-    val verifiedCount: Int
-        get() = repository.verifiedModerationCount
+    val pendingCount: StateFlow<Int> = repository.moderationPublications
+        .map { publications -> publications.count { it.pointOfInterest.estado == EstadoPublicacion.PENDIENTE } }
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), repository.pendingModerationCount)
 
-    val rejectedCount: Int
-        get() = repository.rejectedModerationCount
+    val verifiedCount: StateFlow<Int> = repository.moderationPublications
+        .map { publications -> publications.count { it.pointOfInterest.estado == EstadoPublicacion.VERIFICADA } }
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), repository.verifiedModerationCount)
 
-    val filteredPublications get() = repository.moderationPublicationsFor(selectedFilter)
+    val rejectedCount: StateFlow<Int> = repository.moderationPublications
+        .map { publications -> publications.count { it.pointOfInterest.estado == EstadoPublicacion.RECHAZADA } }
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), repository.rejectedModerationCount)
 
     fun onFilterSelected(filter: ModerationFilter) {
-        selectedFilter = filter
+        selectedFilterState.value = filter
     }
 
     fun applyDecision(
