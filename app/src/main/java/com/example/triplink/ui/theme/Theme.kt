@@ -111,13 +111,7 @@ fun DescubreuqTheme(
     // Selecciona la paleta de colores
     val colorScheme = when {
         // Dynamic Color: Solo disponible en Android 12 (API 31) o superior
-        useDynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
-            if (isDarkTheme) {
-                dynamicDarkColorScheme(context)
-            } else {
-                dynamicLightColorScheme(context)
-            }
-        }
+
         // Fallback: Paleta estática personalizada
         isDarkTheme -> DarkColorScheme
         else -> LightColorScheme

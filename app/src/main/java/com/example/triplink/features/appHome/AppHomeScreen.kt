@@ -83,12 +83,11 @@ fun HomeScreen(
                 Text(
                     text = stringResource(R.string.feature_app_home_hero_line_1),
                     style = TextTokens.sectionTitle(),
-                    color = MaterialTheme.colorScheme.onSurface
-                )
+                    color = MaterialTheme.colorScheme.surface                )
                 Text(
                     text = stringResource(R.string.feature_app_home_hero_line_2),
                     style = TextTokens.sectionTitle(),
-                    color = MaterialTheme.colorScheme.onSurface
+                    color = MaterialTheme.colorScheme.surface
                 )
             }
 
