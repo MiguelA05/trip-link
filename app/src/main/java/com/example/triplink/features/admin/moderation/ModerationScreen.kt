@@ -21,6 +21,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -37,8 +38,6 @@ import com.example.triplink.domain.model.enums.moderator.DecisionModerador
 import com.example.triplink.domain.model.enums.moderator.ModerationFilter
 import com.example.triplink.domain.model.moderator.ModerationPublication
 import com.example.triplink.ui.theme.TextTokens
-import kotlinx.coroutines.launch
-import androidx.compose.runtime.rememberCoroutineScope
 
 @Composable
 fun ModerationScreen(
@@ -49,21 +48,25 @@ fun ModerationScreen(
     val context = LocalContext.current
     val moderationChipFilters = ModerationFilter.entries
     val listState = rememberLazyListState()
-    val coroutineScope = rememberCoroutineScope()
+    val selectedFilter by viewModel.selectedFilter.collectAsStateWithLifecycle()
+    val filteredPublications by viewModel.filteredPublications.collectAsStateWithLifecycle()
+    val pendingCount by viewModel.pendingCount.collectAsStateWithLifecycle()
+    val verifiedCount by viewModel.verifiedCount.collectAsStateWithLifecycle()
+    val rejectedCount by viewModel.rejectedCount.collectAsStateWithLifecycle()
 
     var pendingDecision by remember { mutableStateOf<DecisionModerador?>(null) }
     var selectedPublication by remember { mutableStateOf<ModerationPublication?>(null) }
     var rejectionReason by remember { mutableStateOf("") }
 
     fun openApproveDialog(publicationId: String) {
-        selectedPublication = viewModel.filteredPublications.firstOrNull { it.id == publicationId }
+        selectedPublication = filteredPublications.firstOrNull { it.id == publicationId }
         if (selectedPublication != null) {
             pendingDecision = DecisionModerador.APROBADA
         }
     }
 
     fun openRejectDialog(publicationId: String) {
-        selectedPublication = viewModel.filteredPublications.firstOrNull { it.id == publicationId }
+        selectedPublication = filteredPublications.firstOrNull { it.id == publicationId }
         if (selectedPublication != null) {
             rejectionReason = ""
             pendingDecision = DecisionModerador.RECHAZADA
@@ -125,19 +128,19 @@ fun ModerationScreen(
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             StatItem(
-                value = viewModel.pendingCount.toString(),
+                value = pendingCount.toString(),
                 label = stringResource(R.string.feature_admin_moderation_filter_pending),
                 color = MaterialTheme.colorScheme.tertiary,
                 modifier = Modifier.weight(1f)
             )
             StatItem(
-                value = viewModel.verifiedCount.toString(),
+                value = verifiedCount.toString(),
                 label = stringResource(R.string.feature_admin_moderation_filter_verified),
                 color = MaterialTheme.colorScheme.primary,
                 modifier = Modifier.weight(1f)
             )
             StatItem(
-                value = viewModel.rejectedCount.toString(),
+                value = rejectedCount.toString(),
                 label = stringResource(R.string.feature_admin_moderation_filter_rejected),
                 color = MaterialTheme.colorScheme.error,
                 modifier = Modifier.weight(1f)
@@ -146,7 +149,7 @@ fun ModerationScreen(
 
         CategoryChips(
             categories = moderationChipFilters,
-            selectedCategory = viewModel.selectedFilter,
+            selectedCategory = selectedFilter,
             onCategorySelected = viewModel::onFilterSelected,
             label = { filter ->
                 when (filter) {
@@ -163,7 +166,7 @@ fun ModerationScreen(
             state = listState,
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
-            items(viewModel.filteredPublications, key = { "${it.id}-${it.pointOfInterest.estado}" }) { publication ->
+            items(filteredPublications, key = { "${it.id}-${it.pointOfInterest.estado}" }) { publication ->
                 ModerationPublicationCard(
                     publication = publication.toCardUi(context),
                     onApproveRequested = ::openApproveDialog,
@@ -172,7 +175,7 @@ fun ModerationScreen(
                 )
             }
 
-            if (viewModel.filteredPublications.isEmpty()) {
+            if (filteredPublications.isEmpty()) {
                 item {
                     Surface(
                         modifier = Modifier
@@ -202,7 +205,6 @@ fun ModerationScreen(
                 onDismiss = ::dismissApproveDialog,
                 onConfirm = {
                     selectedPublication?.let { viewModel.applyDecision(it.id, DecisionModerador.APROBADA) }
-                    coroutineScope.launch { listState.scrollToItem(0) }
                     dismissApproveDialog()
                 }
             )
@@ -223,7 +225,6 @@ fun ModerationScreen(
                             reason = rejectionReason.trim()
                         )
                     }
-                    coroutineScope.launch { listState.scrollToItem(0) }
                     dismissRejectDialog()
                 }
             )
