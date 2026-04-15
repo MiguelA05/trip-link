@@ -7,10 +7,10 @@ import com.example.triplink.domain.model.admin.AdminReportCase
 import com.example.triplink.domain.repository.admin.ReportRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 import javax.inject.Inject
 
 @HiltViewModel
@@ -19,34 +19,25 @@ class AdminReportsViewModel @Inject constructor(
     private val repository: ReportRepository
 ) : ViewModel() {
 
-    private val _reportCards = MutableStateFlow<List<AdminReportUi>>(emptyList())
-    val reportCards: StateFlow<List<AdminReportUi>> = _reportCards.asStateFlow()
+    val reportCards: StateFlow<List<AdminReportUi>> = repository.reportCases
+        .map { cases -> cases.map { it.toUiModel() } }
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5_000),
+            initialValue = emptyList()
+        )
 
     val pendingCount: Int
         get() = repository.pendingReportsCount
 
-    init {
-        refreshReports()
-    }
-
-    private fun refreshReports() {
-        _reportCards.value = repository.reportCases.map { it.toUiModel() }
-    }
-
     fun getReportById(reportId: String): AdminReportUi? = repository.getReportById(reportId)?.toUiModel()
 
     fun confirmReport(reportId: String) {
-        viewModelScope.launch {
-            repository.confirmReport(reportId)
-            refreshReports()
-        }
+        repository.confirmReport(reportId)
     }
 
     fun invalidateReport(reportId: String) {
-        viewModelScope.launch {
-            repository.invalidateReport(reportId)
-            refreshReports()
-        }
+        repository.invalidateReport(reportId)
     }
 
     private fun AdminReportCase.toUiModel(): AdminReportUi = toUi(appContext)

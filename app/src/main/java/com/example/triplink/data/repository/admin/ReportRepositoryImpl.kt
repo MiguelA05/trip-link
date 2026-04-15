@@ -6,6 +6,14 @@ import com.example.triplink.domain.model.enums.EstadoReporte
 import com.example.triplink.domain.repository.admin.ReportRepository
 import com.example.triplink.domain.repository.publication.PublicationRepository
 import com.example.triplink.domain.repository.user.UserProfileRepository
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -16,12 +24,21 @@ class ReportRepositoryImpl @Inject constructor(
 ) : ReportRepository {
 
     private val acceptedReportThreshold: Int = 3
+    private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
+
+    private val _reportCases = MutableStateFlow<List<AdminReportCase>>(emptyList())
+    override val reportCases: StateFlow<List<AdminReportCase>> = _reportCases.asStateFlow()
 
     override val pendingReportsCount: Int
-        get() = pendingReportCases().size
+        get() = _reportCases.value.size
 
-    override val reportCases: List<AdminReportCase>
-        get() = pendingReportCases().sortedByDescending { it.report.fechaCreacion }
+    init {
+        scope.launch {
+            publicationRepository.publications.collectLatest {
+                refreshReportCases()
+            }
+        }
+    }
 
     override fun hasUserReportedPublication(userId: String, publicationId: String): Boolean {
         return publicationRepository.getPublicationById(publicationId)
@@ -43,7 +60,7 @@ class ReportRepositoryImpl @Inject constructor(
     }
 
     override fun getReportById(reportId: String): AdminReportCase? {
-        return pendingReportCases().find { it.report.id == reportId }
+        return _reportCases.value.find { it.report.id == reportId }
     }
 
     override fun confirmReport(reportId: String) {
@@ -75,8 +92,8 @@ class ReportRepositoryImpl @Inject constructor(
         )
     }
 
-    private fun pendingReportCases(): List<AdminReportCase> {
-        return publicationRepository.publications.value
+    private fun refreshReportCases() {
+        _reportCases.value = publicationRepository.publications.value
             .flatMap { publication ->
                 publication.reportes
                     .filter { it.estado == EstadoReporte.PENDIENTE }
@@ -90,9 +107,11 @@ class ReportRepositoryImpl @Inject constructor(
                         )
                     }
             }
+            .sortedByDescending { it.report.fechaCreacion }
     }
 
-    private fun findReportCase(reportId: String): AdminReportCase? = pendingReportCases().firstOrNull { it.report.id == reportId }
+    private fun findReportCase(reportId: String): AdminReportCase? =
+        _reportCases.value.firstOrNull { it.report.id == reportId }
 
     private fun updatePublicationReportStatus(
         publicationId: String,
