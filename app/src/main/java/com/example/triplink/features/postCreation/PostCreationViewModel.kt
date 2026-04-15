@@ -132,6 +132,8 @@ class PostCreationViewModel @Inject constructor(
         return try {
             val openParts = open.split(":").map { it.toInt() }
             val closeParts = close.split(":").map { it.toInt() }
+            if (openParts.size != 2 || closeParts.size != 2) return false
+            
             val openMinutes = openParts[0] * 60 + openParts[1]
             val closeMinutes = closeParts[0] * 60 + closeParts[1]
             openMinutes < closeMinutes
@@ -167,15 +169,15 @@ class PostCreationViewModel @Inject constructor(
         }
     }
 
-    fun onOpenTimeChange(index: Int, time: String) {
+    fun onOpenTimeChange(index: Int, hours: String, minutes: String) {
         daySchedules = daySchedules.toMutableList().apply {
-            this[index] = this[index].copy(openTime = time)
+            this[index] = this[index].copy(openTime = "$hours:$minutes")
         }
     }
 
-    fun onCloseTimeChange(index: Int, time: String) {
+    fun onCloseTimeChange(index: Int, hours: String, minutes: String) {
         daySchedules = daySchedules.toMutableList().apply {
-            this[index] = this[index].copy(closeTime = time)
+            this[index] = this[index].copy(closeTime = "$hours:$minutes")
         }
     }
 

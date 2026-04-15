@@ -432,8 +432,8 @@ fun PostCreationScreen(
                         DayScheduleRow(
                             schedule = schedule,
                             onToggle = { viewModel.onDayToggle(index, it) },
-                            onOpenTimeChange = { viewModel.onOpenTimeChange(index, it) },
-                            onCloseTimeChange = { viewModel.onCloseTimeChange(index, it) },
+                            onOpenTimeChange = { h, m -> viewModel.onOpenTimeChange(index, h, m) },
+                            onCloseTimeChange = { h, m -> viewModel.onCloseTimeChange(index, h, m) },
                             onDisabledClick = {
                                 scope.launch {
                                     snackbarHostState.showSnackbar(dayDisabledSnackbar)
@@ -735,8 +735,8 @@ fun StepRow(
 fun DayScheduleRow(
     schedule: DayScheduleData,
     onToggle: (Boolean) -> Unit,
-    onOpenTimeChange: (String) -> Unit,
-    onCloseTimeChange: (String) -> Unit,
+    onOpenTimeChange: (String, String) -> Unit,
+    onCloseTimeChange: (String, String) -> Unit,
     onDisabledClick: () -> Unit
 ) {
     Row(
@@ -746,7 +746,7 @@ fun DayScheduleRow(
             .border(1.dp, MaterialTheme.colorScheme.outlineVariant, RoundedCornerShape(12.dp))
             .padding(horizontal = 12.dp, vertical = 8.dp),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(8.dp)
+        horizontalArrangement = Arrangement.spacedBy(4.dp)
     ) {
         Text(
             text = schedule.day.localizedShortLabel(),
@@ -755,16 +755,27 @@ fun DayScheduleRow(
             modifier = Modifier.width(35.dp)
         )
 
-        TimeInputBox(
-            value = schedule.openTime,
-            onValueChange = onOpenTimeChange,
+        val openParts = schedule.openTime.split(":").let { if(it.size == 2) it else listOf("", "") }
+        val closeParts = schedule.closeTime.split(":").let { if(it.size == 2) it else listOf("", "") }
+
+        TimeInputGroup(
+            hours = openParts[0],
+            minutes = openParts[1],
+            onTimeChange = onOpenTimeChange,
             enabled = schedule.isEnabled,
             onDisabledClick = onDisabledClick
         )
-        Text(stringResource(R.string.feature_post_creation_time_separator), color = TextColors.Secondary)
-        TimeInputBox(
-            value = schedule.closeTime,
-            onValueChange = onCloseTimeChange,
+        
+        Text(
+            text = stringResource(R.string.feature_post_creation_time_separator), 
+            color = TextColors.Secondary,
+            modifier = Modifier.padding(horizontal = 2.dp)
+        )
+        
+        TimeInputGroup(
+            hours = closeParts[0],
+            minutes = closeParts[1],
+            onTimeChange = onCloseTimeChange,
             enabled = schedule.isEnabled,
             onDisabledClick = onDisabledClick
         )
@@ -786,15 +797,46 @@ fun DayScheduleRow(
 }
 
 @Composable
-fun TimeInputBox(
+fun TimeInputGroup(
+    hours: String,
+    minutes: String,
+    onTimeChange: (String, String) -> Unit,
+    enabled: Boolean,
+    onDisabledClick: () -> Unit
+) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(4.dp)
+    ) {
+        TimeUnitInput(
+            value = hours,
+            onValueChange = { onTimeChange(it, minutes) },
+            placeholder = "00",
+            enabled = enabled,
+            onDisabledClick = onDisabledClick
+        )
+        Text(":", style = TextTokens.body(), color = if (enabled) TextColors.Primary else TextColors.Secondary)
+        TimeUnitInput(
+            value = minutes,
+            onValueChange = { onTimeChange(hours, it) },
+            placeholder = "00",
+            enabled = enabled,
+            onDisabledClick = onDisabledClick
+        )
+    }
+}
+
+@Composable
+fun TimeUnitInput(
     value: String,
     onValueChange: (String) -> Unit,
+    placeholder: String,
     enabled: Boolean,
     onDisabledClick: () -> Unit
 ) {
     Box(
         modifier = Modifier
-            .width(80.dp)
+            .width(42.dp)
             .height(36.dp)
             .background(
                 if (enabled) MaterialTheme.colorScheme.surface else MaterialTheme.colorScheme.surfaceVariant,
@@ -806,7 +848,7 @@ fun TimeInputBox(
     ) {
         BasicTextField(
             value = value,
-            onValueChange = { if (it.length <= 5) onValueChange(it) },
+            onValueChange = { if (it.length <= 2) onValueChange(it) },
             enabled = enabled,
             singleLine = true,
             textStyle = TextTokens.colored(
@@ -818,7 +860,7 @@ fun TimeInputBox(
             decorationBox = { innerTextField ->
                 if (value.isEmpty()) {
                     Text(
-                        stringResource(R.string.feature_post_creation_time_placeholder),
+                        placeholder,
                         style = TextTokens.body(),
                         color = TextColors.Muted,
                         textAlign = TextAlign.Center,
