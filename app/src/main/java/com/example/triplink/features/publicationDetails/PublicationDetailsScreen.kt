@@ -1061,18 +1061,26 @@ fun ReviewsSection(
                     modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Icon(
-                        imageVector = Icons.Default.Star,
-                        contentDescription = null,
-                        tint = MaterialTheme.colorScheme.tertiary,
-                        modifier = Modifier.size(18.dp)
-                    )
-                    Spacer(modifier = Modifier.width(4.dp))
-                    Text(
-                        text = "%.1f".format(generalRating),
-                        style = TextTokens.emphasized(TextTokens.title(), FontWeight.Bold),
-                        color = MaterialTheme.colorScheme.onSurface
-                    )
+                    if (generalRating == 0.0) {
+                        Text(
+                            text = stringResource(R.string.feature_publication_details_no_reviews),
+                            style = TextTokens.emphasized(TextTokens.title(), FontWeight.Bold),
+                            color = MaterialTheme.colorScheme.onSurface
+                        )
+                    } else {
+                        Icon(
+                            imageVector = Icons.Default.Star,
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.tertiary,
+                            modifier = Modifier.size(18.dp)
+                        )
+                        Spacer(modifier = Modifier.width(4.dp))
+                        Text(
+                            text = "%.1f".format(generalRating),
+                            style = TextTokens.emphasized(TextTokens.title(), FontWeight.Bold),
+                            color = MaterialTheme.colorScheme.onSurface
+                        )
+                    }
                 }
             }
         }

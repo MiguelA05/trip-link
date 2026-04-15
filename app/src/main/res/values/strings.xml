@@ -101,11 +101,15 @@
     <string name="component_explore_map_publication_card_duration">3â€“4 hrs</string>
     <!-- resource: component_explore_map_publication_card_open_full_publication -->
     <string name="component_explore_map_publication_card_open_full_publication">View full publication  ></string>
+    <!-- resource: component_explore_map_publication_card_no_reviews -->
+    <string name="component_explore_map_publication_card_no_reviews">No reviews</string>
 
     <!-- COMPONENT: PublicationCard -->
     <!-- resource: component_publication_card_moment_ago -->
     <!-- resource: component_publication_card_near_you -->
     <string name="component_publication_card_near_you">Near you</string>
+    <!-- resource: component_publication_card_no_reviews -->
+    <string name="component_publication_card_no_reviews">No reviews</string>
     <!-- resource: component_publication_card_comments_content_description -->
     <string name="component_publication_card_comments_content_description">Comments</string>
     <!-- resource: component_publication_card_add_to_favorites_content_description -->
@@ -211,6 +215,7 @@
     <string name="feature_filters_remove_chip_content_description">Remove filter</string>
     <string name="feature_filters_empty_filtered_results">No results match the selected filters</string>
 
+
     <!-- ENUM: Categoria -->
     <string name="enum_categoria_gastronomia">Gastronomy</string>
     <string name="enum_categoria_cultura">Culture</string>
@@ -262,6 +267,8 @@
     <string name="feature_publication_details_review_rating_note">Tap to rate</string>
     <!-- resource: feature_publication_details_reviews_title -->
     <string name="feature_publication_details_reviews_title">Reviews</string>
+    <!-- resource: feature_publication_details_no_reviews -->
+    <string name="feature_publication_details_no_reviews">No reviews</string>
     <!-- resource: feature_publication_details_see_all_reviews -->
     <string name="feature_publication_details_see_all_reviews">See all reviews</string>
     <!-- resource: component_publication_weekly_schedule_title -->
@@ -410,6 +417,7 @@
 
     <!-- FEATURE: ExploreMap -->
     <string name="feature_explore_map_back_to_list_content_description">Back to list</string>
+    <string name="feature_explore_map_publication_rating_no_reviews">No reviews</string>
 
     <!-- FEATURE: AccountEdit -->
     <string name="feature_account_edit_title">Account management</string>

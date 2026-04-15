@@ -103,11 +103,15 @@
     <string name="component_explore_map_publication_card_duration">3–4 hrs</string>
     <!-- resource: component_explore_map_publication_card_open_full_publication -->
     <string name="component_explore_map_publication_card_open_full_publication">Ver publicacion completa  ></string>
+    <!-- resource: component_explore_map_publication_card_no_reviews -->
+    <string name="component_explore_map_publication_card_no_reviews">Sin reseñas</string>
 
     <!-- COMPONENT: PublicationCard -->
     <!-- resource: component_publication_card_moment_ago -->
     <!-- resource: component_publication_card_near_you -->
     <string name="component_publication_card_near_you">Cerca de ti</string>
+    <!-- resource: component_publication_card_no_reviews -->
+    <string name="component_publication_card_no_reviews">Sin reseñas</string>
     <!-- resource: component_publication_card_comments_content_description -->
     <string name="component_publication_card_comments_content_description">Comentarios</string>
     <!-- resource: component_publication_card_add_to_favorites_content_description -->
@@ -264,6 +268,8 @@
     <string name="feature_publication_details_review_rating_note">Toca para calificar</string>
     <!-- resource: feature_publication_details_reviews_title -->
     <string name="feature_publication_details_reviews_title">Reseñas</string>
+    <!-- resource: feature_publication_details_no_reviews -->
+    <string name="feature_publication_details_no_reviews">Sin reseñas</string>
     <!-- resource: feature_publication_details_see_all_reviews -->
     <string name="feature_publication_details_see_all_reviews">Ver todas las reseñas</string>
     <!-- resource: component_publication_weekly_schedule_title -->
@@ -412,6 +418,7 @@
 
     <!-- FEATURE: ExploreMap -->
     <string name="feature_explore_map_back_to_list_content_description">Volver a lista</string>
+    <string name="feature_explore_map_publication_rating_no_reviews">Sin reseñas</string>
 
     <!-- FEATURE: AccountEdit -->
     <string name="feature_account_edit_title">Gestión de Cuenta</string>

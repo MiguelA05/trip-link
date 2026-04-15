@@ -166,17 +166,25 @@ fun PublicationCard(
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.spacedBy(4.dp)
                     ) {
-                        Icon(
-                            imageVector = Icons.Default.Star,
-                            contentDescription = null,
-                            tint = MaterialTheme.colorScheme.tertiary,
-                            modifier = Modifier.size(16.dp)
-                        )
-                        Text(
-                            text = ratingLabel,
-                            style = TextTokens.emphasized(TextTokens.chip()),
-                            color = TextColors.Primary
-                        )
+                        if (ratingLabel.equals("0.0")) {
+                            Text(
+                                text = stringResource(R.string.component_publication_card_no_reviews),
+                                style = TextTokens.emphasized(TextTokens.chip()),
+                                color = TextColors.Primary
+                            )
+                        } else {
+                            Icon(
+                                imageVector = Icons.Default.Star,
+                                contentDescription = null,
+                                tint = MaterialTheme.colorScheme.tertiary,
+                                modifier = Modifier.size(16.dp)
+                            )
+                            Text(
+                                text = ratingLabel,
+                                style = TextTokens.emphasized(TextTokens.chip()),
+                                color = TextColors.Primary
+                            )
+                        }
                     }
                 }
 

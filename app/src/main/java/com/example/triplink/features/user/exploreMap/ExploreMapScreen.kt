@@ -290,17 +290,25 @@ private fun MarkerPin(
 				verticalAlignment = Alignment.CenterVertically,
 				horizontalArrangement = Arrangement.spacedBy(2.dp)
 			) {
-				Icon(
-					imageVector = Icons.Outlined.Star,
-					contentDescription = null,
-					tint = MaterialTheme.colorScheme.tertiary,
-					modifier = Modifier.size(13.dp)
-				)
-				Text(
-					text = marker.ratingLabel,
-					style = TextTokens.body(),
-					color = TextColors.Primary
-				)
+                if (marker.ratingLabel.equals("0.0")) {
+                    Text(
+                        text = stringResource(R.string.feature_explore_map_publication_rating_no_reviews),
+                        style = TextTokens.body(),
+                        color = TextColors.Primary
+                    )
+                } else {
+                    Icon(
+                        imageVector = Icons.Outlined.Star,
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.tertiary,
+                        modifier = Modifier.size(13.dp)
+                    )
+                    Text(
+                        text = marker.ratingLabel,
+                        style = TextTokens.body(),
+                        color = TextColors.Primary
+                    )
+                }
 			}
 		}
 
