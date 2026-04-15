@@ -8,7 +8,6 @@ import androidx.compose.material3.dynamicDarkColorScheme
 import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 
 // ============================================================================
@@ -17,35 +16,35 @@ import androidx.compose.ui.platform.LocalContext
 private val LightColorScheme = lightColorScheme(
     primary = LightPrimary,
     onPrimary = LightOnPrimary,
-    primaryContainer = LightPrimary,
-    onPrimaryContainer = LightOnPrimary,
+    primaryContainer = LightPrimaryContainer,
+    onPrimaryContainer = LightOnPrimaryContainer,
 
     secondary = LightSecondary,
     onSecondary = LightOnSecondary,
-    secondaryContainer = PastelOrange,
-    onSecondaryContainer = LightOnSecondary,
+    secondaryContainer = LightSecondaryContainer,
+    onSecondaryContainer = LightOnSecondaryContainer,
 
     tertiary = LightTertiary,
     onTertiary = LightOnTertiary,
-    tertiaryContainer = LightTertiary,
-    onTertiaryContainer = LightOnTertiary,
+    tertiaryContainer = LightTertiaryContainer,
+    onTertiaryContainer = LightOnTertiaryContainer,
 
     error = LightError,
     onError = LightOnError,
-    errorContainer = Color(0xFFF9DEDC),
-    onErrorContainer = LightError,
+    errorContainer = LightErrorContainer,
+    onErrorContainer = LightOnErrorContainer,
 
     background = LightBackground,
     onBackground = LightOnBackground,
 
     surface = LightSurface,
     onSurface = LightOnSurface,
-    surfaceVariant = Color(0xFFEFF0F1),
-    onSurfaceVariant = PrincipalGray,
+    surfaceVariant = LightSurfaceVariant,
+    onSurfaceVariant = LightOnSurfaceVariant,
 
-    outline = PrincipalGray,
-    outlineVariant = Color(0xFFCAC4D0),
-    scrim = PrincipalBlack
+    outline = LightOutline,
+    outlineVariant = LightOutlineVariant,
+    scrim = LightScrim
 )
 
 // ============================================================================
@@ -54,35 +53,35 @@ private val LightColorScheme = lightColorScheme(
 private val DarkColorScheme = darkColorScheme(
     primary = DarkPrimary,
     onPrimary = DarkOnPrimary,
-    primaryContainer = Color(0xFF1E3A8A),
-    onPrimaryContainer = Color(0xFF90CAF9),
+    primaryContainer = DarkPrimaryContainer,
+    onPrimaryContainer = DarkOnPrimaryContainer,
 
     secondary = DarkSecondary,
     onSecondary = DarkOnSecondary,
-    secondaryContainer = Color(0xFF2E7D32),
-    onSecondaryContainer = Color(0xFF81C784),
+    secondaryContainer = DarkSecondaryContainer,
+    onSecondaryContainer = DarkOnSecondaryContainer,
 
     tertiary = DarkTertiary,
     onTertiary = DarkOnTertiary,
-    tertiaryContainer = Color(0xFFE65100),
-    onTertiaryContainer = Color(0xFFFFB74D),
+    tertiaryContainer = DarkTertiaryContainer,
+    onTertiaryContainer = DarkOnTertiaryContainer,
 
     error = DarkError,
     onError = DarkOnError,
-    errorContainer = Color(0xFF93000A),
-    onErrorContainer = Color(0xFFFFDAD6),
+    errorContainer = DarkErrorContainer,
+    onErrorContainer = DarkOnErrorContainer,
 
     background = DarkBackground,
     onBackground = DarkOnBackground,
 
     surface = DarkSurface,
     onSurface = DarkOnSurface,
-    surfaceVariant = Color(0xFF49454E),
-    onSurfaceVariant = Color(0xFFCAC4D0),
+    surfaceVariant = DarkSurfaceVariant,
+    onSurfaceVariant = DarkOnSurfaceVariant,
 
-    outline = Color(0xFF938F99),
-    outlineVariant = Color(0xFF49454E),
-    scrim = PrincipalBlack
+    outline = DarkOutline,
+    outlineVariant = DarkOutlineVariant,
+    scrim = DarkScrim
 )
 
 // ============================================================================
@@ -108,11 +107,11 @@ fun DescubreuqTheme(
     val context = LocalContext.current
     val isDarkTheme = isSystemInDarkTheme()
 
-    // Selecciona la paleta de colores
+    // Selecciona la paleta de colores (dynamic color en Android 12+ con fallback estatico)
     val colorScheme = when {
-        // Dynamic Color: Solo disponible en Android 12 (API 31) o superior
-
-        // Fallback: Paleta estática personalizada
+        useDynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
+            if (isDarkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
+        }
         isDarkTheme -> DarkColorScheme
         else -> LightColorScheme
     }
