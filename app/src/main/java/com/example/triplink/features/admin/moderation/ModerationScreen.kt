@@ -33,7 +33,6 @@ import com.example.triplink.R
 import com.example.triplink.core.components.ApprovePublicationDialog
 import com.example.triplink.core.components.ModerationPublicationCard
 import com.example.triplink.core.components.RejectPublicationDialog
-import com.example.triplink.core.components.common.CategoryChips
 import com.example.triplink.domain.model.enums.moderator.DecisionModerador
 import com.example.triplink.domain.model.enums.moderator.ModerationFilter
 import com.example.triplink.domain.model.moderator.ModerationPublication
@@ -46,7 +45,6 @@ fun ModerationScreen(
 ) {
     val viewModel: ModerationViewModel = hiltViewModel()
     val context = LocalContext.current
-    val moderationChipFilters = ModerationFilter.entries
     val listState = rememberLazyListState()
     val selectedFilter by viewModel.selectedFilter.collectAsStateWithLifecycle()
     val filteredPublications by viewModel.filteredPublications.collectAsStateWithLifecycle()
@@ -84,6 +82,14 @@ fun ModerationScreen(
         rejectionReason = ""
     }
 
+    fun handleFilterClick(filter: ModerationFilter) {
+        if (selectedFilter == filter) {
+            viewModel.onFilterSelected(ModerationFilter.ALL)
+        } else {
+            viewModel.onFilterSelected(filter)
+        }
+    }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -91,7 +97,7 @@ fun ModerationScreen(
             .padding(contentPadding)
             .statusBarsPadding()
             .padding(horizontal = 14.dp, vertical = 12.dp),
-        verticalArrangement = Arrangement.spacedBy(12.dp)
+        verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -131,35 +137,27 @@ fun ModerationScreen(
                 value = pendingCount.toString(),
                 label = stringResource(R.string.feature_admin_moderation_filter_pending),
                 color = MaterialTheme.colorScheme.tertiary,
+                isSelected = selectedFilter == ModerationFilter.PENDING,
+                onClick = { handleFilterClick(ModerationFilter.PENDING) },
                 modifier = Modifier.weight(1f)
             )
             StatItem(
                 value = verifiedCount.toString(),
                 label = stringResource(R.string.feature_admin_moderation_filter_verified),
                 color = MaterialTheme.colorScheme.primary,
+                isSelected = selectedFilter == ModerationFilter.VERIFIED,
+                onClick = { handleFilterClick(ModerationFilter.VERIFIED) },
                 modifier = Modifier.weight(1f)
             )
             StatItem(
                 value = rejectedCount.toString(),
                 label = stringResource(R.string.feature_admin_moderation_filter_rejected),
                 color = MaterialTheme.colorScheme.error,
+                isSelected = selectedFilter == ModerationFilter.REJECTED,
+                onClick = { handleFilterClick(ModerationFilter.REJECTED) },
                 modifier = Modifier.weight(1f)
             )
         }
-
-        CategoryChips(
-            categories = moderationChipFilters,
-            selectedCategory = selectedFilter,
-            onCategorySelected = viewModel::onFilterSelected,
-            label = { filter ->
-                when (filter) {
-                    ModerationFilter.ALL -> stringResource(R.string.feature_admin_moderation_filter_all)
-                    ModerationFilter.PENDING -> stringResource(R.string.feature_admin_moderation_filter_pending)
-                    ModerationFilter.VERIFIED -> stringResource(R.string.feature_admin_moderation_filter_verified)
-                    ModerationFilter.REJECTED -> stringResource(R.string.feature_admin_moderation_filter_rejected)
-                }
-            }
-        )
 
         LazyColumn(
             modifier = Modifier.fillMaxSize(),
@@ -240,13 +238,19 @@ private fun StatItem(
     value: String,
     label: String,
     color: Color,
+    isSelected: Boolean,
+    onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Surface(
+        onClick = onClick,
         modifier = modifier,
-        color = color.copy(alpha = 0.08f),
+        color = if (isSelected) color.copy(alpha = 0.12f) else color.copy(alpha = 0.08f),
         shape = RoundedCornerShape(14.dp),
-        border = androidx.compose.foundation.BorderStroke(1.dp, color.copy(alpha = 0.45f))
+        border = androidx.compose.foundation.BorderStroke(
+            width = if (isSelected) 2.dp else 1.dp,
+            color = if (isSelected) color else color.copy(alpha = 0.45f)
+        )
     ) {
         Column(
             modifier = Modifier.padding(vertical = 10.dp),
