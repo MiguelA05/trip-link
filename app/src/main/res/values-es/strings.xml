@@ -184,6 +184,8 @@
     <string name="component_stats_row_active_days">Días activo</string>
 
     <!-- COMPONENT: StatusTabs -->
+    <!-- resource: component_status_tabs_favorites -->
+    <string name="component_status_tabs_favorites">Favoritos</string>
     <!-- resource: component_status_tabs_verified -->
     <string name="component_status_tabs_verified">Verificados</string>
     <!-- resource: component_status_tabs_pending -->
@@ -396,6 +398,7 @@
     <string name="feature_user_info_empty_verified">No tienes contribuciones\nverificadas</string>
     <string name="feature_user_info_empty_pending">No tienes contribuciones\npendientes</string>
     <string name="feature_user_info_empty_rejected">No tienes contribuciones\nrechazadas</string>
+    <string name="feature_user_info_empty_favorites">Aún no marcaste publicaciones como favoritas</string>
     <string name="feature_user_info_create_poi_action">Crear POI</string>
     <string name="feature_user_info_logout_title">¿Cerrar sesión?</string>
     <string name="feature_user_info_logout_message">Se cerrará tu sesión en este dispositivo.\nPodrás volver a ingresar en cualquier momento.</string>

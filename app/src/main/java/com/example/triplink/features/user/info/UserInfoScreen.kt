@@ -15,12 +15,15 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.Logout
+import androidx.compose.material.icons.outlined.HeartBroken
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
@@ -104,12 +107,12 @@ fun UserInfoScreen(
 		}
 
 		item {
-			SectionCard(
-				title = stringResource(R.string.feature_user_info_badges_title),
-				actionLabel = stringResource(R.string.feature_user_info_badges_action),
-				onActionClick = onBagdesClick,
-				modifier = Modifier.padding(horizontal = 10.dp)
-			) {
+				SectionCard(
+					title = stringResource(R.string.feature_user_info_badges_title),
+					actionLabel = stringResource(R.string.feature_user_info_badges_action),
+					onActionClick = onBagdesClick,
+					modifier = Modifier.padding(horizontal = 10.dp)
+				) {
 				if (state.recentBadges.isEmpty()) {
 					EmptyState(message = stringResource(R.string.feature_user_info_badges_empty))
 				} else {
@@ -131,8 +134,9 @@ fun UserInfoScreen(
 				elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
 			) {
 				StatusTabs(
-					selectedTab = state.selectedContributionTab,
-					onTabSelected = viewModel::onContributionTabSelected,
+					selectedIndex = state.selectedContributionIndex,
+					onTabSelectedIndex = viewModel::onContributionTabSelected,
+					favoritesCount = state.favoritesCount,
 					verifiedCount = state.verifiedCount,
 					pendingCount = state.pendingCount,
 					rejectedCount = state.rejectedCount,
@@ -143,39 +147,45 @@ fun UserInfoScreen(
 
 		if (state.selectedContributionItems.isEmpty()) {
 			item {
-				val emptyMessage = when (state.selectedContributionTab) {
-					EstadoPublicacion.VERIFICADA -> stringResource(R.string.feature_user_info_empty_verified)
-					EstadoPublicacion.PENDIENTE -> stringResource(R.string.feature_user_info_empty_pending)
-					EstadoPublicacion.RECHAZADA -> stringResource(R.string.feature_user_info_empty_rejected)
+				val emptyMessage = when (state.selectedContributionIndex) {
+					0 -> stringResource(R.string.feature_user_info_empty_favorites)
+					1 -> stringResource(R.string.feature_user_info_empty_verified)
+					2 -> stringResource(R.string.feature_user_info_empty_pending)
+					3 -> stringResource(R.string.feature_user_info_empty_rejected)
+					else -> stringResource(R.string.feature_user_info_empty_verified)
 				}
 
-				Card(
+				Column(
 					modifier = Modifier
 						.fillMaxWidth()
 						.padding(horizontal = 10.dp),
-					colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant),
-					shape = RoundedCornerShape(18.dp),
-					elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
+					horizontalAlignment = Alignment.CenterHorizontally
 				) {
-					Column(
-						modifier = Modifier
-							.fillMaxWidth()
-							.padding(vertical = 42.dp, horizontal = 20.dp),
-						horizontalAlignment = Alignment.CenterHorizontally,
-						verticalArrangement = Arrangement.spacedBy(18.dp)
-					) {
-						Text(
-							text = emptyMessage,
-							color = MaterialTheme.colorScheme.onSurfaceVariant,
-										style = TextTokens.sectionTitle(),
-							textAlign = TextAlign.Center
-						)
+					Text(
+						text = emptyMessage,
+						color = MaterialTheme.colorScheme.onSurfaceVariant,
+						style = TextTokens.sectionTitle(),
+						textAlign = TextAlign.Center,
+						modifier = Modifier.fillMaxWidth()
+					)
 
-						GeneralButton(
-							onClick = onPostCreationClick,
-							text = stringResource(R.string.feature_user_info_create_poi_action)
-						)
-					}
+								Spacer(modifier = Modifier.height(12.dp))
+
+								// Para la sección de Favoritos (índice 0) mostramos un icono de "corazón" en lugar
+								// del botón de crear publicación. Para las otras secciones mantenemos el botón.
+								if (state.selectedContributionIndex == 0) {
+									Icon(
+										imageVector = Icons.Outlined.HeartBroken,
+										contentDescription = null,
+										tint = MaterialTheme.colorScheme.onSurfaceVariant,
+										modifier = Modifier.size(48.dp)
+									)
+								} else {
+									GeneralButton(
+										onClick = onPostCreationClick,
+										text = stringResource(R.string.feature_user_info_create_poi_action)
+									)
+								}
 				}
 			}
 		} else {
@@ -183,10 +193,15 @@ fun UserInfoScreen(
 				ContributionCard(
 					contribution = contribution,
 					onActionClick = {
-						when (contribution.status) {
-							EstadoPublicacion.RECHAZADA -> onEditRejectedPublication(contribution.id)
-							EstadoPublicacion.VERIFICADA -> onViewVerifiedPublication(contribution.id)
-							EstadoPublicacion.PENDIENTE -> Unit
+						if (state.selectedContributionIndex == 0) {
+							// Favorites - open like verified
+							onViewVerifiedPublication(contribution.id)
+						} else {
+							when (contribution.status) {
+								EstadoPublicacion.RECHAZADA -> onEditRejectedPublication(contribution.id)
+								EstadoPublicacion.VERIFICADA -> onViewVerifiedPublication(contribution.id)
+								EstadoPublicacion.PENDIENTE -> Unit
+							}
 						}
 					}
 				)

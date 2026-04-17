@@ -182,6 +182,8 @@
     <string name="component_stats_row_active_days">Active days</string>
 
     <!-- COMPONENT: StatusTabs -->
+    <!-- resource: component_status_tabs_favorites -->
+    <string name="component_status_tabs_favorites">Favorites</string>
     <!-- resource: component_status_tabs_verified -->
     <string name="component_status_tabs_verified">Verified</string>
     <!-- resource: component_status_tabs_pending -->
@@ -395,6 +397,7 @@
     <string name="feature_user_info_empty_verified">You have no\nverified contributions</string>
     <string name="feature_user_info_empty_pending">You have no\npending contributions</string>
     <string name="feature_user_info_empty_rejected">You have no\nrejected contributions</string>
+    <string name="feature_user_info_empty_favorites">You have not marked any publications as favorites</string>
     <string name="feature_user_info_create_poi_action">Create POI</string>
     <string name="feature_user_info_logout_title">Log out?</string>
     <string name="feature_user_info_logout_message">Your session will be closed on this device.\nYou can sign in again at any time.</string>
