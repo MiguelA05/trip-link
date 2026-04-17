@@ -14,6 +14,7 @@ import com.example.triplink.domain.model.InsigniaIconKey
 import com.example.triplink.domain.model.PuntoInteres
 import com.example.triplink.domain.model.enums.EstadoPublicacion
 import com.example.triplink.domain.repository.badge.BadgeRepository
+import com.example.triplink.domain.repository.favorite.FavoriteRepository
 import com.example.triplink.domain.repository.publication.PublicationRepository
 import com.example.triplink.domain.repository.user.UserProfileRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -49,10 +50,12 @@ data class UserInfoUiState(
 	val points: Int,
 	val contributions: Int,
 	val activeDays: Int,
-	val selectedContributionTab: EstadoPublicacion,
+	// selectedContributionIndex: 0 = Favoritos, 1 = Verificadas, 2 = Pendientes, 3 = Rechazadas
+	val selectedContributionIndex: Int,
 	val selectedBottomTabIndex: Int,
 	val selectedContributionItems: List<UserContributionItem>,
 	val recentBadges: List<UserRecentBadgeItem> = emptyList(),
+	val favoritesCount: Int = 0,
 	val verifiedCount: Int = 0,
 	val pendingCount: Int = 0,
 	val rejectedCount: Int = 0
@@ -64,6 +67,7 @@ class UserInfoViewModel @Inject constructor(
 	private val userProfileRepository: UserProfileRepository,
 	private val publicationRepository: PublicationRepository,
 	private val badgeRepository: BadgeRepository,
+	private val favoriteRepository: FavoriteRepository,
 	private val sessionDataStore: SessionDataStore
 ) : ViewModel() {
 
@@ -78,7 +82,7 @@ class UserInfoViewModel @Inject constructor(
 			points = 0,
 			contributions = 0,
 			activeDays = 1,
-			selectedContributionTab = EstadoPublicacion.PENDIENTE,
+			selectedContributionIndex = 2, // keep previous default (Pendiente)
 			selectedBottomTabIndex = 2,
 			selectedContributionItems = emptyList()
 		)
@@ -100,8 +104,8 @@ class UserInfoViewModel @Inject constructor(
 		}
 	}
 
-	fun onContributionTabSelected(tab: EstadoPublicacion) {
-		_uiState.value = _uiState.value.copy(selectedContributionTab = tab)
+	fun onContributionTabSelected(index: Int) {
+		_uiState.value = _uiState.value.copy(selectedContributionIndex = index)
 		refreshSelectedContributions()
 	}
 
@@ -158,13 +162,27 @@ class UserInfoViewModel @Inject constructor(
 	private fun refreshSelectedContributions() {
 		val userId = currentUserId ?: return
 		val allUserPublications = publicationRepository.getUserPublications(userId)
-		
-		val filtered = allUserPublications
-			.filter { it.estado == _uiState.value.selectedContributionTab }
-			.map { it.toContributionItem() }
+
+		val favorites = favoriteRepository.getFavoritePublications(userId)
+
+		val filtered = if (_uiState.value.selectedContributionIndex == 0) {
+			// Favorites: show publications the user marked as favorite
+			favorites.map { it.toContributionItem() }
+		} else {
+			val targetEstado = when (_uiState.value.selectedContributionIndex) {
+				1 -> EstadoPublicacion.VERIFICADA
+				2 -> EstadoPublicacion.PENDIENTE
+				3 -> EstadoPublicacion.RECHAZADA
+				else -> EstadoPublicacion.PENDIENTE
+			}
+			allUserPublications
+				.filter { it.estado == targetEstado }
+				.map { it.toContributionItem() }
+		}
 
 		_uiState.value = _uiState.value.copy(
 			selectedContributionItems = filtered,
+			favoritesCount = favorites.size,
 			verifiedCount = allUserPublications.count { it.estado == EstadoPublicacion.VERIFICADA },
 			pendingCount = allUserPublications.count { it.estado == EstadoPublicacion.PENDIENTE },
 			rejectedCount = allUserPublications.count { it.estado == EstadoPublicacion.RECHAZADA }
