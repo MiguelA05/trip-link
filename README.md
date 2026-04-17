@@ -1,48 +1,47 @@
-# TripLink - Guia turistica colaborativa
+# TripLink - Guía turística colaborativa
 
-TripLink es una app Android desarrollada con Kotlin y Jetpack Compose para descubrir y compartir puntos de interes turistico creados por la comunidad.
+Aplicación móvil Android desarrollada con Kotlin + Jetpack Compose para publicar, descubrir y moderar puntos de interés turístico creados por la comunidad.
 
-## Tematica del proyecto
+## 1) Descripción general del proyecto final
 
-**Tematica 3: Guia turistica colaborativa**
+Este proyecto corresponde al **proyecto final de Desarrollo de Aplicaciones Móviles**. Aunque cada grupo trabaja una temática distinta, todos comparten:
 
-- **Contexto:** turistas y habitantes suelen desconocer lugares interesantes fuera de las guias tradicionales.
-- **Problema:** falta una plataforma comunitaria para descubrir y validar informacion local.
-- **Entidad principal:** `PuntoInteres`.
+- una estructura base común,
+- requisitos funcionales compartidos (roles, publicaciones, moderación, interacción social),
+- y criterios técnicos mínimos de implementación.
 
-## Objetivo
+TripLink implementa estos lineamientos bajo la **Temática 3: Guía turística colaborativa**.
 
-Construir una experiencia colaborativa donde los usuarios puedan:
+## 2) Adaptación a la Temática 3
 
-- descubrir lugares recomendados por la comunidad,
-- publicar nuevos puntos de interes,
-- compartir opiniones y reportar contenido,
-- y apoyar la calidad de la informacion mediante moderacion.
+### Contexto
 
-## Categorias de puntos de interes
+Turistas y habitantes de una ciudad suelen desconocer lugares valiosos fuera de las guías tradicionales. TripLink busca cerrar esa brecha con conocimiento local colaborativo.
 
-El dominio maneja categorias con `enum class Categoria`:
+### Entidad principal
 
-- Gastronomia (restaurantes, cafes, comida callejera)
-- Cultura (museos, monumentos, arte urbano)
-- Naturaleza (parques, miradores, senderos)
-- Entretenimiento (bares, discotecas, actividades)
-- Historia (sitios historicos, arquitectura)
+La entidad central es `PuntoInteres`, que modela una publicación turística con información clave como:
 
-## Particularidades funcionales
+- título y descripción,
+- categoría (`Categoria`),
+- ubicación (`latitud`/`longitud`),
+- imágenes,
+- horarios sugeridos (`HorarioPuntoInteres`),
+- rango de precio estimado (`RangoPrecios`).
 
-En esta tematica, cada punto de interes considera:
+### Categorías de la temática
 
-- horario de atencion sugerido (`HorarioPuntoInteres`),
-- rango de precio estimado (`RangoPrecios`: gratuito, economico, moderado, costoso),
-- interacciones de comunidad (comentarios, favoritos, reportes),
-- flujo de moderacion para validar existencia y precision de la informacion.
+Modeladas con `enum class Categoria`:
 
-## Niveles y roles de usuario
+- Gastronomía
+- Cultura
+- Naturaleza
+- Entretenimiento
+- Historia
 
-### Niveles
+### Niveles de usuario
 
-Se contemplan niveles de progresion con `enum class Nivel`:
+Modelados con `enum class Nivel`:
 
 - Turista
 - Explorador
@@ -51,61 +50,120 @@ Se contemplan niveles de progresion con `enum class Nivel`:
 
 ### Roles
 
-La app diferencia accesos por rol (`enum class Rol`):
+Modelados con `enum class Rol`:
 
-- `USUARIO`: exploracion, publicacion, comentarios y perfil.
-- `MODERADOR`: revision de publicaciones y gestion de reportes.
+- `USUARIO`
+- `MODERADOR`
 
-## Arquitectura actual (resumen)
+## 3) Requisitos comunes del curso (referencia)
 
-- App Android en un solo modulo: `:app`.
-- UI con Jetpack Compose + Material 3.
-- Navegacion tipada con Kotlin Serialization.
-- Inyeccion de dependencias con Hilt (`@HiltAndroidApp`, `hiltViewModel()`).
-- Carga de imagenes remotas con Coil 3.
+Las siguientes capacidades forman parte del alcance común solicitado para todas las temáticas:
 
-## Flujos principales
+- **Moderador:** autenticación, verificación/rechazo de publicaciones con motivo, y gestión de estados de publicaciones/reportes.
+- **Usuario:** registro/login, feed en lista/mapa con filtros, crear/editar/borrar publicaciones, comentar, votar relevancia, ver detalle completo, editar perfil y eliminar cuenta.
+- **Gamificación:** estadísticas, sistema de puntos, niveles e insignias.
+- **Recuperación de contraseña:** flujo por correo electrónico.
+- **Notificaciones:** alertas relevantes según ubicación.
+- **Necesidad adicional no trivial:** definida por cada grupo.
 
-- **No autenticado:** home, login, registro, recuperacion de contrasena.
-- **Usuario:** home, explorar/lista y mapa, detalles, comentarios, filtros, creacion de publicaciones, perfil, insignias.
-- **Moderador:** cola de moderacion, reportes y detalle de casos.
+> En TripLink, la necesidad no trivial priorizada es el **flujo integral de reportes** (usuario + moderador + regla de visibilidad).
 
-## Estructura del proyecto
+## 4) Funcionalidad no trivial implementada: flujo de reportes
+
+### Objetivo funcional
+
+Permitir que la comunidad reporte publicaciones potencialmente problemáticas y que moderación decida sobre cada caso. Si una publicación acumula suficientes reportes aceptados, deja de mostrarse públicamente.
+
+### Flujo de usuario
+
+Desde detalle de publicación (`features/publicationDetails/PublicationDetailsViewModel.kt`):
+
+1. El usuario selecciona motivo (`RazonReporte`) y, si corresponde, descripción.
+2. Se valida que exista sesión.
+3. Se evita duplicidad: un mismo usuario no puede reportar dos veces la misma publicación.
+4. Se crea `Reporte` con estado inicial `PENDIENTE`.
+5. El reporte se agrega a la publicación vía `ReportRepository.submitReport(...)`.
+
+### Flujo de moderador
+
+Desde módulo admin (`features/admin/reports/*` + `data/repository/admin/ReportRepositoryImpl.kt`):
+
+1. Se listan casos pendientes (`EstadoReporte.PENDIENTE`).
+2. El moderador puede **confirmar** (`APROBADO`) o **invalidar** (`RECHAZADO`) cada reporte.
+3. Al confirmar, se incrementa el conteo de reportes aprobados de la publicación.
+
+### Regla de visibilidad por umbral
+
+En `ReportRepositoryImpl` existe un umbral `acceptedReportThreshold = 3`.
+
+- Si una publicación alcanza **3 o más reportes aprobados**, se elimina del repositorio (`deletePublicationById(...)`).
+- Efecto práctico: la publicación deja de aparecer en los feeds públicos del usuario.
+
+## 5) Requisitos técnicos del curso (referencia)
+
+Entre los requisitos técnicos globales solicitados están:
+
+- Jetpack Compose con Kotlin.
+- Publicaciones con título, categoría, descripción, ubicación e imagen.
+- Uso de mapa para coordenadas de usuario/publicaciones.
+- Recuperación de contraseña por enlace a correo.
+- Notificaciones relevantes por ubicación.
+- Almacenamiento de imágenes en servicio externo.
+- Repositorio GitHub con contribución del equipo.
+- Moderadores precargados.
+- Uso de Firebase (u otro servicio) para auth/datos/notificaciones sin requerir backend propio.
+
+## 6) Estado actual de implementación en este repositorio
+
+### Implementado y visible en código
+
+- Navegación por rol (`USUARIO` / `MODERADOR`).
+- Flujo de autenticación (login, registro, recuperación).
+- Publicaciones con categorías, comentarios, favoritos y reportes.
+- Módulo de moderación y módulo de reportes para administración.
+- Regla no trivial de umbral de reportes aprobados.
+- Sistema de niveles e insignias en la experiencia de usuario.
+
+### Observaciones de alcance
+
+- Algunas capacidades del enunciado general pueden estar en desarrollo o con implementación local/mock (según módulos `data/*` y `seed` actuales).
+- Este README diferencia explícitamente el **alcance académico esperado** del **estado actual implementado** para evitar ambigüedades.
+
+## 7) Arquitectura y stack del proyecto
+
+- Módulo Android único: `:app`.
+- UI: Jetpack Compose + Material 3.
+- Navegación: Navigation Compose con rutas tipadas y Kotlin Serialization.
+- DI: Hilt (`@HiltAndroidApp`, `@AndroidEntryPoint`, `hiltViewModel()`).
+- Imágenes remotas: Coil 3.
+
+### Versiones relevantes
+
+- Kotlin `2.2.21`
+- AGP `9.0.1`
+- Compose BOM `2024.09.00`
+- Navigation Compose `2.9.6`
+- Hilt Android `2.59.2`
+- DataStore Preferences `1.2.0`
+- `compileSdk = 36` (minor API 1), `minSdk = 28`
+
+## 8) Estructura de carpetas (resumen)
 
 ```text
 trip-link/
 |- app/
 |  |- src/main/java/com/example/triplink/
-|  |  |- core/navigation/
-|  |  |- core/components/
-|  |  |- features/
-|  |  |- domain/model/
+|  |  |- core/
 |  |  |- data/
+|  |  |- domain/
+|  |  |- features/
 |- gradle/libs.versions.toml
 |- app/build.gradle.kts
 ```
 
-## Stack tecnico
+## 9) Ejecución y pruebas
 
-- Kotlin `2.2.21`
-- AGP `9.0.1`
-- Jetpack Compose BOM `2024.09.00`
-- Navigation Compose `2.9.6`
-- Kotlinx Serialization `1.9.0`
-- Hilt Android `2.59.2`
-- DataStore Preferences `1.2.0`
-- Coil 3 `3.3.0`
-- `compileSdk = 36` (minor API 1), `minSdk = 28`
-
-## Requisitos para ejecutar
-
-- Android Studio (version reciente)
-- SDK de Android con API 36 instalado
-- JDK 11
-
-## Comandos utiles
-
-Desde la raiz del proyecto:
+Desde la raíz del proyecto:
 
 ```bash
 ./gradlew :app:assembleDebug
@@ -121,13 +179,4 @@ En Windows:
 ./gradlew.bat :app:connectedDebugAndroidTest
 ```
 
-## Estado actual
-
-- El proyecto tiene navegacion y pantallas para flujo de usuario y moderacion.
-- Existen componentes y modelos para categorias, precios, reportes, niveles y roles.
-- Parte de la capa `data/domain` aun usa datos mock/seed para desarrollo.
-
----
-
-Si quieres, en un siguiente paso puedo convertir este README a una version mas "academica" (con alcance, historias de usuario, criterios de aceptacion y backlog de pendientes) para entrega de curso.
 
