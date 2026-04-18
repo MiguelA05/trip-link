@@ -36,7 +36,7 @@ import com.example.triplink.R
 import com.example.triplink.core.components.ApprovePublicationDialog
 import com.example.triplink.core.components.GeneralTopBar
 import com.example.triplink.core.components.RejectPublicationDialog
-import com.example.triplink.core.components.publicationdetails.hero.PublicationPreviewHero
+import com.example.triplink.core.components.publicationdetails.hero.ImageCarousel
 import com.example.triplink.core.components.publicationdetails.sections.PublicationLocationSection
 import com.example.triplink.core.components.publicationdetails.sections.PublicationPriceRangeSection
 import com.example.triplink.core.components.publicationdetails.sections.PublicationTextSection
@@ -105,10 +105,11 @@ fun ModerationPublicationDetailsScreen(
                 contentPadding = PaddingValues(bottom = 112.dp)
             ) {
                 item {
-                    PublicationPreviewHero(
-                        imageUrl = publication.pointOfInterest.fotos.firstOrNull().orEmpty(),
+                    ImageCarousel(
+                        imageUrls = publication.pointOfInterest.fotos,
+                        title = publication.pointOfInterest.titulo,
                         categoryLabel = publication.pointOfInterest.categoria.localizedLabel(),
-                        title = publication.pointOfInterest.titulo
+                        showReportAction = false
                     )
                 }
 

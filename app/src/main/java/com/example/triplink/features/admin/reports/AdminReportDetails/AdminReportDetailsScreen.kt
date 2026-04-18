@@ -48,6 +48,7 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
 import coil3.request.crossfade
+import com.example.triplink.core.components.publicationdetails.hero.ImageCarousel
 import com.example.triplink.R
 import com.example.triplink.core.components.ConfirmReportDialog
 import com.example.triplink.core.components.InvalidateReportDialog
@@ -117,24 +118,20 @@ fun AdminReportDetailsScreen(
             Spacer(modifier = Modifier.size(48.dp))
         }
 
-        if (report.imageUrl.isNotEmpty()) {
-            Box(
+        val fotos = report.pointOfInterest.fotos
+        if (fotos.any { it.isNotBlank() }) {
+            ImageCarousel(
+                imageUrls = fotos,
+                title = report.title,
+                categoryLabel = report.categoryLabel,
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(240.dp)
                     .padding(horizontal = 14.dp)
-                    .clip(RoundedCornerShape(24.dp))
-            ) {
-                AsyncImage(
-                    model = ImageRequest.Builder(LocalContext.current)
-                        .data(report.imageUrl)
-                        .crossfade(true)
-                        .build(),
-                    contentDescription = report.title,
-                    contentScale = ContentScale.Crop,
-                    modifier = Modifier.fillMaxSize()
-                )
-            }
+                    .clip(RoundedCornerShape(24.dp)),
+                showReportAction = false,
+                reportActionEnabled = false
+            )
         }
 
         Spacer(modifier = Modifier.height(16.dp))
