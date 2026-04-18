@@ -16,6 +16,9 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.ScaffoldDefaults
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
+import androidx.compose.ui.Alignment
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -61,14 +64,16 @@ fun UserHomeScreen(
         }
     }
 
-    Scaffold(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(contentPadding),
-        containerColor = MaterialTheme.colorScheme.background,
-        snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
-        contentWindowInsets = ScaffoldDefaults.contentWindowInsets,
-        topBar = {
+    Box(modifier = Modifier
+        .fillMaxSize()
+        .padding(contentPadding)) {
+
+        Scaffold(
+            modifier = Modifier
+                .fillMaxSize(),
+            containerColor = MaterialTheme.colorScheme.background,
+            contentWindowInsets = ScaffoldDefaults.contentWindowInsets,
+            topBar = {
             Column {
                 BrandHeader(
                     locationText = stringResource(R.string.feature_user_home_location),
@@ -89,7 +94,7 @@ fun UserHomeScreen(
                 )
             }
         }
-    ) { scaffoldPaddingValues ->
+        ) { scaffoldPaddingValues ->
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
@@ -108,5 +113,15 @@ fun UserHomeScreen(
                 )
             }
         }
+    }
+
+        // Colocamos el SnackbarHost después del Scaffold dentro del Box para que se muestre
+        // por encima del FAB y anclado al fondo (como si no existiera el FAB).
+        SnackbarHost(
+            hostState = snackbarHostState,
+            modifier = Modifier
+                .align(Alignment.BottomCenter)
+                .navigationBarsPadding()
+        )
     }
 }
