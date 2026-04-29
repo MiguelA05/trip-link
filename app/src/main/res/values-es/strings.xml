@@ -792,4 +792,14 @@
     <string name="badge_requirement_favorites">Recibe %1$d me gusta/favoritos en tus lugares.</string>
     <string name="badge_requirement_comments">Recibe %1$d comentarios en tus lugares.</string>
 
+    <!-- PERMISOS: Selector de imágenes -->
+    <string name="permissions_profile_image_description">Foto de perfil</string>
+    <string name="permissions_change_photo">Cambiar foto</string>
+    <string name="permissions_select_image">Seleccionar imagen</string>
+    <string name="permissions_take_photo">Tomar foto</string>
+    <string name="permissions_choose_from_gallery">Elegir de la galería</string>
+    <string name="permissions_cancel">Cancelar</string>
+    <string name="permissions_camera_permission_denied">Se requiere permiso de cámara para tomar fotos</string>
+    <string name="permissions_image_picker_title">Seleccionar imagen</string>
+
 </resources>

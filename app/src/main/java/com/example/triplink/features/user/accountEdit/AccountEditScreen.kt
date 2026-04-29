@@ -1,12 +1,14 @@
 package com.example.triplink.features.user.accountEdit
 
+import android.Manifest
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -19,6 +21,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -29,7 +32,10 @@ import com.example.triplink.core.components.FormField
 import com.example.triplink.core.components.DestructiveConfirmDialog
 import com.example.triplink.core.components.GeneralButton
 import com.example.triplink.core.components.GeneralTopBar
+import com.example.triplink.core.components.imagepicker.ImagePickerBottomSheet
+import com.example.triplink.core.components.imagepicker.ProfileImage
 import com.example.triplink.core.utils.RequestResult
+import com.example.triplink.core.utils.createTempImageUri
 import com.example.triplink.ui.theme.TextColors
 import com.example.triplink.ui.theme.TextTokens
 
@@ -41,10 +47,53 @@ fun AccountEditScreen(
     onChangePasswordClick: () -> Unit = {},
     onAppHomeClick: () -> Unit = {}
 ) {
+    val context = LocalContext.current
     val snackbarHostState = remember { SnackbarHostState() }
     val updateResult by accountEditViewModel.updateResult.collectAsState()
     val deleteResult by accountEditViewModel.deleteResult.collectAsState()
+    val photoUri by accountEditViewModel.photoUri.collectAsState()
     var showDeleteConfirmation by remember { mutableStateOf(false) }
+    var showBottomSheet by remember { mutableStateOf(false) }
+    var showCameraPermissionError by remember { mutableStateOf(false) }
+    var tempCameraUri by remember { mutableStateOf<android.net.Uri?>(null) }
+    val bottomSheetState = rememberModalBottomSheetState()
+
+    // Galería
+    val galleryLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.GetContent()
+    ) { uri: android.net.Uri? ->
+        uri?.let { accountEditViewModel.onPhotoUriChange(it) }
+        showBottomSheet = false
+    }
+
+    // Cámara
+    val cameraLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.TakePicture()
+    ) { success: Boolean ->
+        if (success) {
+            tempCameraUri?.let { accountEditViewModel.onPhotoUriChange(it) }
+        }
+        showBottomSheet = false
+    }
+
+    // Permiso de cámara
+    val cameraPermissionLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestPermission()
+    ) { isGranted: Boolean ->
+        if (isGranted) {
+            tempCameraUri = createTempImageUri(context)
+            tempCameraUri?.let { cameraLauncher.launch(it) }
+        } else {
+            showCameraPermissionError = true
+        }
+    }
+
+    LaunchedEffect(showCameraPermissionError) {
+        if (showCameraPermissionError) {
+            snackbarHostState.showSnackbar(context.getString(R.string.permissions_camera_permission_denied))
+            showCameraPermissionError = false
+        }
+    }
 
     LaunchedEffect(updateResult) {
         updateResult?.let { result ->
@@ -96,21 +145,12 @@ fun AccountEditScreen(
         ) {
             Spacer(modifier = Modifier.height(24.dp))
 
-            // User Avatar with Initials
-            Box(
-                modifier = Modifier
-                    .size(100.dp)
-                    .background(MaterialTheme.colorScheme.primaryContainer, CircleShape)
-                    .border(2.dp, MaterialTheme.colorScheme.outlineVariant, CircleShape),
-                contentAlignment = Alignment.Center
-            ) {
-                Text(
-                    text = accountEditViewModel.getUserInitials(),
-                    style = TextTokens.screenTitle(),
-                    color = MaterialTheme.colorScheme.onPrimaryContainer,
-                    textAlign = TextAlign.Center
-                )
-            }
+            // User Avatar - Profileimage con soporte para cambio de foto
+            ProfileImage(
+                photoUri = photoUri,
+                isEditMode = true,
+                onEditClick = { showBottomSheet = true }
+            )
 
             Spacer(modifier = Modifier.height(28.dp))
 
@@ -381,6 +421,26 @@ fun AccountEditScreen(
                 accountEditViewModel.deleteAccount()
             }
         )
+    }
+
+    // Image Picker Bottom Sheet
+    if (showBottomSheet) {
+        ModalBottomSheet(
+            onDismissRequest = { showBottomSheet = false },
+            sheetState = bottomSheetState
+        ) {
+            ImagePickerBottomSheet(
+                onCameraClick = {
+                    showBottomSheet = false
+                    cameraPermissionLauncher.launch(Manifest.permission.CAMERA)
+                },
+                onGalleryClick = {
+                    showBottomSheet = false
+                    galleryLauncher.launch("image/*")
+                },
+                onDismiss = { showBottomSheet = false }
+            )
+        }
     }
 }
 

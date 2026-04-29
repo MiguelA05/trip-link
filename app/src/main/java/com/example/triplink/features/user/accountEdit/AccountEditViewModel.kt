@@ -1,6 +1,7 @@
 package com.example.triplink.features.user.accountEdit
 
 import android.content.Context
+import android.net.Uri
 import android.util.Patterns
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
@@ -75,6 +76,10 @@ class AccountEditViewModel @Inject constructor(
 
     private val _deleteResult = MutableStateFlow<RequestResult?>(null)
     val deleteResult: StateFlow<RequestResult?> = _deleteResult.asStateFlow()
+
+    // Foto de Perfil
+    private val _photoUri = MutableStateFlow<Uri?>(null)
+    val photoUri: StateFlow<Uri?> = _photoUri.asStateFlow()
 
     val isFormValid by derivedStateOf {
         validateFullName(fullName) == null &&
@@ -328,5 +333,13 @@ class AccountEditViewModel @Inject constructor(
             ?: appContext.getString(R.string.vm_account_edit_default_initial_one)) +
                 (names.getOrNull(1)?.firstOrNull()?.uppercaseChar()?.toString()
                     ?: appContext.getString(R.string.vm_account_edit_default_initial_two))
+    }
+
+    fun onPhotoUriChange(newUri: Uri?) {
+        _photoUri.value = newUri
+    }
+
+    fun clearPhotoUri() {
+        _photoUri.value = null
     }
 }

@@ -791,4 +791,14 @@
     <string name="badge_requirement_favorites">Receive %1$d likes/favorites on your places.</string>
     <string name="badge_requirement_comments">Receive %1$d comments on your places.</string>
 
+    <!-- PERMISSIONS: Image Picker -->
+    <string name="permissions_profile_image_description">Profile photo</string>
+    <string name="permissions_change_photo">Change photo</string>
+    <string name="permissions_select_image">Select image</string>
+    <string name="permissions_take_photo">Take photo</string>
+    <string name="permissions_choose_from_gallery">Choose from gallery</string>
+    <string name="permissions_cancel">Cancel</string>
+    <string name="permissions_camera_permission_denied">Camera permission is required to take photos</string>
+    <string name="permissions_image_picker_title">Select image</string>
+
 </resources>
