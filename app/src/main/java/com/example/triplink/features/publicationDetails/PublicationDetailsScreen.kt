@@ -257,7 +257,9 @@ fun PublicationDetailsScreen(
             item {
                 PublicationLocationSection(
                     city = publication.ubicacion.ciudad,
-                    coordinates = "${publication.ubicacion.latitud}, ${publication.ubicacion.longitud}"
+                    coordinates = "${publication.ubicacion.latitud}, ${publication.ubicacion.longitud}",
+                    latitude = publication.ubicacion.latitud,
+                    longitude = publication.ubicacion.longitud
                 )
             }
             item {

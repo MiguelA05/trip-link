@@ -1,3 +1,5 @@
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlinAndroid)
@@ -6,6 +8,33 @@ plugins {
     alias(libs.plugins.hiltAndroid)
     alias(libs.plugins.ksp)
 
+}
+
+// Read Mapbox token from local.properties, environment variable, or directly from file
+val mapboxToken: String = try {
+    // First try environment variable
+    val envToken = System.getenv("MAPBOX_ACCESS_TOKEN")
+    if (envToken != null && envToken.isNotEmpty()) {
+        envToken
+    } else {
+        // Then try gradle property
+        val gradleToken = project.findProperty("MAPBOX_ACCESS_TOKEN")?.toString()
+        if (gradleToken != null && gradleToken.isNotEmpty()) {
+            gradleToken
+        } else {
+            // Finally try reading from local.properties file directly
+            val localPropsFile = File(rootProject.projectDir, "local.properties")
+            if (localPropsFile.exists()) {
+                val props = Properties()
+                props.load(localPropsFile.inputStream())
+                props.getProperty("MAPBOX_ACCESS_TOKEN", "")
+            } else {
+                ""
+            }
+        }
+    }
+} catch (e: Exception) {
+    ""
 }
 
 android {
@@ -22,6 +51,9 @@ android {
         targetSdk = 36
         versionCode = 1
         versionName = "1.0"
+        // Expose Mapbox token to the app via BuildConfig. Set MAPBOX_ACCESS_TOKEN in local.properties or environment.
+        buildConfigField("String", "MAPBOX_ACCESS_TOKEN", "\"${mapboxToken ?: ""}\"")
+        resValue("string", "mapbox_access_token", mapboxToken ?: "")
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -41,6 +73,8 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
+        resValues = true
     }
 
     kotlinOptions {
@@ -74,5 +108,8 @@ dependencies {
     ksp(libs.hiltCompiler)
     implementation(libs.androidxHiltNavigationCompose)
     implementation(libs.data.store)
+    // Mapbox SDK
+    implementation(libs.mapsAndroid)
+    implementation(libs.mapsCompose)
 
 }

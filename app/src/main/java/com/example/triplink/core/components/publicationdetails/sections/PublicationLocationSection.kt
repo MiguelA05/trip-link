@@ -25,11 +25,16 @@ import androidx.compose.ui.res.stringResource
 import com.example.triplink.R
 import com.example.triplink.ui.theme.TextColors
 import com.example.triplink.ui.theme.TextTokens
+import com.example.triplink.core.components.map.MapBox
+import com.example.triplink.core.components.map.MapMarker
 
 @Composable
 fun PublicationLocationSection(
     city: String,
     coordinates: String,
+    latitude: Double? = null,
+    longitude: Double? = null,
+    onMapClick: ((Double, Double) -> Unit)? = null,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -50,41 +55,56 @@ fun PublicationLocationSection(
             color = MaterialTheme.colorScheme.surfaceVariant,
             border = androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant)
         ) {
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(220.dp),
-                contentAlignment = Alignment.Center
-            ) {
-                Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    Surface(
-                        shape = CircleShape,
-                        color = MaterialTheme.colorScheme.surface,
-                        shadowElevation = 4.dp,
-                        modifier = Modifier.size(68.dp)
-                    ) {
-                        Box(contentAlignment = Alignment.Center) {
-                            Icon(
-                                imageVector = Icons.Default.Map,
-                                contentDescription = null,
-                                tint = MaterialTheme.colorScheme.primary,
-                                modifier = Modifier.size(32.dp)
-                            )
-                        }
+            if (latitude != null && longitude != null) {
+                // Show a small MapBox instance centered on the publication location
+                MapBox(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(220.dp),
+                    markers = listOf(MapMarker(id = "pub_loc", latitude = latitude, longitude = longitude)),
+                    showMyLocationButton = false,
+                    activateClick = false,
+                    onMapClickListener = { lon, lat ->
+                        onMapClick?.invoke(lon, lat)
                     }
+                )
+            } else {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(220.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                        Surface(
+                            shape = CircleShape,
+                            color = MaterialTheme.colorScheme.surface,
+                            shadowElevation = 4.dp,
+                            modifier = Modifier.size(68.dp)
+                        ) {
+                            Box(contentAlignment = Alignment.Center) {
+                                Icon(
+                                    imageVector = Icons.Default.Map,
+                                    contentDescription = null,
+                                    tint = MaterialTheme.colorScheme.primary,
+                                    modifier = Modifier.size(32.dp)
+                                )
+                            }
+                        }
 
-                    Spacer(modifier = Modifier.height(12.dp))
+                        Spacer(modifier = Modifier.height(12.dp))
 
-                    Text(
-                        text = city,
-                        style = TextTokens.emphasized(TextTokens.title(), FontWeight.Bold),
-                        color = TextColors.Primary
-                    )
-                    Text(
-                        text = coordinates,
-                        style = TextTokens.bodySecondary(),
-                        color = TextColors.Secondary
-                    )
+                        Text(
+                            text = city,
+                            style = TextTokens.emphasized(TextTokens.title(), FontWeight.Bold),
+                            color = TextColors.Primary
+                        )
+                        Text(
+                            text = coordinates,
+                            style = TextTokens.bodySecondary(),
+                            color = TextColors.Secondary
+                        )
+                    }
                 }
             }
         }

@@ -1,6 +1,6 @@
 package com.example.triplink.features.user.exploreMap
 
-import androidx.compose.foundation.Canvas
+// ...existing code...
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.navigationBarsPadding
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
@@ -44,10 +43,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.PathEffect
-import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.IntOffset
-import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.example.triplink.R
@@ -60,7 +56,9 @@ import com.example.triplink.domain.model.enums.RangoPrecios
 import com.example.triplink.domain.model.enums.UbicacionFiltro
 import com.example.triplink.ui.theme.TextColors
 import com.example.triplink.ui.theme.TextTokens
-import kotlin.math.roundToInt
+import com.example.triplink.core.components.map.MapBox
+import com.example.triplink.core.components.map.MapMarker as MapCompMarker
+// ...existing code...
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -78,7 +76,7 @@ fun ExploreMapScreen(
 	)
 	val scaffoldState = rememberBottomSheetScaffoldState(bottomSheetState = sheetState)
 	val coroutineScope = rememberCoroutineScope()
-	var mapSize by remember { mutableStateOf(IntSize.Zero) }
+	// mapSize no longer needed; MapBox renders markers natively
 	val appliedFilters by viewModel.appliedFilters.collectAsState()
 	val selectedPublication by viewModel.selectedPublication.collectAsState()
 	val markers by viewModel.markers.collectAsState()
@@ -218,7 +216,17 @@ fun ExploreMapScreen(
 						coroutineScope.launch { sheetState.partialExpand() }
 					}
 			) {
-				MapPlaceholderLayer(modifier = Modifier.fillMaxSize())
+				// MapBox composable as the map layer
+				MapBox(
+					modifier = Modifier.fillMaxSize(),
+					markers = markers.map { MapCompMarker(id = it.id, latitude = it.latitude, longitude = it.longitude) },
+					showMyLocationButton = true,
+					activateClick = false,
+					onMarkerClick = { markerId ->
+						viewModel.onMarkerSelected(markerId)
+						coroutineScope.launch { sheetState.partialExpand() }
+					}
+				)
 			}
 
 			Column(
@@ -241,148 +249,10 @@ fun ExploreMapScreen(
 			)
 			}
 
-			Box(
-				modifier = Modifier
-					.fillMaxSize()
-					.onSizeChanged { newSize -> mapSize = newSize }
-			) {
-				markers.forEach { marker ->
-					MarkerPin(
-						marker = marker,
-						onClick = {
-							viewModel.onMarkerSelected(marker.id)
-							coroutineScope.launch { sheetState.partialExpand() }
-						},
-						modifier = Modifier
-							.offset {
-								IntOffset(
-									x = (mapSize.width * marker.xFraction).roundToInt() - 24.dp.roundToPx(),
-									y = (mapSize.height * marker.yFraction).roundToInt() - 54.dp.roundToPx()
-								)
-							}
-					)
-				}
-			}
+			// Marker pins are rendered by MapBox annotation manager; keep existing MarkerPin UI removed
 
 		}
 	}
 }
 
-@Composable
-private fun MarkerPin(
-	marker: MapMarkerUi,
-	onClick: () -> Unit,
-	modifier: Modifier = Modifier
-) {
-	Column(
-		modifier = modifier,
-		horizontalAlignment = Alignment.CenterHorizontally,
-		verticalArrangement = Arrangement.spacedBy(4.dp)
-	) {
-		Surface(
-			shape = RoundedCornerShape(999.dp),
-			color = MaterialTheme.colorScheme.surface,
-			tonalElevation = 2.dp,
-			onClick = onClick
-		) {
-			Row(
-				modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
-				verticalAlignment = Alignment.CenterVertically,
-				horizontalArrangement = Arrangement.spacedBy(2.dp)
-			) {
-                if (marker.ratingLabel.equals("0.0")) {
-                    Text(
-                        text = stringResource(R.string.feature_explore_map_publication_rating_no_reviews),
-                        style = TextTokens.body(),
-                        color = TextColors.Primary
-                    )
-                } else {
-                    Icon(
-                        imageVector = Icons.Outlined.Star,
-                        contentDescription = null,
-                        tint = MaterialTheme.colorScheme.tertiary,
-                        modifier = Modifier.size(13.dp)
-                    )
-                    Text(
-                        text = marker.ratingLabel,
-                        style = TextTokens.body(),
-                        color = TextColors.Primary
-                    )
-                }
-			}
-		}
-
-		Surface(
-			modifier = Modifier.size(if (marker.highlighted) 54.dp else 46.dp),
-			shape = CircleShape,
-			color = if (marker.highlighted) MaterialTheme.colorScheme.secondary else MaterialTheme.colorScheme.primary,
-			onClick = onClick,
-			shadowElevation = 6.dp
-		) {
-			Box(contentAlignment = Alignment.Center) {
-				Icon(
-					imageVector = if (marker.highlighted) Icons.Outlined.Eco else Icons.Outlined.LocationOn,
-					contentDescription = null,
-					tint = if (marker.highlighted) MaterialTheme.colorScheme.onSecondary else MaterialTheme.colorScheme.onPrimary,
-					modifier = Modifier.size(24.dp)
-				)
-			}
-		}
-	}
-}
-
-@Composable
-private fun MapPlaceholderLayer(modifier: Modifier = Modifier) {
-	val mapBackground = MaterialTheme.colorScheme.surfaceVariant
-	val roadColor = MaterialTheme.colorScheme.surface
-	val parkColor = MaterialTheme.colorScheme.secondaryContainer
-	val riverColor = MaterialTheme.colorScheme.primaryContainer
-
-	Canvas(modifier = modifier) {
-		drawRect(mapBackground)
-
-		val pathEffect = PathEffect.cornerPathEffect(20f)
-
-		for (index in 0..8) {
-			val y = size.height * (index / 8f)
-			drawLine(
-				color = roadColor,
-				start = Offset(0f, y),
-				end = Offset(size.width, y + 32f),
-				strokeWidth = if (index % 3 == 0) 28f else 16f,
-				pathEffect = pathEffect
-			)
-		}
-
-		for (index in 0..6) {
-			val x = size.width * (index / 6f)
-			drawLine(
-				color = roadColor,
-				start = Offset(x, 0f),
-				end = Offset(x - 48f, size.height),
-				strokeWidth = if (index % 2 == 0) 22f else 14f,
-				pathEffect = pathEffect
-			)
-		}
-
-		drawRoundRect(
-			color = parkColor,
-			topLeft = Offset(size.width * 0.07f, size.height * 0.18f),
-			size = androidx.compose.ui.geometry.Size(size.width * 0.16f, size.height * 0.10f),
-			cornerRadius = CornerRadius(32f, 32f)
-		)
-		drawRoundRect(
-			color = parkColor,
-			topLeft = Offset(size.width * 0.72f, size.height * 0.42f),
-			size = androidx.compose.ui.geometry.Size(size.width * 0.2f, size.height * 0.12f),
-			cornerRadius = CornerRadius(32f, 32f)
-		)
-
-		drawRoundRect(
-			color = riverColor,
-			topLeft = Offset(size.width * 0.42f, size.height * 0.04f),
-			size = androidx.compose.ui.geometry.Size(size.width * 0.18f, size.height * 0.72f),
-			cornerRadius = CornerRadius(100f, 100f)
-		)
-	}
-}
+// MarkerPin and MapPlaceholderLayer removed — MapBox renders markers and map tiles now.

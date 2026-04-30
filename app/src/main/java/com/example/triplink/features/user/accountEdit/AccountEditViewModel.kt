@@ -64,6 +64,8 @@ class AccountEditViewModel @Inject constructor(
     var addressError by mutableStateOf<String?>(null)
 
     var addExactLocation by mutableStateOf(false)
+    var selectedLatitude by mutableStateOf<Double?>(null)
+    var selectedLongitude by mutableStateOf<Double?>(null)
 
     // Datos de Acceso
     var email by mutableStateOf(appContext.getString(R.string.vm_account_edit_default_email))
@@ -267,8 +269,15 @@ class AccountEditViewModel @Inject constructor(
                                 it.departamento
                             },
                             ubicacionExactaActiva = current.addExactLocation,
-                            ubicacion = it.ubicacion?.copy(ciudad = mergedCity)
-                                ?: Ubicacion(latitud = 0.0, longitud = 0.0, ciudad = mergedCity)
+                            ubicacion = it.ubicacion?.copy(
+                                latitud = selectedLatitude ?: it.ubicacion?.latitud ?: 0.0,
+                                longitud = selectedLongitude ?: it.ubicacion?.longitud ?: 0.0,
+                                ciudad = mergedCity
+                            ) ?: Ubicacion(
+                                latitud = selectedLatitude ?: 0.0,
+                                longitud = selectedLongitude ?: 0.0,
+                                ciudad = mergedCity
+                            )
                         )
                         val wasUpdated = userProfileRepository.updateUser(updatedUser)
                         _updateResult.value = if (wasUpdated) {
@@ -341,5 +350,12 @@ class AccountEditViewModel @Inject constructor(
 
     fun clearPhotoUri() {
         _photoUri.value = null
+    }
+
+    fun onLocationSelected(longitude: Double, latitude: Double) {
+        selectedLongitude = longitude
+        selectedLatitude = latitude
+        // enable exact location flag when user picks a point
+        addExactLocation = true
     }
 }

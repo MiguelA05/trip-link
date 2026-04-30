@@ -14,6 +14,8 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.compose.ui.res.stringResource
 import com.example.triplink.R
 import com.example.triplink.core.components.GeneralTopBar
+import com.example.triplink.core.components.common.AppliedFiltersChips
+import com.example.triplink.core.components.common.AppliedFilterChipUi
 import com.example.triplink.core.localization.localizedLabel
 import com.example.triplink.domain.model.enums.Categoria
 import com.example.triplink.domain.model.enums.RangoPrecios
@@ -62,6 +64,51 @@ fun FiltersScreen(
             verticalArrangement = Arrangement.spacedBy(24.dp)
         ) {
             item { Spacer(modifier = Modifier.height(8.dp)) }
+
+            // Applied filters chips - show currently selected filters and allow removing individual ones
+            item {
+                val chips = mutableListOf<AppliedFilterChipUi>()
+
+                // Categories
+                viewModel.selectedCategories.forEach { cat ->
+                    chips.add(
+                        AppliedFilterChipUi(
+                            key = "cat_${cat.name}",
+                            label = cat.localizedLabel(),
+                            onRemove = { viewModel.toggleCategory(cat) }
+                        )
+                    )
+                }
+
+                // Locations
+                viewModel.selectedLocations.forEach { loc ->
+                    val label = when (loc) {
+                        UbicacionFiltro.CERCANOS -> stringResource(R.string.vm_filters_location_nearby)
+                        UbicacionFiltro.CIUDAD -> stringResource(R.string.vm_filters_location_city)
+                        UbicacionFiltro.DEPARTAMENTO -> stringResource(R.string.vm_filters_location_department)
+                        UbicacionFiltro.PAIS -> stringResource(R.string.vm_filters_location_country)
+                    }
+                    chips.add(AppliedFilterChipUi(key = "loc_${loc.name}", label = label, onRemove = { viewModel.toggleLocation(loc) }))
+                }
+
+                // Prices
+                viewModel.selectedPrices.forEach { price ->
+                    val label = when (price) {
+                        RangoPrecios.GRATUITO -> stringResource(R.string.component_publication_price_range_free)
+                        RangoPrecios.ECONOMICO -> stringResource(R.string.component_publication_price_range_economic)
+                        RangoPrecios.MODERADO -> stringResource(R.string.component_publication_price_range_moderate)
+                        RangoPrecios.COSTOSO -> stringResource(R.string.component_publication_price_range_expensive)
+                    }
+                    chips.add(AppliedFilterChipUi(key = "price_${price.name}", label = label, onRemove = { viewModel.togglePrice(price) }))
+                }
+
+                // Ratings
+                viewModel.selectedRatings.forEach { rating ->
+                    chips.add(AppliedFilterChipUi(key = "rating_$rating", label = "${rating}★", onRemove = { viewModel.toggleRating(rating) }))
+                }
+
+                AppliedFiltersChips(chips = chips)
+            }
 
             item {
                 FilterSection(

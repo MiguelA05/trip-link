@@ -4,6 +4,9 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.CAMERA" />
+    <!-- Location permissions required by Map SDK -->
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
     <application
         android:name=".TripLinkApp"
@@ -15,6 +18,11 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Descubreuq">
+
+        <!-- Mapbox Access Token (required for Mapbox SDK v11+) -->
+        <meta-data
+            android:name="com.mapbox.sdk.AccessToken"
+            android:value="@string/mapbox_access_token" />
         <activity
             android:name=".MainActivity"
             android:exported="true"

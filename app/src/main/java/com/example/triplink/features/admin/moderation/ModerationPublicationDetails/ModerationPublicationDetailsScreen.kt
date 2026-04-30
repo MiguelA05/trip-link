@@ -127,10 +127,12 @@ fun ModerationPublicationDetailsScreen(
                 }
 
                 item {
-                    PublicationLocationSection(
-                        city = publication.pointOfInterest.ubicacion.ciudad,
-                        coordinates = "${publication.pointOfInterest.ubicacion.latitud}, ${publication.pointOfInterest.ubicacion.longitud}"
-                    )
+                        PublicationLocationSection(
+                            city = publication.pointOfInterest.ubicacion.ciudad,
+                            coordinates = "${publication.pointOfInterest.ubicacion.latitud}, ${publication.pointOfInterest.ubicacion.longitud}",
+                            latitude = publication.pointOfInterest.ubicacion.latitud,
+                            longitude = publication.pointOfInterest.ubicacion.longitud
+                        )
                 }
 
                 item {

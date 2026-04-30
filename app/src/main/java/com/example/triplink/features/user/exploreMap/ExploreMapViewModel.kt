@@ -23,8 +23,8 @@ import javax.inject.Inject
 
 data class MapMarkerUi(
     val id: String,
-    val xFraction: Float,
-    val yFraction: Float,
+    val latitude: Double,
+    val longitude: Double,
     val ratingLabel: String,
     val highlighted: Boolean = false
 )
@@ -82,13 +82,11 @@ class ExploreMapViewModel @Inject constructor(
         filteredPublications,
         _selectedPublicationId
     ) { filtered, selectedId ->
-        filtered.mapIndexed { index, publication ->
-            val x = 0.18f + ((index % 3) * 0.26f)
-            val y = 0.28f + ((index / 3) * 0.22f)
+        filtered.map { publication ->
             MapMarkerUi(
                 id = publication.id,
-                xFraction = x.coerceIn(0.12f, 0.86f),
-                yFraction = y.coerceIn(0.20f, 0.78f),
+                latitude = publication.ubicacion.latitud,
+                longitude = publication.ubicacion.longitud,
                 ratingLabel = averageRatingLabelFor(publication),
                 highlighted = publication.id == selectedId
             )

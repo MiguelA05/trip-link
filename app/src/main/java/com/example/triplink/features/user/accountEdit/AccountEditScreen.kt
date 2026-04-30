@@ -238,31 +238,24 @@ fun AccountEditScreen(
 
                 if (accountEditViewModel.addExactLocation) {
                     Spacer(modifier = Modifier.height(12.dp))
-                    Box(
+                    // Small MapBox to pick exact location. Clicking on map will set coordinates in ViewModel.
+                    com.example.triplink.core.components.map.MapBox(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .height(150.dp)
-                            .background(MaterialTheme.colorScheme.surfaceVariant, RoundedCornerShape(12.dp))
-                            .border(1.dp, MaterialTheme.colorScheme.outlineVariant, RoundedCornerShape(12.dp)),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Column(
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                            verticalArrangement = Arrangement.Center
-                        ) {
-                            Icon(
-                                imageVector = Icons.Default.LocationOn,
-                                contentDescription = stringResource(R.string.feature_account_edit_map_placeholder_content_description),
-                                tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                                modifier = Modifier.size(48.dp)
-                            )
-                            Spacer(modifier = Modifier.height(8.dp))
-                            Text(
-                                text = stringResource(R.string.feature_account_edit_map_placeholder_label),
-                                color = MaterialTheme.colorScheme.onSurfaceVariant
-                            )
+                            .height(150.dp),
+                        markers = listOfNotNull(
+                            accountEditViewModel.selectedLatitude?.let { lat ->
+                                accountEditViewModel.selectedLongitude?.let { lon ->
+                                    com.example.triplink.core.components.map.MapMarker(id = "selected", latitude = lat, longitude = lon)
+                                }
+                            }
+                        ),
+                        showMyLocationButton = false,
+                        activateClick = true,
+                        onMapClickListener = { lon, lat ->
+                            accountEditViewModel.onLocationSelected(lon, lat)
                         }
-                    }
+                    )
                 }
             }
 
