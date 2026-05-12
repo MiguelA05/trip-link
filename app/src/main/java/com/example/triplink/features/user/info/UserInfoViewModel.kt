@@ -13,9 +13,9 @@ import com.example.triplink.data.datastore.SessionDataStore
 import com.example.triplink.domain.model.InsigniaIconKey
 import com.example.triplink.domain.model.PuntoInteres
 import com.example.triplink.domain.model.enums.EstadoPublicacion
-import com.example.triplink.domain.repository.badge.BadgeRepository
-import com.example.triplink.domain.repository.favorite.FavoriteRepository
-import com.example.triplink.domain.repository.publication.PublicationRepository
+import com.example.triplink.domain.repository.user.BadgeRepository
+import com.example.triplink.domain.repository.user.FavoriteRepository
+import com.example.triplink.domain.repository.user.PublicationRepository
 import com.example.triplink.domain.repository.user.UserProfileRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -160,33 +160,37 @@ class UserInfoViewModel @Inject constructor(
 	}
 
 	private fun refreshSelectedContributions() {
-		val userId = currentUserId ?: return
-		val allUserPublications = publicationRepository.getUserPublications(userId)
+		try {
+			val userId = currentUserId ?: return
+			val allUserPublications = publicationRepository.getUserPublications(userId)
 
-		val favorites = favoriteRepository.getFavoritePublications(userId)
+			val favorites = favoriteRepository.getFavoritePublications(userId)
 
-		val filtered = if (_uiState.value.selectedContributionIndex == 0) {
-			// Favorites: show publications the user marked as favorite
-			favorites.map { it.toContributionItem() }
-		} else {
-			val targetEstado = when (_uiState.value.selectedContributionIndex) {
-				1 -> EstadoPublicacion.VERIFICADA
-				2 -> EstadoPublicacion.PENDIENTE
-				3 -> EstadoPublicacion.RECHAZADA
-				else -> EstadoPublicacion.PENDIENTE
+			val filtered = if (_uiState.value.selectedContributionIndex == 0) {
+				// Favorites: show publications the user marked as favorite
+				favorites.map { it.toContributionItem() }
+			} else {
+				val targetEstado = when (_uiState.value.selectedContributionIndex) {
+					1 -> EstadoPublicacion.VERIFICADA
+					2 -> EstadoPublicacion.PENDIENTE
+					3 -> EstadoPublicacion.RECHAZADA
+					else -> EstadoPublicacion.PENDIENTE
+				}
+				allUserPublications
+					.filter { it.estado == targetEstado }
+					.map { it.toContributionItem() }
 			}
-			allUserPublications
-				.filter { it.estado == targetEstado }
-				.map { it.toContributionItem() }
-		}
 
-		_uiState.value = _uiState.value.copy(
-			selectedContributionItems = filtered,
-			favoritesCount = favorites.size,
-			verifiedCount = allUserPublications.count { it.estado == EstadoPublicacion.VERIFICADA },
-			pendingCount = allUserPublications.count { it.estado == EstadoPublicacion.PENDIENTE },
-			rejectedCount = allUserPublications.count { it.estado == EstadoPublicacion.RECHAZADA }
-		)
+			_uiState.value = _uiState.value.copy(
+				selectedContributionItems = filtered,
+				favoritesCount = favorites.size,
+				verifiedCount = allUserPublications.count { it.estado == EstadoPublicacion.VERIFICADA },
+				pendingCount = allUserPublications.count { it.estado == EstadoPublicacion.PENDIENTE },
+				rejectedCount = allUserPublications.count { it.estado == EstadoPublicacion.RECHAZADA }
+			)
+		} catch (e: Exception) {
+			e.printStackTrace()
+		}
 	}
 
 	private fun PuntoInteres.toContributionItem(): UserContributionItem = UserContributionItem(

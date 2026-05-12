@@ -34,6 +34,7 @@ import com.example.triplink.core.components.GeneralButton
 import com.example.triplink.core.components.GeneralTopBar
 import com.example.triplink.core.components.imagepicker.ImagePickerBottomSheet
 import com.example.triplink.core.components.imagepicker.ProfileImage
+import com.example.triplink.core.components.map.LocationPickerMapField
 import com.example.triplink.core.utils.RequestResult
 import com.example.triplink.core.utils.createTempImageUri
 import com.example.triplink.ui.theme.TextColors
@@ -238,23 +239,11 @@ fun AccountEditScreen(
 
                 if (accountEditViewModel.addExactLocation) {
                     Spacer(modifier = Modifier.height(12.dp))
-                    // Small MapBox to pick exact location. Clicking on map will set coordinates in ViewModel.
-                    com.example.triplink.core.components.map.MapBox(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(150.dp),
-                        markers = listOfNotNull(
-                            accountEditViewModel.selectedLatitude?.let { lat ->
-                                accountEditViewModel.selectedLongitude?.let { lon ->
-                                    com.example.triplink.core.components.map.MapMarker(id = "selected", latitude = lat, longitude = lon)
-                                }
-                            }
-                        ),
+                    LocationPickerMapField(
+                        currentLatitude = accountEditViewModel.selectedLatitude,
+                        currentLongitude = accountEditViewModel.selectedLongitude,
                         showMyLocationButton = false,
-                        activateClick = true,
-                        onMapClickListener = { lon, lat ->
-                            accountEditViewModel.onLocationSelected(lon, lat)
-                        }
+                        onLocationConfirmed = accountEditViewModel::onLocationSelected
                     )
                 }
             }

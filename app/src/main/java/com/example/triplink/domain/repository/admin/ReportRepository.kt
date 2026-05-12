@@ -8,10 +8,10 @@ interface ReportRepository {
     val pendingReportsCount: Int
     val reportCases: StateFlow<List<AdminReportCase>>
 
-    fun hasUserReportedPublication(userId: String, publicationId: String): Boolean
-    fun submitReport(report: Reporte): Boolean
-    fun getReportById(reportId: String): AdminReportCase?
-    fun confirmReport(reportId: String)
-    fun invalidateReport(reportId: String)
+    suspend fun hasUserReportedPublication(userId: String, publicationId: String): Boolean
+    suspend fun submitReport(report: Reporte): Boolean
+    suspend fun getReportById(reportId: String): AdminReportCase?
+    suspend fun confirmReport(reportId: String)
+    suspend fun invalidateReport(reportId: String)
 }
 

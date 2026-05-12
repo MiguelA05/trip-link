@@ -12,7 +12,7 @@ import com.example.triplink.core.utils.RequestResult
 import com.example.triplink.core.utils.ValidatedField
 import com.example.triplink.R
 import com.example.triplink.data.datastore.SessionDataStore
-import com.example.triplink.domain.repository.auth.AuthRepository
+import com.example.triplink.domain.repository.user.AuthRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -86,21 +86,21 @@ class LoginViewModel @Inject constructor(
             return
         }
 
-        val authenticatedUser = authRepository.login(email.value, password.value)
-        if (authenticatedUser == null) {
-            _loginResult.value = RequestResult.Failure(appContext.getString(R.string.vm_login_invalid_credentials))
-            return
-        }
-
         viewModelScope.launch {
-            runCatching {
+            try {
+                val authenticatedUser = authRepository.login(email.value, password.value)
+                if (authenticatedUser == null) {
+                    _loginResult.value = RequestResult.Failure(appContext.getString(R.string.vm_login_invalid_credentials))
+                    return@launch
+                }
+
                 sessionDataStore.saveSession(
                     userId = authenticatedUser.email, // Email se usa como identificador único del usuario
                     role = authenticatedUser.rol
                 )
-            }.onSuccess {
+
                 _loginResult.value = RequestResult.Success(appContext.getString(R.string.vm_login_success))
-            }.onFailure {
+            } catch (e: Exception) {
                 _loginResult.value = RequestResult.Failure(appContext.getString(R.string.vm_login_unexpected_error))
             }
         }

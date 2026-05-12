@@ -672,6 +672,16 @@
     <string name="vm_post_creation_required_fields">Please complete all required fields</string>
     <string name="vm_post_creation_session_expired">Session expired</string>
     <string name="vm_post_creation_invalid_category">The selected category is not valid</string>
+    <string name="vm_post_creation_location_selected_format">Selected location: %1$.5f, %2$.5f</string>
+    <string name="vm_post_creation_location_not_selected">No exact location selected yet</string>
+    <string name="vm_post_creation_location_fallback_city">Selected location</string>
+
+    <string name="component_map_location_coordinates_format">Selected coordinates: %1$.5f, %2$.5f</string>
+    <string name="component_map_location_not_selected">Tap on the map to select an exact location</string>
+    <string name="component_map_location_confirm_title">Confirm location</string>
+    <string name="component_map_location_confirm_message">Do you want to assign this location?\nLatitude: %1$.5f\nLongitude: %2$.5f</string>
+    <string name="component_map_location_confirm_action">Use this location</string>
+    <string name="component_map_location_cancel_action">Cancel</string>
     <string name="vm_post_creation_resubmitted_success">New publication sent with corrections</string>
     <string name="vm_post_creation_success">Publication created successfully</string>
     <string name="vm_post_creation_create_failed">Could not create the publication</string>

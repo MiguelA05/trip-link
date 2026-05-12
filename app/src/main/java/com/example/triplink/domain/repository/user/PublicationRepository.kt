@@ -1,4 +1,4 @@
-package com.example.triplink.domain.repository.publication
+package com.example.triplink.domain.repository.user
 
 import com.example.triplink.domain.model.PuntoInteres
 import com.example.triplink.domain.model.enums.EstadoPublicacion
@@ -10,10 +10,9 @@ interface PublicationRepository {
     fun homePublications(): List<PuntoInteres>
     fun explorePublications(): List<PuntoInteres>
     fun getPublicationById(publicationId: String): PuntoInteres?
-    fun savePuntoInteres(publication: PuntoInteres): Boolean
-    fun updatePuntoInteres(publication: PuntoInteres): Boolean
-    fun deletePublicationById(publicationId: String): Boolean
+    suspend fun savePuntoInteres(publication: PuntoInteres): Boolean
+    suspend fun updatePuntoInteres(publication: PuntoInteres): Boolean
+    suspend fun deletePublicationById(publicationId: String): Boolean
     fun getUserPublications(userId: String): List<PuntoInteres>
     fun getPublicationsByState(estado: EstadoPublicacion): List<PuntoInteres>
 }
-

@@ -1,12 +1,12 @@
-package com.example.triplink.data.repository.user
+package com.example.triplink.data.repository.remote.user
 
 import com.example.triplink.data.seed.seedBadges
 import com.example.triplink.domain.model.Insignia
 import com.example.triplink.domain.model.UserInsigniaProgress
 import com.example.triplink.domain.model.enums.EstadoPublicacion
 import com.example.triplink.domain.model.enums.Nivel
-import com.example.triplink.domain.repository.badge.BadgeRepository
-import com.example.triplink.domain.repository.badge.BadgeSyncResult
+import com.example.triplink.domain.repository.user.BadgeRepository
+import com.example.triplink.domain.repository.user.BadgeSyncResult
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -19,7 +19,7 @@ class BadgeRepositoryImpl @Inject constructor(
 
     override fun badgeDefinitions(): List<Insignia> = badges
 
-    override fun syncUserProgress(userId: String): BadgeSyncResult {
+    override suspend fun syncUserProgress(userId: String): BadgeSyncResult {
         val normalizedUserId = userId.trim().lowercase()
         if (normalizedUserId.isBlank()) {
             return BadgeSyncResult(emptySet(), emptyList(), 0, Nivel.TURISTA, 0, 0)
@@ -94,7 +94,7 @@ class BadgeRepositoryImpl @Inject constructor(
         )
     }
 
-    override fun userBadgeProgress(userId: String): List<UserInsigniaProgress> {
+    override suspend fun userBadgeProgress(userId: String): List<UserInsigniaProgress> {
         val unlocks = store.badgeUnlocksFor(userId).toMap()
         return badges.map { badge ->
             UserInsigniaProgress(
@@ -104,7 +104,7 @@ class BadgeRepositoryImpl @Inject constructor(
         }
     }
 
-    override fun recentUnlockedBadgeIds(userId: String, limit: Int): List<String> {
+    override suspend fun recentUnlockedBadgeIds(userId: String, limit: Int): List<String> {
         val unlocks = store.badgeUnlocksFor(userId).toMap()
         return unlocks.entries
             .sortedByDescending { it.value }

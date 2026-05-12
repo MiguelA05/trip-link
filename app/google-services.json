@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "160983418364",
+    "project_id": "triplink-97bf5",
+    "storage_bucket": "triplink-97bf5.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:160983418364:android:64cc7aee893cf520cf5e79",
+        "android_client_info": {
+          "package_name": "com.example.triplink"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD2_YHVsTOi_IgM3kvJjr7BFO1yyFj7hiM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

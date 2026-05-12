@@ -11,8 +11,8 @@ import com.example.triplink.core.utils.RequestResult
 import com.example.triplink.core.utils.toRatingLabel
 import com.example.triplink.domain.model.PuntoInteres
 import com.example.triplink.domain.model.enums.EstadoPublicacion
-import com.example.triplink.domain.repository.favorite.FavoriteRepository
-import com.example.triplink.domain.repository.publication.PublicationRepository
+import com.example.triplink.domain.repository.user.FavoriteRepository
+import com.example.triplink.domain.repository.user.PublicationRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow

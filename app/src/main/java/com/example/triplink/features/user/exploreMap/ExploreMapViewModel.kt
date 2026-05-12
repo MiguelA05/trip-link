@@ -8,7 +8,7 @@ import com.example.triplink.domain.model.enums.Categoria
 import com.example.triplink.domain.model.enums.EstadoPublicacion
 import com.example.triplink.domain.model.enums.RangoPrecios
 import com.example.triplink.domain.model.enums.UbicacionFiltro
-import com.example.triplink.domain.repository.publication.PublicationRepository
+import com.example.triplink.domain.repository.user.PublicationRepository
 import com.example.triplink.features.filters.FiltersStore
 import com.example.triplink.features.filters.publicationMatchesFilters
 import dagger.hilt.android.lifecycle.HiltViewModel

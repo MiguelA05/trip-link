@@ -1,10 +1,10 @@
-package com.example.triplink.data.repository.admin
+package com.example.triplink.data.repository.remote.admin
 
 import com.example.triplink.domain.model.Reporte
 import com.example.triplink.domain.model.admin.AdminReportCase
 import com.example.triplink.domain.model.enums.EstadoReporte
 import com.example.triplink.domain.repository.admin.ReportRepository
-import com.example.triplink.domain.repository.publication.PublicationRepository
+import com.example.triplink.domain.repository.user.PublicationRepository
 import com.example.triplink.domain.repository.user.UserProfileRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -40,7 +40,8 @@ class ReportRepositoryImpl @Inject constructor(
         }
     }
 
-    override fun hasUserReportedPublication(userId: String, publicationId: String): Boolean {
+
+    override suspend fun hasUserReportedPublication(userId: String, publicationId: String): Boolean {
         return publicationRepository.getPublicationById(publicationId)
             ?.reportes
             ?.any { report ->
@@ -49,7 +50,7 @@ class ReportRepositoryImpl @Inject constructor(
             } == true
     }
 
-    override fun submitReport(report: Reporte): Boolean {
+    override suspend fun submitReport(report: Reporte): Boolean {
         val publication = publicationRepository.getPublicationById(report.puntoInteresId) ?: return false
         if (hasUserReportedPublication(report.reportadorId, report.puntoInteresId)) return false
 
@@ -59,11 +60,11 @@ class ReportRepositoryImpl @Inject constructor(
         )
     }
 
-    override fun getReportById(reportId: String): AdminReportCase? {
+    override suspend fun getReportById(reportId: String): AdminReportCase? {
         return _reportCases.value.find { it.report.id == reportId }
     }
 
-    override fun confirmReport(reportId: String) {
+    override suspend fun confirmReport(reportId: String) {
         val case = findReportCase(reportId) ?: return
 
         // Primero actualizamos el estado del reporte
@@ -83,7 +84,7 @@ class ReportRepositoryImpl @Inject constructor(
         }
     }
 
-    override fun invalidateReport(reportId: String) {
+    override suspend fun invalidateReport(reportId: String) {
         val case = findReportCase(reportId) ?: return
         updatePublicationReportStatus(
             publicationId = case.pointOfInterest.id,
@@ -92,7 +93,7 @@ class ReportRepositoryImpl @Inject constructor(
         )
     }
 
-    private fun refreshReportCases() {
+    private suspend fun refreshReportCases() {
         _reportCases.value = publicationRepository.publications.value
             .flatMap { publication ->
                 publication.reportes
@@ -113,7 +114,7 @@ class ReportRepositoryImpl @Inject constructor(
     private fun findReportCase(reportId: String): AdminReportCase? =
         _reportCases.value.firstOrNull { it.report.id == reportId }
 
-    private fun updatePublicationReportStatus(
+    private suspend fun updatePublicationReportStatus(
         publicationId: String,
         reportId: String,
         newStatus: EstadoReporte

@@ -13,7 +13,7 @@ import com.example.triplink.domain.model.enums.RangoPrecios
 import com.example.triplink.domain.model.enums.UbicacionFiltro
 import com.example.triplink.features.filters.FiltersStore
 import com.example.triplink.features.filters.publicationMatchesFilters
-import com.example.triplink.domain.repository.publication.PublicationRepository
+import com.example.triplink.domain.repository.user.PublicationRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

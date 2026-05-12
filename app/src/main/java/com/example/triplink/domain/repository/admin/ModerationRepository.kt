@@ -11,9 +11,9 @@ interface ModerationRepository {
     val verifiedModerationCount: Int
     val rejectedModerationCount: Int
 
-    fun getModerationPublicationById(publicationId: String): ModerationPublication?
-    fun moderationPublicationsFor(filter: ModerationFilter): List<ModerationPublication>
-    fun applyModerationDecision(
+    suspend fun getModerationPublicationById(publicationId: String): ModerationPublication?
+    suspend fun moderationPublicationsFor(filter: ModerationFilter): List<ModerationPublication>
+    suspend fun applyModerationDecision(
         publicationId: String,
         decision: DecisionModerador,
         reason: String? = null

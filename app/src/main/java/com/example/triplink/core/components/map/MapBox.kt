@@ -1,6 +1,9 @@
 package com.example.triplink.core.components.map
 
 import android.Manifest
+import android.graphics.Bitmap
+import android.graphics.Canvas
+import android.graphics.Paint
 import android.util.Log
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -13,14 +16,15 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
@@ -32,15 +36,51 @@ import com.mapbox.maps.MapView
 import com.mapbox.maps.Style
 import com.mapbox.geojson.Point
 import com.mapbox.maps.plugin.annotation.annotations
+import com.mapbox.maps.plugin.annotation.generated.PointAnnotation
+import com.mapbox.maps.plugin.annotation.generated.PointAnnotationManager
 import com.mapbox.maps.plugin.annotation.generated.PointAnnotationOptions
 import com.mapbox.maps.plugin.annotation.generated.createPointAnnotationManager
+import com.mapbox.maps.plugin.gestures.OnMapClickListener
+import com.mapbox.maps.plugin.gestures.addOnMapClickListener
+import com.mapbox.maps.plugin.gestures.gestures
+import com.mapbox.maps.plugin.gestures.removeOnMapClickListener
+
+private const val NORMAL_MARKER_IMAGE_ID = "triplink-marker-normal"
+private const val HIGHLIGHT_MARKER_IMAGE_ID = "triplink-marker-highlight"
 
 data class MapMarker(
     val id: String,
     val latitude: Double,
     val longitude: Double,
-    val title: String? = null
+    val title: String? = null,
+    val highlighted: Boolean = false
 )
+
+private fun createMarkerBitmap(fillColor: Int): Bitmap {
+    val sizePx = 96
+    val bitmap = Bitmap.createBitmap(sizePx, sizePx, Bitmap.Config.ARGB_8888)
+    val canvas = Canvas(bitmap)
+    val paint = Paint(Paint.ANTI_ALIAS_FLAG)
+
+    paint.color = android.graphics.Color.WHITE
+    canvas.drawCircle(sizePx / 2f, sizePx / 2f, sizePx / 2f - 4f, paint)
+
+    paint.color = fillColor
+    canvas.drawCircle(sizePx / 2f, sizePx / 2f, sizePx / 2f - 12f, paint)
+
+    return bitmap
+}
+
+private fun registerMarkerImages(style: Style) {
+    style.addImage(
+        NORMAL_MARKER_IMAGE_ID,
+        createMarkerBitmap(android.graphics.Color.parseColor("#DC2626"))
+    )
+    style.addImage(
+        HIGHLIGHT_MARKER_IMAGE_ID,
+        createMarkerBitmap(android.graphics.Color.parseColor("#1D4ED8"))
+    )
+}
 
 /**
  * MapBox composable que integra Mapbox SDK v11+ con AndroidView.
@@ -61,7 +101,33 @@ fun MapBox(
 ) {
     val context = LocalContext.current
     val mapView = remember { mutableStateOf<MapView?>(null) }
+    val pointAnnotationManager = remember { mutableStateOf<PointAnnotationManager?>(null) }
+    val markerByAnnotationId = remember { mutableMapOf<String, String>() }
+    val mapClickListenerRef = remember { mutableStateOf<OnMapClickListener?>(null) }
     val hasLocationPermission = remember { mutableStateOf(false) }
+    val currentOnMarkerClick by rememberUpdatedState(onMarkerClick)
+    val currentOnMapClick by rememberUpdatedState(onMapClickListener)
+    val currentActivateClick by rememberUpdatedState(activateClick)
+
+    fun renderMarkers(activeMarkers: List<MapMarker>) {
+        val manager = pointAnnotationManager.value ?: return
+        manager.deleteAll()
+        markerByAnnotationId.clear()
+
+        if (activeMarkers.isEmpty()) return
+
+        val options = activeMarkers.map { marker ->
+            PointAnnotationOptions()
+                .withPoint(Point.fromLngLat(marker.longitude, marker.latitude))
+                .withIconImage(if (marker.highlighted) HIGHLIGHT_MARKER_IMAGE_ID else NORMAL_MARKER_IMAGE_ID)
+                .withIconSize(if (marker.highlighted) 1.6 else 1.2)
+        }
+
+        val annotations = manager.create(options)
+        annotations.forEachIndexed { index, annotation ->
+            markerByAnnotationId[annotation.id] = activeMarkers[index].id
+        }
+    }
 
     // Usar Activity Result API (igual que la cámara) para pedir permisos de ubicación
     val permissionLauncher = rememberLauncherForActivityResult(
@@ -117,6 +183,16 @@ fun MapBox(
                         Log.d("MapBox", "MapView creado exitosamente")
 
                         val mapboxMap = this.mapboxMap
+                        val mapClickListener = OnMapClickListener { point ->
+                            if (currentActivateClick) {
+                                currentOnMapClick(point.longitude(), point.latitude())
+                                true
+                            } else {
+                                false
+                            }
+                        }
+                        mapClickListenerRef.value = mapClickListener
+                        this.gestures.addOnMapClickListener(mapClickListener)
 
                         try {
                             Log.d("MapBox", "Configurando cámara...")
@@ -133,20 +209,21 @@ fun MapBox(
                                 Log.d("MapBox", "Callback de estilo cargado invocado, estilo: $style")
 
                                 try {
+                                    registerMarkerImages(style)
                                     val annotationApi = annotations
-                                    val pointAnnotationManager = annotationApi.createPointAnnotationManager()
-
-                                    markers.forEach { marker ->
-                                        val options = PointAnnotationOptions()
-                                            .withPoint(Point.fromLngLat(marker.longitude, marker.latitude))
-
-                                        pointAnnotationManager.create(options)
-                                        Log.d("MapBox", "Marker añadido: ${marker.id} en (${marker.latitude}, ${marker.longitude})")
+                                    val manager = annotationApi.createPointAnnotationManager()
+                                    pointAnnotationManager.value = manager
+                                    manager.addClickListener { annotation: PointAnnotation ->
+                                        markerByAnnotationId[annotation.id]?.let { markerId ->
+                                            currentOnMarkerClick(markerId)
+                                            true
+                                        } ?: false
                                     }
+                                    renderMarkers(markers)
 
-                                    Log.d("MapBox", "Mapa configurado con ${markers.size} markers")
+                                    Log.d("MapBox", "Manager de markers inicializado")
                                 } catch (e: Exception) {
-                                    Log.e("MapBox", "Error al configurar markers: ${e.message}", e)
+                                    Log.e("MapBox", "Error al inicializar manager de markers: ${e.message}", e)
                                 }
                             }
 
@@ -162,6 +239,24 @@ fun MapBox(
                 } catch (e: Exception) {
                     Log.e("MapBox", "Error al crear MapView: ${e.message}", e)
                     MapView(ctx)
+                }
+            }
+            ,
+            update = { mapViewInstance ->
+                try {
+                    renderMarkers(markers)
+
+                    if (markers.isNotEmpty()) {
+                        val target = markers.firstOrNull { it.highlighted } ?: markers.first()
+                        mapViewInstance.mapboxMap.setCamera(
+                            CameraOptions.Builder()
+                                .center(Point.fromLngLat(target.longitude, target.latitude))
+                                .zoom(if (target.highlighted) 13.0 else 11.0)
+                                .build()
+                        )
+                    }
+                } catch (e: Exception) {
+                    Log.e("MapBox", "Error actualizando markers: ${e.message}", e)
                 }
             }
         )
@@ -186,6 +281,14 @@ fun MapBox(
             lifecycleOwner.lifecycle.addObserver(observer)
             onDispose {
                 lifecycleOwner.lifecycle.removeObserver(observer)
+                mapView.value?.let { mv ->
+                    mapClickListenerRef.value?.let { listener ->
+                        mv.gestures.removeOnMapClickListener(listener)
+                    }
+                }
+                pointAnnotationManager.value?.deleteAll()
+                pointAnnotationManager.value = null
+                markerByAnnotationId.clear()
             }
         }
 

@@ -22,5 +22,7 @@ data class Usuario (
     val departamento: String = "",
     val ubicacionExactaActiva: Boolean = false,
 
-    val insignias: List<String> = emptyList() // IDs de insignias
+    val insignias: List<String> = emptyList(), // IDs de insignias
+    val activo: Boolean = true,
+    val firebaseUid: String? = null
 )

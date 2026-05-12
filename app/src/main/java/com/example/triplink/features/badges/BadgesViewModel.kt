@@ -8,10 +8,9 @@ import com.example.triplink.core.localization.localizedLabel
 import com.example.triplink.core.localization.localizedDescription
 import com.example.triplink.core.localization.localizedName
 import com.example.triplink.data.datastore.SessionDataStore
-import com.example.triplink.domain.model.Insignia
 import com.example.triplink.domain.model.InsigniaIconKey
 import com.example.triplink.domain.model.UserInsigniaProgress
-import com.example.triplink.domain.repository.badge.BadgeRepository
+import com.example.triplink.domain.repository.user.BadgeRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -91,33 +90,35 @@ class BadgesViewModel @Inject constructor(
     }
 
     private fun syncForUser(userId: String) {
-        val sync = badgeRepository.syncUserProgress(userId)
-        val progress = badgeRepository.userBadgeProgress(userId)
-            .map { it.toUi() }
-            .sortedByDescending { it.unlockedAtMillis ?: Long.MIN_VALUE }
+        viewModelScope.launch {
+            val sync = badgeRepository.syncUserProgress(userId)
+            val progress = badgeRepository.userBadgeProgress(userId)
+                .map { it.toUi() }
+                .sortedByDescending { it.unlockedAtMillis ?: Long.MIN_VALUE }
 
-        val unlocked = progress.filter { it.isUnlocked }
-        val locked = progress.filterNot { it.isUnlocked }
+            val unlocked = progress.filter { it.isUnlocked }
+            val locked = progress.filterNot { it.isUnlocked }
 
-        val latestUnlocked = sync.newlyUnlockedBadgeIds.firstOrNull()
-            ?.let { badgeId ->
-                unlocked.firstOrNull { it.id == badgeId }?.let { badgeUi ->
-                    BadgeUnlockUi(
-                        badge = badgeUi,
-                        totalPoints = sync.points,
-                        currentLevel = sync.level.localizedLabel(appContext)
-                    )
+            val latestUnlocked = sync.newlyUnlockedBadgeIds.firstOrNull()
+                ?.let { badgeId ->
+                    unlocked.firstOrNull { it.id == badgeId }?.let { badgeUi ->
+                        BadgeUnlockUi(
+                            badge = badgeUi,
+                            totalPoints = sync.points,
+                            currentLevel = sync.level.localizedLabel(appContext)
+                        )
+                    }
                 }
-            }
 
-        _uiState.value = _uiState.value.copy(
-            currentLevel = sync.level.localizedLabel(appContext),
-            points = sync.points,
-            contributions = sync.contributions,
-            unlockedBadges = unlocked,
-            lockedBadges = locked,
-            unlockDialog = latestUnlocked
-        )
+            _uiState.value = _uiState.value.copy(
+                currentLevel = sync.level.localizedLabel(appContext),
+                points = sync.points,
+                contributions = sync.contributions,
+                unlockedBadges = unlocked,
+                lockedBadges = locked,
+                unlockDialog = latestUnlocked
+            )
+        }
     }
 
     private fun UserInsigniaProgress.toUi(): BadgeUi {

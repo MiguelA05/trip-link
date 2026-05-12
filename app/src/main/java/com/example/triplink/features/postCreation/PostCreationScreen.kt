@@ -40,6 +40,7 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.example.triplink.core.components.FormField
 import com.example.triplink.core.components.GeneralButton
 import com.example.triplink.core.components.GeneralTopBar
+import com.example.triplink.core.components.map.LocationPickerMapField
 import com.example.triplink.R
 import com.example.triplink.core.utils.RequestResult
 import com.example.triplink.core.localization.localizedLabel
@@ -306,62 +307,13 @@ fun PostCreationScreen(
                         style = TextTokens.bodySecondary(),
                         color = TextColors.Secondary
                     )
-                    // Placeholder mapa
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(200.dp)
-                            .background(MaterialTheme.colorScheme.secondaryContainer, RoundedCornerShape(12.dp))
-                            .border(1.dp, MaterialTheme.colorScheme.outlineVariant, RoundedCornerShape(12.dp))
-                    ) {
-                        val mapGridColor = MaterialTheme.colorScheme.onSecondaryContainer.copy(alpha = 0.25f)
-                        Canvas(modifier = Modifier.fillMaxSize()) {
-                            val gridSpacing = 40.dp.toPx()
-                            for (x in 0..size.width.toInt() step gridSpacing.toInt()) {
-                                drawLine(
-                                    mapGridColor,
-                                    start = androidx.compose.ui.geometry.Offset(x.toFloat(), 0f),
-                                    end = androidx.compose.ui.geometry.Offset(x.toFloat(), size.height)
-                                )
-                            }
-                            for (y in 0..size.height.toInt() step gridSpacing.toInt()) {
-                                drawLine(
-                                    mapGridColor,
-                                    start = androidx.compose.ui.geometry.Offset(0f, y.toFloat()),
-                                    end = androidx.compose.ui.geometry.Offset(size.width, y.toFloat())
-                                )
-                            }
+                    LocationPickerMapField(
+                        currentLatitude = viewModel.latitude,
+                        currentLongitude = viewModel.longitude,
+                        onLocationConfirmed = { longitude, latitude ->
+                            viewModel.onLocationChange(latitude = latitude, longitude = longitude)
                         }
-
-                        // Label externo
-                        Text(
-                            text = stringResource(R.string.feature_post_creation_location_city),
-                            modifier = Modifier.padding(8.dp),
-                            color = TextColors.Secondary,
-                            style = TextTokens.bodySecondary()
-                        )
-
-                        // Button Overlay
-                        Button(
-                            onClick = { /* Mark on map */ },
-                            colors = ButtonDefaults.buttonColors(
-                                containerColor = MaterialTheme.colorScheme.surface,
-                                contentColor = MaterialTheme.colorScheme.primary
-                            ),
-                            shape = RoundedCornerShape(24.dp),
-                            elevation = ButtonDefaults.buttonElevation(4.dp),
-                            modifier = Modifier.align(Alignment.Center)
-                        ) {
-                            Icon(
-                                imageVector = Icons.Default.LocationOn,
-                                contentDescription = null,
-                                modifier = Modifier.size(18.dp)
-                            )
-                            ClarifierSpacer(Modifier.width(8.dp))
-                                Text(text = stringResource(R.string.feature_post_creation_location_mark_action), style = TextTokens.button())
-                        }
-                    }
-
+                    )
 
                     Box(
                         modifier = Modifier
@@ -379,7 +331,7 @@ fun PostCreationScreen(
                             )
                             ClarifierSpacer(Modifier.width(8.dp))
                             Text(
-                                text = stringResource(R.string.feature_post_creation_location_address_placeholder),
+                                text = viewModel.selectedLocationLabel,
                                 color = TextColors.Muted,
                                 style = TextTokens.body()
                             )

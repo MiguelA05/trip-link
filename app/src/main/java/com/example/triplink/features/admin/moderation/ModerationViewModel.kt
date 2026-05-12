@@ -14,6 +14,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -24,16 +25,21 @@ class ModerationViewModel @Inject constructor(
     private val selectedFilterState = MutableStateFlow(ModerationFilter.ALL)
     val selectedFilter: StateFlow<ModerationFilter> = selectedFilterState
 
-    val filteredPublications: StateFlow<List<ModerationPublication>> = combine(
-        repository.moderationPublications,
-        selectedFilterState
-    ) { _, filter ->
-        repository.moderationPublicationsFor(filter)
-    }.stateIn(
-        scope = viewModelScope,
-        started = SharingStarted.WhileSubscribed(5_000),
-        initialValue = repository.moderationPublicationsFor(ModerationFilter.ALL)
-    )
+    private val _filteredPublications = MutableStateFlow<List<ModerationPublication>>(emptyList())
+    val filteredPublications: StateFlow<List<ModerationPublication>> = _filteredPublications
+
+    init {
+        viewModelScope.launch {
+            combine(
+                repository.moderationPublications,
+                selectedFilterState
+            ) { _, filter ->
+                repository.moderationPublicationsFor(filter)
+            }.collect { publications ->
+                _filteredPublications.value = publications
+            }
+        }
+    }
 
     val pendingCount: StateFlow<Int> = repository.moderationPublications
         .map { publications -> publications.count { it.pointOfInterest.estado == EstadoPublicacion.PENDIENTE } }
@@ -56,8 +62,14 @@ class ModerationViewModel @Inject constructor(
         decision: DecisionModerador,
         reason: String? = null
     ) {
-        repository.applyModerationDecision(publicationId, decision, reason)
+        viewModelScope.launch {
+            repository.applyModerationDecision(publicationId, decision, reason)
+        }
     }
 
-    fun getPublicationById(publicationId: String) = repository.getModerationPublicationById(publicationId)
+    fun getPublicationById(publicationId: String) {
+        viewModelScope.launch {
+            repository.getModerationPublicationById(publicationId)
+        }
+    }
 }

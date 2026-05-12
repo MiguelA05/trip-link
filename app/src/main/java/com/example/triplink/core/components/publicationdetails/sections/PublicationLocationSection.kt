@@ -61,7 +61,14 @@ fun PublicationLocationSection(
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(220.dp),
-                    markers = listOf(MapMarker(id = "pub_loc", latitude = latitude, longitude = longitude)),
+                    markers = listOf(
+                        MapMarker(
+                            id = "pub_loc",
+                            latitude = latitude,
+                            longitude = longitude,
+                            highlighted = true
+                        )
+                    ),
                     showMyLocationButton = false,
                     activateClick = false,
                     onMapClickListener = { lon, lat ->

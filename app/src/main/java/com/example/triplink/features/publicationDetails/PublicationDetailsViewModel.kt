@@ -13,9 +13,9 @@ import com.example.triplink.domain.model.PuntoInteres
 import com.example.triplink.domain.model.Reporte
 import com.example.triplink.domain.model.enums.RazonReporte
 import com.example.triplink.domain.repository.admin.ReportRepository
-import com.example.triplink.domain.repository.comment.CommentRepository
-import com.example.triplink.domain.repository.favorite.FavoriteRepository
-import com.example.triplink.domain.repository.publication.PublicationRepository
+import com.example.triplink.domain.repository.user.CommentRepository
+import com.example.triplink.domain.repository.user.FavoriteRepository
+import com.example.triplink.domain.repository.user.PublicationRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -146,14 +146,15 @@ class PublicationDetailsViewModel @Inject constructor(
             return
         }
 
-        if (reportRepository.hasUserReportedPublication(userId, publicationId)) {
-            _reportResult.value = RequestResult.Failure(
-                appContext.getString(R.string.vm_publication_details_report_duplicate)
-            )
-            return
-        }
-
         viewModelScope.launch {
+            val hasReported = reportRepository.hasUserReportedPublication(userId, publicationId)
+            if (hasReported) {
+                _reportResult.value = RequestResult.Failure(
+                    appContext.getString(R.string.vm_publication_details_report_duplicate)
+                )
+                return@launch
+            }
+
             try {
                 val report = Reporte(
                     id = UUID.randomUUID().toString(),

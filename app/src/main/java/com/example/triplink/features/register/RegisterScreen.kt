@@ -13,7 +13,6 @@ import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.KeyboardArrowDown
-import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -33,6 +32,7 @@ import com.example.triplink.core.components.FormField
 import com.example.triplink.core.components.GeneralAlertDialog
 import com.example.triplink.core.components.GeneralButton
 import com.example.triplink.core.components.LinkTextRow
+import com.example.triplink.core.components.map.LocationPickerMapField
 import com.example.triplink.core.utils.RequestResult
 import com.example.triplink.ui.theme.TextColors
 import com.example.triplink.ui.theme.TextTokens
@@ -260,27 +260,11 @@ fun RegisterScreen(
 
             if (registerViewModel.addExactLocation) {
                 Spacer(modifier = Modifier.height(12.dp))
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(150.dp)
-                        .background(MaterialTheme.colorScheme.surfaceVariant, RoundedCornerShape(12.dp))
-                        .border(1.dp, MaterialTheme.colorScheme.outlineVariant, RoundedCornerShape(12.dp)),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                        Icon(
-                            imageVector = Icons.Default.LocationOn,
-                            contentDescription = stringResource(R.string.feature_register_map_placeholder_content_description),
-                            tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                            modifier = Modifier.size(48.dp)
-                        )
-                        Text(
-                            text = stringResource(R.string.feature_register_map_placeholder_label),
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
-                        )
-                    }
-                }
+                LocationPickerMapField(
+                    currentLatitude = registerViewModel.selectedLatitude,
+                    currentLongitude = registerViewModel.selectedLongitude,
+                    onLocationConfirmed = registerViewModel::onExactLocationSelected
+                )
             }
 
             Spacer(modifier = Modifier.height(32.dp))

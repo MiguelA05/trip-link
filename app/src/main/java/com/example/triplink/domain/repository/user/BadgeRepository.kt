@@ -1,4 +1,4 @@
-package com.example.triplink.domain.repository.badge
+package com.example.triplink.domain.repository.user
 
 import com.example.triplink.domain.model.Insignia
 import com.example.triplink.domain.model.UserInsigniaProgress
@@ -15,8 +15,8 @@ data class BadgeSyncResult(
 
 interface BadgeRepository {
     fun badgeDefinitions(): List<Insignia>
-    fun syncUserProgress(userId: String): BadgeSyncResult
-    fun userBadgeProgress(userId: String): List<UserInsigniaProgress>
-    fun recentUnlockedBadgeIds(userId: String, limit: Int = 3): List<String>
+    suspend fun syncUserProgress(userId: String): BadgeSyncResult
+    suspend fun userBadgeProgress(userId: String): List<UserInsigniaProgress>
+    suspend fun recentUnlockedBadgeIds(userId: String, limit: Int = 3): List<String>
 }
 

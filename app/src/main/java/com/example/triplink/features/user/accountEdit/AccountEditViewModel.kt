@@ -134,6 +134,8 @@ class AccountEditViewModel @Inject constructor(
                             ?: departmentCities.firstOrNull().orEmpty()
 
                         addExactLocation = it.ubicacionExactaActiva
+                        selectedLatitude = it.ubicacion?.latitud
+                        selectedLongitude = it.ubicacion?.longitud
                         originalSnapshot = currentSnapshot()
                     }
                 }

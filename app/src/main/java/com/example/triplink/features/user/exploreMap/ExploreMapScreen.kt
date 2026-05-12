@@ -219,7 +219,14 @@ fun ExploreMapScreen(
 				// MapBox composable as the map layer
 				MapBox(
 					modifier = Modifier.fillMaxSize(),
-					markers = markers.map { MapCompMarker(id = it.id, latitude = it.latitude, longitude = it.longitude) },
+					markers = markers.map {
+						MapCompMarker(
+							id = it.id,
+							latitude = it.latitude,
+							longitude = it.longitude,
+							highlighted = it.highlighted
+						)
+					},
 					showMyLocationButton = true,
 					activateClick = false,
 					onMarkerClick = { markerId ->

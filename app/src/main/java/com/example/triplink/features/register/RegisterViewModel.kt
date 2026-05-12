@@ -12,7 +12,9 @@ import com.example.triplink.R
 import com.example.triplink.data.seed.GeoSeedData
 import com.example.triplink.domain.model.Ubicacion
 import com.example.triplink.domain.model.Usuario
-import com.example.triplink.domain.repository.auth.AuthRepository
+import com.example.triplink.domain.repository.user.AuthRepository
+import kotlinx.coroutines.launch
+import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -54,6 +56,14 @@ class RegisterViewModel @Inject constructor(
     var selectedCity by mutableStateOf("")
 
     var addExactLocation by mutableStateOf(false)
+    var selectedLatitude by mutableStateOf<Double?>(null)
+    var selectedLongitude by mutableStateOf<Double?>(null)
+
+    fun onExactLocationSelected(longitude: Double, latitude: Double) {
+        selectedLongitude = longitude
+        selectedLatitude = latitude
+        addExactLocation = true
+    }
 
     val isFormValid by derivedStateOf {
         validateName(name) == null &&
@@ -165,33 +175,39 @@ class RegisterViewModel @Inject constructor(
             return
         }
 
-        if (authRepository.findByEmail(email) != null) {
-            _registerResult.value = RequestResult.Failure(appContext.getString(R.string.vm_register_email_already_exists))
-            return
-        }
+        viewModelScope.launch {
+            try {
+                if (authRepository.findByEmail(email) != null) {
+                    _registerResult.value = RequestResult.Failure(appContext.getString(R.string.vm_register_email_already_exists))
+                    return@launch
+                }
 
-        val wasSaved = authRepository.save(
-            Usuario(
-                email = email,
-                nombre = name,
-                password = password,
-                puntos = 0,
-                telefono = phone,
-                direccion = address,
-                departamento = selectedDepartment,
-                ubicacionExactaActiva = addExactLocation,
-                ubicacion = Ubicacion(
-                    latitud = 0.0,
-                    longitud = 0.0,
-                    ciudad = "$selectedCity, $selectedDepartment"
+                val wasSaved = authRepository.save(
+                    Usuario(
+                        email = email,
+                        nombre = name,
+                        password = password,
+                        puntos = 0,
+                        telefono = phone,
+                        direccion = address,
+                        departamento = selectedDepartment,
+                        ubicacionExactaActiva = addExactLocation,
+                        ubicacion = Ubicacion(
+                            latitud = if (addExactLocation) selectedLatitude ?: 0.0 else 0.0,
+                            longitud = if (addExactLocation) selectedLongitude ?: 0.0 else 0.0,
+                            ciudad = "$selectedCity, $selectedDepartment"
+                        )
+                    )
                 )
-            )
-        )
 
-        _registerResult.value = if (wasSaved) {
-            RequestResult.Success(appContext.getString(R.string.vm_register_success, name))
-        } else {
-            RequestResult.Failure(appContext.getString(R.string.vm_register_save_failed))
+                _registerResult.value = if (wasSaved) {
+                    RequestResult.Success(appContext.getString(R.string.vm_register_success, name))
+                } else {
+                    RequestResult.Failure(appContext.getString(R.string.vm_register_save_failed))
+                }
+            } catch (e: Exception) {
+                _registerResult.value = RequestResult.Failure(appContext.getString(R.string.vm_register_save_failed))
+            }
         }
     }
 

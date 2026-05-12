@@ -7,10 +7,10 @@ import com.example.triplink.domain.model.admin.AdminReportCase
 import com.example.triplink.domain.repository.admin.ReportRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -19,25 +19,37 @@ class AdminReportsViewModel @Inject constructor(
     private val repository: ReportRepository
 ) : ViewModel() {
 
-    val reportCards: StateFlow<List<AdminReportUi>> = repository.reportCases
-        .map { cases -> cases.map { it.toUiModel() } }
-        .stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(5_000),
-            initialValue = emptyList()
-        )
+    private val _reportCards = MutableStateFlow<List<AdminReportUi>>(emptyList())
+    val reportCards: StateFlow<List<AdminReportUi>> = _reportCards.asStateFlow()
+
+    init {
+        viewModelScope.launch {
+            repository.reportCases.collect { cases ->
+                _reportCards.value = cases.map { it.toUiModel() }
+            }
+        }
+    }
 
     val pendingCount: Int
         get() = repository.pendingReportsCount
 
-    fun getReportById(reportId: String): AdminReportUi? = repository.getReportById(reportId)?.toUiModel()
+    fun getReportById(reportId: String, callback: (AdminReportUi?) -> Unit) {
+        viewModelScope.launch {
+            val report = repository.getReportById(reportId)?.toUiModel()
+            callback(report)
+        }
+    }
 
     fun confirmReport(reportId: String) {
-        repository.confirmReport(reportId)
+        viewModelScope.launch {
+            repository.confirmReport(reportId)
+        }
     }
 
     fun invalidateReport(reportId: String) {
-        repository.invalidateReport(reportId)
+        viewModelScope.launch {
+            repository.invalidateReport(reportId)
+        }
     }
 
     private fun AdminReportCase.toUiModel(): AdminReportUi = toUi(appContext)

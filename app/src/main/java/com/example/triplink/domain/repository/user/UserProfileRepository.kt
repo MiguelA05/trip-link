@@ -6,9 +6,9 @@ import kotlinx.coroutines.flow.StateFlow
 interface UserProfileRepository {
     val users: StateFlow<List<Usuario>>
 
-    fun getUserById(userId: String): Usuario?
-    fun findUserNameById(userId: String): String?
-    fun updateUser(user: Usuario): Boolean
-    fun deleteUser(email: String): Boolean
+    suspend fun getUserById(userId: String): Usuario?
+    suspend fun findUserNameById(userId: String): String?
+    suspend fun updateUser(user: Usuario): Boolean
+    suspend fun deleteUser(email: String): Boolean
 }
 

@@ -7,7 +7,7 @@ import com.example.triplink.R
 import com.example.triplink.core.components.RatingCount
 import com.example.triplink.core.utils.RequestResult
 import com.example.triplink.domain.model.Comentario
-import com.example.triplink.domain.repository.comment.CommentRepository
+import com.example.triplink.domain.repository.user.CommentRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow

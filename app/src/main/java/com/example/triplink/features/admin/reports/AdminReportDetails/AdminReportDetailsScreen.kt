@@ -31,6 +31,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -62,7 +64,13 @@ fun AdminReportDetailsScreen(
     onBackClick: () -> Unit = {}
 ) {
     val viewModel: AdminReportsDetailsViewModel = hiltViewModel()
-    val report = viewModel.getReportById(reportId)
+
+    LaunchedEffect(reportId) {
+        viewModel.loadReportById(reportId)
+    }
+
+    val reportState = viewModel.currentReport.collectAsState()
+    val report = reportState.value
 
     if (report == null) {
         Column(

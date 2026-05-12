@@ -17,7 +17,7 @@ import com.example.triplink.domain.model.enums.Categoria
 import com.example.triplink.domain.model.enums.DiaSemana
 import com.example.triplink.domain.model.enums.EstadoPublicacion
 import com.example.triplink.domain.model.enums.RangoPrecios
-import com.example.triplink.domain.repository.publication.PublicationRepository
+import com.example.triplink.domain.repository.user.PublicationRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -48,8 +48,22 @@ class PostCreationViewModel @Inject constructor(
     var isOpenEveryDay by mutableStateOf(false)
 
     var selectedCity by mutableStateOf("")
-    var latitude by mutableStateOf(0.0)
-    var longitude by mutableStateOf(0.0)
+    var latitude by mutableStateOf<Double?>(null)
+    var longitude by mutableStateOf<Double?>(null)
+
+    val hasSelectedLocation: Boolean
+        get() = latitude != null && longitude != null
+
+    val selectedLocationLabel: String
+        get() = if (hasSelectedLocation) {
+            appContext.getString(
+                R.string.vm_post_creation_location_selected_format,
+                latitude ?: 0.0,
+                longitude ?: 0.0
+            )
+        } else {
+            appContext.getString(R.string.vm_post_creation_location_not_selected)
+        }
 
     var daySchedules by mutableStateOf(
         DiaSemana.entries.map {
@@ -185,9 +199,9 @@ class PostCreationViewModel @Inject constructor(
         selectedCity = newCity
     }
 
-    fun onLocationChange(lat: Double, lon: Double) {
-        latitude = lat
-        longitude = lon
+    fun onLocationChange(latitude: Double, longitude: Double) {
+        this.latitude = latitude
+        this.longitude = longitude
     }
 
     fun createPost() {
@@ -217,7 +231,13 @@ class PostCreationViewModel @Inject constructor(
                     informacion = description,
                     usuarioAutorId = userId,
                     categoria = category,
-                    ubicacion = Ubicacion(latitud = latitude, longitud = longitude, ciudad = selectedCity),
+                    ubicacion = Ubicacion(
+                        latitud = latitude ?: 0.0,
+                        longitud = longitude ?: 0.0,
+                        ciudad = selectedCity.ifBlank {
+                            appContext.getString(R.string.vm_post_creation_location_fallback_city)
+                        }
+                    ),
                     fotos = prefilledPhotos,
                     horarios = buildSchedules(),
                     estado = EstadoPublicacion.PENDIENTE,
@@ -261,8 +281,8 @@ class PostCreationViewModel @Inject constructor(
         selectedCategory.reset()
         isOpenEveryDay = false
         selectedCity = ""
-        latitude = 0.0
-        longitude = 0.0
+        latitude = null
+        longitude = null
         daySchedules = DiaSemana.entries.map {
             DayScheduleData(it)
         }
