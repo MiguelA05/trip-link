@@ -1,5 +1,6 @@
 package com.example.triplink.di
 
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import dagger.Module
 import dagger.Provides
@@ -9,10 +10,16 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-object FirestoreModule {
+object FirebaseModule {
 
     @Provides
     @Singleton
     fun provideFirebaseFirestore(): FirebaseFirestore = FirebaseFirestore.getInstance()
+
+    @Provides
+    @Singleton
+    fun provideAuth(): FirebaseAuth {
+        return FirebaseAuth.getInstance()
+    }
 }
 

@@ -21,6 +21,7 @@ mapsCompose = "11.22.0"
 googleGmsGoogleServices = "4.4.4"
 firebaseFirestore = "26.3.0"
 coroutinesPlayServices = "1.8.1"
+firebaseAuth = "24.1.0"
 
 
 [libraries]
@@ -52,6 +53,7 @@ mapsAndroid = { module = "com.mapbox.maps:android", version.ref = "mapsCompose" 
 mapsCompose = { module = "com.mapbox.extension:maps-compose", version.ref = "mapsCompose" }
 firebase-firestore = { group = "com.google.firebase", name = "firebase-firestore", version.ref = "firebaseFirestore" }
 kotlinx-coroutines-play-services = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-play-services", version.ref = "coroutinesPlayServices" }
+firebase-auth = { group = "com.google.firebase", name = "firebase-auth", version.ref = "firebaseAuth" }
 
 
 [plugins]
