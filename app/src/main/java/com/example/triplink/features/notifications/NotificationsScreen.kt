@@ -30,9 +30,12 @@ import com.example.triplink.ui.theme.TextTokens
 @Composable
 fun NotificationsScreen(
     onBackClick: () -> Unit = {},
+    onOpenPublication: (String) -> Unit = {},
     viewModel: NotificationsViewModel = hiltViewModel()
 ) {
-
+    LaunchedEffect(Unit) {
+        viewModel.refresh()
+    }
 
     Scaffold(
         topBar = {
@@ -53,9 +56,10 @@ fun NotificationsScreen(
             } else {
                 NotificationsList(
                     notifications = viewModel.notifications,
-                    onMarkAllAsRead = { viewModel.notifications = emptyList() },
-                    onNotificationClick = { id ->
-                        viewModel.notifications = viewModel.notifications.filter { it.id != id }
+                    onMarkAllAsRead = { viewModel.markAllAsRead() },
+                    onNotificationClick = { item ->
+                        viewModel.onNotificationOpened(item.id)
+                        onOpenPublication(item.publicationId)
                     }
                 )
             }
@@ -99,7 +103,7 @@ fun EmptyNotificationsView() {
 fun NotificationsList(
     notifications: List<NotificationItem>,
     onMarkAllAsRead: () -> Unit,
-    onNotificationClick: (Int) -> Unit
+    onNotificationClick: (NotificationItem) -> Unit
 ) {
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
@@ -134,7 +138,7 @@ fun NotificationsList(
         items(notifications) { notification ->
             NotificationCard(
                 notification = notification,
-                onClick = { onNotificationClick(notification.id) }
+                onClick = { onNotificationClick(notification) }
             )
         }
     }
@@ -189,12 +193,14 @@ fun NotificationCard(
                         style = TextTokens.title(),
                         color = MaterialTheme.colorScheme.onSurface
                     )
-                    // Punto azul de no leído
-                    Box(
-                        modifier = Modifier
-                            .size(10.dp)
-                            .background(MaterialTheme.colorScheme.primary, CircleShape)
-                    )
+                    if (!notification.isRead) {
+                        // Punto azul de no leido
+                        Box(
+                            modifier = Modifier
+                                .size(10.dp)
+                                .background(MaterialTheme.colorScheme.primary, CircleShape)
+                        )
+                    }
                 }
 
                 Spacer(modifier = Modifier.height(4.dp))

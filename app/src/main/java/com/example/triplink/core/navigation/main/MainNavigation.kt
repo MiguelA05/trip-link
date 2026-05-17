@@ -15,7 +15,9 @@ import com.example.triplink.features.user.section.UserSectionScreen
 @Composable
 fun MainNavigation(
     session: UserSession,
-    onLogout: () -> Unit
+    onLogout: () -> Unit,
+    pendingPublicationId: String? = null,
+    onPendingPublicationConsumed: () -> Unit = {}
 ) {
     val navController = rememberNavController()
 
@@ -34,7 +36,9 @@ fun MainNavigation(
                 // Se pasa el callback de logout para cerrar sesión, úselo dentro de UserScreen
                 UserSectionScreen(
                     userId = session.userId,
-                    onLogout = onLogout
+                    onLogout = onLogout,
+                    openPublicationId = pendingPublicationId,
+                    onOpenPublicationConsumed = onPendingPublicationConsumed
                 )
             }
 

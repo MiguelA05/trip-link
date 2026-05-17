@@ -148,7 +148,12 @@ fun UserNavigation(
             )
         }
         composable<UserSectionRoutes.Notifications> {
-            NotificationsScreen(onBackClick = { navController.popBackStack() })
+            NotificationsScreen(
+                onBackClick = { navController.popBackStack() },
+                onOpenPublication = { publicationId ->
+                    navController.navigate(UserSectionRoutes.PublicationDetails(publicationId))
+                }
+            )
         }
         composable<UserSectionRoutes.Filters> {
             FiltersScreen(

@@ -15,6 +15,8 @@ import com.example.triplink.core.navigation.main.MainNavigation
 
 @Composable
 fun AppNavigation(
+    pendingPublicationId: String? = null,
+    onPendingPublicationConsumed: () -> Unit = {},
     sessionViewModel: SessionViewModel = hiltViewModel()
 ) {
     // Observa el estado de la sesión desde el ViewModel
@@ -31,7 +33,9 @@ fun AppNavigation(
             is SessionState.NotAuthenticated -> AuthNavigation()
             is SessionState.Authenticated -> MainNavigation(
                 session = state.session,
-                onLogout = sessionViewModel::logout
+                onLogout = sessionViewModel::logout,
+                pendingPublicationId = pendingPublicationId,
+                onPendingPublicationConsumed = onPendingPublicationConsumed
             )
         }
     }
