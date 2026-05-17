@@ -54,6 +54,7 @@ fun RecoveryPasswordScreen(
     val recoveryMessage = stringResource(R.string.feature_recovery_password_message)
     val recoveryResendMessage = stringResource(R.string.feature_recovery_password_resend_message)
     val recoveryResult by viewModel.recoveryResult.collectAsState()
+    val isLoading by viewModel.isLoading.collectAsState()
 
     LaunchedEffect(recoveryResult) {
         recoveryResult?.let { result ->
@@ -129,6 +130,7 @@ fun RecoveryPasswordScreen(
                     viewModel.sendPasswordResetEmail()
                 },
                 enabled = viewModel.isFormValid,
+                isLoading = isLoading,
                 text = if (!viewModel.isEmailSent) {
                     stringResource(R.string.feature_recovery_password_send_email_action)
                 } else {

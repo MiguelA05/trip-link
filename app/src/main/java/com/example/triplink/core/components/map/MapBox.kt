@@ -1,10 +1,13 @@
 package com.example.triplink.core.components.map
 
+import android.annotation.SuppressLint
 import android.Manifest
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Paint
 import android.util.Log
+import android.view.MotionEvent
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -90,12 +93,14 @@ private fun registerMarkerImages(style: Style) {
  * - Captura de clics en el mapa (si activateClick = true)
  * - Callbacks onMarkerClick y onMapClickListener
  */
+@SuppressLint("ClickableViewAccessibility")
 @Composable
 fun MapBox(
     modifier: Modifier = Modifier,
     markers: List<MapMarker> = emptyList(),
     showMyLocationButton: Boolean = true,
     activateClick: Boolean = false,
+    centerCameraOnUpdate: Boolean = true,
     onMapClickListener: (Double, Double) -> Unit = { _, _ -> },
     onMarkerClick: (String) -> Unit = {}
 ) {
@@ -108,6 +113,59 @@ fun MapBox(
     val currentOnMarkerClick by rememberUpdatedState(onMarkerClick)
     val currentOnMapClick by rememberUpdatedState(onMapClickListener)
     val currentActivateClick by rememberUpdatedState(activateClick)
+    val currentCenterCameraOnUpdate by rememberUpdatedState(centerCameraOnUpdate)
+    
+    // Determinar el estilo según el tema del sistema (Claro/Oscuro)
+    val isDarkTheme = isSystemInDarkTheme()
+    val mapStyle = if (isDarkTheme) Style.DARK else Style.MAPBOX_STREETS
+
+    // Manejar carga de estilo y registro de recursos de forma reactiva al cambio de tema
+    LaunchedEffect(mapStyle, mapView.value) {
+        val mv = mapView.value ?: return@LaunchedEffect
+        mv.mapboxMap.loadStyle(mapStyle) { style ->
+            try {
+                registerMarkerImages(style)
+                val manager = pointAnnotationManager.value ?: mv.annotations.createPointAnnotationManager().also { 
+                    pointAnnotationManager.value = it 
+                }
+                
+                // Configurar click listener de markers una sola vez
+                manager.deleteAll() // Limpiar para el nuevo estilo
+                manager.addClickListener { annotation: PointAnnotation ->
+                    markerByAnnotationId[annotation.id]?.let { markerId ->
+                        currentOnMarkerClick(markerId)
+                        true
+                    } ?: false
+                }
+                
+                // Definir lógica local de renderizado para el callback inicial
+                val options = markers.map { marker ->
+                    PointAnnotationOptions()
+                        .withPoint(Point.fromLngLat(marker.longitude, marker.latitude))
+                        .withIconImage(if (marker.highlighted) HIGHLIGHT_MARKER_IMAGE_ID else NORMAL_MARKER_IMAGE_ID)
+                        .withIconSize(if (marker.highlighted) 1.6 else 1.2)
+                }
+
+                val annotations = manager.create(options)
+                annotations.forEachIndexed { index, annotation ->
+                    markerByAnnotationId[annotation.id] = markers[index].id
+                }
+                
+                // Centrar cámara inicialmente
+                if (markers.isNotEmpty()) {
+                    val target = markers.firstOrNull { it.highlighted } ?: markers.first()
+                    mv.mapboxMap.setCamera(
+                        CameraOptions.Builder()
+                            .center(Point.fromLngLat(target.longitude, target.latitude))
+                            .zoom(if (target.highlighted) 13.0 else 11.0)
+                            .build()
+                    )
+                }
+            } catch (e: Exception) {
+                Log.e("MapBox", "Error al cargar recursos en el estilo: ${e.message}", e)
+            }
+        }
+    }
 
     fun renderMarkers(activeMarkers: List<MapMarker>) {
         val manager = pointAnnotationManager.value ?: return
@@ -129,7 +187,6 @@ fun MapBox(
         }
     }
 
-    // Usar Activity Result API (igual que la cámara) para pedir permisos de ubicación
     val permissionLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.RequestMultiplePermissions()
     ) { perms: Map<String, Boolean> ->
@@ -182,18 +239,23 @@ fun MapBox(
                         mapView.value = this
                         Log.d("MapBox", "MapView creado exitosamente")
 
-                        val mapboxMap = this.mapboxMap
-                        val mapClickListener = OnMapClickListener { point ->
-                            if (currentActivateClick) {
-                                currentOnMapClick(point.longitude(), point.latitude())
-                                true
-                            } else {
-                                false
+                        // Solucionar conflicto de scroll con contenedores padres (ej. verticalScroll)
+                        this.setOnTouchListener { v, event ->
+                            when (event.action) {
+                                MotionEvent.ACTION_DOWN -> {
+                                    // Bloquear el scroll del padre cuando se toca el mapa
+                                    v.parent.requestDisallowInterceptTouchEvent(true)
+                                }
+                                MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
+                                    // Liberar el scroll del padre
+                                    v.parent.requestDisallowInterceptTouchEvent(false)
+                                }
                             }
+                            false // Retornar false para que los gestos de Mapbox sigan funcionando
                         }
-                        mapClickListenerRef.value = mapClickListener
-                        this.gestures.addOnMapClickListener(mapClickListener)
 
+                        val mapboxMap = this.mapboxMap
+                        
                         try {
                             Log.d("MapBox", "Configurando cámara...")
                             mapboxMap.setCamera(
@@ -203,29 +265,6 @@ fun MapBox(
                                     .build()
                             )
                             Log.d("MapBox", "Cámara configurada")
-
-                            Log.d("MapBox", "Cargando estilo MAPBOX_STREETS...")
-                            mapboxMap.loadStyle(Style.MAPBOX_STREETS) { style ->
-                                Log.d("MapBox", "Callback de estilo cargado invocado, estilo: $style")
-
-                                try {
-                                    registerMarkerImages(style)
-                                    val annotationApi = annotations
-                                    val manager = annotationApi.createPointAnnotationManager()
-                                    pointAnnotationManager.value = manager
-                                    manager.addClickListener { annotation: PointAnnotation ->
-                                        markerByAnnotationId[annotation.id]?.let { markerId ->
-                                            currentOnMarkerClick(markerId)
-                                            true
-                                        } ?: false
-                                    }
-                                    renderMarkers(markers)
-
-                                    Log.d("MapBox", "Manager de markers inicializado")
-                                } catch (e: Exception) {
-                                    Log.e("MapBox", "Error al inicializar manager de markers: ${e.message}", e)
-                                }
-                            }
 
                             if (hasLocationPermission.value) {
                                 Log.d("MapBox", "Permiso de ubicación concedido")
@@ -246,7 +285,20 @@ fun MapBox(
                 try {
                     renderMarkers(markers)
 
-                    if (markers.isNotEmpty()) {
+                    // Ensure listener is attached
+                    val mapClickListener = mapClickListenerRef.value ?: OnMapClickListener { point ->
+                        if (currentActivateClick) {
+                            currentOnMapClick(point.longitude(), point.latitude())
+                            true
+                        } else {
+                            false
+                        }
+                    }.also { mapClickListenerRef.value = it }
+                    
+                    mapViewInstance.gestures.removeOnMapClickListener(mapClickListener)
+                    mapViewInstance.gestures.addOnMapClickListener(mapClickListener)
+
+                    if (markers.isNotEmpty() && currentCenterCameraOnUpdate) {
                         val target = markers.firstOrNull { it.highlighted } ?: markers.first()
                         mapViewInstance.mapboxMap.setCamera(
                             CameraOptions.Builder()

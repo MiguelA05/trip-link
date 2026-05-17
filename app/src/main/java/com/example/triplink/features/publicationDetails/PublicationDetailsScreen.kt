@@ -79,9 +79,15 @@ fun PublicationDetailsScreen(
     val publicationActionResult by viewModel.publicationActionResult.collectAsState()
     val favoriteToggleResult by viewModel.favoriteToggleResult.collectAsState()
     val commentResult by viewModel.commentResult.collectAsState()
+    val isSavingComment by viewModel.isSavingComment.collectAsState()
+    val isSubmittingReport by viewModel.isSubmittingReport.collectAsState()
     val reportResult by viewModel.reportResult.collectAsState()
     val snackbarHostState = remember { SnackbarHostState() }
     val coroutineScope = rememberCoroutineScope()
+
+    var showReportModal by remember { mutableStateOf(false) }
+    var showRatingModal by remember { mutableStateOf(false) }
+    var showDeletePublicationDialog by remember { mutableStateOf(false) }
 
     LaunchedEffect(publicationId) {
         viewModel.loadPublication(publicationId)
@@ -114,6 +120,9 @@ fun PublicationDetailsScreen(
         commentResult?.let { result ->
             val message = result.messageText()
             snackbarHostState.showSnackbar(message)
+            if (result is RequestResult.Success) {
+                showRatingModal = false
+            }
             viewModel.clearCommentResult()
         }
     }
@@ -130,6 +139,9 @@ fun PublicationDetailsScreen(
         reportResult?.let { result ->
             val message = result.messageText()
             snackbarHostState.showSnackbar(message)
+            if (result is RequestResult.Success) {
+                showReportModal = false
+            }
             viewModel.clearReportResult()
         }
     }
@@ -168,10 +180,6 @@ fun PublicationDetailsScreen(
     }
 
     val currentPublication = publication ?: return
-
-    var showReportModal by remember { mutableStateOf(false) }
-    var showRatingModal by remember { mutableStateOf(false) }
-    var showDeletePublicationDialog by remember { mutableStateOf(false) }
 
     val schedules: List<DayScheduleUi> = currentPublication.horarios.toWeeklyScheduleUi()
     val today = currentDayLocalizedLabel()
@@ -292,8 +300,8 @@ fun PublicationDetailsScreen(
                     reason = reason,
                     description = customReason
                 )
-                showReportModal = false
-            }
+            },
+            isLoading = isSubmittingReport
         )
     }
 
@@ -310,7 +318,8 @@ fun PublicationDetailsScreen(
                     rating = rating,
                     text = comment
                 )
-            }
+            },
+            isLoading = isSavingComment
         )
     }
 
@@ -336,7 +345,8 @@ fun PublicationDetailsScreen(
 @Composable
 fun RatingModal(
     onDismiss: () -> Unit,
-    onSubmit: (rating: Float, comment: String) -> Unit
+    onSubmit: (rating: Float, comment: String) -> Unit,
+    isLoading: Boolean = false
 ) {
     var rating by remember { mutableIntStateOf(0) }
     var comment by remember { mutableStateOf("") }
@@ -487,10 +497,10 @@ fun RatingModal(
                 text = stringResource(R.string.feature_publication_details_publish_review),
                 onClick = {
                     onSubmit(rating.toFloat(), comment)
-                    onDismiss()
                 },
                 icon = Icons.AutoMirrored.Filled.Send,
-                enabled = rating > 0
+                enabled = rating > 0,
+                isLoading = isLoading
             )
 
             TextButton(onClick = onDismiss) {
@@ -642,7 +652,8 @@ fun InappropriateContentModal(onDismiss: () -> Unit, onReplace: () -> Unit) {
 @Composable
 fun ReportModal(
     onDismiss: () -> Unit,
-    onSubmit: (RazonReporte, String?) -> Unit
+    onSubmit: (RazonReporte, String?) -> Unit,
+    isLoading: Boolean = false
 ) {
     var selectedOption by remember { mutableStateOf<RazonReporte?>(null) }
     var otherReason by remember { mutableStateOf("") }
@@ -798,7 +809,8 @@ fun ReportModal(
                         }
                     },
                     icon = Icons.AutoMirrored.Filled.Send,
-                    enabled = reportEnabled
+                    enabled = reportEnabled,
+                    isLoading = isLoading
                 )
 
                 TextButton(onClick = onDismiss) {

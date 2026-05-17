@@ -58,6 +58,12 @@ class PublicationDetailsViewModel @Inject constructor(
     private val _reportResult = MutableStateFlow<RequestResult?>(null)
     val reportResult: StateFlow<RequestResult?> = _reportResult.asStateFlow()
 
+    private val _isSavingComment = MutableStateFlow(false)
+    val isSavingComment: StateFlow<Boolean> = _isSavingComment.asStateFlow()
+
+    private val _isSubmittingReport = MutableStateFlow(false)
+    val isSubmittingReport: StateFlow<Boolean> = _isSubmittingReport.asStateFlow()
+
     fun loadPublication(publicationId: String) {
         viewModelScope.launch {
             publicationLoaded = false
@@ -111,6 +117,7 @@ class PublicationDetailsViewModel @Inject constructor(
         }
 
         viewModelScope.launch {
+            _isSavingComment.value = true
             _commentResult.value = RequestResult.Loading
             try {
                 val comment = Comentario(
@@ -134,6 +141,8 @@ class PublicationDetailsViewModel @Inject constructor(
                 _commentResult.value = RequestResult.Failure(
                     appContext.getString(R.string.vm_publication_details_save_error, e.message ?: "")
                 )
+            } finally {
+                _isSavingComment.value = false
             }
         }
     }
@@ -163,12 +172,14 @@ class PublicationDetailsViewModel @Inject constructor(
         }
 
         viewModelScope.launch {
+            _isSubmittingReport.value = true
             _reportResult.value = RequestResult.Loading
             val hasReported = reportRepository.hasUserReportedPublication(userId, publicationId)
             if (hasReported) {
                 _reportResult.value = RequestResult.Failure(
                     appContext.getString(R.string.vm_publication_details_report_duplicate)
                 )
+                _isSubmittingReport.value = false
                 return@launch
             }
 
@@ -191,6 +202,8 @@ class PublicationDetailsViewModel @Inject constructor(
                 _reportResult.value = RequestResult.Failure(
                     appContext.getString(R.string.vm_publication_details_report_error, e.message ?: "")
                 )
+            } finally {
+                _isSubmittingReport.value = false
             }
         }
     }

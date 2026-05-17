@@ -65,6 +65,9 @@ class LoginViewModel @Inject constructor(
 
     val loginResult: StateFlow<RequestResult?> = _loginResult.asStateFlow()
 
+    private val _isLoading = MutableStateFlow(false)
+    val isLoading: StateFlow<Boolean> = _isLoading.asStateFlow()
+
     fun togglePasswordVisibility() {
         passwordVisible = !passwordVisible
     }
@@ -87,10 +90,12 @@ class LoginViewModel @Inject constructor(
         }
 
         viewModelScope.launch {
+            _isLoading.value = true
             try {
                 val authenticatedUser = authRepository.login(email.value, password.value)
                 if (authenticatedUser == null) {
                     _loginResult.value = RequestResult.Failure(appContext.getString(R.string.vm_login_invalid_credentials))
+                    _isLoading.value = false
                     return@launch
                 }
 
@@ -102,6 +107,8 @@ class LoginViewModel @Inject constructor(
                 _loginResult.value = RequestResult.Success(appContext.getString(R.string.vm_login_success))
             } catch (e: Exception) {
                 _loginResult.value = RequestResult.Failure(appContext.getString(R.string.vm_login_unexpected_error))
+            } finally {
+                _isLoading.value = false
             }
         }
     }

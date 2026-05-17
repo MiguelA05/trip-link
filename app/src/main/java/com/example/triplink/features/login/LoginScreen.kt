@@ -65,6 +65,7 @@ fun LoginScreen(
 ) {
     val snackbarHostState = remember { SnackbarHostState() }
     val loginResult by viewModel.loginResult.collectAsState()
+    val isLoading by viewModel.isLoading.collectAsState()
 
     LaunchedEffect(loginResult) {
         loginResult?.let { result ->
@@ -185,7 +186,8 @@ fun LoginScreen(
                     viewModel.login()
                 },
                 enabled = viewModel.isFormValid,
-                text = stringResource(R.string.feature_login_primary_action)
+                text = stringResource(R.string.feature_login_primary_action),
+                isLoading = isLoading
             )
 
             LinkTextRow(

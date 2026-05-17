@@ -66,6 +66,7 @@ class FavoriteRepositoryImpl @Inject constructor(
     }
 
     override suspend fun isFavorite(userId: String, publicationId: String): Boolean {
+        if (userId.isBlank()) return false
         val normalizedUserId = normalize(userId)
         return favoritesCollection(normalizedUserId)
             .document(publicationId)

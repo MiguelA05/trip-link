@@ -21,6 +21,10 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
@@ -51,6 +55,7 @@ fun RegisterScreen(
 ) {
     val snackbarHostState = remember { SnackbarHostState() }
     val registerResult by registerViewModel.registerResult.collectAsState()
+    val isLoading by registerViewModel.isLoading.collectAsState()
     var showSuccessDialog by remember { mutableStateOf(false) }
     var successMessage by remember { mutableStateOf("") }
     var pendingSuccessNavigation by remember { mutableStateOf(false) }
@@ -215,7 +220,7 @@ fun RegisterScreen(
             Spacer(modifier = Modifier.height(16.dp))
 
             Text(
-                text = stringResource(R.string.feature_register_residence_title),
+                text = buildRequiredLabel(stringResource(R.string.feature_register_residence_title)).toString(),
                 style = TextTokens.title(),
                 modifier = Modifier.fillMaxWidth(),
                 textAlign = TextAlign.Start
@@ -223,53 +228,11 @@ fun RegisterScreen(
 
             Spacer(modifier = Modifier.height(12.dp))
 
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(12.dp)
-            ) {
-                SelectableDropdown(
-                    label = stringResource(R.string.feature_register_department_label),
-                    selectedValue = registerViewModel.selectedDepartment,
-                    options = registerViewModel.departments,
-                    onOptionSelected = { registerViewModel.onDepartmentChange(it) },
-                    modifier = Modifier.weight(1f)
-                )
-
-                SelectableDropdown(
-                    label = stringResource(R.string.feature_register_city_label),
-                    selectedValue = registerViewModel.selectedCity,
-                    options = registerViewModel.getCitiesForDepartment(registerViewModel.selectedDepartment),
-                    onOptionSelected = { registerViewModel.onCityChange(it) },
-                    modifier = Modifier.weight(1.5f)
-                )
-            }
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Checkbox(
-                    checked = registerViewModel.addExactLocation,
-                    onCheckedChange = { registerViewModel.addExactLocation = it },
-                        colors = CheckboxDefaults.colors(checkedColor = MaterialTheme.colorScheme.primary)
-                )
-                Text(
-                    text = stringResource(R.string.feature_register_add_exact_location),
-                    style = TextTokens.body(),
-                    color = TextColors.Secondary
-                )
-            }
-
-            if (registerViewModel.addExactLocation) {
-                Spacer(modifier = Modifier.height(12.dp))
-                LocationPickerMapField(
-                    currentLatitude = registerViewModel.selectedLatitude,
-                    currentLongitude = registerViewModel.selectedLongitude,
-                    onLocationConfirmed = registerViewModel::onExactLocationSelected
-                )
-            }
+            LocationPickerMapField(
+                currentLatitude = registerViewModel.selectedLatitude,
+                currentLongitude = registerViewModel.selectedLongitude,
+                onLocationConfirmed = registerViewModel::onExactLocationSelected
+            )
 
             Spacer(modifier = Modifier.height(32.dp))
 
@@ -277,6 +240,7 @@ fun RegisterScreen(
             GeneralButton(
                 text = stringResource(R.string.feature_register_create_account_heading),
                 enabled = registerViewModel.isFormValid,
+                isLoading = isLoading,
                 onClick = {
                     registerViewModel.register()
                 }
@@ -308,62 +272,15 @@ fun RegisterScreen(
     }
 }
 
-@Composable
-fun SelectableDropdown(
-    label: String,
-    selectedValue: String,
-    options: List<String>,
-    onOptionSelected: (String) -> Unit,
-    modifier: Modifier = Modifier
-) {
-    var expanded by remember { mutableStateOf(false) }
-
-    Box(modifier = modifier) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .background(MaterialTheme.colorScheme.surfaceVariant, RoundedCornerShape(24.dp))
-                .border(1.dp, MaterialTheme.colorScheme.outlineVariant, RoundedCornerShape(24.dp))
-                .clickable { expanded = true }
-                .padding(horizontal = 16.dp, vertical = 12.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
-            Text(
-                text = selectedValue.ifEmpty { label },
-                color = if (selectedValue.isEmpty()) TextColors.Muted else TextColors.Primary,
-                style = TextTokens.body(),
-                maxLines = 1
-            )
-            Icon(
-                imageVector = Icons.Default.KeyboardArrowDown,
-                contentDescription = null,
-                tint = MaterialTheme.colorScheme.primary,
-                modifier = Modifier.size(20.dp)
-            )
-        }
-
-        DropdownMenu(
-            expanded = expanded,
-            onDismissRequest = { expanded = false },
-            modifier = Modifier
-                .background(MaterialTheme.colorScheme.surface)
-        ) {
-            options.forEach { option ->
-                DropdownMenuItem(
-                    text = { Text(text = option) },
-                    onClick = {
-                        onOptionSelected(option)
-                        expanded = false
-                    }
-                )
-            }
-        }
-    }
-}
-
 @Preview(showBackground = true)
 @Composable
 fun RegisterScreenPreview() {
     RegisterScreen()
+}
+
+fun buildRequiredLabel(text: String) = buildAnnotatedString {
+    append(text)
+    withStyle(style = SpanStyle(color = Color.Red)) {
+        append(" *")
+    }
 }

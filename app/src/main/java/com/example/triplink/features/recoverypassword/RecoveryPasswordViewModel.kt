@@ -28,6 +28,9 @@ class RecoveryPasswordViewModel @Inject constructor(
     private val _recoveryResult = MutableStateFlow<RequestResult?>(null)
     val recoveryResult: StateFlow<RequestResult?> = _recoveryResult.asStateFlow()
 
+    private val _isLoading = MutableStateFlow(false)
+    val isLoading: StateFlow<Boolean> = _isLoading.asStateFlow()
+
     // Controla si el correo ya se envió al menos una vez (para cambiar los textos de la UI)
     var isEmailSent by mutableStateOf(false)
         private set
@@ -62,11 +65,13 @@ class RecoveryPasswordViewModel @Inject constructor(
         }
 
         viewModelScope.launch {
+            _isLoading.value = true
             try {
                 // Validar que el email existe en el sistema
                 val userExists = authRepository.findByEmail(email.value) != null
                 if (!userExists) {
                     _recoveryResult.value = RequestResult.Failure(appContext.getString(R.string.vm_recovery_email_not_found))
+                    _isLoading.value = false
                     return@launch
                 }
 
@@ -79,6 +84,8 @@ class RecoveryPasswordViewModel @Inject constructor(
                 )
             } catch (e: Exception) {
                 _recoveryResult.value = RequestResult.Failure(appContext.getString(R.string.vm_recovery_invalid_form))
+            } finally {
+                _isLoading.value = false
             }
         }
     }

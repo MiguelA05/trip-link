@@ -70,6 +70,7 @@ fun PostCreationScreen(
     val snackbarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
     val createResult by viewModel.createResult.collectAsState()
+    val isLoading by viewModel.isLoading.collectAsState()
     val dayDisabledSnackbar = stringResource(R.string.feature_post_creation_day_disabled_snackbar)
 
     LaunchedEffect(publicationIdToEdit) {
@@ -317,29 +318,6 @@ fun PostCreationScreen(
                             viewModel.onLocationChange(latitude = latitude, longitude = longitude)
                         }
                     )
-
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .background(MaterialTheme.colorScheme.surfaceVariant, RoundedCornerShape(24.dp))
-                            .border(1.dp, MaterialTheme.colorScheme.outlineVariant, RoundedCornerShape(24.dp))
-                            .padding(12.dp)
-                    ) {
-                        Row(verticalAlignment = Alignment.CenterVertically) {
-                            Icon(
-                                imageVector = Icons.Default.LocationOn,
-                                contentDescription = null,
-                                tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                                modifier = Modifier.size(18.dp)
-                            )
-                            ClarifierSpacer(Modifier.width(8.dp))
-                            Text(
-                                text = viewModel.selectedLocationLabel,
-                                color = TextColors.Muted,
-                                style = TextTokens.body()
-                            )
-                        }
-                    }
                 }
             }
 
@@ -465,7 +443,8 @@ fun PostCreationScreen(
             GeneralButton(
                 text = viewModel.submitButtonLabel,
                 onClick = { viewModel.createPost() },
-                enabled = viewModel.isFormValid
+                enabled = viewModel.isFormValid,
+                isLoading = isLoading
             )
         }
 

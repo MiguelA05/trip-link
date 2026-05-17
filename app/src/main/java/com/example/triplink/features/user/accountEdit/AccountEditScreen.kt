@@ -22,7 +22,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
@@ -52,6 +55,8 @@ fun AccountEditScreen(
     val snackbarHostState = remember { SnackbarHostState() }
     val updateResult by accountEditViewModel.updateResult.collectAsState()
     val deleteResult by accountEditViewModel.deleteResult.collectAsState()
+    val isLoading by accountEditViewModel.isLoading.collectAsState()
+    val isDeleting by accountEditViewModel.isDeleting.collectAsState()
     val photoUri by accountEditViewModel.photoUri.collectAsState()
     var showDeleteConfirmation by remember { mutableStateOf(false) }
     var showBottomSheet by remember { mutableStateOf(false) }
@@ -186,54 +191,21 @@ fun AccountEditScreen(
 
                 Spacer(modifier = Modifier.height(16.dp))
 
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(12.dp)
-                ) {
-                    SelectableDropdown(
-                        label = stringResource(R.string.feature_account_edit_department_label),
-                        selectedValue = accountEditViewModel.selectedDepartment,
-                        options = accountEditViewModel.departments,
-                        onOptionSelected = { accountEditViewModel.onDepartmentChange(it) },
-                        modifier = Modifier.weight(1f)
-                    )
+                Text(
+                    text = buildRequiredLabel(stringResource(R.string.feature_account_edit_location_label)).toString(),
+                    style = TextTokens.title(),
+                    color = TextColors.Secondary,
+                    modifier = Modifier.fillMaxWidth()
+                )
 
-                    SelectableDropdown(
-                        label = stringResource(R.string.feature_account_edit_city_label),
-                        selectedValue = accountEditViewModel.selectedCity,
-                        options = accountEditViewModel.getCitiesForDepartment(accountEditViewModel.selectedDepartment),
-                        onOptionSelected = { accountEditViewModel.onCityChange(it) },
-                        modifier = Modifier.weight(1.5f)
-                    )
-                }
+                Spacer(modifier = Modifier.height(12.dp))
 
-                Spacer(modifier = Modifier.height(16.dp))
-
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Checkbox(
-                        checked = accountEditViewModel.addExactLocation,
-                        onCheckedChange = { accountEditViewModel.addExactLocation = it },
-                        colors = CheckboxDefaults.colors(checkedColor = MaterialTheme.colorScheme.primary)
-                    )
-                    Text(
-                        text = stringResource(R.string.feature_account_edit_add_exact_location),
-                        style = TextTokens.body(),
-                        color = TextColors.Secondary
-                    )
-                }
-
-                if (accountEditViewModel.addExactLocation) {
-                    Spacer(modifier = Modifier.height(12.dp))
-                    LocationPickerMapField(
-                        currentLatitude = accountEditViewModel.selectedLatitude,
-                        currentLongitude = accountEditViewModel.selectedLongitude,
-                        showMyLocationButton = false,
-                        onLocationConfirmed = accountEditViewModel::onLocationSelected
-                    )
-                }
+                LocationPickerMapField(
+                    currentLatitude = accountEditViewModel.selectedLatitude,
+                    currentLongitude = accountEditViewModel.selectedLongitude,
+                    showMyLocationButton = true,
+                    onLocationConfirmed = accountEditViewModel::onLocationSelected
+                )
             }
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -350,7 +322,8 @@ fun AccountEditScreen(
                     onClick = {
                         accountEditViewModel.saveChanges()
                     },
-                    enabled = accountEditViewModel.canSaveChanges
+                    enabled = accountEditViewModel.canSaveChanges,
+                    isLoading = isLoading
                 )
             }
 
@@ -445,61 +418,15 @@ private fun AccountSectionContainer(
     }
 }
 
-@Composable
-fun SelectableDropdown(
-    label: String,
-    selectedValue: String,
-    options: List<String>,
-    onOptionSelected: (String) -> Unit,
-    modifier: Modifier = Modifier
-) {
-    var expanded by remember { mutableStateOf(false) }
-
-    Box(modifier = modifier) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .background(MaterialTheme.colorScheme.surfaceVariant, RoundedCornerShape(24.dp))
-                .border(1.dp, MaterialTheme.colorScheme.outlineVariant, RoundedCornerShape(24.dp))
-                .clickable { expanded = true }
-                .padding(horizontal = 16.dp, vertical = 12.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
-            Text(
-                text = selectedValue.ifEmpty { label },
-                color = if (selectedValue.isEmpty()) MaterialTheme.colorScheme.onSurfaceVariant else MaterialTheme.colorScheme.onSurface,
-                style = TextTokens.body(),
-                maxLines = 1
-            )
-            Icon(
-                imageVector = Icons.Default.KeyboardArrowDown,
-                contentDescription = null,
-                tint = MaterialTheme.colorScheme.primary,
-                modifier = Modifier.size(20.dp)
-            )
-        }
-
-        DropdownMenu(
-            expanded = expanded,
-            onDismissRequest = { expanded = false },
-            modifier = Modifier.background(MaterialTheme.colorScheme.surface)
-        ) {
-            options.forEach { option ->
-                DropdownMenuItem(
-                    text = { Text(text = option) },
-                    onClick = {
-                        onOptionSelected(option)
-                        expanded = false
-                    }
-                )
-            }
-        }
-    }
-}
-
 @Preview(showBackground = true)
 @Composable
 fun AccountEditScreenPreview() {
     AccountEditScreen()
+}
+
+fun buildRequiredLabel(text: String) = buildAnnotatedString {
+    append(text)
+    withStyle(style = SpanStyle(color = Color.Red)) {
+        append(" *")
+    }
 }

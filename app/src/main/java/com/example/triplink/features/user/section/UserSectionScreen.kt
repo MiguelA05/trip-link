@@ -2,6 +2,7 @@ package com.example.triplink.features.user.section
 
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -19,7 +20,9 @@ import com.example.triplink.core.navigation.user.UserSectionRoutes
 @Composable
 fun UserSectionScreen(
     userId: String = "",
-    onLogout: () -> Unit = {}
+    onLogout: () -> Unit = {},
+    openPublicationId: String? = null,
+    onOpenPublicationConsumed: () -> Unit = {}
 ) {
     val navController = rememberNavController()
     val navItems = defaultNavItems()
@@ -68,6 +71,14 @@ fun UserSectionScreen(
             padding = paddingValues,
             onLogout = onLogout
         )
+    }
+
+    LaunchedEffect(openPublicationId) {
+        val publicationId = openPublicationId?.takeIf { it.isNotBlank() } ?: return@LaunchedEffect
+        navController.navigate(UserSectionRoutes.PublicationDetails(publicationId)) {
+            launchSingleTop = true
+        }
+        onOpenPublicationConsumed()
     }
 
     if (userId.isNotBlank()) {

@@ -12,7 +12,6 @@ import androidx.lifecycle.viewModelScope
 import com.example.triplink.R
 import com.example.triplink.core.utils.RequestResult
 import com.example.triplink.data.datastore.SessionDataStore
-import com.example.triplink.data.seed.GeoSeedData
 import com.example.triplink.domain.model.Ubicacion
 import com.example.triplink.domain.repository.user.UserProfileRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -22,7 +21,6 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
-import java.text.Normalizer
 import javax.inject.Inject
 
 @HiltViewModel
@@ -35,10 +33,9 @@ class AccountEditViewModel @Inject constructor(
     private data class EditableAccountSnapshot(
         val fullName: String,
         val phone: String,
-        val selectedDepartment: String,
-        val selectedCity: String,
         val address: String,
-        val addExactLocation: Boolean
+        val latitude: Double?,
+        val longitude: Double?
     )
 
     // Información Personal
@@ -49,21 +46,10 @@ class AccountEditViewModel @Inject constructor(
     var phoneError by mutableStateOf<String?>(null)
 
     // Ubicación de Residencia
-    val departments = GeoSeedData.getNombresDeparts()
-    
-    fun getCitiesForDepartment(departmentName: String): List<String> {
-        return GeoSeedData.getNombresCiudades(departmentName)
-    }
-
-    var selectedDepartment by mutableStateOf(appContext.getString(R.string.vm_account_edit_default_department))
-    var selectedCity by mutableStateOf(appContext.getString(R.string.vm_account_edit_default_city))
     var address by mutableStateOf(appContext.getString(R.string.vm_account_edit_default_address))
 
-    var departmentError by mutableStateOf<String?>(null)
-    var cityError by mutableStateOf<String?>(null)
     var addressError by mutableStateOf<String?>(null)
 
-    var addExactLocation by mutableStateOf(false)
     var selectedLatitude by mutableStateOf<Double?>(null)
     var selectedLongitude by mutableStateOf<Double?>(null)
 
@@ -79,6 +65,12 @@ class AccountEditViewModel @Inject constructor(
     private val _deleteResult = MutableStateFlow<RequestResult?>(null)
     val deleteResult: StateFlow<RequestResult?> = _deleteResult.asStateFlow()
 
+    private val _isLoading = MutableStateFlow(false)
+    val isLoading: StateFlow<Boolean> = _isLoading.asStateFlow()
+
+    private val _isDeleting = MutableStateFlow(false)
+    val isDeleting: StateFlow<Boolean> = _isDeleting.asStateFlow()
+
     // Foto de Perfil
     private val _photoUri = MutableStateFlow<Uri?>(null)
     val photoUri: StateFlow<Uri?> = _photoUri.asStateFlow()
@@ -86,9 +78,9 @@ class AccountEditViewModel @Inject constructor(
     val isFormValid by derivedStateOf {
         validateFullName(fullName) == null &&
                 validatePhone(phone) == null &&
-                validateDepartment(selectedDepartment) == null &&
-                validateCity(selectedCity) == null &&
-                validateAddress(address) == null
+                validateAddress(address) == null &&
+                selectedLatitude != null &&
+                selectedLongitude != null
     }
 
     val hasEditableChanges by derivedStateOf {
@@ -116,24 +108,6 @@ class AccountEditViewModel @Inject constructor(
                         phone = it.telefono
                         address = it.direccion
 
-                        val parsedLocation = parseCityAndDepartment(
-                            rawCity = it.ubicacion?.ciudad.orEmpty(),
-                            fallbackDepartment = it.departamento
-                        )
-                        val resolvedDepartment = if (it.departamento.isNotBlank()) it.departamento else parsedLocation.second
-                        val fallbackDepartment = appContext.getString(R.string.vm_account_edit_default_department)
-                        selectedDepartment = findDepartmentMatch(resolvedDepartment)
-                            ?: findDepartmentMatch(fallbackDepartment)
-                            ?: departments.firstOrNull().orEmpty()
-
-                        val departmentCities = getCitiesForDepartment(selectedDepartment)
-                        val candidateCity = if (parsedLocation.first.isNotBlank()) parsedLocation.first else it.ubicacion?.ciudad.orEmpty()
-                        val fallbackCity = appContext.getString(R.string.vm_account_edit_default_city)
-                        selectedCity = findCityMatch(departmentCities, candidateCity)
-                            ?: findCityMatch(departmentCities, fallbackCity)
-                            ?: departmentCities.firstOrNull().orEmpty()
-
-                        addExactLocation = it.ubicacionExactaActiva
                         selectedLatitude = it.ubicacion?.latitud
                         selectedLongitude = it.ubicacion?.longitud
                         originalSnapshot = currentSnapshot()
@@ -148,35 +122,10 @@ class AccountEditViewModel @Inject constructor(
     private fun currentSnapshot(): EditableAccountSnapshot = EditableAccountSnapshot(
         fullName = fullName.trim(),
         phone = phone.trim(),
-        selectedDepartment = selectedDepartment.trim(),
-        selectedCity = selectedCity.trim(),
         address = address.trim(),
-        addExactLocation = addExactLocation
+        latitude = selectedLatitude,
+        longitude = selectedLongitude
     )
-
-    private fun parseCityAndDepartment(rawCity: String, fallbackDepartment: String): Pair<String, String> {
-        val parts = rawCity.split(",").map { it.trim() }.filter { it.isNotBlank() }
-        val city = parts.getOrNull(0).orEmpty()
-        val department = parts.getOrNull(1).orEmpty().ifBlank { fallbackDepartment }
-        return city to department
-    }
-
-    private fun normalize(value: String): String {
-        val normalized = Normalizer.normalize(value, Normalizer.Form.NFD)
-        return normalized.replace("\\p{M}+".toRegex(), "").lowercase().trim()
-    }
-
-    private fun findDepartmentMatch(raw: String): String? {
-        val target = normalize(raw)
-        if (target.isBlank()) return null
-        return departments.firstOrNull { normalize(it) == target }
-    }
-
-    private fun findCityMatch(options: List<String>, raw: String): String? {
-        val target = normalize(raw)
-        if (target.isBlank()) return null
-        return options.firstOrNull { normalize(it) == target }
-    }
 
     fun validateFullName(value: String): String? {
         return if (value.isBlank()) appContext.getString(R.string.vm_account_edit_name_required) else null
@@ -202,14 +151,6 @@ class AccountEditViewModel @Inject constructor(
         return if (value.isBlank()) appContext.getString(R.string.vm_account_edit_address_required) else null
     }
 
-    fun validateDepartment(value: String): String? {
-        return if (value.isBlank()) appContext.getString(R.string.vm_account_edit_department_required) else null
-    }
-
-    fun validateCity(value: String): String? {
-        return if (value.isBlank()) appContext.getString(R.string.vm_account_edit_city_required) else null
-    }
-
     fun onFullNameChange(newValue: String) {
         fullName = newValue
         fullNameError = validateFullName(newValue)
@@ -230,22 +171,6 @@ class AccountEditViewModel @Inject constructor(
         addressError = validateAddress(newValue)
     }
 
-    fun onDepartmentChange(newDepartment: String) {
-        if (selectedDepartment == newDepartment) return
-        selectedDepartment = newDepartment
-        departmentError = validateDepartment(newDepartment)
-        val availableCities = getCitiesForDepartment(newDepartment)
-        if (!availableCities.contains(selectedCity)) {
-            selectedCity = ""
-            cityError = null
-        }
-    }
-
-    fun onCityChange(newCity: String) {
-        selectedCity = newCity
-        cityError = validateCity(newCity)
-    }
-
     fun saveChanges() {
         if (!canSaveChanges) {
             _updateResult.value = RequestResult.Failure(appContext.getString(R.string.vm_account_edit_required_fields))
@@ -253,32 +178,22 @@ class AccountEditViewModel @Inject constructor(
         }
 
         viewModelScope.launch {
+            _isLoading.value = true
             try {
                 val session = sessionDataStore.sessionFlow.first()
                 session?.userId?.let { userId ->
                     val user = userProfileRepository.getUserById(userId)
                     user?.let {
-                        val baseline = originalSnapshot ?: currentSnapshot()
                         val current = currentSnapshot()
-                        val mergedCity = "${current.selectedCity}, ${current.selectedDepartment}"
                         val updatedUser = it.copy(
-                            nombre = if (current.fullName != baseline.fullName) current.fullName else it.nombre,
-                            telefono = if (current.phone != baseline.phone) current.phone else it.telefono,
-                            direccion = if (current.address != baseline.address) current.address else it.direccion,
-                            departamento = if (current.selectedDepartment != baseline.selectedDepartment) {
-                                current.selectedDepartment
-                            } else {
-                                it.departamento
-                            },
-                            ubicacionExactaActiva = current.addExactLocation,
-                            ubicacion = it.ubicacion?.copy(
-                                latitud = selectedLatitude ?: it.ubicacion?.latitud ?: 0.0,
-                                longitud = selectedLongitude ?: it.ubicacion?.longitud ?: 0.0,
-                                ciudad = mergedCity
-                            ) ?: Ubicacion(
-                                latitud = selectedLatitude ?: 0.0,
-                                longitud = selectedLongitude ?: 0.0,
-                                ciudad = mergedCity
+                            nombre = current.fullName,
+                            telefono = current.phone,
+                            direccion = current.address,
+                            ubicacionExactaActiva = true,
+                            ubicacion = Ubicacion(
+                                latitud = current.latitude ?: 0.0,
+                                longitud = current.longitude ?: 0.0,
+                                ciudad = current.address
                             )
                         )
                         val wasUpdated = userProfileRepository.updateUser(updatedUser)
@@ -298,6 +213,8 @@ class AccountEditViewModel @Inject constructor(
                 _updateResult.value = RequestResult.Failure(
                     appContext.getString(R.string.vm_account_edit_save_error, e.message ?: "")
                 )
+            } finally {
+                _isLoading.value = false
             }
         }
     }
@@ -309,6 +226,7 @@ class AccountEditViewModel @Inject constructor(
 
     fun deleteAccount() {
         viewModelScope.launch {
+            _isDeleting.value = true
             try {
                 val session = sessionDataStore.sessionFlow.first()
                 session?.userId?.let { userId ->
@@ -326,6 +244,8 @@ class AccountEditViewModel @Inject constructor(
                 _deleteResult.value = RequestResult.Failure(
                     appContext.getString(R.string.vm_account_edit_delete_error, e.message ?: "")
                 )
+            } finally {
+                _isDeleting.value = false
             }
         }
     }
@@ -357,7 +277,5 @@ class AccountEditViewModel @Inject constructor(
     fun onLocationSelected(longitude: Double, latitude: Double) {
         selectedLongitude = longitude
         selectedLatitude = latitude
-        // enable exact location flag when user picks a point
-        addExactLocation = true
     }
 }

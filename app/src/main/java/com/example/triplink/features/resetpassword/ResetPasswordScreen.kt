@@ -51,6 +51,7 @@ fun ResetPasswordScreen(
 ) {
     val snackbarHostState = remember { SnackbarHostState() }
     val recoveryResult by viewModel.recoveryResult.collectAsState()
+    val isLoading by viewModel.isLoading.collectAsState()
 
     LaunchedEffect(recoveryResult) {
         recoveryResult?.let { result ->
@@ -149,6 +150,7 @@ fun ResetPasswordScreen(
                 primary = true,
                 onClick = { viewModel.saveNewPassword() },
                 enabled = viewModel.isFormValid,
+                isLoading = isLoading,
                 text = stringResource(R.string.feature_reset_password_submit_action)
             )
         }

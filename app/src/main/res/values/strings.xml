@@ -432,6 +432,7 @@
     <string name="feature_account_edit_residence_section">RESIDENCE LOCATION</string>
     <string name="feature_account_edit_address_label">Neighborhood, city or reference</string>
     <string name="feature_account_edit_address_placeholder">Ex. La Candelaria, Bogota</string>
+    <string name="feature_account_edit_location_label">Residence exact location</string>
     <string name="feature_account_edit_department_label">Department</string>
     <string name="feature_account_edit_city_label">City</string>
     <string name="feature_account_edit_add_exact_location">Add exact location?</string>

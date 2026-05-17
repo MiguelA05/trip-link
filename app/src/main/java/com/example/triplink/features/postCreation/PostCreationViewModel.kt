@@ -88,6 +88,9 @@ class PostCreationViewModel @Inject constructor(
     private val _createResult = MutableStateFlow<RequestResult?>(null)
     val createResult: StateFlow<RequestResult?> = _createResult.asStateFlow()
 
+    private val _isLoading = MutableStateFlow(false)
+    val isLoading: StateFlow<Boolean> = _isLoading.asStateFlow()
+
     val isFormValid: Boolean
         get() {
             val areMandatoryFieldsValid = placeName.isValid &&
@@ -213,18 +216,20 @@ class PostCreationViewModel @Inject constructor(
         }
 
         viewModelScope.launch {
-            _createResult.value = RequestResult.Loading
+            _isLoading.value = true
             try {
                 val session = sessionDataStore.sessionFlow.first()
                 val userId = session?.userId
                 if (userId.isNullOrBlank()) {
                     _createResult.value = RequestResult.Failure(appContext.getString(R.string.vm_post_creation_session_expired))
+                    _isLoading.value = false
                     return@launch
                 }
 
                 val category = selectedCategory.value
                 if (category == null) {
                     _createResult.value = RequestResult.Failure(appContext.getString(R.string.vm_post_creation_invalid_category))
+                    _isLoading.value = false
                     return@launch
                 }
 
@@ -266,6 +271,8 @@ class PostCreationViewModel @Inject constructor(
                 _createResult.value = RequestResult.Failure(
                     appContext.getString(R.string.vm_post_creation_create_error, e.message ?: "")
                 )
+            } finally {
+                _isLoading.value = false
             }
         }
     }

@@ -23,6 +23,9 @@ class ResetPasswordViewModel @Inject constructor(
     private val _recoveryResult = MutableStateFlow<RequestResult?>(null)
     val recoveryResult: StateFlow<RequestResult?> = _recoveryResult.asStateFlow()
 
+    private val _isLoading = MutableStateFlow(false)
+    val isLoading: StateFlow<Boolean> = _isLoading.asStateFlow()
+
     var password = ValidatedField("") { value ->
         when {
             value.isEmpty() -> appContext.getString(R.string.vm_reset_password_required)
@@ -58,10 +61,14 @@ class ResetPasswordViewModel @Inject constructor(
     }
 
     fun saveNewPassword() {
-        _recoveryResult.value = if (isFormValid) {
-            RequestResult.Success(appContext.getString(R.string.vm_reset_success))
-        } else {
-            RequestResult.Failure(appContext.getString(R.string.vm_reset_invalid_form))
+        if (!isFormValid) {
+            _recoveryResult.value = RequestResult.Failure(appContext.getString(R.string.vm_reset_invalid_form))
+            return
         }
+
+        _isLoading.value = true
+        // Simulate async operation
+        _recoveryResult.value = RequestResult.Success(appContext.getString(R.string.vm_reset_success))
+        _isLoading.value = false
     }
 }
