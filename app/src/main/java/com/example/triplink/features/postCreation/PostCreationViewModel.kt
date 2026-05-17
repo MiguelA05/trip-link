@@ -109,37 +109,39 @@ class PostCreationViewModel @Inject constructor(
         }
 
     fun loadPublicationForEdit(publicationId: String?) {
-        if (publicationId.isNullOrBlank()) {
-            if (prefilledFromPublicationId != null) resetForm()
-            return
+        viewModelScope.launch {
+            if (publicationId.isNullOrBlank()) {
+                if (prefilledFromPublicationId != null) resetForm()
+                return@launch
+            }
+            if (prefilledFromPublicationId == publicationId) return@launch
+
+            val publication = publicationRepository.getPublicationById(publicationId) ?: return@launch
+            prefilledFromPublicationId = publication.id
+            prefilledPhotos = publication.fotos
+
+            placeName.onChange(publication.titulo)
+            description = publication.informacion
+            selectedCategory.onChange(publication.categoria)
+
+            selectedCity = publication.ubicacion.ciudad
+            latitude = publication.ubicacion.latitud
+            longitude = publication.ubicacion.longitud
+
+            selectedPriceRange = publication.rangoPrecios ?: RangoPrecios.GRATUITO
+
+            val scheduleByDay = publication.horarios.associateBy { it.dia }
+            daySchedules = DiaSemana.entries.map { day ->
+                val schedule = scheduleByDay[day]
+                DayScheduleData(
+                    day = day,
+                    isEnabled = schedule != null,
+                    openTime = schedule?.fechaInicio?.toHHmm().orEmpty(),
+                    closeTime = schedule?.fechaFin?.toHHmm().orEmpty()
+                )
+            }
+            isOpenEveryDay = daySchedules.all { it.isEnabled }
         }
-        if (prefilledFromPublicationId == publicationId) return
-
-        val publication = publicationRepository.getPublicationById(publicationId) ?: return
-        prefilledFromPublicationId = publication.id
-        prefilledPhotos = publication.fotos
-
-        placeName.onChange(publication.titulo)
-        description = publication.informacion
-        selectedCategory.onChange(publication.categoria)
-
-        selectedCity = publication.ubicacion.ciudad
-        latitude = publication.ubicacion.latitud
-        longitude = publication.ubicacion.longitud
-
-        selectedPriceRange = publication.rangoPrecios ?: RangoPrecios.GRATUITO
-
-        val scheduleByDay = publication.horarios.associateBy { it.dia }
-        daySchedules = DiaSemana.entries.map { day ->
-            val schedule = scheduleByDay[day]
-            DayScheduleData(
-                day = day,
-                isEnabled = schedule != null,
-                openTime = schedule?.fechaInicio?.toHHmm().orEmpty(),
-                closeTime = schedule?.fechaFin?.toHHmm().orEmpty()
-            )
-        }
-        isOpenEveryDay = daySchedules.all { it.isEnabled }
     }
 
     private fun isTimeOrderValid(open: String, close: String): Boolean {
@@ -211,6 +213,7 @@ class PostCreationViewModel @Inject constructor(
         }
 
         viewModelScope.launch {
+            _createResult.value = RequestResult.Loading
             try {
                 val session = sessionDataStore.sessionFlow.first()
                 val userId = session?.userId

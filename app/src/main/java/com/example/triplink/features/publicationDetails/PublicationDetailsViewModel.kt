@@ -34,10 +34,16 @@ class PublicationDetailsViewModel @Inject constructor(
     private val reportRepository: ReportRepository
 ) : ViewModel() {
 
+    private val _publication = MutableStateFlow<PuntoInteres?>(null)
+    val publication: StateFlow<PuntoInteres?> = _publication.asStateFlow()
+
     var isFavorite by mutableStateOf(false)
         private set
 
     var comments by mutableStateOf<List<Comentario>>(emptyList())
+        private set
+
+    var publicationLoaded by mutableStateOf(false)
         private set
 
     private val _favoriteToggleResult = MutableStateFlow<RequestResult?>(null)
@@ -52,16 +58,23 @@ class PublicationDetailsViewModel @Inject constructor(
     private val _reportResult = MutableStateFlow<RequestResult?>(null)
     val reportResult: StateFlow<RequestResult?> = _reportResult.asStateFlow()
 
-    fun getPublicationById(publicationId: String): PuntoInteres? {
-        return publicationRepository.getPublicationById(publicationId)
+    fun loadPublication(publicationId: String) {
+        viewModelScope.launch {
+            publicationLoaded = false
+            _publication.value = publicationRepository.getPublicationById(publicationId)
+            publicationLoaded = true
+        }
     }
 
     fun loadCommentsForPublication(publicationId: String) {
-        comments = commentRepository.getCommentsByPublicationId(publicationId)
+        viewModelScope.launch {
+            comments = commentRepository.getCommentsByPublicationId(publicationId)
+        }
     }
 
     fun toggleFavorite(userId: String, publicationId: String) {
         viewModelScope.launch {
+            _favoriteToggleResult.value = RequestResult.Loading
             try {
                 val wasToggled = favoriteRepository.toggleFavorite(userId, publicationId)
                 if (wasToggled) {
@@ -86,7 +99,9 @@ class PublicationDetailsViewModel @Inject constructor(
     }
 
     fun checkIsFavorite(userId: String, publicationId: String) {
-        isFavorite = favoriteRepository.isFavorite(userId, publicationId)
+        viewModelScope.launch {
+            isFavorite = favoriteRepository.isFavorite(userId, publicationId)
+        }
     }
 
     fun saveComment(publicationId: String, userId: String, userName: String, rating: Float, text: String) {
@@ -96,6 +111,7 @@ class PublicationDetailsViewModel @Inject constructor(
         }
 
         viewModelScope.launch {
+            _commentResult.value = RequestResult.Loading
             try {
                 val comment = Comentario(
                     id = UUID.randomUUID().toString(),
@@ -122,8 +138,8 @@ class PublicationDetailsViewModel @Inject constructor(
         }
     }
 
-    fun getAverageRating(publicationId: String): Double {
-        return commentRepository.getAverageRating(publicationId)
+    fun getAverageRating(): Double {
+        return comments.map { it.rating }.average().takeIf { !it.isNaN() } ?: 0.0
     }
 
     fun submitReport(
@@ -147,6 +163,7 @@ class PublicationDetailsViewModel @Inject constructor(
         }
 
         viewModelScope.launch {
+            _reportResult.value = RequestResult.Loading
             val hasReported = reportRepository.hasUserReportedPublication(userId, publicationId)
             if (hasReported) {
                 _reportResult.value = RequestResult.Failure(
@@ -178,25 +195,10 @@ class PublicationDetailsViewModel @Inject constructor(
         }
     }
 
-    fun updatePublication(updatedPublication: PuntoInteres) {
-        viewModelScope.launch {
-            try {
-                val wasUpdated = publicationRepository.updatePuntoInteres(updatedPublication)
-                _publicationActionResult.value = if (wasUpdated) {
-                    RequestResult.Success(appContext.getString(R.string.vm_publication_details_publication_updated))
-                } else {
-                    RequestResult.Failure(appContext.getString(R.string.vm_publication_details_publication_update_failed))
-                }
-            } catch (e: Exception) {
-                _publicationActionResult.value = RequestResult.Failure(
-                    appContext.getString(R.string.vm_publication_details_update_error, e.message ?: "")
-                )
-            }
-        }
-    }
 
     fun deletePublication(publicationId: String) {
         viewModelScope.launch {
+            _publicationActionResult.value = RequestResult.Loading
             try {
                 val wasDeleted = publicationRepository.deletePublicationById(publicationId)
                 _publicationActionResult.value = if (wasDeleted) {

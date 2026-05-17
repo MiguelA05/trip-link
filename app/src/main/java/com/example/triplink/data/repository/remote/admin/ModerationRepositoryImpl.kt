@@ -7,6 +7,11 @@ import com.example.triplink.domain.model.enums.moderator.ModerationFilter
 import com.example.triplink.domain.model.moderator.ModerationPublication
 import com.example.triplink.domain.repository.admin.ModerationRepository
 import com.example.triplink.domain.repository.user.PublicationRepository
+import com.example.triplink.data.repository.remote.PUBLICATIONS_COLLECTION
+import com.example.triplink.data.repository.remote.FirestorePuntoInteresDto
+import com.example.triplink.data.repository.remote.toDomain
+import com.google.firebase.firestore.FirebaseFirestore
+import kotlinx.coroutines.tasks.await
 import com.example.triplink.domain.repository.user.UserProfileRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -14,7 +19,6 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -22,20 +26,18 @@ import javax.inject.Singleton
 @Singleton
 class ModerationRepositoryImpl @Inject constructor(
     private val publicationRepository: PublicationRepository,
-    private val userProfileRepository: UserProfileRepository
+    private val userProfileRepository: UserProfileRepository,
+    private val firestore: FirebaseFirestore
 ) : ModerationRepository {
 
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
-    private val publicationOrderIds = mutableListOf<String>()
 
     private val _moderationPublications = MutableStateFlow<List<ModerationPublication>>(emptyList())
     override val moderationPublications: StateFlow<List<ModerationPublication>> = _moderationPublications.asStateFlow()
 
     init {
         scope.launch {
-            publicationRepository.publications.collectLatest { publications ->
-                refreshModerationPublications(publications)
-            }
+            refreshModerationPublications()
         }
     }
 
@@ -92,27 +94,27 @@ class ModerationRepositoryImpl @Inject constructor(
         )
 
         if (updated) {
-            movePublicationToEnd(publicationId)
-            refreshModerationPublications(publicationRepository.publications.value)
+            // refresh from remote to avoid relying on cached central list
+            refreshModerationPublications()
         }
     }
+    private suspend fun refreshModerationPublications() {
+        try {
+            val publications = firestore.collection(PUBLICATIONS_COLLECTION)
+                .orderBy("fechaCreacion")
+                .get()
+                .await()
+                .documents
+                .mapNotNull { doc ->
+                    doc.toObject(FirestorePuntoInteresDto::class.java)?.toDomain()
+                }
 
-    private suspend fun refreshModerationPublications(publications: List<PuntoInteres>) {
-        val incomingIds = publications.map { it.id }
-        publicationOrderIds.retainAll(incomingIds.toSet())
-        incomingIds.forEach { id ->
-            if (id !in publicationOrderIds) publicationOrderIds.add(id)
+            _moderationPublications.value = publications
+                .sortedByDescending { it.fechaCreacion }
+                .map { it.toModerationPublication() }
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
-
-        val orderIndex = publicationOrderIds.withIndex().associate { it.value to it.index }
-        _moderationPublications.value = publications
-            .sortedBy { orderIndex[it.id] ?: Int.MAX_VALUE }
-            .map { it.toModerationPublication() }
-    }
-
-    private fun movePublicationToEnd(publicationId: String) {
-        publicationOrderIds.remove(publicationId)
-        publicationOrderIds.add(publicationId)
     }
 
     private suspend fun PuntoInteres.toModerationPublication(): ModerationPublication {

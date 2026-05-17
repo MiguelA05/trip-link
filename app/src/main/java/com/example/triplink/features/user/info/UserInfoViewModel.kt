@@ -160,36 +160,36 @@ class UserInfoViewModel @Inject constructor(
 	}
 
 	private fun refreshSelectedContributions() {
-		try {
-			val userId = currentUserId ?: return
-			val allUserPublications = publicationRepository.getUserPublications(userId)
+		viewModelScope.launch {
+			try {
+				val userId = currentUserId ?: return@launch
+				val allUserPublications = publicationRepository.getUserPublications(userId)
+				val favorites = favoriteRepository.getFavoritePublications(userId)
 
-			val favorites = favoriteRepository.getFavoritePublications(userId)
-
-			val filtered = if (_uiState.value.selectedContributionIndex == 0) {
-				// Favorites: show publications the user marked as favorite
-				favorites.map { it.toContributionItem() }
-			} else {
-				val targetEstado = when (_uiState.value.selectedContributionIndex) {
-					1 -> EstadoPublicacion.VERIFICADA
-					2 -> EstadoPublicacion.PENDIENTE
-					3 -> EstadoPublicacion.RECHAZADA
-					else -> EstadoPublicacion.PENDIENTE
+				val filtered = if (_uiState.value.selectedContributionIndex == 0) {
+					favorites.map { it.toContributionItem() }
+				} else {
+					val targetEstado = when (_uiState.value.selectedContributionIndex) {
+						1 -> EstadoPublicacion.VERIFICADA
+						2 -> EstadoPublicacion.PENDIENTE
+						3 -> EstadoPublicacion.RECHAZADA
+						else -> EstadoPublicacion.PENDIENTE
+					}
+					allUserPublications
+						.filter { it.estado == targetEstado }
+						.map { it.toContributionItem() }
 				}
-				allUserPublications
-					.filter { it.estado == targetEstado }
-					.map { it.toContributionItem() }
-			}
 
-			_uiState.value = _uiState.value.copy(
-				selectedContributionItems = filtered,
-				favoritesCount = favorites.size,
-				verifiedCount = allUserPublications.count { it.estado == EstadoPublicacion.VERIFICADA },
-				pendingCount = allUserPublications.count { it.estado == EstadoPublicacion.PENDIENTE },
-				rejectedCount = allUserPublications.count { it.estado == EstadoPublicacion.RECHAZADA }
-			)
-		} catch (e: Exception) {
-			e.printStackTrace()
+				_uiState.value = _uiState.value.copy(
+					selectedContributionItems = filtered,
+					favoritesCount = favorites.size,
+					verifiedCount = allUserPublications.count { it.estado == EstadoPublicacion.VERIFICADA },
+					pendingCount = allUserPublications.count { it.estado == EstadoPublicacion.PENDIENTE },
+					rejectedCount = allUserPublications.count { it.estado == EstadoPublicacion.RECHAZADA }
+				)
+			} catch (e: Exception) {
+				e.printStackTrace()
+			}
 		}
 	}
 

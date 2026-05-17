@@ -13,7 +13,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowDown
-import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.outlined.Email
 import androidx.compose.material.icons.outlined.Lock
 import androidx.compose.material3.*
@@ -36,6 +35,7 @@ import com.example.triplink.core.components.imagepicker.ImagePickerBottomSheet
 import com.example.triplink.core.components.imagepicker.ProfileImage
 import com.example.triplink.core.components.map.LocationPickerMapField
 import com.example.triplink.core.utils.RequestResult
+import com.example.triplink.core.utils.messageText
 import com.example.triplink.core.utils.createTempImageUri
 import com.example.triplink.ui.theme.TextColors
 import com.example.triplink.ui.theme.TextTokens
@@ -98,28 +98,16 @@ fun AccountEditScreen(
 
     LaunchedEffect(updateResult) {
         updateResult?.let { result ->
-            when (result) {
-                is RequestResult.Success -> {
-                    snackbarHostState.showSnackbar(result.message)
-                }
-                is RequestResult.Failure -> {
-                    snackbarHostState.showSnackbar(result.errorMessage)
-                }
-            }
+            snackbarHostState.showSnackbar(result.messageText())
             accountEditViewModel.clearUpdateResult()
         }
     }
 
     LaunchedEffect(deleteResult) {
         deleteResult?.let { result ->
-            when (result) {
-                is RequestResult.Success -> {
-                    snackbarHostState.showSnackbar(result.message)
-                    onAppHomeClick()
-                }
-                is RequestResult.Failure -> {
-                    snackbarHostState.showSnackbar(result.errorMessage)
-                }
+            snackbarHostState.showSnackbar(result.messageText())
+            if (result is RequestResult.Success) {
+                onAppHomeClick()
             }
             accountEditViewModel.clearDeleteResult()
         }

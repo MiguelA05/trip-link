@@ -7,12 +7,15 @@ import kotlinx.coroutines.flow.StateFlow
 interface PublicationRepository {
     val publications: StateFlow<List<PuntoInteres>>
 
-    fun homePublications(): List<PuntoInteres>
-    fun explorePublications(): List<PuntoInteres>
-    fun getPublicationById(publicationId: String): PuntoInteres?
+    suspend fun homePublications(): List<PuntoInteres>
+    suspend fun explorePublications(): List<PuntoInteres>
+    suspend fun getPublicationById(publicationId: String): PuntoInteres?
     suspend fun savePuntoInteres(publication: PuntoInteres): Boolean
     suspend fun updatePuntoInteres(publication: PuntoInteres): Boolean
     suspend fun deletePublicationById(publicationId: String): Boolean
-    fun getUserPublications(userId: String): List<PuntoInteres>
-    fun getPublicationsByState(estado: EstadoPublicacion): List<PuntoInteres>
+    suspend fun getUserPublications(userId: String): List<PuntoInteres>
+    suspend fun getPublicationsByState(estado: EstadoPublicacion): List<PuntoInteres>
+    // Recalculate denormalized counts (favorites) by querying subcollections remotely.
+    // Returns true if the remote document was updated successfully.
+    suspend fun recalculateFavoriteCount(publicationId: String): Boolean
 }

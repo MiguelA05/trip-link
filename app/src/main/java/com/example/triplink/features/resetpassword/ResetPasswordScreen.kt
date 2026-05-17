@@ -40,7 +40,8 @@ import com.example.triplink.core.components.common.AppTitle
 import com.example.triplink.core.components.FormField
 import com.example.triplink.core.components.GeneralButton
 import com.example.triplink.core.components.GeneralTopBar
-import com.example.triplink.core.utils.RequestResult
+import com.example.triplink.core.utils.isErrorResult
+import com.example.triplink.core.utils.messageText
 import com.example.triplink.ui.theme.TextTokens
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -53,10 +54,7 @@ fun ResetPasswordScreen(
 
     LaunchedEffect(recoveryResult) {
         recoveryResult?.let { result ->
-            val message = when (result) {
-                is RequestResult.Success -> result.message
-                is RequestResult.Failure -> result.errorMessage
-            }
+            val message = result.messageText()
             snackbarHostState.showSnackbar(message)
             viewModel.resetRecoveryResult()
         }
@@ -65,7 +63,7 @@ fun ResetPasswordScreen(
     Scaffold(
         snackbarHost = {
             SnackbarHost(snackbarHostState) { data ->
-                val isError = recoveryResult is RequestResult.Failure
+                val isError = recoveryResult?.isErrorResult == true
                 Snackbar(
                     containerColor = if (isError) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.primary,
                     contentColor = if (isError) MaterialTheme.colorScheme.onError else MaterialTheme.colorScheme.onPrimary

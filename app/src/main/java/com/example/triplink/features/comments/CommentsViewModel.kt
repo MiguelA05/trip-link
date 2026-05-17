@@ -30,6 +30,9 @@ class CommentsViewModel @Inject constructor(
     private val commentRepository: CommentRepository
 ) : ViewModel() {
 
+    private val _uiState = MutableStateFlow<CommentsUiState?>(null)
+    val uiState: StateFlow<CommentsUiState?> = _uiState.asStateFlow()
+
     private val _saveCommentResult = MutableStateFlow<RequestResult?>(null)
     val saveCommentResult: StateFlow<RequestResult?> = _saveCommentResult.asStateFlow()
 
@@ -37,8 +40,16 @@ class CommentsViewModel @Inject constructor(
     val refreshTick: StateFlow<Int> = _refreshTick.asStateFlow()
 
 
+    fun loadComments(publicationId: String) {
+        viewModelScope.launch {
+            val reviews = commentRepository.getCommentsByPublicationId(publicationId)
+            _uiState.value = buildUiState(publicationId, reviews)
+        }
+    }
+
     fun deleteComment(publicationId: String, commentId: String, currentUserId: String) {
         viewModelScope.launch {
+            _saveCommentResult.value = RequestResult.Loading
             try {
                 val existing = commentRepository.getCommentsByPublicationId(publicationId)
                     .firstOrNull { it.id == commentId }
@@ -55,6 +66,7 @@ class CommentsViewModel @Inject constructor(
                 val wasDeleted = commentRepository.deleteComment(publicationId, commentId)
                 _saveCommentResult.value = if (wasDeleted) {
                     _refreshTick.value += 1
+                    loadComments(publicationId)
                     RequestResult.Success(appContext.getString(R.string.vm_comments_deleted))
                 } else {
                     RequestResult.Failure(appContext.getString(R.string.vm_comments_delete_failed))
@@ -67,9 +79,7 @@ class CommentsViewModel @Inject constructor(
         }
     }
 
-    fun buildUiState(publicationId: String): CommentsUiState {
-        val reviews = commentRepository.getCommentsByPublicationId(publicationId)
-
+    private fun buildUiState(publicationId: String, reviews: List<Comentario>): CommentsUiState {
         val totalReviews = reviews.size
         val averageRating = if (reviews.isNotEmpty()) reviews.map { it.rating }.average() else 0.0
 

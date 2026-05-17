@@ -33,7 +33,7 @@ import com.example.triplink.core.components.PublicationCard
 import com.example.triplink.core.components.common.BrandHeader
 import com.example.triplink.core.components.common.SectionTitleDivider
 import com.example.triplink.core.navigation.SessionViewModel
-import com.example.triplink.core.utils.RequestResult
+import com.example.triplink.core.utils.messageText
 
 @Composable
 fun UserHomeScreen(
@@ -47,18 +47,22 @@ fun UserHomeScreen(
     val sessionViewModel: SessionViewModel = hiltViewModel()
     val favoriteResult by viewModel.favoriteToggleResult.collectAsState()
     val publications by viewModel.publications.collectAsState()
+    val favoriteIds by viewModel.favoritePublicationIds.collectAsState()
     val snackbarHostState = remember { SnackbarHostState() }
 
     // Obtain current session to get userId
     val currentUserId by sessionViewModel.sessionState.collectAsState()
     val userId = (currentUserId as? com.example.triplink.core.navigation.SessionState.Authenticated)?.session?.userId ?: ""
 
+    LaunchedEffect(userId) {
+        if (userId.isNotBlank()) {
+            viewModel.loadFavoriteIds(userId)
+        }
+    }
+
     LaunchedEffect(favoriteResult) {
         favoriteResult?.let { result ->
-            val message = when (result) {
-                is RequestResult.Success -> result.message
-                is RequestResult.Failure -> result.errorMessage
-            }
+            val message = result.messageText()
             snackbarHostState.showSnackbar(message)
             viewModel.clearFavoriteResult()
         }
@@ -106,7 +110,7 @@ fun UserHomeScreen(
                 PublicationCard(
                     puntoInteres = publication,
                     ratingLabel = viewModel.ratingLabelForPublication(publication),
-                    isFavorite = viewModel.isFavorite(userId, publication.id),
+                    isFavorite = favoriteIds.contains(publication.id),
                     onCardClick = { onPublicationClick(publication.id) },
                     onFavoriteToggle = { viewModel.toggleFavorite(userId, publication.id) },
                     onCommentsClick = { onCommentsClick(publication.id) }

@@ -49,6 +49,8 @@ import com.example.triplink.core.components.GeneralButton
 import com.example.triplink.core.components.GeneralTopBar
 import com.example.triplink.core.components.LinkTextRow
 import com.example.triplink.core.utils.RequestResult
+import com.example.triplink.core.utils.isErrorResult
+import com.example.triplink.core.utils.messageText
 import com.example.triplink.ui.theme.TextTokens
 import kotlinx.coroutines.launch
 
@@ -66,10 +68,7 @@ fun LoginScreen(
 
     LaunchedEffect(loginResult) {
         loginResult?.let { result ->
-            val message = when (result) {
-                is RequestResult.Success -> result.message
-                is RequestResult.Failure -> result.errorMessage
-            }
+            val message = result.messageText()
 
             if (result is RequestResult.Success) {
                 // Mostrar feedback y navegar sin bloquear la transición.
@@ -84,7 +83,7 @@ fun LoginScreen(
     Scaffold(
         snackbarHost = {
             SnackbarHost(snackbarHostState) { data ->
-                val isError = loginResult is RequestResult.Failure
+                val isError = loginResult?.isErrorResult == true
                 Snackbar(
                     containerColor = if (isError) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.primary,
                     contentColor = if (isError) MaterialTheme.colorScheme.onError else MaterialTheme.colorScheme.onPrimary

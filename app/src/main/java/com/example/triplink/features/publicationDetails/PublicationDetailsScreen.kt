@@ -51,6 +51,7 @@ import com.example.triplink.core.localization.localizedLabelOrNoPrice
 import com.example.triplink.core.navigation.SessionState
 import com.example.triplink.core.navigation.SessionViewModel
 import com.example.triplink.core.utils.RequestResult
+import com.example.triplink.core.utils.messageText
 import com.example.triplink.domain.model.enums.RazonReporte
 import com.example.triplink.R
 import com.example.triplink.ui.theme.*
@@ -74,7 +75,7 @@ fun PublicationDetailsScreen(
     val viewModel: PublicationDetailsViewModel = hiltViewModel()
     val sessionViewModel: SessionViewModel = hiltViewModel()
     val sessionState by sessionViewModel.sessionState.collectAsState()
-    val publication = viewModel.getPublicationById(publicationId)
+    val publication by viewModel.publication.collectAsState()
     val publicationActionResult by viewModel.publicationActionResult.collectAsState()
     val favoriteToggleResult by viewModel.favoriteToggleResult.collectAsState()
     val commentResult by viewModel.commentResult.collectAsState()
@@ -83,6 +84,7 @@ fun PublicationDetailsScreen(
     val coroutineScope = rememberCoroutineScope()
 
     LaunchedEffect(publicationId) {
+        viewModel.loadPublication(publicationId)
         viewModel.loadCommentsForPublication(publicationId)
     }
 
@@ -93,31 +95,24 @@ fun PublicationDetailsScreen(
 
     LaunchedEffect(publicationActionResult) {
         publicationActionResult?.let { result ->
-            when (result) {
-                is RequestResult.Success -> {
-                    if (result.message.contains("eliminada", ignoreCase = true)) {
-                        if (isOwnerPublicationView) {
-                            onOwnerPublicationDeleted()
-                        } else {
-                            onBackClick()
-                        }
-                        viewModel.clearPublicationActionResult()
-                        return@let
-                    }
-                    snackbarHostState.showSnackbar(result.message)
+            val message = result.messageText()
+            if (result is RequestResult.Success && result.message.contains("eliminada", ignoreCase = true)) {
+                if (isOwnerPublicationView) {
+                    onOwnerPublicationDeleted()
+                } else {
+                    onBackClick()
                 }
-                is RequestResult.Failure -> snackbarHostState.showSnackbar(result.errorMessage)
+                viewModel.clearPublicationActionResult()
+                return@let
             }
+            snackbarHostState.showSnackbar(message)
             viewModel.clearPublicationActionResult()
         }
     }
 
     LaunchedEffect(commentResult) {
         commentResult?.let { result ->
-            val message = when (result) {
-                is RequestResult.Success -> result.message
-                is RequestResult.Failure -> result.errorMessage
-            }
+            val message = result.messageText()
             snackbarHostState.showSnackbar(message)
             viewModel.clearCommentResult()
         }
@@ -125,10 +120,7 @@ fun PublicationDetailsScreen(
 
     LaunchedEffect(favoriteToggleResult) {
         favoriteToggleResult?.let { result ->
-            val message = when (result) {
-                is RequestResult.Success -> result.message
-                is RequestResult.Failure -> result.errorMessage
-            }
+            val message = result.messageText()
             snackbarHostState.showSnackbar(message)
             viewModel.clearFavoriteResult()
         }
@@ -136,13 +128,22 @@ fun PublicationDetailsScreen(
 
     LaunchedEffect(reportResult) {
         reportResult?.let { result ->
-            val message = when (result) {
-                is RequestResult.Success -> result.message
-                is RequestResult.Failure -> result.errorMessage
-            }
+            val message = result.messageText()
             snackbarHostState.showSnackbar(message)
             viewModel.clearReportResult()
         }
+    }
+
+    if (!viewModel.publicationLoaded) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(MaterialTheme.colorScheme.background),
+            contentAlignment = Alignment.Center
+        ) {
+            CircularProgressIndicator()
+        }
+        return
     }
 
     if (publication == null) {
@@ -166,33 +167,31 @@ fun PublicationDetailsScreen(
         return
     }
 
+    val currentPublication = publication ?: return
+
     var showReportModal by remember { mutableStateOf(false) }
     var showRatingModal by remember { mutableStateOf(false) }
     var showDeletePublicationDialog by remember { mutableStateOf(false) }
 
-    val schedules: List<DayScheduleUi> = publication.horarios.toWeeklyScheduleUi()
+    val schedules: List<DayScheduleUi> = currentPublication.horarios.toWeeklyScheduleUi()
     val today = currentDayLocalizedLabel()
     val loginRequiredForReviewMessage = stringResource(R.string.feature_publication_details_login_required_for_review)
     val defaultUserName = stringResource(R.string.vm_user_info_default_user_name)
     val isCurrentUserOwner = (sessionState as? SessionState.Authenticated)
         ?.session
         ?.userId
-        ?.equals(publication.usuarioAutorId, ignoreCase = true) == true
+        ?.equals(currentPublication.usuarioAutorId, ignoreCase = true) == true
     val ownerViewEnabled = isOwnerPublicationView && isCurrentUserOwner
     val currentUserId = (sessionState as? SessionState.Authenticated)?.session?.userId.orEmpty()
-    val alreadyReportedByCurrentUser = currentUserId.isNotBlank() && publication.reportes.any {
+    val alreadyReportedByCurrentUser = currentUserId.isNotBlank() && currentPublication.reportes.any {
         it.reportadorId.equals(currentUserId, ignoreCase = true)
     }
     val canOpenReportModal = !ownerViewEnabled && !alreadyReportedByCurrentUser
 
-    val selectedPriceLevel = publication.rangoPrecios.localizedLabelOrNoPrice()
+    val selectedPriceLevel = currentPublication.rangoPrecios.localizedLabelOrNoPrice()
 
     val reviews = viewModel.comments.map { Review(it.userName, it.rating.toInt(), it.text) }
-    val generalRating = if (viewModel.comments.isNotEmpty()) {
-        viewModel.comments.map { it.rating }.average()
-    } else {
-        0.0
-    }
+    val generalRating = viewModel.getAverageRating()
 
     Scaffold(
         snackbarHost = { SnackbarHost(snackbarHostState) },
@@ -203,9 +202,9 @@ fun PublicationDetailsScreen(
                     onBack = onBackClick
                 )
                 ImageCarousel(
-                    imageUrls = publication.fotos,
-                    title = publication.titulo,
-                    categoryLabel = publication.categoria.localizedLabel(),
+                    imageUrls = currentPublication.fotos,
+                    title = currentPublication.titulo,
+                    categoryLabel = currentPublication.categoria.localizedLabel(),
                     showReportAction = !ownerViewEnabled,
                     reportActionEnabled = canOpenReportModal,
                     onReportClick = { if (canOpenReportModal) showReportModal = true }
@@ -248,7 +247,7 @@ fun PublicationDetailsScreen(
             item {
                 PublicationTextSection(
                     title = stringResource(R.string.feature_publication_details_description),
-                    body = publication.informacion
+                    body = currentPublication.informacion
                 )
             }
             item {
@@ -256,10 +255,10 @@ fun PublicationDetailsScreen(
             }
             item {
                 PublicationLocationSection(
-                    city = publication.ubicacion.ciudad,
-                    coordinates = "${publication.ubicacion.latitud}, ${publication.ubicacion.longitud}",
-                    latitude = publication.ubicacion.latitud,
-                    longitude = publication.ubicacion.longitud
+                    city = currentPublication.ubicacion.ciudad,
+                    coordinates = "${currentPublication.ubicacion.latitud}, ${currentPublication.ubicacion.longitud}",
+                    latitude = currentPublication.ubicacion.latitud,
+                    longitude = currentPublication.ubicacion.longitud
                 )
             }
             item {

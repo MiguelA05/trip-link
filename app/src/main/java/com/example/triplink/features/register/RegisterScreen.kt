@@ -34,6 +34,7 @@ import com.example.triplink.core.components.GeneralButton
 import com.example.triplink.core.components.LinkTextRow
 import com.example.triplink.core.components.map.LocationPickerMapField
 import com.example.triplink.core.utils.RequestResult
+import com.example.triplink.core.utils.messageText
 import com.example.triplink.ui.theme.TextColors
 import com.example.triplink.ui.theme.TextTokens
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -58,12 +59,15 @@ fun RegisterScreen(
         registerResult?.let { result ->
             when (result) {
                 is RequestResult.Success -> {
-                    successMessage = result.message
+                    successMessage = result.messageText()
                     showSuccessDialog = true
                 }
+
                 is RequestResult.Failure -> {
-                    snackbarHostState.showSnackbar(result.errorMessage)
+                    snackbarHostState.showSnackbar(result.messageText())
                 }
+
+                is RequestResult.Loading -> Unit
             }
             // Clear result after showing snackbar to avoid repeated triggers on recomposition
             registerViewModel.clearResult()
@@ -291,7 +295,6 @@ fun RegisterScreen(
         GeneralAlertDialog(
             onDismissRequest = {},
             onConfirm = {
-                showSuccessDialog = false
                 pendingSuccessNavigation = true
             },
             title = stringResource(R.string.feature_register_success_dialog_title),

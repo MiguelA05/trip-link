@@ -1,6 +1,5 @@
 package com.example.triplink.features.postCreation
 
-import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -43,6 +42,7 @@ import com.example.triplink.core.components.GeneralTopBar
 import com.example.triplink.core.components.map.LocationPickerMapField
 import com.example.triplink.R
 import com.example.triplink.core.utils.RequestResult
+import com.example.triplink.core.utils.messageText
 import com.example.triplink.core.localization.localizedLabel
 import com.example.triplink.core.localization.localizedShortLabel
 import com.example.triplink.domain.model.enums.DiaSemana
@@ -79,13 +79,16 @@ fun PostCreationScreen(
     LaunchedEffect(createResult) {
         when (val result = createResult) {
             is RequestResult.Failure -> {
-                snackbarHostState.showSnackbar(result.errorMessage)
+                snackbarHostState.showSnackbar(result.messageText())
                 viewModel.clearResult()
             }
 
             is RequestResult.Success -> {
+                snackbarHostState.showSnackbar(result.messageText())
                 viewModel.clearResult()
             }
+
+            is RequestResult.Loading -> Unit
 
             null -> Unit
         }

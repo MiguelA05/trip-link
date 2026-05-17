@@ -30,6 +30,9 @@ class UserHomeViewModel @Inject constructor(
 
     val publications: StateFlow<List<PuntoInteres>> = publicationRepository.publications
 
+    private val _favoritePublicationIds = MutableStateFlow<Set<String>>(emptySet())
+    val favoritePublicationIds: StateFlow<Set<String>> = _favoritePublicationIds.asStateFlow()
+
     var selectedTabIndex by mutableIntStateOf(0)
         private set
 
@@ -43,11 +46,19 @@ class UserHomeViewModel @Inject constructor(
         selectedTabIndex = index
     }
 
+    fun loadFavoriteIds(userId: String) {
+        viewModelScope.launch {
+            _favoritePublicationIds.value = favoriteRepository.getFavoritePublications(userId).map { it.id }.toSet()
+        }
+    }
+
     fun toggleFavorite(userId: String, publicationId: String) {
         viewModelScope.launch {
+            _favoriteToggleResult.value = RequestResult.Loading
             try {
                 val wasSaved = favoriteRepository.toggleFavorite(userId, publicationId)
                 if (wasSaved) {
+                    loadFavoriteIds(userId)
                     val isFavorite = favoriteRepository.isFavorite(userId, publicationId)
                     val message = if (isFavorite) {
                         appContext.getString(R.string.vm_user_home_favorite_added)
@@ -68,8 +79,8 @@ class UserHomeViewModel @Inject constructor(
         }
     }
 
-    fun isFavorite(userId: String, publicationId: String): Boolean {
-        return favoriteRepository.isFavorite(userId, publicationId)
+    fun isFavorite(publicationId: String): Boolean {
+        return favoritePublicationIds.value.contains(publicationId)
     }
 
     fun ratingLabelForPublication(publication: PuntoInteres): String {

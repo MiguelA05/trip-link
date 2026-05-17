@@ -5,6 +5,11 @@ import com.example.triplink.domain.model.admin.AdminReportCase
 import com.example.triplink.domain.model.enums.EstadoReporte
 import com.example.triplink.domain.repository.admin.ReportRepository
 import com.example.triplink.domain.repository.user.PublicationRepository
+import com.example.triplink.data.repository.remote.PUBLICATIONS_COLLECTION
+import com.example.triplink.data.repository.remote.FirestorePuntoInteresDto
+import com.example.triplink.data.repository.remote.toDomain
+import com.google.firebase.firestore.FirebaseFirestore
+import kotlinx.coroutines.tasks.await
 import com.example.triplink.domain.repository.user.UserProfileRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -12,7 +17,6 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -20,7 +24,8 @@ import javax.inject.Singleton
 @Singleton
 class ReportRepositoryImpl @Inject constructor(
     private val publicationRepository: PublicationRepository,
-    private val userProfileRepository: UserProfileRepository
+    private val userProfileRepository: UserProfileRepository,
+    private val firestore: FirebaseFirestore
 ) : ReportRepository {
 
     private val acceptedReportThreshold: Int = 3
@@ -34,9 +39,7 @@ class ReportRepositoryImpl @Inject constructor(
 
     init {
         scope.launch {
-            publicationRepository.publications.collectLatest {
-                refreshReportCases()
-            }
+            refreshReportCases()
         }
     }
 
@@ -82,6 +85,8 @@ class ReportRepositoryImpl @Inject constructor(
         if (approvedCount >= acceptedReportThreshold) {
             publicationRepository.deletePublicationById(case.pointOfInterest.id)
         }
+        // refresh cases after mutation
+        refreshReportCases()
     }
 
     override suspend fun invalidateReport(reportId: String) {
@@ -91,24 +96,37 @@ class ReportRepositoryImpl @Inject constructor(
             reportId = case.report.id,
             newStatus = EstadoReporte.RECHAZADO
         )
+        refreshReportCases()
     }
 
     private suspend fun refreshReportCases() {
-        _reportCases.value = publicationRepository.publications.value
-            .flatMap { publication ->
-                publication.reportes
-                    .filter { it.estado == EstadoReporte.PENDIENTE }
-                    .map { report ->
-                        AdminReportCase(
-                            report = report,
-                            pointOfInterest = publication,
-                            reporterName = userProfileRepository.findUserNameById(report.reportadorId)
-                                ?: report.reportadorId.substringBefore('@'),
-                            acceptedReportsCount = publication.reportes.count { it.estado == EstadoReporte.APROBADO }
-                        )
-                    }
-            }
-            .sortedByDescending { it.report.fechaCreacion }
+        try {
+            val publications = firestore.collection(PUBLICATIONS_COLLECTION)
+                .get()
+                .await()
+                .documents
+                .mapNotNull { doc ->
+                    doc.toObject(FirestorePuntoInteresDto::class.java)?.toDomain()
+                }
+
+            _reportCases.value = publications
+                .flatMap { publication ->
+                    publication.reportes
+                        .filter { it.estado == EstadoReporte.PENDIENTE }
+                        .map { report ->
+                            AdminReportCase(
+                                report = report,
+                                pointOfInterest = publication,
+                                reporterName = userProfileRepository.findUserNameById(report.reportadorId)
+                                    ?: report.reportadorId.substringBefore('@'),
+                                acceptedReportsCount = publication.reportes.count { it.estado == EstadoReporte.APROBADO }
+                            )
+                        }
+                }
+                .sortedByDescending { it.report.fechaCreacion }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
     }
 
     private fun findReportCase(reportId: String): AdminReportCase? =

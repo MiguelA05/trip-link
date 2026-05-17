@@ -31,7 +31,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
@@ -42,7 +41,7 @@ import com.example.triplink.core.components.GeneralTopBar
 import com.example.triplink.core.components.RatingSummaryCard
 import com.example.triplink.core.navigation.SessionState
 import com.example.triplink.core.navigation.SessionViewModel
-import com.example.triplink.core.utils.RequestResult
+import com.example.triplink.core.utils.messageText
 import com.example.triplink.ui.theme.TextTokens
 
 @Composable
@@ -53,22 +52,33 @@ fun CommentsScreen(
 ) {
 	val saveResult by viewModel.saveCommentResult.collectAsState()
 	val refreshTick by viewModel.refreshTick.collectAsState()
+	val uiState by viewModel.uiState.collectAsState()
 	val sessionViewModel: SessionViewModel = hiltViewModel()
 	val sessionState by sessionViewModel.sessionState.collectAsState()
 	val currentUserId = (sessionState as? SessionState.Authenticated)?.session?.userId.orEmpty()
 	val snackbarHostState = remember { SnackbarHostState() }
 	var deletingCommentId by remember { mutableStateOf<String?>(null) }
-	val uiState = remember(publicationId, refreshTick) { viewModel.buildUiState(publicationId) }
+
+	LaunchedEffect(publicationId, refreshTick) {
+		viewModel.loadComments(publicationId)
+	}
 
 	LaunchedEffect(saveResult) {
 		saveResult?.let { result ->
-			val message = when (result) {
-				is RequestResult.Success -> result.message
-				is RequestResult.Failure -> result.errorMessage
-			}
+			val message = result.messageText()
 			snackbarHostState.showSnackbar(message)
 			viewModel.clearSaveResult()
 		}
+	}
+
+	val currentUiState = uiState ?: run {
+		Box(
+			modifier = Modifier.fillMaxSize(),
+			contentAlignment = Alignment.Center
+		) {
+			Text(text = stringResource(R.string.feature_comments_title))
+		}
+		return
 	}
 
 	Scaffold(
@@ -92,22 +102,22 @@ fun CommentsScreen(
 		) {
 			item {
 				RatingSummaryCard(
-					average = uiState.averageRating,
-					totalReviews = uiState.totalReviews,
-					distribution = uiState.distribution
+					average = currentUiState.averageRating,
+					totalReviews = currentUiState.totalReviews,
+					distribution = currentUiState.distribution
 				)
 			}
 
 			item {
 				Text(
-					text = stringResource(R.string.feature_comments_total_reviews, uiState.totalReviews),
+					text = stringResource(R.string.feature_comments_total_reviews, currentUiState.totalReviews),
 					modifier = Modifier.fillMaxWidth(),
 					style = TextTokens.emphasized(TextTokens.body()),
 					color = MaterialTheme.colorScheme.onSurfaceVariant,
 				)
 			}
 
-			items(uiState.reviews, key = { it.id }) { review ->
+			items(currentUiState.reviews, key = { it.id }) { review ->
 				Box {
 					CommentCard(comment = review)
 					val canDelete = review.usuarioId.equals(currentUserId, ignoreCase = true)
@@ -147,8 +157,9 @@ fun CommentsScreen(
 			dismissText = stringResource(R.string.feature_comments_delete_dialog_cancel),
 			onDismissRequest = { deletingCommentId = null },
 			onConfirm = {
-				viewModel.deleteComment(publicationId, deletingCommentId!!, currentUserId)
+				val commentId = deletingCommentId ?: return@CompactDestructiveConfirmDialog
 				deletingCommentId = null
+				viewModel.deleteComment(publicationId, commentId, currentUserId)
 			}
 		)
 	}
