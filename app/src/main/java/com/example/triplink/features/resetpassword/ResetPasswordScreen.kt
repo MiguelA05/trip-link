@@ -47,6 +47,7 @@ import com.example.triplink.ui.theme.TextTokens
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ResetPasswordScreen(
+    oobCode: String,
     viewModel: ResetPasswordViewModel = hiltViewModel()
 ) {
     val snackbarHostState = remember { SnackbarHostState() }
@@ -148,7 +149,7 @@ fun ResetPasswordScreen(
 
             GeneralButton(
                 primary = true,
-                onClick = { viewModel.saveNewPassword() },
+                onClick = { viewModel.saveNewPassword(oobCode) },
                 enabled = viewModel.isFormValid,
                 isLoading = isLoading,
                 text = stringResource(R.string.feature_reset_password_submit_action)

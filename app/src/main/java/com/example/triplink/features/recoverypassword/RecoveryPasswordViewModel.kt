@@ -68,20 +68,21 @@ class RecoveryPasswordViewModel @Inject constructor(
             _isLoading.value = true
             try {
                 // Validar que el email existe en el sistema
+                /*
                 val userExists = authRepository.findByEmail(email.value) != null
                 if (!userExists) {
                     _recoveryResult.value = RequestResult.Failure(appContext.getString(R.string.vm_recovery_email_not_found))
                     _isLoading.value = false
                     return@launch
                 }
+                */
 
                 // En una aplicación real, aquí se enviaría un email
                 // Por ahora, simulamos el envío exitoso
-                isEmailSent = true
-                showSuccessDialog = true
-                _recoveryResult.value = RequestResult.Success(
-                    appContext.getString(R.string.vm_recovery_success, email.value)
-                )
+                authRepository.sendPasswordResetEmail(email.value)
+                _isLoading.value = false
+                //TODO reemplazar por string.xml
+                _recoveryResult.value = RequestResult.Success("se ha enviado un correo de recuperación a ${email.value}")
             } catch (e: Exception) {
                 _recoveryResult.value = RequestResult.Failure(appContext.getString(R.string.vm_recovery_invalid_form))
             } finally {

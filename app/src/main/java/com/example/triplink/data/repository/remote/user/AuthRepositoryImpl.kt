@@ -6,6 +6,7 @@ import com.example.triplink.data.repository.remote.toDomain
 import com.example.triplink.data.repository.remote.toFirestoreDto
 import com.example.triplink.domain.model.Usuario
 import com.example.triplink.domain.repository.user.AuthRepository
+import com.google.firebase.auth.ActionCodeSettings
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.tasks.await
@@ -69,5 +70,36 @@ class AuthRepositoryImpl @Inject constructor(
     }
 
     private fun normalize(value: String): String = value.trim().lowercase()
+
+
+    override suspend fun sendPasswordResetEmail(
+        email: String
+    ) {
+        auth.setLanguageCode("es")
+        /*
+        val actionCodeSettings = ActionCodeSettings.newBuilder()
+            .setUrl("https://triplink-97bf5.firebaseapp.com/reset-password")
+            .setHandleCodeInApp(true)
+            .setAndroidPackageName(
+                "com.example.triplink",
+                true,
+                null
+            )
+            .setHandleCodeInApp(true)
+            .build()*/
+
+        auth.sendPasswordResetEmail(email).await()
+    }
+
+    override suspend fun verifyPasswordResetCode(oobCode: String): String {
+        return auth.verifyPasswordResetCode(oobCode).await()
+    }
+
+    override suspend fun confirmPasswordReset(
+        oobCode: String,
+        newPassword: String
+    ) {
+        auth.confirmPasswordReset(oobCode, newPassword).await()
+    }
 }
 

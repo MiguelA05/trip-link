@@ -5,19 +5,23 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.triplink.R
 import com.example.triplink.core.utils.RequestResult
 import com.example.triplink.core.utils.ValidatedField
+import com.example.triplink.domain.repository.user.AuthRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class ResetPasswordViewModel @Inject constructor(
-    @param:ApplicationContext private val appContext: Context
+    @param:ApplicationContext private val appContext: Context,
+    private val authRepository: AuthRepository
 ) : ViewModel() {
 
     private val _recoveryResult = MutableStateFlow<RequestResult?>(null)
@@ -60,15 +64,27 @@ class ResetPasswordViewModel @Inject constructor(
         _recoveryResult.value = null
     }
 
-    fun saveNewPassword() {
+    fun saveNewPassword( oobCode: String) {
         if (!isFormValid) {
             _recoveryResult.value = RequestResult.Failure(appContext.getString(R.string.vm_reset_invalid_form))
             return
         }
 
-        _isLoading.value = true
-        // Simulate async operation
-        _recoveryResult.value = RequestResult.Success(appContext.getString(R.string.vm_reset_success))
-        _isLoading.value = false
+        viewModelScope.launch {
+            _isLoading.value = true
+            try {
+                authRepository.confirmPasswordReset(
+                    oobCode = oobCode,
+                    newPassword = password.value
+                )
+
+                _isLoading.value = false
+                //TODO reemplazar por string.xml
+                _recoveryResult.value = RequestResult.Success("Contraseña cambiada exitosamente")
+            } catch (e: Exception) {
+                //TODO reemplazar por string.xml
+                _recoveryResult.value = RequestResult.Failure("Error al cambiar la contraseña: ${e.message}")
+            }
+        }
     }
 }

@@ -17,7 +17,8 @@ import com.example.triplink.core.navigation.main.MainNavigation
 fun AppNavigation(
     pendingPublicationId: String? = null,
     onPendingPublicationConsumed: () -> Unit = {},
-    sessionViewModel: SessionViewModel = hiltViewModel()
+    sessionViewModel: SessionViewModel = hiltViewModel(),
+    deepLink: android.net.Uri? = null
 ) {
     // Observa el estado de la sesión desde el ViewModel
     val sessionState by sessionViewModel.sessionState.collectAsState()
@@ -30,12 +31,13 @@ fun AppNavigation(
                     CircularProgressIndicator()
                 }
             }
-            is SessionState.NotAuthenticated -> AuthNavigation()
+            is SessionState.NotAuthenticated -> AuthNavigation(deepLink)
             is SessionState.Authenticated -> MainNavigation(
                 session = state.session,
                 onLogout = sessionViewModel::logout,
                 pendingPublicationId = pendingPublicationId,
-                onPendingPublicationConsumed = onPendingPublicationConsumed
+                onPendingPublicationConsumed = onPendingPublicationConsumed,
+
             )
         }
     }

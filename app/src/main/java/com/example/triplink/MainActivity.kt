@@ -24,7 +24,7 @@ import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
-
+    val deepLink = intent?.data
     @Inject
     lateinit var nearbyNotificationsScheduler: NearbyNotificationsScheduler
 
@@ -46,7 +46,8 @@ class MainActivity : ComponentActivity() {
             DescubreuqTheme {
                 AppNavigation(
                     pendingPublicationId = pendingPublicationId,
-                    onPendingPublicationConsumed = { pendingPublicationId = null }
+                    onPendingPublicationConsumed = { pendingPublicationId = null },
+                    deepLink=deepLink
                 )
             }
         }

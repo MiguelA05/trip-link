@@ -21,4 +21,6 @@ sealed class MainRoutes {
 
     @Serializable
     data object RecoveryPassword: MainRoutes()
+    @Serializable
+    data class ResetPassword ( val oobCode: String) : MainRoutes()
 }
