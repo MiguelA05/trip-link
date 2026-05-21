@@ -79,11 +79,16 @@ class ResetPasswordViewModel @Inject constructor(
                 )
 
                 _isLoading.value = false
-                //TODO reemplazar por string.xml
-                _recoveryResult.value = RequestResult.Success("Contraseña cambiada exitosamente")
+                _recoveryResult.value = RequestResult.Success(
+                    appContext.getString(R.string.vm_reset_success)
+                )
             } catch (e: Exception) {
-                //TODO reemplazar por string.xml
-                _recoveryResult.value = RequestResult.Failure("Error al cambiar la contraseña: ${e.message}")
+                _recoveryResult.value = RequestResult.Failure(
+                    appContext.getString(
+                        R.string.vm_reset_error,
+                        e.localizedMessage ?: e.message.orEmpty()
+                    )
+                )
             }
         }
     }

@@ -518,7 +518,7 @@
     <string name="feature_app_home_hero_line_1">Encuentra lugares únicos,</string>
     <string name="feature_app_home_hero_line_2">conecta con tu comunidad</string>
     <string name="feature_app_home_create_account_content_description">Crear cuenta</string>
-    <string name="feature_app_home_register_action">Register</string>
+    <string name="feature_app_home_register_action">Registrarse</string>
     <string name="feature_app_home_have_account">¿Tienes una cuenta?</string>
     <string name="feature_app_home_login_action">Inicia sesión</string>
 
@@ -631,6 +631,7 @@
     <string name="vm_reset_password_mismatch">Las contraseñas no coinciden</string>
     <string name="vm_reset_success">Contraseña restablecida con éxito</string>
     <string name="vm_reset_invalid_form">Por favor, verifica los campos</string>
+    <string name="vm_reset_error">Error al cambiar la contraseña: %1$s</string>
 
     <!-- VIEWMODEL: Comments -->
     <string name="vm_comments_not_found">Comentario no encontrado</string>

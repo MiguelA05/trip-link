@@ -630,6 +630,7 @@
     <string name="vm_reset_password_mismatch">Passwords do not match</string>
     <string name="vm_reset_success">Password reset successfully</string>
     <string name="vm_reset_invalid_form">Please verify the fields</string>
+    <string name="vm_reset_error">Error changing password: %1$s</string>
 
     <!-- VIEWMODEL: Comments -->
     <string name="vm_comments_not_found">Comment not found</string>
