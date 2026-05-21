@@ -48,6 +48,7 @@ import com.example.triplink.ui.theme.TextTokens
 @Composable
 fun ResetPasswordScreen(
     oobCode: String,
+    onPasswordChanged: () -> Unit = {},
     viewModel: ResetPasswordViewModel = hiltViewModel()
 ) {
     val snackbarHostState = remember { SnackbarHostState() }
@@ -59,6 +60,9 @@ fun ResetPasswordScreen(
             val message = result.messageText()
             snackbarHostState.showSnackbar(message)
             viewModel.resetRecoveryResult()
+            if (!result.isErrorResult) {
+                onPasswordChanged()
+            }
         }
     }
 

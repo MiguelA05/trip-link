@@ -17,28 +17,42 @@ import com.example.triplink.core.navigation.main.MainNavigation
 fun AppNavigation(
     pendingPublicationId: String? = null,
     onPendingPublicationConsumed: () -> Unit = {},
+    onDeepLinkConsumed: () -> Unit = {},
     sessionViewModel: SessionViewModel = hiltViewModel(),
     deepLink: android.net.Uri? = null
 ) {
     // Observa el estado de la sesión desde el ViewModel
     val sessionState by sessionViewModel.sessionState.collectAsState()
+    val isResetPasswordDeepLink =
+        deepLink?.getQueryParameter("mode") == "resetPassword" &&
+            deepLink.getQueryParameter("oobCode") != null
 
     Surface(modifier = Modifier.fillMaxSize()) {
-        when (val state = sessionState) {
-            is SessionState.Loading -> {
-                // Se muestra un indicador de carga mientras se determina el estado de la sesión
-                Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                    CircularProgressIndicator()
+        if (isResetPasswordDeepLink) {
+            AuthNavigation(
+                deepLink = deepLink,
+                onResetPasswordSuccess = {
+                    sessionViewModel.logout()
+                    onDeepLinkConsumed()
                 }
-            }
-            is SessionState.NotAuthenticated -> AuthNavigation(deepLink)
-            is SessionState.Authenticated -> MainNavigation(
-                session = state.session,
-                onLogout = sessionViewModel::logout,
-                pendingPublicationId = pendingPublicationId,
-                onPendingPublicationConsumed = onPendingPublicationConsumed,
-
             )
+        } else {
+            when (val state = sessionState) {
+                is SessionState.Loading -> {
+                    // Se muestra un indicador de carga mientras se determina el estado de la sesión
+                    Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                        CircularProgressIndicator()
+                    }
+                }
+                is SessionState.NotAuthenticated -> AuthNavigation(deepLink)
+                is SessionState.Authenticated -> MainNavigation(
+                    session = state.session,
+                    onLogout = sessionViewModel::logout,
+                    pendingPublicationId = pendingPublicationId,
+                    onPendingPublicationConsumed = onPendingPublicationConsumed,
+
+                )
+            }
         }
     }
 }

@@ -84,7 +84,9 @@ class RecoveryPasswordViewModel @Inject constructor(
                 //TODO reemplazar por string.xml
                 _recoveryResult.value = RequestResult.Success("se ha enviado un correo de recuperación a ${email.value}")
             } catch (e: Exception) {
-                _recoveryResult.value = RequestResult.Failure(appContext.getString(R.string.vm_recovery_invalid_form))
+                _recoveryResult.value = RequestResult.Failure(
+                    e.localizedMessage ?: appContext.getString(R.string.vm_recovery_invalid_form)
+                )
             } finally {
                 _isLoading.value = false
             }

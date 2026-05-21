@@ -3,6 +3,7 @@ package com.example.triplink
 import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import androidx.activity.result.contract.ActivityResultContracts
@@ -24,7 +25,6 @@ import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
-    val deepLink = intent?.data
     @Inject
     lateinit var nearbyNotificationsScheduler: NearbyNotificationsScheduler
 
@@ -32,9 +32,11 @@ class MainActivity : ComponentActivity() {
         registerForActivityResult(ActivityResultContracts.RequestPermission()) { }
 
     private var pendingPublicationId by mutableStateOf<String?>(null)
+    private var deepLink by mutableStateOf<Uri?>(null)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        deepLink = intent?.data
         pendingPublicationId = extractPublicationId(intent)
         markNotificationAsRead(pendingPublicationId)
         requestNotificationPermissionIfNeeded()
@@ -47,7 +49,8 @@ class MainActivity : ComponentActivity() {
                 AppNavigation(
                     pendingPublicationId = pendingPublicationId,
                     onPendingPublicationConsumed = { pendingPublicationId = null },
-                    deepLink=deepLink
+                    deepLink = deepLink,
+                    onDeepLinkConsumed = { deepLink = null }
                 )
             }
         }
@@ -56,6 +59,7 @@ class MainActivity : ComponentActivity() {
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
         setIntent(intent)
+        deepLink = intent.data
         pendingPublicationId = extractPublicationId(intent)
         markNotificationAsRead(pendingPublicationId)
     }
@@ -82,6 +86,4 @@ class MainActivity : ComponentActivity() {
         }
     }
 }
-
-
 
