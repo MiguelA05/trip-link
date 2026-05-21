@@ -14,4 +14,8 @@ interface AuthRepository {
         newPassword: String
     )
 
+    // Actualiza la contraseña del usuario autenticado. Requiere la contraseña actual
+    // para reautenticación y reemplaza por la nueva contraseña si la verificación es correcta.
+    suspend fun updatePassword(currentPassword: String, newPassword: String): Boolean
+
 }

@@ -709,10 +709,22 @@
     <string name="vm_account_edit_session_expired">Session expired</string>
     <string name="vm_account_edit_save_error">Error saving changes: %1$s</string>
     <string name="vm_account_edit_open_change_password">Opening password change</string>
+    <string name="vm_account_edit_change_password_success">Password changed successfully</string>
+    <string name="vm_account_edit_change_password_failed">Could not change password</string>
+    <string name="vm_account_edit_change_password_failed_with_error">Could not change password: %1$s</string>
     <string name="vm_account_edit_delete_success">Account deleted successfully</string>
     <string name="vm_account_edit_delete_error">Error deleting account: %1$s</string>
     <string name="vm_account_edit_default_initial_one">J</string>
     <string name="vm_account_edit_default_initial_two">D</string>
+    <string name="feature_account_edit_change_password_dialog_title">Change password</string>
+    <string name="feature_account_edit_current_password_label">Current password</string>
+    <string name="feature_account_edit_new_password_label">New password</string>
+    <string name="feature_account_edit_change_password_confirm">Confirm</string>
+    <string name="feature_account_edit_change_password_cancel">Cancel</string>
+    <string name="feature_account_edit_confirm_new_password_label">Confirm new password</string>
+    <string name="vm_account_edit_change_password_too_short">La contraseña debe tener al menos 6 caracteres</string>
+    <string name="vm_account_edit_change_password_mismatch">La nueva contraseña y su confirmación no coinciden</string>
+    <string name="feature_account_edit_current_password_required">La contraseña actual es requerida</string>
 
     <!-- VIEWMODEL: UserInfo -->
     <string name="vm_user_info_default_user_name">User</string>

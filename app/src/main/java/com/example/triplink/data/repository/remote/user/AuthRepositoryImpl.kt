@@ -8,6 +8,7 @@ import com.example.triplink.domain.model.Usuario
 import com.example.triplink.domain.repository.user.AuthRepository
 import com.google.firebase.auth.ActionCodeSettings
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
@@ -100,6 +101,19 @@ class AuthRepositoryImpl @Inject constructor(
         newPassword: String
     ) {
         auth.confirmPasswordReset(oobCode, newPassword).await()
+    }
+
+    override suspend fun updatePassword(currentPassword: String, newPassword: String): Boolean {
+        val currentUser = auth.currentUser ?: throw Exception("Usuario no autenticado")
+        val email = currentUser.email ?: throw Exception("Email del usuario no disponible")
+
+        // Reautenticar con credenciales de email para operaciones sensibles
+        val credential = EmailAuthProvider.getCredential(email, currentPassword)
+        currentUser.reauthenticate(credential).await()
+
+        // Actualizar la contraseña
+        currentUser.updatePassword(newPassword).await()
+        return true
     }
 }
 

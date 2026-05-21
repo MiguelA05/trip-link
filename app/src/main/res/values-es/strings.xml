@@ -433,6 +433,7 @@
     <string name="feature_account_edit_residence_section">UBICACIÓN DE RESIDENCIA</string>
     <string name="feature_account_edit_address_label">Barrio, ciudad o referencia</string>
     <string name="feature_account_edit_address_placeholder">Ej. Barrio La Candelaria, Bogotá</string>
+    <string name="feature_account_edit_location_label">Residence exact location</string>
     <string name="feature_account_edit_department_label">Dpto</string>
     <string name="feature_account_edit_city_label">Ciudad</string>
     <string name="feature_account_edit_add_exact_location">¿Desea añadir ubicación exacta?</string>
@@ -709,10 +710,18 @@
     <string name="vm_account_edit_session_expired">Sesión expirada</string>
     <string name="vm_account_edit_save_error">Error al guardar cambios: %1$s</string>
     <string name="vm_account_edit_open_change_password">Abriendo cambio de contraseña</string>
+    <string name="vm_account_edit_change_password_success">Contraseña cambiada existosamente</string>
+    <string name="vm_account_edit_change_password_failed">No se pudo cambiar la contraseña</string>
+    <string name="vm_account_edit_change_password_failed_with_error">Nose pudo cambiar la contraseña: %1$s</string>
     <string name="vm_account_edit_delete_success">Cuenta eliminada exitosamente</string>
     <string name="vm_account_edit_delete_error">Error al eliminar cuenta: %1$s</string>
     <string name="vm_account_edit_default_initial_one">C</string>
     <string name="vm_account_edit_default_initial_two">A</string>
+    <string name="feature_account_edit_change_password_dialog_title">Cambiar contraseña</string>
+    <string name="feature_account_edit_current_password_label">Contraseña actual</string>
+    <string name="feature_account_edit_new_password_label">Nueva contraseña</string>
+    <string name="feature_account_edit_change_password_confirm">Confirmar</string>
+    <string name="feature_account_edit_change_password_cancel">Cancelar</string>
 
     <!-- VIEWMODEL: UserInfo -->
     <string name="vm_user_info_default_user_name">Usuario</string>

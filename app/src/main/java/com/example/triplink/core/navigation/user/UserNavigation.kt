@@ -114,7 +114,6 @@ fun UserNavigation(
                         }
                     }
                 },
-                onChangePasswordClick = {navController.navigate(MainRoutes.RecoveryPassword)},
                 onAppHomeClick = {
                     navController.navigate(MainRoutes.Home) {
                         popUpTo(MainRoutes.Home) { inclusive = true }

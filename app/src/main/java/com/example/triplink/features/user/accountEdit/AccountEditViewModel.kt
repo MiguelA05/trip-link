@@ -27,6 +27,7 @@ import javax.inject.Inject
 class AccountEditViewModel @Inject constructor(
     @param:ApplicationContext private val appContext: Context,
     private val userProfileRepository: UserProfileRepository,
+    private val authRepository: com.example.triplink.domain.repository.user.AuthRepository,
     private val sessionDataStore: SessionDataStore
 ) : ViewModel() {
 
@@ -70,6 +71,10 @@ class AccountEditViewModel @Inject constructor(
 
     private val _isDeleting = MutableStateFlow(false)
     val isDeleting: StateFlow<Boolean> = _isDeleting.asStateFlow()
+
+    // Dialog state for change password modal
+    private val _showChangePasswordDialog = MutableStateFlow(false)
+    val showChangePasswordDialog: StateFlow<Boolean> = _showChangePasswordDialog.asStateFlow()
 
     // Foto de Perfil
     private val _photoUri = MutableStateFlow<Uri?>(null)
@@ -220,8 +225,44 @@ class AccountEditViewModel @Inject constructor(
     }
 
     fun changePassword() {
-        // This should navigate to password change screen
-        _updateResult.value = RequestResult.Success(appContext.getString(R.string.vm_account_edit_open_change_password))
+        // Abrir diálogo modal para cambio de contraseña
+        _showChangePasswordDialog.value = true
+    }
+
+    fun closeChangePasswordDialog() {
+        _showChangePasswordDialog.value = false
+    }
+
+    fun performChangePassword(currentPassword: String, newPassword: String, confirmPassword: String) {
+        viewModelScope.launch {
+            _isLoading.value = true
+            try {
+                // Validaciones locales: longitud mínima y coincidencia
+                if (newPassword.length < 6) {
+                    _updateResult.value = RequestResult.Failure(appContext.getString(R.string.vm_account_edit_change_password_too_short))
+                    _isLoading.value = false
+                    return@launch
+                }
+
+                if (newPassword != confirmPassword) {
+                    _updateResult.value = RequestResult.Failure(appContext.getString(R.string.vm_account_edit_change_password_mismatch))
+                    _isLoading.value = false
+                    return@launch
+                }
+
+                val success = authRepository.updatePassword(currentPassword, newPassword)
+                if (success) {
+                    _updateResult.value = RequestResult.Success(appContext.getString(R.string.vm_account_edit_change_password_success))
+                } else {
+                    _updateResult.value = RequestResult.Failure(appContext.getString(R.string.vm_account_edit_change_password_failed))
+                }
+            } catch (e: Exception) {
+                _updateResult.value = RequestResult.Failure(appContext.getString(R.string.vm_account_edit_change_password_failed_with_error, e.message ?: ""))
+            } finally {
+                _isLoading.value = false
+                _showChangePasswordDialog.value = false
+            }
+        }
     }
 
     fun deleteAccount() {
