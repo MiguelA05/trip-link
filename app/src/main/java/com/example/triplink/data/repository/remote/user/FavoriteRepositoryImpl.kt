@@ -1,6 +1,8 @@
 package com.example.triplink.data.repository.remote.user
 
+import android.util.Log
 import com.example.triplink.data.repository.remote.FAVORITES_COLLECTION
+import com.example.triplink.data.repository.remote.PUBLICATIONS_COLLECTION
 import com.example.triplink.data.repository.remote.FirestoreFavoriteDto
 import com.example.triplink.data.repository.remote.toDomain
 import com.example.triplink.domain.model.PuntoInteres
@@ -8,6 +10,8 @@ import com.example.triplink.domain.repository.user.FavoriteRepository
 import com.example.triplink.domain.repository.user.PublicationRepository
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ListenerRegistration
+import com.google.firebase.firestore.SetOptions
+import com.google.firebase.firestore.FieldValue
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -21,8 +25,12 @@ class FavoriteRepositoryImpl @Inject constructor(
     private val publicationRepository: PublicationRepository
 ) : FavoriteRepository {
 
+    companion object {
+        private const val TAG = "FavRepo"
+    }
+
     private val _favoriteIdsByUser = MutableStateFlow<Map<String, Set<String>>>(emptyMap())
-    private val favoriteIdsByUser: StateFlow<Map<String, Set<String>>> = _favoriteIdsByUser.asStateFlow()
+    override val favoriteIdsByUser: StateFlow<Map<String, Set<String>>> = _favoriteIdsByUser.asStateFlow()
 
     private var favoritesListener: ListenerRegistration? = null
 
@@ -33,7 +41,7 @@ class FavoriteRepositoryImpl @Inject constructor(
     override suspend fun toggleFavorite(userId: String, publicationId: String): Boolean {
         val normalizedUserId = normalize(userId)
         val favoriteRef = favoritesCollection(normalizedUserId).document(publicationId)
-        val publication = publicationRepository.getPublicationById(publicationId) ?: return false
+        if (publicationRepository.getPublicationById(publicationId) == null) return false
         val exists = favoriteRef.get().await().exists()
         val added = !exists
 
@@ -44,12 +52,58 @@ class FavoriteRepositoryImpl @Inject constructor(
                     createdAt = System.currentTimeMillis()
                 )
             ).await()
+            Log.d(TAG, "favorite doc created for user=$normalizedUserId pub=$publicationId")
+
+            // Optimistic local update for UI
+            try {
+                publicationRepository.adjustFavoriteCountLocal(publicationId, 1)
+                Log.d(TAG, "optimistic local +1 for pub=$publicationId")
+            } catch (e: Exception) {
+                Log.e(TAG, "optimistic local +1 failed for pub=$publicationId", e)
+            }
+
+            // Try atomic increment in publication doc as fast path (no index required)
+            try {
+                firestore.collection(PUBLICATIONS_COLLECTION)
+                    .document(publicationId)
+                    .set(mapOf("favoriteCount" to FieldValue.increment(1)), SetOptions.merge())
+                    .await()
+                Log.d(TAG, "firestore increment +1 applied for pub=$publicationId")
+            } catch (e: Exception) {
+                Log.e(TAG, "firestore increment +1 failed for pub=$publicationId", e)
+            }
         } else {
             favoriteRef.delete().await()
+            Log.d(TAG, "favorite doc deleted for user=$normalizedUserId pub=$publicationId")
+
+            // Optimistic local update for UI
+            try {
+                publicationRepository.adjustFavoriteCountLocal(publicationId, -1)
+                Log.d(TAG, "optimistic local -1 for pub=$publicationId")
+            } catch (e: Exception) {
+                Log.e(TAG, "optimistic local -1 failed for pub=$publicationId", e)
+            }
+
+            // Try atomic decrement in publication doc as fast path (no index required)
+            try {
+                firestore.collection(PUBLICATIONS_COLLECTION)
+                    .document(publicationId)
+                    .set(mapOf("favoriteCount" to FieldValue.increment(-1)), SetOptions.merge())
+                    .await()
+                Log.d(TAG, "firestore increment -1 applied for pub=$publicationId")
+            } catch (e: Exception) {
+                Log.e(TAG, "firestore increment -1 failed for pub=$publicationId", e)
+            }
         }
 
-        // Recalculate favorite count remotely to keep denormalized count consistent
-        publicationRepository.recalculateFavoriteCount(publicationId)
+        // Recalculate favorite count remotely to keep denormalized count consistent (may fail if index missing)
+        try {
+            val recalc = publicationRepository.recalculateFavoriteCount(publicationId)
+            Log.d(TAG, "recalculateFavoriteCount result for pub=$publicationId: $recalc")
+        } catch (e: Exception) {
+            Log.e(TAG, "recalculateFavoriteCount failed for pub=$publicationId", e)
+        }
+
         updateFavoriteCache(normalizedUserId, publicationId, added)
         return added
     }

@@ -18,4 +18,6 @@ interface PublicationRepository {
     // Recalculate denormalized counts (favorites) by querying subcollections remotely.
     // Returns true if the remote document was updated successfully.
     suspend fun recalculateFavoriteCount(publicationId: String): Boolean
+    // Adjust the favorite count locally (optimistic update). Delta can be +1 or -1.
+    fun adjustFavoriteCountLocal(publicationId: String, delta: Int)
 }

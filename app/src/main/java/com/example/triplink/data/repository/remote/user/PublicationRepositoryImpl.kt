@@ -9,6 +9,7 @@ import com.example.triplink.domain.model.PuntoInteres
 import com.example.triplink.domain.model.enums.EstadoPublicacion
 import com.example.triplink.domain.repository.user.PublicationRepository
 import com.google.firebase.firestore.FirebaseFirestore
+import android.util.Log
 import com.google.firebase.firestore.ListenerRegistration
 import com.google.firebase.firestore.SetOptions
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -163,6 +164,7 @@ class PublicationRepositoryImpl @Inject constructor(
             if (!snapshot.exists()) return false
 
             publicationRef.set(mapOf("favoriteCount" to count), SetOptions.merge()).await()
+            Log.d("PublicationRepo", "Recalculated favoriteCount for pub=$publicationId count=$count")
 
             // Update local cache if present
             _publications.value = _publications.value.map { p ->
@@ -173,6 +175,20 @@ class PublicationRepositoryImpl @Inject constructor(
         } catch (e: Exception) {
             e.printStackTrace()
             false
+        }
+    }
+
+    override fun adjustFavoriteCountLocal(publicationId: String, delta: Int) {
+        try {
+            _publications.value = _publications.value.map { p ->
+                if (p.id == publicationId) {
+                    val newCount = (p.favoriteCount + delta).coerceAtLeast(0)
+                    Log.d("PublicationRepo", "adjustFavoriteCountLocal pub=$publicationId delta=$delta new=$newCount")
+                    p.copy(favoriteCount = newCount)
+                } else p
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
     }
 
