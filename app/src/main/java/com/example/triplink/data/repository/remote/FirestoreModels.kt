@@ -77,7 +77,8 @@ data class FirestorePuntoInteresDto(
     var fechaCreacion: Long = 0L,
     var estado: String = EstadoPublicacion.PENDIENTE.name,
     var rangoPrecios: String? = null,
-    var motivoRechazo: String? = null
+    var motivoRechazo: String? = null,
+    var authorFcmToken: String? = null  // ← NUEVO: cached FCM token para notificaciones rápidas
 )
 
 @IgnoreExtraProperties
@@ -229,7 +230,8 @@ internal fun PuntoInteres.toFirestoreDto(): FirestorePuntoInteresDto = Firestore
     fechaCreacion = fechaCreacion,
     estado = estado.name,
     rangoPrecios = rangoPrecios?.name,
-    motivoRechazo = motivoRechazo
+    motivoRechazo = motivoRechazo,
+    authorFcmToken = null  // ← Se llena en el servidor cuando se necesita
 )
 
 internal fun FirestorePuntoInteresDto.toDomain(): PuntoInteres = PuntoInteres(
@@ -249,6 +251,7 @@ internal fun FirestorePuntoInteresDto.toDomain(): PuntoInteres = PuntoInteres(
     estado = estado.toEnumOrDefault(EstadoPublicacion.PENDIENTE),
     rangoPrecios = rangoPrecios?.toEnumOrNull<RangoPrecios>(),
     motivoRechazo = motivoRechazo
+    // ↑ authorFcmToken se ignora (solo se usa en servidor para notificaciones)
 )
 
 internal fun FirestoreFavoriteDto.toDomain(): String = publicationId

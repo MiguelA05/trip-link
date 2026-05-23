@@ -292,6 +292,11 @@ export const moderateCommentDeepSeek = onCall(
 /**
  * Triggers when a publication status changes.
  * Notifies the author when their post is verified.
+ *
+ * OPTIMIZACIONES:
+ * 1. Intenta usar authorFcmToken de la publicación (evita lectura a users)
+ * 2. Si no está, fallback a lectura de users
+ * 3. Paraleliza envíos de mensajes (no espera secuencial)
  */
 export const onPublicationStatusChange = onDocumentUpdated(
   "publications/{publicationId}",
@@ -301,50 +306,78 @@ export const onPublicationStatusChange = onDocumentUpdated(
 
     if (!newData || !previousData) return;
 
-    // 1. Detect transition to VERIFICADA
-    if (newData.estado === "VERIFICADA" && previousData.estado !== "VERIFICADA") {
-      const authorEmail = newData.usuarioAutorId;
-      const publicationTitle = newData.titulo;
+    console.log(`DEBUG: Cambio detectado en ${event.params.publicationId}. Estado anterior: ${previousData.estado}, Nuevo: ${newData.estado}`);
 
-      // 2. Fetch author's FCM Token from 'users' collection
-      const userDoc = await admin.firestore().collection("users").doc(authorEmail).get();
+    // 1. Detectar transición a VERIFICADA (Ignorar mayúsculas/minúsculas del estado)
+    if (newData.estado?.toUpperCase() === "VERIFICADA" && previousData.estado?.toUpperCase() !== "VERIFICADA") {
 
-      if (!userDoc.exists) return;
-      const userData = userDoc.data();
-      const fcmToken = userData?.fcmToken;
+      // LIMPIEZA CRÍTICA: Firestore IDs suelen ser minúsculas y sin espacios
+      const authorEmail = String(newData.usuarioAutorId || "").trim().toLowerCase();
+      const publicationTitle = newData.titulo || "Nuevo lugar";
 
-      if (fcmToken) {
-        // 3. Send Notification to Author
-        const message = {
-          notification: {
-            title: "¡Tu publicación ha sido aprobada!",
-            body: `Felicidades, "${publicationTitle}" ya es visible para toda la comunidad.`
-          },
-          token: fcmToken
-        };
+      console.log(`INFO: Procesando notificación para autor: [${authorEmail}]`);
 
-        try {
-          await admin.messaging().send(message);
-          console.log("Notification sent successfully to author:", authorEmail);
-        } catch (error) {
-          console.error("Error sending notification to author:", error);
-        }
+      if (!authorEmail) {
+        console.error("ERROR: La publicación no tiene usuarioAutorId");
+        return;
       }
 
-      // 4. Broadcast to everyone else via 'new_places' topic
-      const broadcastMessage = {
-        notification: {
-          title: "¡Nuevo lugar descubierto!",
-          body: `Se ha publicado: ${publicationTitle}. ¡Ven a verlo!`
-        },
-        topic: "new_places"
-      };
-
       try {
-        await admin.messaging().send(broadcastMessage);
-        console.log("Broadcast notification sent to topic: new_places");
+        // OPTIMIZACIÓN 1: Intentar obtener token del documento de publicación (si está cached)
+        let authorFcmToken = newData.authorFcmToken || null;
+
+        // OPTIMIZACIÓN 2: Si no está en publicación, buscar en users (fallback)
+        if (!authorFcmToken) {
+          const userDoc = await admin.firestore().collection("users").doc(authorEmail).get();
+          if (userDoc.exists) {
+            authorFcmToken = userDoc.data()?.fcmToken || null;
+          } else {
+            console.error(`ERROR: No existe documento en 'users' para: ${authorEmail}`);
+          }
+        }
+
+        // OPTIMIZACIÓN 3: Paralelizar envíos de mensajes (Promise.all)
+        // Ambos se envían al mismo tiempo, no secuencial
+        const messagingPromises = [];
+
+        // Rama A: Notificación personalizada al autor
+        if (authorFcmToken) {
+          const personalizedMessage = {
+            notification: {
+              title: "¡Tu publicación ha sido aprobada!",
+              body: `Felicidades, "${publicationTitle}" ya es visible para toda la comunidad.`
+            },
+            token: authorFcmToken
+          };
+          messagingPromises.push(
+            admin.messaging().send(personalizedMessage)
+              .then(() => console.log(`SUCCESS: Notificación personalizada enviada a ${authorEmail}`))
+              .catch((err) => console.warn(`WARN: Fallo notificación personalizada: ${err.message}`))
+          );
+        } else {
+          console.warn(`WARN: No hay fcmToken para autor ${authorEmail}`);
+        }
+
+        // Rama B: Broadcast a todos (topic)
+        const broadcastMessage = {
+          notification: {
+            title: "¡Nuevo lugar descubierto!",
+            body: `Se ha publicado: ${publicationTitle}. ¡Ven a verlo!`
+          },
+          topic: "new_places"
+        };
+        messagingPromises.push(
+          admin.messaging().send(broadcastMessage)
+            .then(() => console.log("SUCCESS: Broadcast enviado al topic new_places"))
+            .catch((err) => console.error(`ERROR: Fallo broadcast: ${err.message}`))
+        );
+
+        // Esperar ambos en paralelo (mucho más rápido que secuencial)
+        await Promise.all(messagingPromises);
+        console.log(`INFO: Notificaciones completadas para publicación ${event.params.publicationId}`);
+
       } catch (error) {
-        console.error("Error sending broadcast notification:", error);
+        console.error("ERROR CRÍTICO en la ejecución:", error);
       }
     }
   }

@@ -56,6 +56,7 @@ import com.example.triplink.domain.model.enums.RazonReporte
 import com.example.triplink.R
 import com.example.triplink.ui.theme.*
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.delay
 
 data class Review(
     val username: String,
@@ -80,6 +81,7 @@ fun PublicationDetailsScreen(
     val favoriteToggleResult by viewModel.favoriteToggleResult.collectAsState()
     val commentResult by viewModel.commentResult.collectAsState()
     val isSavingComment by viewModel.isSavingComment.collectAsState()
+    val isPublishingSuggestedComment by viewModel.isPublishingSuggestedComment.collectAsState()
     val isSubmittingReport by viewModel.isSubmittingReport.collectAsState()
     val reportResult by viewModel.reportResult.collectAsState()
     val inappropriateCommentSuggestion by viewModel.inappropriateCommentSuggestion.collectAsState()
@@ -89,6 +91,7 @@ fun PublicationDetailsScreen(
     var showReportModal by remember { mutableStateOf(false) }
     var showRatingModal by remember { mutableStateOf(false) }
     var showDeletePublicationDialog by remember { mutableStateOf(false) }
+    val ratingModalSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
 
     LaunchedEffect(publicationId) {
         viewModel.loadPublication(publicationId)
@@ -121,15 +124,33 @@ fun PublicationDetailsScreen(
         commentResult?.let { result ->
             when (result) {
                 is RequestResult.Success -> {
+                    // El comentario fue aprobado sin cambios, cerrar el modal
                     snackbarHostState.showSnackbar(result.message)
-                    showRatingModal = false
+                    coroutineScope.launch {
+                        ratingModalSheetState.hide()
+                        showRatingModal = false
+                        delay(300) // Permitir que termine la animación
+                        viewModel.dismissInappropriateCommentSuggestion()
+                        viewModel.clearSavingComment()
+                        viewModel.clearPublishingSuggestedComment()
+                        viewModel.clearCommentResult()
+                    }
                 }
                 is RequestResult.Failure -> {
                     snackbarHostState.showSnackbar(result.errorMessage)
+                    viewModel.clearSavingComment()
+                    viewModel.clearPublishingSuggestedComment()
+                    viewModel.clearCommentResult()
                 }
                 RequestResult.Loading -> Unit
             }
-            viewModel.clearCommentResult()
+        }
+    }
+
+    // Cuando aparece la sugerencia de contenido inapropiado, el RatingModal permanece abierto
+    LaunchedEffect(inappropriateCommentSuggestion) {
+        inappropriateCommentSuggestion?.let {
+            // El modal de ratings se mantiene abierto para permitir edición manual
         }
     }
 
@@ -317,6 +338,7 @@ fun PublicationDetailsScreen(
             onSubmit = { rating, comment ->
                 val userId = (sessionState as? SessionState.Authenticated)?.session?.userId.orEmpty()
                 val userName = userId.substringBefore('@').ifBlank { defaultUserName }
+                // Procesar comentario (sin cerrar el modal aún)
                 viewModel.saveComment(
                     publicationId = publicationId,
                     userId = userId,
@@ -325,7 +347,8 @@ fun PublicationDetailsScreen(
                     text = comment
                 )
             },
-            isLoading = isSavingComment
+            isLoading = isSavingComment,
+            sheetState = ratingModalSheetState
         )
     }
 
@@ -334,7 +357,7 @@ fun PublicationDetailsScreen(
             onDismiss = viewModel::dismissInappropriateCommentSuggestion,
             onReplace = viewModel::acceptSuggestedCommentAndPublish,
             suggestedComment = moderationSuggestion.suggestedComment,
-            isLoading = isSavingComment
+            isLoading = isPublishingSuggestedComment
         )
     }
 
@@ -361,7 +384,8 @@ fun PublicationDetailsScreen(
 fun RatingModal(
     onDismiss: () -> Unit,
     onSubmit: (rating: Float, comment: String) -> Unit,
-    isLoading: Boolean = false
+    isLoading: Boolean = false,
+    sheetState: SheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
 ) {
     var rating by remember { mutableIntStateOf(0) }
     var comment by remember { mutableStateOf("") }
@@ -369,7 +393,7 @@ fun RatingModal(
 
     ModalBottomSheet(
         onDismissRequest = onDismiss,
-        sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true),
+        sheetState = sheetState,
         containerColor = MaterialTheme.colorScheme.surface,
         shape = RoundedCornerShape(topStart = 28.dp, topEnd = 28.dp),
         dragHandle = {

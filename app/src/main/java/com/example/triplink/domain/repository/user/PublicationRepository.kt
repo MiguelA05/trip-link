@@ -11,6 +11,7 @@ interface PublicationRepository {
     suspend fun explorePublications(): List<PuntoInteres>
     suspend fun getPublicationById(publicationId: String): PuntoInteres?
     suspend fun savePuntoInteres(publication: PuntoInteres): Boolean
+    suspend fun savePuntoInteresWithFcmToken(publication: PuntoInteres, fcmToken: String?): Boolean
     suspend fun updatePuntoInteres(publication: PuntoInteres): Boolean
     suspend fun deletePublicationById(publicationId: String): Boolean
     suspend fun getUserPublications(userId: String): List<PuntoInteres>

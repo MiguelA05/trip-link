@@ -13,6 +13,7 @@ import com.example.triplink.core.utils.ValidatedField
 import com.example.triplink.R
 import com.example.triplink.data.datastore.SessionDataStore
 import com.example.triplink.domain.repository.user.AuthRepository
+import com.example.triplink.domain.repository.user.UserProfileRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -27,7 +28,8 @@ import javax.inject.Inject
 class LoginViewModel @Inject constructor(
     @param:ApplicationContext private val appContext: Context,
     private val sessionDataStore: SessionDataStore,
-    private val authRepository: AuthRepository
+    private val authRepository: AuthRepository,
+    private val userProfileRepository: UserProfileRepository
 ) : ViewModel() {
     var email = ValidatedField("") { value ->
         when {
@@ -110,7 +112,9 @@ class LoginViewModel @Inject constructor(
                 try {
                     val token = FirebaseMessaging.getInstance().token.await()
                     authRepository.findByEmail(authenticatedUser.email)?.let { user ->
-                        authRepository.save(user.copy(fcmToken = token))
+                        if (user.fcmToken != token) {
+                            userProfileRepository.updateUser(user.copy(fcmToken = token))
+                        }
                     }
                 } catch (e: Exception) {
                     // No bloquear el login si falla el token
