@@ -11,6 +11,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.example.triplink.core.navigation.auth.AuthNavigation
+import com.example.triplink.core.navigation.auth.toResetPasswordDeepLink
 import com.example.triplink.core.navigation.main.MainNavigation
 
 @Composable
@@ -23,9 +24,7 @@ fun AppNavigation(
 ) {
     // Observa el estado de la sesión desde el ViewModel
     val sessionState by sessionViewModel.sessionState.collectAsState()
-    val isResetPasswordDeepLink =
-        deepLink?.getQueryParameter("mode") == "resetPassword" &&
-            deepLink.getQueryParameter("oobCode") != null
+    val isResetPasswordDeepLink = deepLink?.toResetPasswordDeepLink() != null
 
     Surface(modifier = Modifier.fillMaxSize()) {
         if (isResetPasswordDeepLink) {

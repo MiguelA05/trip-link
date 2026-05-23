@@ -8,6 +8,7 @@ import com.example.triplink.data.repository.remote.toDomain
 import com.example.triplink.data.repository.remote.toFirestoreDto
 import com.example.triplink.domain.model.Usuario
 import com.example.triplink.domain.repository.user.AuthRepository
+import com.google.firebase.auth.ActionCodeSettings
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.firestore.FirebaseFirestore
@@ -105,19 +106,17 @@ class AuthRepositoryImpl @Inject constructor(
         email: String
     ) {
         auth.setLanguageCode("es")
-        /*
         val actionCodeSettings = ActionCodeSettings.newBuilder()
-            .setUrl("https://triplink-97bf5.firebaseapp.com/reset-password")
+            .setUrl("https://triplink-97bf5.firebaseapp.com/__/auth/action")
             .setHandleCodeInApp(true)
             .setAndroidPackageName(
                 "com.example.triplink",
                 true,
                 null
             )
-            .setHandleCodeInApp(true)
-            .build()*/
+            .build()
 
-        auth.sendPasswordResetEmail(email).await()
+        auth.sendPasswordResetEmail(email, actionCodeSettings).await()
     }
 
     override suspend fun verifyPasswordResetCode(oobCode: String): String {
@@ -144,4 +143,3 @@ class AuthRepositoryImpl @Inject constructor(
         return true
     }
 }
-

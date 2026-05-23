@@ -22,10 +22,9 @@ fun AuthNavigation(
 
     LaunchedEffect(deepLink) {
         deepLink?.let { uri ->
-            val mode = uri.getQueryParameter("mode")
-            val oobCode = uri.getQueryParameter("oobCode")
-            if (mode == "resetPassword" && oobCode != null) {
-                navController.navigate(MainRoutes.ResetPassword(oobCode))
+            val resetPasswordDeepLink = uri.toResetPasswordDeepLink()
+            if (resetPasswordDeepLink != null) {
+                navController.navigate(MainRoutes.ResetPassword(resetPasswordDeepLink.oobCode))
             }
         }
     }

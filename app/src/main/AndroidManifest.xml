@@ -55,6 +55,10 @@
                     android:scheme="https"
                     android:host="triplink-97bf5.firebaseapp.com"
                     android:pathPrefix="/__/auth/action" />
+                <data
+                    android:scheme="https"
+                    android:host="triplink-97bf5.firebaseapp.com"
+                    android:pathPrefix="/__/auth/links" />
             </intent-filter>
         </activity>
 

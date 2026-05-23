@@ -4,6 +4,13 @@
       "source": "functions",
       "codebase": "default"
     }
-  ]
+  ],
+  "hosting": {
+    "site": "triplink-97bf5",
+    "public": "public",
+    "ignore": [
+      "firebase.json",
+      "**/node_modules/**"
+    ]
+  }
 }
-

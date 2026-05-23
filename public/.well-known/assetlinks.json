@@ -1,0 +1,14 @@
+[
+  {
+    "relation": [
+      "delegate_permission/common.handle_all_urls"
+    ],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.example.triplink",
+      "sha256_cert_fingerprints": [
+        "19:B9:33:3C:0F:E5:56:B0:51:B6:63:3A:AB:CD:E3:FE:38:C4:69:54:24:86:EF:2B:13:4A:BB:23:B4:F3:E9:3A"
+      ]
+    }
+  }
+]
