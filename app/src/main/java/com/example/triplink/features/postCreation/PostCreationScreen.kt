@@ -3,7 +3,6 @@ package com.example.triplink.features.postCreation
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
@@ -13,15 +12,19 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.MenuBook
-import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.AccessTime
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Circle
-import androidx.compose.material.icons.filled.Image
-import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.WarningAmber
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.platform.LocalContext
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
+import android.net.Uri
+import android.Manifest
+import java.text.SimpleDateFormat
+import java.util.Locale
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
@@ -39,12 +42,14 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.example.triplink.core.components.FormField
 import com.example.triplink.core.components.GeneralButton
 import com.example.triplink.core.components.GeneralTopBar
+import com.example.triplink.core.components.imagepicker.ImagePickerBottomSheet
 import com.example.triplink.core.components.map.LocationPickerMapField
 import com.example.triplink.R
 import com.example.triplink.core.utils.RequestResult
 import com.example.triplink.core.utils.messageText
 import com.example.triplink.core.localization.localizedLabel
 import com.example.triplink.core.localization.localizedShortLabel
+import com.example.triplink.core.components.images.ImagenesSelectorGrid
 import com.example.triplink.domain.model.enums.DiaSemana
 import com.example.triplink.domain.model.enums.RangoPrecios
 import com.example.triplink.ui.theme.TextColors
@@ -72,6 +77,7 @@ fun PostCreationScreen(
     val createResult by viewModel.createResult.collectAsState()
     val isLoading by viewModel.isLoading.collectAsState()
     val dayDisabledSnackbar = stringResource(R.string.feature_post_creation_day_disabled_snackbar)
+    val cameraPermissionDeniedSnackbar = stringResource(R.string.permissions_camera_permission_denied)
 
     LaunchedEffect(publicationIdToEdit) {
         viewModel.loadPublicationForEdit(publicationIdToEdit)
@@ -92,6 +98,47 @@ fun PostCreationScreen(
             is RequestResult.Loading -> Unit
 
             null -> Unit
+        }
+    }
+
+    // Image selection state and launchers (alineado con AccountEdit)
+    val context = LocalContext.current
+    var showImageSelectionSheet by remember { mutableStateOf(false) }
+    var showCameraPermissionError by remember { mutableStateOf(false) }
+    var tempCameraUri by remember { mutableStateOf<android.net.Uri?>(null) }
+    val imagePickerSheetState = rememberModalBottomSheetState()
+
+    val galeriaLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.GetContent()
+    ) { uri: Uri? ->
+        uri?.let { viewModel.agregarImagen(it) }
+        showImageSelectionSheet = false
+    }
+
+    val cameraLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.TakePicture()
+    ) { success: Boolean ->
+        if (success) {
+            tempCameraUri?.let { viewModel.agregarImagen(it) }
+        }
+        showImageSelectionSheet = false
+    }
+
+    val cameraPermissionLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestPermission()
+    ) { isGranted: Boolean ->
+        if (isGranted) {
+            tempCameraUri = com.example.triplink.core.utils.createTempImageUri(context)
+            tempCameraUri?.let { cameraLauncher.launch(it) }
+        } else {
+            showCameraPermissionError = true
+        }
+    }
+
+    LaunchedEffect(showCameraPermissionError) {
+        if (showCameraPermissionError) {
+            snackbarHostState.showSnackbar(cameraPermissionDeniedSnackbar)
+            showCameraPermissionError = false
         }
     }
 
@@ -255,46 +302,43 @@ fun PostCreationScreen(
                         style = TextTokens.bodySecondary(),
                         color = TextColors.Muted
                     )
-                    Row(
-                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+
+                    // Imagen selector grid (composable reutilizable)
+                    ImagenesSelectorGrid(
+                        imagenesActuales = viewModel.imagenesTemporales,
+                        indiceBotonAgregar = viewModel.indiceBotonAgregar,
+                        onAgregarClick = {
+                            showImageSelectionSheet = true
+                        },
+                        onEliminarClick = { indice -> viewModel.eliminarImagen(indice) },
                         modifier = Modifier
                             .fillMaxWidth()
-                            .horizontalScroll(rememberScrollState())
-                    ) {
+                    )
 
-                        Surface(
-                            modifier = Modifier.size(60.dp),
-                            shape = RoundedCornerShape(8.dp),
-                            color = MaterialTheme.colorScheme.primary
-                        ) {
-                            Icon(
-                                imageVector = Icons.Default.Add,
-                                contentDescription = stringResource(R.string.feature_post_creation_photos_add_content_description),
-                                tint = MaterialTheme.colorScheme.onPrimary,
-                                modifier = Modifier.padding(16.dp)
-                            )
-                        }
-
-                        repeat(4) {
-                            Surface(
-                                modifier = Modifier.size(60.dp),
-                                shape = RoundedCornerShape(8.dp),
-                                color = MaterialTheme.colorScheme.surfaceVariant,
-                                border = borderStroke()
-                            ) {
-                                Icon(
-                                    imageVector = Icons.Default.Image,
-                                    contentDescription = null,
-                                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                                    modifier = Modifier.padding(16.dp)
-                                )
-                            }
-                        }
-                    }
                     Text(
                         text = stringResource(R.string.feature_post_creation_photos_helper),
                         style = TextTokens.bodySecondary(),
                         color = TextColors.Secondary
+                    )
+                }
+            }
+
+            // Bottom sheet for choosing camera or gallery
+            if (showImageSelectionSheet) {
+                ModalBottomSheet(
+                    onDismissRequest = { showImageSelectionSheet = false },
+                    sheetState = imagePickerSheetState
+                ) {
+                    ImagePickerBottomSheet(
+                        onCameraClick = {
+                            showImageSelectionSheet = false
+                            cameraPermissionLauncher.launch(Manifest.permission.CAMERA)
+                        },
+                        onGalleryClick = {
+                            showImageSelectionSheet = false
+                            galeriaLauncher.launch("image/*")
+                        },
+                        onDismiss = { showImageSelectionSheet = false }
                     )
                 }
             }

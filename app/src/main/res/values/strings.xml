@@ -815,6 +815,12 @@
     <string name="badge_requirement_favorites">Receive %1$d likes/favorites on your places.</string>
     <string name="badge_requirement_comments">Receive %1$d comments on your places.</string>
 
+    <!-- IMAGE MANAGEMENT: Publication images -->
+    <string name="error_max_images">Maximum 5 images allowed</string>
+    <string name="error_image_compression">Error compressing image</string>
+    <string name="error_saving_image">Error saving image locally</string>
+    <string name="error_uploading_images">Error uploading images. Please try again.</string>
+
     <!-- PERMISSIONS: Image Picker -->
     <string name="permissions_profile_image_description">Profile photo</string>
     <string name="permissions_change_photo">Change photo</string>

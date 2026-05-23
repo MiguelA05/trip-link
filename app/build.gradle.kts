@@ -38,6 +38,76 @@ val mapboxToken: String = try {
     ""
 }
 
+// Read Cloudinary configuration from local.properties, environment variables, or directly from file
+val cloudinaryCloudName: String = try {
+    val envToken = System.getenv("CLOUDINARY_CLOUD_NAME")
+    if (envToken != null && envToken.isNotEmpty()) {
+        envToken
+    } else {
+        val gradleToken = project.findProperty("CLOUDINARY_CLOUD_NAME")?.toString()
+        if (gradleToken != null && gradleToken.isNotEmpty()) {
+            gradleToken
+        } else {
+            val localPropsFile = File(rootProject.projectDir, "local.properties")
+            if (localPropsFile.exists()) {
+                val props = Properties()
+                props.load(localPropsFile.inputStream())
+                props.getProperty("CLOUDINARY_CLOUD_NAME", "")
+            } else {
+                ""
+            }
+        }
+    }
+} catch (e: Exception) {
+    ""
+}
+
+val cloudinaryApiKey: String = try {
+    val envToken = System.getenv("CLOUDINARY_API_KEY")
+    if (envToken != null && envToken.isNotEmpty()) {
+        envToken
+    } else {
+        val gradleToken = project.findProperty("CLOUDINARY_API_KEY")?.toString()
+        if (gradleToken != null && gradleToken.isNotEmpty()) {
+            gradleToken
+        } else {
+            val localPropsFile = File(rootProject.projectDir, "local.properties")
+            if (localPropsFile.exists()) {
+                val props = Properties()
+                props.load(localPropsFile.inputStream())
+                props.getProperty("CLOUDINARY_API_KEY", "")
+            } else {
+                ""
+            }
+        }
+    }
+} catch (e: Exception) {
+    ""
+}
+
+val cloudinaryUploadPreset: String = try {
+    val envToken = System.getenv("CLOUDINARY_UPLOAD_PRESET")
+    if (envToken != null && envToken.isNotEmpty()) {
+        envToken
+    } else {
+        val gradleToken = project.findProperty("CLOUDINARY_UPLOAD_PRESET")?.toString()
+        if (gradleToken != null && gradleToken.isNotEmpty()) {
+            gradleToken
+        } else {
+            val localPropsFile = File(rootProject.projectDir, "local.properties")
+            if (localPropsFile.exists()) {
+                val props = Properties()
+                props.load(localPropsFile.inputStream())
+                props.getProperty("CLOUDINARY_UPLOAD_PRESET", "")
+            } else {
+                ""
+            }
+        }
+    }
+} catch (e: Exception) {
+    ""
+}
+
 android {
     namespace = "com.example.triplink"
     compileSdk {
@@ -55,6 +125,11 @@ android {
         // Expose Mapbox token to the app via BuildConfig. Set MAPBOX_ACCESS_TOKEN in local.properties or environment.
         buildConfigField("String", "MAPBOX_ACCESS_TOKEN", "\"${mapboxToken ?: ""}\"")
         resValue("string", "mapbox_access_token", mapboxToken ?: "")
+
+        // Expose Cloudinary configuration via BuildConfig. Set in local.properties or environment.
+        buildConfigField("String", "CLOUDINARY_CLOUD_NAME", "\"${cloudinaryCloudName ?: ""}\"")
+        buildConfigField("String", "CLOUDINARY_API_KEY", "\"${cloudinaryApiKey ?: ""}\"")
+        buildConfigField("String", "CLOUDINARY_UPLOAD_PRESET", "\"${cloudinaryUploadPreset ?: ""}\"")
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -122,5 +197,11 @@ dependencies {
     // Mapbox SDK
     implementation(libs.mapsAndroid)
     implementation(libs.mapsCompose)
+
+    // Image compression and manipulation
+    implementation("androidx.graphics:graphics-core:1.0.0-alpha03")
+
+    // Activity Result Contracts for Camera/Gallery
+    implementation("androidx.activity:activity-ktx:1.8.1")
 
 }

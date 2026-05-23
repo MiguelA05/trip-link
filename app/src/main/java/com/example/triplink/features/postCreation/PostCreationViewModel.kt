@@ -1,15 +1,19 @@
 package com.example.triplink.features.postCreation
 
 import android.content.Context
+import android.net.Uri
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.triplink.R
+import com.example.triplink.core.services.ImagenCompressionService
+import com.example.triplink.core.storage.ImagenLocalStorage
 import com.example.triplink.core.utils.RequestResult
 import com.example.triplink.core.utils.ValidatedField
 import com.example.triplink.data.datastore.SessionDataStore
+import com.example.triplink.data.repository.remote.images.CloudinaryImageRepository
 import com.example.triplink.domain.model.HorarioPuntoInteres
 import com.example.triplink.domain.model.PuntoInteres
 import com.example.triplink.domain.model.Ubicacion
@@ -25,6 +29,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
+import java.io.File
 import java.util.UUID
 import javax.inject.Inject
 
@@ -32,7 +37,10 @@ import javax.inject.Inject
 class PostCreationViewModel @Inject constructor(
     @param:ApplicationContext private val appContext: Context,
     private val publicationRepository: PublicationRepository,
-    private val sessionDataStore: SessionDataStore
+    private val sessionDataStore: SessionDataStore,
+    private val imagenLocalStorage: ImagenLocalStorage,
+    private val compressionService: ImagenCompressionService,
+    private val cloudinaryRepository: CloudinaryImageRepository
 ) : ViewModel() {
 
     var placeName = ValidatedField("") { value ->
@@ -79,6 +87,19 @@ class PostCreationViewModel @Inject constructor(
         private set
 
     private var prefilledPhotos by mutableStateOf<List<String>>(emptyList())
+
+    // Estado de imágenes
+    var imagenesTemporales by mutableStateOf<List<Uri>>(emptyList())
+        private set
+
+    var imagenesRemotasUrls by mutableStateOf<List<String>>(emptyList())
+        private set
+
+    var indiceBotonAgregar by mutableStateOf(0)
+        private set
+
+    private val _imagenSubidaResult = MutableStateFlow<RequestResult?>(null)
+    val imagenSubidaResult: StateFlow<RequestResult?> = _imagenSubidaResult.asStateFlow()
 
     val submitButtonLabel: String
         get() = appContext.getString(R.string.vm_post_creation_submit_action)
@@ -233,6 +254,40 @@ class PostCreationViewModel @Inject constructor(
                     return@launch
                 }
 
+                // Subir imágenes a Cloudinary si las hay
+                var urlsImagenes = prefilledPhotos
+
+                if (imagenesTemporales.isNotEmpty()) {
+                    _imagenSubidaResult.value = RequestResult.Loading
+
+                    val archivos = mutableListOf<File>()
+                    for (uri in imagenesTemporales) {
+                        val path = uri.path
+                        if (!path.isNullOrEmpty()) {
+                            val archivo = File(path)
+                            if (archivo.exists()) {
+                                archivos.add(archivo)
+                            }
+                        }
+                    }
+
+                    if (archivos.isNotEmpty()) {
+                        val prefijo = "pub_${UUID.randomUUID()}"
+                        val resultadoSubida = cloudinaryRepository.subirMultiples(archivos, prefijo)
+
+                        if (resultadoSubida.isSuccess) {
+                            urlsImagenes = resultadoSubida.getOrNull() ?: emptyList()
+                            _imagenSubidaResult.value = RequestResult.Success("")
+                        } else {
+                            _createResult.value = RequestResult.Failure(
+                                appContext.getString(R.string.error_uploading_images)
+                            )
+                            _isLoading.value = false
+                            return@launch
+                        }
+                    }
+                }
+
                 val publication = PuntoInteres(
                     id = UUID.randomUUID().toString(),
                     titulo = placeName.value,
@@ -246,7 +301,7 @@ class PostCreationViewModel @Inject constructor(
                             appContext.getString(R.string.vm_post_creation_location_fallback_city)
                         }
                     ),
-                    fotos = prefilledPhotos,
+                    fotos = urlsImagenes,
                     horarios = buildSchedules(),
                     estado = EstadoPublicacion.PENDIENTE,
                     rangoPrecios = selectedPriceRange,
@@ -264,6 +319,7 @@ class PostCreationViewModel @Inject constructor(
                             appContext.getString(R.string.vm_post_creation_success)
                         }
                     )
+                    limpiarImagenes()
                 } else {
                     _createResult.value = RequestResult.Failure(appContext.getString(R.string.vm_post_creation_create_failed))
                 }
@@ -285,6 +341,90 @@ class PostCreationViewModel @Inject constructor(
         showSuccessModal = false
     }
 
+    // Métodos para manejo de imágenes
+
+    fun agregarImagen(uri: Uri) {
+        if (imagenesTemporales.size >= 5) {
+            _imagenSubidaResult.value = RequestResult.Failure(
+                appContext.getString(R.string.error_max_images)
+            )
+            return
+        }
+
+        viewModelScope.launch {
+            try {
+                _imagenSubidaResult.value = RequestResult.Loading
+
+                // Comprimir localmente
+                val archivoComprimido = compressionService.comprimirImagen(uri)
+                    ?: run {
+                        _imagenSubidaResult.value = RequestResult.Failure(
+                            appContext.getString(R.string.error_image_compression)
+                        )
+                        return@launch
+                    }
+
+                // Guardar en almacenamiento local
+                val nombreLocal = "imagen_temporal_${System.currentTimeMillis()}.jpg"
+                val archivoGuardado = imagenLocalStorage.guardarImagen(uri, nombreLocal)
+                    ?: run {
+                        _imagenSubidaResult.value = RequestResult.Failure(
+                            appContext.getString(R.string.error_saving_image)
+                        )
+                        return@launch
+                    }
+
+                // Actualizar lista temporal (para UI)
+                imagenesTemporales = imagenesTemporales + Uri.fromFile(archivoGuardado)
+                indiceBotonAgregar = imagenesTemporales.size
+                _imagenSubidaResult.value = RequestResult.Success("")
+
+            } catch (e: Exception) {
+                _imagenSubidaResult.value = RequestResult.Failure(e.message ?: "Error desconocido")
+            }
+        }
+    }
+
+    fun eliminarImagen(indice: Int) {
+        if (indice < 0 || indice >= imagenesTemporales.size) return
+
+        viewModelScope.launch {
+            try {
+                imagenesTemporales = imagenesTemporales.toMutableList().apply {
+                    removeAt(indice)
+                }.toList()
+
+                // También eliminar de URLs remotas si ya fue subida
+                if (indice < imagenesRemotasUrls.size) {
+                    imagenesRemotasUrls = imagenesRemotasUrls.toMutableList().apply {
+                        removeAt(indice)
+                    }.toList()
+                }
+
+                indiceBotonAgregar = imagenesTemporales.size
+            } catch (e: Exception) {
+                _imagenSubidaResult.value = RequestResult.Failure(e.message ?: "Error al eliminar imagen")
+            }
+        }
+    }
+
+    fun limpiarImagenes() {
+        viewModelScope.launch {
+            try {
+                imagenLocalStorage.limpiarDir()
+                imagenesTemporales = emptyList()
+                imagenesRemotasUrls = emptyList()
+                indiceBotonAgregar = 0
+            } catch (e: Exception) {
+                _imagenSubidaResult.value = RequestResult.Failure(e.message ?: "Error al limpiar imágenes")
+            }
+        }
+    }
+
+    fun clearImagenSubidaResult() {
+        _imagenSubidaResult.value = null
+    }
+
     fun resetForm() {
         placeName.reset()
         description = ""
@@ -300,6 +440,9 @@ class PostCreationViewModel @Inject constructor(
         showSuccessModal = false
         prefilledFromPublicationId = null
         prefilledPhotos = emptyList()
+        imagenesTemporales = emptyList()
+        imagenesRemotasUrls = emptyList()
+        indiceBotonAgregar = 0
     }
 
     private fun buildSchedules(): List<HorarioPuntoInteres> {
