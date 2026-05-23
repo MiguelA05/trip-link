@@ -34,7 +34,7 @@ class ReviewModerationService @Inject constructor() {
             "AI_REQUEST",
             "Solicitud enviada: ${System.currentTimeMillis()}"
         )
-        val prompt = "Di hola" //buildPrompt(text)
+        val prompt = buildPrompt(text)
         val response = model.generateContent(prompt)
         val candidate = response.text?.trim().orEmpty()
 
