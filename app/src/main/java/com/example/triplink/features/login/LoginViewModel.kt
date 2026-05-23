@@ -18,6 +18,8 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import com.google.firebase.messaging.FirebaseMessaging
+import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -103,6 +105,16 @@ class LoginViewModel @Inject constructor(
                     userId = authenticatedUser.email, // Email se usa como identificador único del usuario
                     role = authenticatedUser.rol
                 )
+
+                // Capturar y guardar FCM Token
+                try {
+                    val token = FirebaseMessaging.getInstance().token.await()
+                    authRepository.findByEmail(authenticatedUser.email)?.let { user ->
+                        authRepository.save(user.copy(fcmToken = token))
+                    }
+                } catch (e: Exception) {
+                    // No bloquear el login si falla el token
+                }
 
                 _loginResult.value = RequestResult.Success(appContext.getString(R.string.vm_login_success))
             } catch (e: Exception) {

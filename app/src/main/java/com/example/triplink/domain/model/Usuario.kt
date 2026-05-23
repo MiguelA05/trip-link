@@ -24,5 +24,6 @@ data class Usuario (
 
     val insignias: List<String> = emptyList(), // IDs de insignias
     val activo: Boolean = true,
-    val firebaseUid: String? = null
+    val firebaseUid: String? = null,
+    val fcmToken: String? = null
 )

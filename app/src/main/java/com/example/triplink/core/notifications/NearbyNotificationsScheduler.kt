@@ -1,11 +1,7 @@
 package com.example.triplink.core.notifications
 
 import android.content.Context
-import androidx.work.Constraints
 import androidx.work.ExistingPeriodicWorkPolicy
-import androidx.work.OneTimeWorkRequestBuilder
-import androidx.work.NetworkType
-import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
 import com.example.triplink.core.storage.NearbyNotificationPreferences
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -46,6 +42,8 @@ class NearbyNotificationsScheduler @Inject constructor(
     }
 
     fun triggerNow() {
+        // Deshabilitado: Migración a Notificaciones Push Reales
+        /*
         val constraints = Constraints.Builder()
             .setRequiredNetworkType(NetworkType.CONNECTED)
             .build()
@@ -55,9 +53,12 @@ class NearbyNotificationsScheduler @Inject constructor(
             .build()
 
         WorkManager.getInstance(context).enqueue(request)
+        */
     }
 
     private fun schedule() {
+        // Deshabilitado: Migración a Notificaciones Push Reales
+        /*
         val constraints = Constraints.Builder()
             .setRequiredNetworkType(NetworkType.CONNECTED)
             .build()
@@ -71,6 +72,7 @@ class NearbyNotificationsScheduler @Inject constructor(
             ExistingPeriodicWorkPolicy.UPDATE,
             request
         )
+        */
     }
 
     private fun cancel() {

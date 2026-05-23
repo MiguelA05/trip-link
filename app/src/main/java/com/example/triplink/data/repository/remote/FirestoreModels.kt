@@ -95,7 +95,8 @@ data class FirestoreUsuarioDto(
     var ubicacionExactaActiva: Boolean = false,
     var insignias: List<String> = emptyList(),
     var activo: Boolean = true,
-    var firebaseUid: String? = null
+    var firebaseUid: String? = null,
+    var fcmToken: String? = null
 )
 
 @IgnoreExtraProperties
@@ -124,7 +125,8 @@ internal fun Usuario.toFirestoreDto(): FirestoreUsuarioDto = FirestoreUsuarioDto
     ubicacionExactaActiva = ubicacionExactaActiva,
     insignias = insignias,
     activo = activo,
-    firebaseUid = firebaseUid
+    firebaseUid = firebaseUid,
+    fcmToken = fcmToken
 )
 
 internal fun FirestoreUsuarioDto.toDomain(): Usuario = Usuario(
@@ -141,7 +143,8 @@ internal fun FirestoreUsuarioDto.toDomain(): Usuario = Usuario(
     ubicacionExactaActiva = ubicacionExactaActiva,
     insignias = insignias,
     activo = activo,
-    firebaseUid = firebaseUid
+    firebaseUid = firebaseUid,
+    fcmToken = fcmToken
 )
 
 internal fun Ubicacion.toFirestoreDto(): FirestoreUbicacionDto = FirestoreUbicacionDto(

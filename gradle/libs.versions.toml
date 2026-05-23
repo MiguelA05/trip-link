@@ -24,6 +24,7 @@ coroutinesPlayServices = "1.8.1"
 firebaseAuth = "24.1.0"
 workRuntimeKtx = "2.10.3"
 firebaseFunctions = "21.2.1"
+firebaseMessaging = "24.1.2"
 
 
 [libraries]
@@ -58,6 +59,7 @@ kotlinx-coroutines-play-services = { module = "org.jetbrains.kotlinx:kotlinx-cor
 firebase-auth = { group = "com.google.firebase", name = "firebase-auth", version.ref = "firebaseAuth" }
 androidx-work-runtime-ktx = { group = "androidx.work", name = "work-runtime-ktx", version.ref = "workRuntimeKtx" }
 firebase-functions = { group = "com.google.firebase", name = "firebase-functions", version.ref = "firebaseFunctions" }
+firebase-messaging = { group = "com.google.firebase", name = "firebase-messaging-ktx", version.ref = "firebaseMessaging" }
 
 
 [plugins]

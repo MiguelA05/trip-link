@@ -1,6 +1,10 @@
-import { HttpsError, onCall, Request } from "firebase-functions/v2/https";
+import { HttpsError, onCall } from "firebase-functions/v2/https";
+import { onDocumentUpdated } from "firebase-functions/v2/firestore";
+import * as admin from "firebase-admin";
 import { defineSecret } from "firebase-functions/params";
 import { createHash } from "node:crypto";
+
+admin.initializeApp();
 
 type DeepSeekModerationJson = {
   isInappropriate: boolean;
@@ -281,6 +285,67 @@ export const moderateCommentDeepSeek = onCall(
         commentHash,
       });
       throw new HttpsError("internal", `Error inesperado durante moderacion: ${String(error)}`);
+    }
+  }
+);
+
+/**
+ * Triggers when a publication status changes.
+ * Notifies the author when their post is verified.
+ */
+export const onPublicationStatusChange = onDocumentUpdated(
+  "publications/{publicationId}",
+  async (event) => {
+    const newData = event.data?.after.data();
+    const previousData = event.data?.before.data();
+
+    if (!newData || !previousData) return;
+
+    // 1. Detect transition to VERIFICADA
+    if (newData.estado === "VERIFICADA" && previousData.estado !== "VERIFICADA") {
+      const authorEmail = newData.usuarioAutorId;
+      const publicationTitle = newData.titulo;
+
+      // 2. Fetch author's FCM Token from 'users' collection
+      const userDoc = await admin.firestore().collection("users").doc(authorEmail).get();
+
+      if (!userDoc.exists) return;
+      const userData = userDoc.data();
+      const fcmToken = userData?.fcmToken;
+
+      if (fcmToken) {
+        // 3. Send Notification to Author
+        const message = {
+          notification: {
+            title: "¡Tu publicación ha sido aprobada!",
+            body: `Felicidades, "${publicationTitle}" ya es visible para toda la comunidad.`
+          },
+          token: fcmToken
+        };
+
+        try {
+          await admin.messaging().send(message);
+          console.log("Notification sent successfully to author:", authorEmail);
+        } catch (error) {
+          console.error("Error sending notification to author:", error);
+        }
+      }
+
+      // 4. Broadcast to everyone else via 'new_places' topic
+      const broadcastMessage = {
+        notification: {
+          title: "¡Nuevo lugar descubierto!",
+          body: `Se ha publicado: ${publicationTitle}. ¡Ven a verlo!`
+        },
+        topic: "new_places"
+      };
+
+      try {
+        await admin.messaging().send(broadcastMessage);
+        console.log("Broadcast notification sent to topic: new_places");
+      } catch (error) {
+        console.error("Error sending broadcast notification:", error);
+      }
     }
   }
 );

@@ -12,7 +12,9 @@ import com.example.triplink.R
 import com.example.triplink.domain.model.Ubicacion
 import com.example.triplink.domain.model.Usuario
 import com.example.triplink.domain.repository.user.AuthRepository
+import com.google.firebase.messaging.FirebaseMessaging
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -150,6 +152,12 @@ class RegisterViewModel @Inject constructor(
                     return@launch
                 }
 
+                val fcmToken = try {
+                    FirebaseMessaging.getInstance().token.await()
+                } catch (e: Exception) {
+                    null
+                }
+
                 val wasSaved = authRepository.save(
                     Usuario(
                         email = email,
@@ -164,7 +172,8 @@ class RegisterViewModel @Inject constructor(
                             latitud = selectedLatitude ?: 0.0,
                             longitud = selectedLongitude ?: 0.0,
                             ciudad = address
-                        )
+                        ),
+                        fcmToken = fcmToken
                     )
                 )
 
