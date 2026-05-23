@@ -77,6 +77,9 @@ class PublicationDetailsViewModel @Inject constructor(
     private val _isSavingComment = MutableStateFlow(false)
     val isSavingComment: StateFlow<Boolean> = _isSavingComment.asStateFlow()
 
+    private val _isPublishingSuggestedComment = MutableStateFlow(false)
+    val isPublishingSuggestedComment: StateFlow<Boolean> = _isPublishingSuggestedComment.asStateFlow()
+
     private val _inappropriateCommentSuggestion = MutableStateFlow<InappropriateCommentSuggestion?>(null)
     val inappropriateCommentSuggestion: StateFlow<InappropriateCommentSuggestion?> =
         _inappropriateCommentSuggestion.asStateFlow()
@@ -160,6 +163,7 @@ class PublicationDetailsViewModel @Inject constructor(
                         _commentResult.value = RequestResult.Failure(
                             appContext.getString(R.string.vm_publication_details_moderation_failed)
                         )
+                        _isSavingComment.value = false
                         return@launch
                     }
 
@@ -182,6 +186,7 @@ class PublicationDetailsViewModel @Inject constructor(
                             reason = moderation.reason
                         )
                         _commentResult.value = null
+                        _isSavingComment.value = false
                         return@launch
                     }
                 }
@@ -199,7 +204,6 @@ class PublicationDetailsViewModel @Inject constructor(
                 _commentResult.value = RequestResult.Failure(
                     appContext.getString(R.string.vm_publication_details_save_error, e.message ?: "")
                 )
-            } finally {
                 _isSavingComment.value = false
             }
         }
@@ -208,11 +212,9 @@ class PublicationDetailsViewModel @Inject constructor(
     fun acceptSuggestedCommentAndPublish() {
         val pendingSubmission = pendingCommentSubmission ?: return
         Log.d("PublicationDetails", "acceptSuggestedCommentAndPublish for publicationId=${pendingSubmission.publicationId}")
-        pendingCommentSubmission = null
-        _inappropriateCommentSuggestion.value = null
 
         viewModelScope.launch {
-            _isSavingComment.value = true
+            _isPublishingSuggestedComment.value = true
             _commentResult.value = RequestResult.Loading
             try {
                 publishComment(
@@ -227,8 +229,7 @@ class PublicationDetailsViewModel @Inject constructor(
                 _commentResult.value = RequestResult.Failure(
                     appContext.getString(R.string.vm_publication_details_save_error, e.message ?: "")
                 )
-            } finally {
-                _isSavingComment.value = false
+                _isPublishingSuggestedComment.value = false
             }
         }
     }
@@ -357,6 +358,14 @@ class PublicationDetailsViewModel @Inject constructor(
 
     fun clearCommentResult() {
         _commentResult.value = null
+    }
+
+    fun clearSavingComment() {
+        _isSavingComment.value = false
+    }
+
+    fun clearPublishingSuggestedComment() {
+        _isPublishingSuggestedComment.value = false
     }
 
     fun clearPublicationActionResult() {
