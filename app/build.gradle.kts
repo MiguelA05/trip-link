@@ -200,6 +200,9 @@ dependencies {
     implementation(libs.mapsAndroid)
     implementation(libs.mapsCompose)
 
+    // Location services (FusedLocationProvider) used to obtain device location
+    implementation("com.google.android.gms:play-services-location:21.0.1")
+
     // Image compression and manipulation
     implementation("androidx.graphics:graphics-core:1.0.0-alpha03")
 

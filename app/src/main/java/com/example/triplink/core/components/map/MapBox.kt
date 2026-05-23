@@ -34,6 +34,9 @@ import androidx.core.content.ContextCompat
 import com.example.triplink.BuildConfig
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import com.google.android.gms.location.LocationServices
+import com.google.android.gms.location.Priority
+import com.google.android.gms.tasks.CancellationTokenSource
 import com.mapbox.maps.CameraOptions
 import com.mapbox.maps.MapView
 import com.mapbox.maps.Style
@@ -101,6 +104,11 @@ fun MapBox(
     showMyLocationButton: Boolean = true,
     activateClick: Boolean = false,
     centerCameraOnUpdate: Boolean = true,
+    /**
+     * Callback invoked when the device location is obtained by FusedLocationProvider.
+     * Order: longitude, latitude to be consistent with map click callbacks used elsewhere.
+     */
+    onDeviceLocation: (Double, Double) -> Unit = { _, _ -> },
     onMapClickListener: (Double, Double) -> Unit = { _, _ -> },
     onMarkerClick: (String) -> Unit = {}
 ) {
@@ -349,13 +357,51 @@ fun MapBox(
             FloatingActionButton(
                 onClick = {
                     if (hasLocationPermission.value) {
-                        // Centrar en ubicación del usuario
-                        mapView.value?.mapboxMap?.setCamera(
-                            CameraOptions.Builder()
-                                .zoom(14.0)
-                                .center(Point.fromLngLat(-75.6491181, 4.4687891))
-                                .build()
-                        )
+                        try {
+                            val fusedClient = LocationServices.getFusedLocationProviderClient(context)
+                            val cts = CancellationTokenSource()
+                            // Request a current high-accuracy location; fallback to lastLocation if returns null
+                            fusedClient.getCurrentLocation(Priority.PRIORITY_HIGH_ACCURACY, cts.token)
+                                .addOnSuccessListener { location ->
+                                    if (location != null) {
+                                        val lon = location.longitude
+                                        val lat = location.latitude
+                                        Log.d("MapBox", "Device location obtained: $lat,$lon")
+                                        // Notify parent and center camera
+                                        onDeviceLocation(lon, lat)
+                                        mapView.value?.mapboxMap?.setCamera(
+                                            CameraOptions.Builder()
+                                                .zoom(14.0)
+                                                .center(Point.fromLngLat(lon, lat))
+                                                .build()
+                                        )
+                                    } else {
+                                        Log.w("MapBox", "getCurrentLocation returned null, trying lastLocation")
+                                        fusedClient.lastLocation.addOnSuccessListener { last ->
+                                            if (last != null) {
+                                                val lon = last.longitude
+                                                val lat = last.latitude
+                                                onDeviceLocation(lon, lat)
+                                                mapView.value?.mapboxMap?.setCamera(
+                                                    CameraOptions.Builder()
+                                                        .zoom(14.0)
+                                                        .center(Point.fromLngLat(lon, lat))
+                                                        .build()
+                                                )
+                                            } else {
+                                                Log.w("MapBox", "lastLocation also null")
+                                            }
+                                        }.addOnFailureListener { e ->
+                                            Log.e("MapBox", "Error getting lastLocation: ${e.message}", e)
+                                        }
+                                    }
+                                }
+                                .addOnFailureListener { e ->
+                                    Log.e("MapBox", "Error getting current location: ${e.message}", e)
+                                }
+                        } catch (e: Exception) {
+                            Log.e("MapBox", "Exception requesting device location: ${e.message}", e)
+                        }
                     } else {
                         // Solicitar permisos usando el mismo launcher que definimos arriba (Activity Result API)
                         permissionLauncher.launch(

@@ -105,6 +105,11 @@ fun LocationPickerMapField(
                 onMapClickListener = { longitude, latitude ->
                     pendingLongitude = longitude
                     pendingLatitude = latitude
+                },
+                onDeviceLocation = { longitude, latitude ->
+                    // When MapBox obtains device location, set pending so user can confirm
+                    pendingLongitude = longitude
+                    pendingLatitude = latitude
                 }
             )
 
