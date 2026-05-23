@@ -1,9 +1,45 @@
 "use strict";
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || (function () {
+    var ownKeys = function(o) {
+        ownKeys = Object.getOwnPropertyNames || function (o) {
+            var ar = [];
+            for (var k in o) if (Object.prototype.hasOwnProperty.call(o, k)) ar[ar.length] = k;
+            return ar;
+        };
+        return ownKeys(o);
+    };
+    return function (mod) {
+        if (mod && mod.__esModule) return mod;
+        var result = {};
+        if (mod != null) for (var k = ownKeys(mod), i = 0; i < k.length; i++) if (k[i] !== "default") __createBinding(result, mod, k[i]);
+        __setModuleDefault(result, mod);
+        return result;
+    };
+})();
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.moderateCommentDeepSeek = void 0;
+exports.onPublicationStatusChange = exports.moderateCommentDeepSeek = void 0;
 const https_1 = require("firebase-functions/v2/https");
+const firestore_1 = require("firebase-functions/v2/firestore");
+const admin = __importStar(require("firebase-admin"));
 const params_1 = require("firebase-functions/params");
 const node_crypto_1 = require("node:crypto");
+admin.initializeApp();
 const deepSeekApiKey = (0, params_1.defineSecret)("DEEPSEEK_API_KEY");
 const MAX_COMMENT_LENGTH = 300;
 const DEFAULT_SAFE_ALTERNATIVE = "El lugar no fue de mi agrado, mi experiencia fue mala.";
@@ -228,5 +264,82 @@ exports.moderateCommentDeepSeek = (0, https_1.onCall)({
             commentHash,
         });
         throw new https_1.HttpsError("internal", `Error inesperado durante moderacion: ${String(error)}`);
+    }
+});
+/**
+ * Triggers when a publication status changes.
+ * Notifies the author when their post is verified.
+ *
+ * OPTIMIZACIONES:
+ * 1. Intenta usar authorFcmToken de la publicación (evita lectura a users)
+ * 2. Si no está, fallback a lectura de users
+ * 3. Paraleliza envíos de mensajes (no espera secuencial)
+ */
+exports.onPublicationStatusChange = (0, firestore_1.onDocumentUpdated)("publications/{publicationId}", async (event) => {
+    const newData = event.data?.after.data();
+    const previousData = event.data?.before.data();
+    if (!newData || !previousData)
+        return;
+    console.log(`DEBUG: Cambio detectado en ${event.params.publicationId}. Estado anterior: ${previousData.estado}, Nuevo: ${newData.estado}`);
+    // 1. Detectar transición a VERIFICADA (Ignorar mayúsculas/minúsculas del estado)
+    if (newData.estado?.toUpperCase() === "VERIFICADA" && previousData.estado?.toUpperCase() !== "VERIFICADA") {
+        // LIMPIEZA CRÍTICA: Firestore IDs suelen ser minúsculas y sin espacios
+        const authorEmail = String(newData.usuarioAutorId || "").trim().toLowerCase();
+        const publicationTitle = newData.titulo || "Nuevo lugar";
+        console.log(`INFO: Procesando notificación para autor: [${authorEmail}]`);
+        if (!authorEmail) {
+            console.error("ERROR: La publicación no tiene usuarioAutorId");
+            return;
+        }
+        try {
+            // OPTIMIZACIÓN 1: Intentar obtener token del documento de publicación (si está cached)
+            let authorFcmToken = newData.authorFcmToken || null;
+            // OPTIMIZACIÓN 2: Si no está en publicación, buscar en users (fallback)
+            if (!authorFcmToken) {
+                const userDoc = await admin.firestore().collection("users").doc(authorEmail).get();
+                if (userDoc.exists) {
+                    authorFcmToken = userDoc.data()?.fcmToken || null;
+                }
+                else {
+                    console.error(`ERROR: No existe documento en 'users' para: ${authorEmail}`);
+                }
+            }
+            // OPTIMIZACIÓN 3: Paralelizar envíos de mensajes (Promise.all)
+            // Ambos se envían al mismo tiempo, no secuencial
+            const messagingPromises = [];
+            // Rama A: Notificación personalizada al autor
+            if (authorFcmToken) {
+                const personalizedMessage = {
+                    notification: {
+                        title: "¡Tu publicación ha sido aprobada!",
+                        body: `Felicidades, "${publicationTitle}" ya es visible para toda la comunidad.`
+                    },
+                    token: authorFcmToken
+                };
+                messagingPromises.push(admin.messaging().send(personalizedMessage)
+                    .then(() => console.log(`SUCCESS: Notificación personalizada enviada a ${authorEmail}`))
+                    .catch((err) => console.warn(`WARN: Fallo notificación personalizada: ${err.message}`)));
+            }
+            else {
+                console.warn(`WARN: No hay fcmToken para autor ${authorEmail}`);
+            }
+            // Rama B: Broadcast a todos (topic)
+            const broadcastMessage = {
+                notification: {
+                    title: "¡Nuevo lugar descubierto!",
+                    body: `Se ha publicado: ${publicationTitle}. ¡Ven a verlo!`
+                },
+                topic: "new_places"
+            };
+            messagingPromises.push(admin.messaging().send(broadcastMessage)
+                .then(() => console.log("SUCCESS: Broadcast enviado al topic new_places"))
+                .catch((err) => console.error(`ERROR: Fallo broadcast: ${err.message}`)));
+            // Esperar ambos en paralelo (mucho más rápido que secuencial)
+            await Promise.all(messagingPromises);
+            console.log(`INFO: Notificaciones completadas para publicación ${event.params.publicationId}`);
+        }
+        catch (error) {
+            console.error("ERROR CRÍTICO en la ejecución:", error);
+        }
     }
 });

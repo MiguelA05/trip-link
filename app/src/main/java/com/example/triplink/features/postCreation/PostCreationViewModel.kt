@@ -2,6 +2,7 @@ package com.example.triplink.features.postCreation
 
 import android.content.Context
 import android.net.Uri
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -22,6 +23,7 @@ import com.example.triplink.domain.model.enums.DiaSemana
 import com.example.triplink.domain.model.enums.EstadoPublicacion
 import com.example.triplink.domain.model.enums.RangoPrecios
 import com.example.triplink.domain.repository.user.PublicationRepository
+import com.google.firebase.messaging.FirebaseMessaging
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -29,6 +31,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
 import java.io.File
 import java.util.UUID
 import javax.inject.Inject
@@ -254,6 +257,15 @@ class PostCreationViewModel @Inject constructor(
                     return@launch
                 }
 
+                // ← NUEVO: Obtener FCM token del usuario actual
+                val authorFcmToken = try {
+                    FirebaseMessaging.getInstance().token.await()
+                } catch (e: Exception) {
+                    Log.w("PostCreationViewModel", "Error obtaining FCM token: ${e.message}")
+                    null
+                }
+                Log.d("PostCreationViewModel", "FCM token obtained: ${if (authorFcmToken != null) "present" else "null"}")
+
                 // Subir imágenes a Cloudinary si las hay
                 var urlsImagenes = prefilledPhotos
                 
@@ -308,7 +320,8 @@ class PostCreationViewModel @Inject constructor(
                     motivoRechazo = null
                 )
 
-                val wasSaved = publicationRepository.savePuntoInteres(publication)
+                // ← NUEVO: Guardar con el FCM token incluido
+                val wasSaved = publicationRepository.savePuntoInteresWithFcmToken(publication, authorFcmToken)
 
                 if (wasSaved) {
                     showSuccessModal = true

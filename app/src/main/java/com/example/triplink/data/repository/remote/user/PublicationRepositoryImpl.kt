@@ -57,6 +57,20 @@ class PublicationRepositoryImpl @Inject constructor(
         return true
     }
 
+    override suspend fun savePuntoInteresWithFcmToken(publication: PuntoInteres, fcmToken: String?): Boolean {
+        val normalized = publication.copy(commentCount = publication.comments.size)
+        val documentRef = firestore.collection(PUBLICATIONS_COLLECTION).document(normalized.id)
+        if (documentRef.get().await().exists()) return false
+
+        // Convertir a DTO y añadir FCM token para acceso rápido en Cloud Functions
+        val dto = normalized.toFirestoreDto().copy(
+            authorFcmToken = fcmToken
+        )
+        documentRef.set(dto, SetOptions.merge()).await()
+        replacePublicationInCache(normalized)
+        return true
+    }
+
     override suspend fun updatePuntoInteres(publication: PuntoInteres): Boolean {
         val normalized = publication.copy(commentCount = publication.comments.size)
         val documentRef = firestore.collection(PUBLICATIONS_COLLECTION).document(normalized.id)
