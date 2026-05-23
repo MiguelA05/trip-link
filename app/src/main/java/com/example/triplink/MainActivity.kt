@@ -18,9 +18,12 @@ import androidx.lifecycle.lifecycleScope
 import com.example.triplink.core.navigation.AppNavigation
 import com.example.triplink.core.notifications.NearbyNotificationsScheduler
 import com.example.triplink.core.storage.NearbyNotificationFeedStore
+import com.example.triplink.core.utils.FirebaseAuthPersistenceManager
 import com.example.triplink.ui.theme.DescubreuqTheme
+import com.google.firebase.functions.FirebaseFunctions
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
+import android.util.Log
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -32,6 +35,9 @@ class MainActivity : ComponentActivity() {
     @Inject
     lateinit var nearbyNotificationsScheduler: NearbyNotificationsScheduler
 
+    @Inject
+    lateinit var authPersistence: FirebaseAuthPersistenceManager
+
     private val notificationPermissionLauncher =
         registerForActivityResult(ActivityResultContracts.RequestPermission()) { }
 
@@ -40,6 +46,36 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        // Restore Firebase Auth session from cache if it exists
+        lifecycleScope.launch {
+            try {
+                val authState = authPersistence.ensureAuthSession()
+                if (authState != null) {
+                    Log.i("MainActivity", "Firebase Auth session restored: uid=${authState.uid}, provider=${authState.provider}")
+                } else {
+                    Log.d("MainActivity", "No cached Firebase Auth session to restore")
+                }
+            } catch (e: Exception) {
+                Log.w("MainActivity", "Error restoring Firebase Auth session: ${e.message}")
+            }
+        }
+
+        // Configure Firebase Functions emulator only when the app is running on an Android emulator.
+        // On a physical device we keep the default Firebase Functions endpoint so the app can
+        // talk to the deployed backend instead of localhost on the computer.
+        if (BuildConfig.DEBUG && isRunningOnEmulator()) {
+            try {
+                // 10.0.2.2 is the special IP that allows the Android emulator to reach localhost on the host
+                FirebaseFunctions.getInstance().useEmulator("10.0.2.2", 5001)
+                Log.i("MainActivity", "Firebase Functions emulator configured: 10.0.2.2:5001")
+            } catch (e: Exception) {
+                Log.e("MainActivity", "Failed to configure Firebase Functions emulator", e)
+            }
+        } else {
+            Log.i("MainActivity", "Using default Firebase Functions endpoint (physical device or non-debug build)")
+        }
+
         deepLink = intent?.data
         pendingPublicationId = extractPublicationId(intent)
         markNotificationAsRead(pendingPublicationId)
@@ -98,6 +134,14 @@ class MainActivity : ComponentActivity() {
         if (!shouldTrigger) return
 
         nearbyNotificationsScheduler.triggerNow()
+    }
+
+    private fun isRunningOnEmulator(): Boolean {
+        return Build.FINGERPRINT.startsWith("generic") ||
+            Build.FINGERPRINT.contains("emulator") ||
+            Build.MODEL.contains("Android SDK built for") ||
+            Build.MODEL.contains("sdk_gphone") ||
+            Build.MANUFACTURER.contains("Genymotion")
     }
 }
 

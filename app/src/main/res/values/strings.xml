@@ -647,6 +647,7 @@
     <string name="vm_publication_details_login_required">You must sign in to comment</string>
     <string name="vm_publication_details_comment_saved">Comment saved successfully</string>
     <string name="vm_publication_details_comment_save_failed">Could not save the comment</string>
+    <string name="vm_publication_details_moderation_failed">No se pudo validar el comentario en este momento. Intenta nuevamente.</string>
     <string name="vm_publication_details_save_error">Error saving: %1$s</string>
     <string name="vm_publication_details_publication_updated">Publication updated</string>
     <string name="vm_publication_details_publication_update_failed">Could not update publication</string>

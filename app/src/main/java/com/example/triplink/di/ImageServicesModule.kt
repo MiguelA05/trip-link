@@ -14,20 +14,19 @@ import dagger.hilt.components.SingletonComponent
 @Module
 @InstallIn(SingletonComponent::class)
 abstract class ImageServicesModule {
-
+    
     @Binds
     abstract fun bindImagenLocalStorage(
         impl: ImagenLocalStorageImpl
     ): ImagenLocalStorage
-
+    
     @Binds
     abstract fun bindImagenCompressionService(
         impl: ImagenCompressionServiceImpl
     ): ImagenCompressionService
-
+    
     @Binds
     abstract fun bindCloudinaryImageRepository(
         impl: CloudinaryImageRepositoryImpl
     ): CloudinaryImageRepository
 }
-

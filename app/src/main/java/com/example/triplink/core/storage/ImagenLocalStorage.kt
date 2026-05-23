@@ -19,15 +19,15 @@ interface ImagenLocalStorage {
 class ImagenLocalStorageImpl @Inject constructor(
     @param:ApplicationContext private val context: Context
 ) : ImagenLocalStorage {
-
+    
     private val imagesDir = File(context.cacheDir, "publication_images")
-
+    
     init {
         if (!imagesDir.exists()) {
             imagesDir.mkdirs()
         }
     }
-
+    
     override suspend fun guardarImagen(uri: Uri, nombreLocal: String): File? {
         return withContext(Dispatchers.IO) {
             try {
@@ -44,7 +44,7 @@ class ImagenLocalStorageImpl @Inject constructor(
             }
         }
     }
-
+    
     override suspend fun obtenerImagen(nombreLocal: String): File? {
         return withContext(Dispatchers.IO) {
             try {
@@ -55,7 +55,7 @@ class ImagenLocalStorageImpl @Inject constructor(
             }
         }
     }
-
+    
     override suspend fun eliminarImagen(nombreLocal: String): Boolean {
         return withContext(Dispatchers.IO) {
             try {
@@ -66,7 +66,7 @@ class ImagenLocalStorageImpl @Inject constructor(
             }
         }
     }
-
+    
     override suspend fun limpiarDir(): Boolean {
         return withContext(Dispatchers.IO) {
             try {
@@ -78,7 +78,7 @@ class ImagenLocalStorageImpl @Inject constructor(
             }
         }
     }
-
+    
     override fun obtenerArchivoLocal(nombreLocal: String): File? {
         return try {
             val file = File(imagesDir, nombreLocal)
@@ -88,4 +88,3 @@ class ImagenLocalStorageImpl @Inject constructor(
         }
     }
 }
-

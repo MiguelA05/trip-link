@@ -256,10 +256,10 @@ class PostCreationViewModel @Inject constructor(
 
                 // Subir imágenes a Cloudinary si las hay
                 var urlsImagenes = prefilledPhotos
-
+                
                 if (imagenesTemporales.isNotEmpty()) {
                     _imagenSubidaResult.value = RequestResult.Loading
-
+                    
                     val archivos = mutableListOf<File>()
                     for (uri in imagenesTemporales) {
                         val path = uri.path
@@ -270,11 +270,11 @@ class PostCreationViewModel @Inject constructor(
                             }
                         }
                     }
-
+                    
                     if (archivos.isNotEmpty()) {
                         val prefijo = "pub_${UUID.randomUUID()}"
                         val resultadoSubida = cloudinaryRepository.subirMultiples(archivos, prefijo)
-
+                        
                         if (resultadoSubida.isSuccess) {
                             urlsImagenes = resultadoSubida.getOrNull() ?: emptyList()
                             _imagenSubidaResult.value = RequestResult.Success("")

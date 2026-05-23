@@ -144,4 +144,3 @@ class ImagenCompressionServiceImpl @Inject constructor(
     }
 }
 
-

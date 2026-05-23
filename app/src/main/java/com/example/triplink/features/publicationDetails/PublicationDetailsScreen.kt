@@ -82,6 +82,7 @@ fun PublicationDetailsScreen(
     val isSavingComment by viewModel.isSavingComment.collectAsState()
     val isSubmittingReport by viewModel.isSubmittingReport.collectAsState()
     val reportResult by viewModel.reportResult.collectAsState()
+    val inappropriateCommentSuggestion by viewModel.inappropriateCommentSuggestion.collectAsState()
     val snackbarHostState = remember { SnackbarHostState() }
     val coroutineScope = rememberCoroutineScope()
 
@@ -118,10 +119,15 @@ fun PublicationDetailsScreen(
 
     LaunchedEffect(commentResult) {
         commentResult?.let { result ->
-            val message = result.messageText()
-            snackbarHostState.showSnackbar(message)
-            if (result is RequestResult.Success) {
-                showRatingModal = false
+            when (result) {
+                is RequestResult.Success -> {
+                    snackbarHostState.showSnackbar(result.message)
+                    showRatingModal = false
+                }
+                is RequestResult.Failure -> {
+                    snackbarHostState.showSnackbar(result.errorMessage)
+                }
+                RequestResult.Loading -> Unit
             }
             viewModel.clearCommentResult()
         }
@@ -323,6 +329,15 @@ fun PublicationDetailsScreen(
         )
     }
 
+    inappropriateCommentSuggestion?.let { moderationSuggestion ->
+        InappropriateContentModal(
+            onDismiss = viewModel::dismissInappropriateCommentSuggestion,
+            onReplace = viewModel::acceptSuggestedCommentAndPublish,
+            suggestedComment = moderationSuggestion.suggestedComment,
+            isLoading = isSavingComment
+        )
+    }
+
     if (showDeletePublicationDialog) {
         DestructiveConfirmDialog(
             title = stringResource(R.string.feature_publication_details_delete_dialog_title),
@@ -515,7 +530,12 @@ fun RatingModal(
 }
 
 @Composable
-fun InappropriateContentModal(onDismiss: () -> Unit, onReplace: () -> Unit) {
+fun InappropriateContentModal(
+    onDismiss: () -> Unit,
+    onReplace: () -> Unit,
+    suggestedComment: String,
+    isLoading: Boolean = false
+) {
     Dialog(
         onDismissRequest = onDismiss,
         properties = DialogProperties(usePlatformDefaultWidth = false)
@@ -604,7 +624,7 @@ fun InappropriateContentModal(onDismiss: () -> Unit, onReplace: () -> Unit) {
                         modifier = Modifier.fillMaxWidth()
                     ) {
                         Text(
-                            text = stringResource(R.string.feature_publication_details_inappropriate_suggestion),
+                            text = suggestedComment,
                             modifier = Modifier.padding(16.dp),
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
                             style = TextTokens.body()
@@ -632,15 +652,24 @@ fun InappropriateContentModal(onDismiss: () -> Unit, onReplace: () -> Unit) {
 
                         Button(
                             onClick = onReplace,
+                            enabled = !isLoading,
                             modifier = Modifier.weight(1f).height(48.dp),
                             shape = RoundedCornerShape(24.dp),
                             colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.error)
                         ) {
-                            Text(
-                                text = stringResource(R.string.feature_publication_details_replace),
-                                style = TextTokens.emphasized(TextTokens.button(), FontWeight.Bold),
-                                color = MaterialTheme.colorScheme.onError
-                            )
+                            if (isLoading) {
+                                CircularProgressIndicator(
+                                    modifier = Modifier.size(18.dp),
+                                    strokeWidth = 2.dp,
+                                    color = MaterialTheme.colorScheme.onError
+                                )
+                            } else {
+                                Text(
+                                    text = stringResource(R.string.feature_publication_details_replace),
+                                    style = TextTokens.emphasized(TextTokens.button(), FontWeight.Bold),
+                                    color = MaterialTheme.colorScheme.onError
+                                )
+                            }
                         }
                     }
                 }

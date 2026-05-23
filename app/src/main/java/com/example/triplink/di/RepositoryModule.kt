@@ -5,6 +5,7 @@ import com.example.triplink.data.repository.remote.admin.ReportRepositoryImpl
 import com.example.triplink.data.repository.remote.user.AuthRepositoryImpl
 import com.example.triplink.data.repository.remote.user.BadgeRepositoryImpl
 import com.example.triplink.data.repository.remote.user.CommentRepositoryImpl
+import com.example.triplink.data.repository.remote.user.CommentModerationRepositoryImpl
 import com.example.triplink.data.repository.remote.user.FavoriteRepositoryImpl
 import com.example.triplink.data.repository.remote.user.PublicationRepositoryImpl
 import com.example.triplink.data.repository.remote.user.UserProfileRepositoryImpl
@@ -12,6 +13,7 @@ import com.example.triplink.domain.repository.admin.ModerationRepository
 import com.example.triplink.domain.repository.admin.ReportRepository
 import com.example.triplink.domain.repository.user.AuthRepository
 import com.example.triplink.domain.repository.user.BadgeRepository
+import com.example.triplink.domain.repository.user.CommentModerationRepository
 import com.example.triplink.domain.repository.user.CommentRepository
 import com.example.triplink.domain.repository.user.FavoriteRepository
 import com.example.triplink.domain.repository.user.PublicationRepository
@@ -55,6 +57,12 @@ abstract class RepositoryModule {
     abstract fun bindCommentRepository(
         impl: CommentRepositoryImpl
     ): CommentRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindCommentModerationRepository(
+        impl: CommentModerationRepositoryImpl
+    ): CommentModerationRepository
 
     @Binds
     @Singleton

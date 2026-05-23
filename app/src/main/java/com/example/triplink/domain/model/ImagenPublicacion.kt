@@ -18,4 +18,3 @@ enum class EstadoImagen {
     SUBIDA,
     ERROR
 }
-

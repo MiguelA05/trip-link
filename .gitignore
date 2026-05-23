@@ -46,3 +46,5 @@ bin/
 .DS_Store
 
 local.properties
+
+functions/node_modules
