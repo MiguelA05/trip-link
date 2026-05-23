@@ -7,6 +7,8 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.triplink.R
+import com.example.triplink.core.ai.ModerationOutcome
+import com.example.triplink.core.ai.ReviewModerationService
 import com.example.triplink.core.utils.RequestResult
 import com.example.triplink.domain.model.Comentario
 import com.example.triplink.domain.model.PuntoInteres
@@ -18,6 +20,7 @@ import com.example.triplink.domain.repository.user.FavoriteRepository
 import com.example.triplink.domain.repository.user.PublicationRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -25,13 +28,28 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 import java.util.UUID
 
+sealed class CommentModerationState {
+    object Idle : CommentModerationState()
+    object Loading : CommentModerationState()
+    data class Suggested(val pending: PendingComment, val suggestedText: String) : CommentModerationState()
+}
+
+data class PendingComment(
+    val publicationId: String,
+    val userId: String,
+    val userName: String,
+    val rating: Float,
+    val originalText: String
+)
+
 @HiltViewModel
 class PublicationDetailsViewModel @Inject constructor(
     @param:ApplicationContext private val appContext: Context,
     private val publicationRepository: PublicationRepository,
     private val favoriteRepository: FavoriteRepository,
     private val commentRepository: CommentRepository,
-    private val reportRepository: ReportRepository
+    private val reportRepository: ReportRepository,
+    private val reviewModerationService: ReviewModerationService
 ) : ViewModel() {
 
     private val _publication = MutableStateFlow<PuntoInteres?>(null)
@@ -60,6 +78,19 @@ class PublicationDetailsViewModel @Inject constructor(
 
     private val _isSavingComment = MutableStateFlow(false)
     val isSavingComment: StateFlow<Boolean> = _isSavingComment.asStateFlow()
+
+    private val _isModeratingComment = MutableStateFlow(false)
+    val isModeratingComment: StateFlow<Boolean> = _isModeratingComment.asStateFlow()
+
+    private val _commentModerationState = MutableStateFlow<CommentModerationState>(CommentModerationState.Idle)
+    val commentModerationState: StateFlow<CommentModerationState> = _commentModerationState.asStateFlow()
+
+    private val _moderationError = MutableStateFlow<String?>(null)
+    val moderationError: StateFlow<String?> = _moderationError.asStateFlow()
+
+    // When the backend returns a RESOURCE_EXHAUSTED / retry suggestion, store until-when we should back off
+    private val _moderationCooldownUntilMs = MutableStateFlow<Long?>(null)
+    val moderationCooldownUntilMs: StateFlow<Long?> = _moderationCooldownUntilMs.asStateFlow()
 
     private val _isSubmittingReport = MutableStateFlow(false)
     val isSubmittingReport: StateFlow<Boolean> = _isSubmittingReport.asStateFlow()
@@ -111,39 +142,156 @@ class PublicationDetailsViewModel @Inject constructor(
     }
 
     fun saveComment(publicationId: String, userId: String, userName: String, rating: Float, text: String) {
+        val trimmedText = text.trim()
         if (userId.isBlank()) {
             _commentResult.value = RequestResult.Failure(appContext.getString(R.string.vm_publication_details_login_required))
             return
         }
+        if (trimmedText.isBlank()) {
+            _commentResult.value = RequestResult.Failure(appContext.getString(R.string.vm_publication_details_comment_empty))
+            return
+        }
+
+        // If we recently received a quota-exhausted response, block client calls until cooldown expires
+        val cooldownUntil = _moderationCooldownUntilMs.value
+        val now = System.currentTimeMillis()
+        if (cooldownUntil != null && cooldownUntil > now) {
+            val remainingSec = ((cooldownUntil - now) / 1000).coerceAtLeast(1)
+            val message = "Se ha alcanzado la cuota de moderación. Intenta de nuevo en ${remainingSec}s."
+            _moderationError.value = message
+            android.util.Log.d("PublicationDetailsVM", "saveComment blocked due to moderation cooldown: $remainingSec s remaining")
+            return
+        }
+        // Prevent re-entrant calls: if moderation or saving is already in progress, ignore additional requests
+        if (_isModeratingComment.value || _isSavingComment.value) {
+            android.util.Log.d("PublicationDetailsVM", "saveComment ignored - operation already in progress")
+            return
+        }
 
         viewModelScope.launch {
-            _isSavingComment.value = true
-            _commentResult.value = RequestResult.Loading
+            android.util.Log.d("PublicationDetailsVM", "saveComment START. publicationId=$publicationId userId=$userId text='${trimmedText.take(80)}'")
+            _isModeratingComment.value = true
+            _commentModerationState.value = CommentModerationState.Loading
             try {
-                val comment = Comentario(
-                    id = UUID.randomUUID().toString(),
-                    usuarioId = userId,
-                    puntoInteresId = publicationId,
-                    userName = userName,
-                    date = System.currentTimeMillis(),
-                    rating = rating,
-                    text = text.trim()
-                )
-
-                val wasSaved = commentRepository.saveComment(publicationId, comment)
-                if (wasSaved) {
-                    comments = commentRepository.getCommentsByPublicationId(publicationId)
-                    _commentResult.value = RequestResult.Success(appContext.getString(R.string.vm_publication_details_comment_saved))
-                } else {
-                    _commentResult.value = RequestResult.Failure(appContext.getString(R.string.vm_publication_details_comment_save_failed))
+                android.util.Log.d("PublicationDetailsVM", "Calling reviewModerationService.moderateReview...")
+                when (val outcome = reviewModerationService.moderateReview(trimmedText)) {
+                    is ModerationOutcome.Clean -> {
+                        android.util.Log.d("PublicationDetailsVM", "moderation result: CLEAN")
+                        _commentModerationState.value = CommentModerationState.Idle
+                        _isModeratingComment.value = false
+                        saveCommentInternal(publicationId, userId, userName, rating, outcome.text)
+                    }
+                    is ModerationOutcome.Moderated -> {
+                        android.util.Log.d("PublicationDetailsVM", "moderation result: MODERATED. suggesting replacement")
+                        _commentModerationState.value = CommentModerationState.Suggested(
+                            pending = PendingComment(
+                                publicationId = publicationId,
+                                userId = userId,
+                                userName = userName,
+                                rating = rating,
+                                originalText = outcome.originalText
+                            ),
+                            suggestedText = outcome.suggestedText
+                        )
+                        _isModeratingComment.value = false
+                    }
                 }
+            } catch (e: TimeoutCancellationException) {
+                android.util.Log.d("PublicationDetailsVM", "moderation timeout")
+                _commentModerationState.value = CommentModerationState.Idle
+                _isModeratingComment.value = false
+                _moderationError.value = appContext.getString(R.string.vm_publication_details_moderation_timeout)
             } catch (e: Exception) {
-                _commentResult.value = RequestResult.Failure(
-                    appContext.getString(R.string.vm_publication_details_save_error, e.message ?: "")
-                )
-            } finally {
-                _isSavingComment.value = false
+                android.util.Log.d("PublicationDetailsVM", "moderation error: ${e.message}")
+                _commentModerationState.value = CommentModerationState.Idle
+                _isModeratingComment.value = false
+
+                // Detect quota-exhausted / retry suggestion and set a local cooldown to avoid hammering the API
+                val msg = e.message ?: ""
+                val retryRegex = Regex("Please retry in ([0-9]+(\\.[0-9]+)?)s", RegexOption.IGNORE_CASE)
+                val match = retryRegex.find(msg)
+                if (match != null) {
+                    val seconds = match.groupValues[1].toDoubleOrNull()?.let { Math.ceil(it).toLong() } ?: 30L
+                    val until = System.currentTimeMillis() + seconds * 1000
+                    _moderationCooldownUntilMs.value = until
+                    val userMsg = "Se ha alcanzado la cuota de moderación. Intenta de nuevo en ${seconds}s."
+                    _moderationError.value = userMsg
+                    android.util.Log.d("PublicationDetailsVM", "Detected quota-exhausted. Backing off for ${seconds}s")
+                } else {
+                    _moderationError.value = appContext.getString(
+                        R.string.vm_publication_details_moderation_error,
+                        msg
+                    )
+                }
             }
+            android.util.Log.d("PublicationDetailsVM", "saveComment END for publicationId=$publicationId")
+        }
+    }
+
+    fun resolveModeratedComment(replaceWithSuggestion: Boolean) {
+        val currentState = _commentModerationState.value as? CommentModerationState.Suggested ?: return
+        val pending = currentState.pending
+        val resolvedText = if (replaceWithSuggestion) {
+            currentState.suggestedText
+        } else {
+            pending.originalText
+        }
+        _commentModerationState.value = CommentModerationState.Idle
+        viewModelScope.launch {
+            saveCommentInternal(
+                publicationId = pending.publicationId,
+                userId = pending.userId,
+                userName = pending.userName,
+                rating = pending.rating,
+                text = resolvedText
+            )
+        }
+    }
+
+    fun dismissModerationSuggestion() {
+        _commentModerationState.value = CommentModerationState.Idle
+    }
+
+    fun clearModerationError() {
+        _moderationError.value = null
+    }
+
+    private suspend fun saveCommentInternal(
+        publicationId: String,
+        userId: String,
+        userName: String,
+        rating: Float,
+        text: String
+    ) {
+        android.util.Log.d("PublicationDetailsVM", "saveCommentInternal START. publicationId=$publicationId userId=$userId text='${text.take(80)}'")
+        _isSavingComment.value = true
+        _commentResult.value = RequestResult.Loading
+        try {
+            val comment = Comentario(
+                id = UUID.randomUUID().toString(),
+                usuarioId = userId,
+                puntoInteresId = publicationId,
+                userName = userName,
+                date = System.currentTimeMillis(),
+                rating = rating,
+                text = text.trim()
+            )
+
+            val wasSaved = commentRepository.saveComment(publicationId, comment)
+            if (wasSaved) {
+                comments = commentRepository.getCommentsByPublicationId(publicationId)
+                _commentResult.value = RequestResult.Success(appContext.getString(R.string.vm_publication_details_comment_saved))
+                android.util.Log.d("PublicationDetailsVM", "saveCommentInternal: comment saved successfully")
+            } else {
+                _commentResult.value = RequestResult.Failure(appContext.getString(R.string.vm_publication_details_comment_save_failed))
+            }
+        } catch (e: Exception) {
+            _commentResult.value = RequestResult.Failure(
+                appContext.getString(R.string.vm_publication_details_save_error, e.message ?: "")
+            )
+        } finally {
+            _isSavingComment.value = false
+            android.util.Log.d("PublicationDetailsVM", "saveCommentInternal END for publicationId=$publicationId")
         }
     }
 

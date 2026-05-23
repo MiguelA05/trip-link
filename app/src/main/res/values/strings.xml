@@ -645,6 +645,9 @@
     <string name="vm_publication_details_favorite_update_failed">Could not update favorite</string>
     <string name="vm_publication_details_generic_error">Error: %1$s</string>
     <string name="vm_publication_details_login_required">You must sign in to comment</string>
+    <string name="vm_publication_details_comment_empty">The comment cannot be empty</string>
+    <string name="vm_publication_details_moderation_timeout">Moderation took too long. Please try again</string>
+    <string name="vm_publication_details_moderation_error">Could not moderate the comment. %1$s</string>
     <string name="vm_publication_details_comment_saved">Comment saved successfully</string>
     <string name="vm_publication_details_comment_save_failed">Could not save the comment</string>
     <string name="vm_publication_details_save_error">Error saving: %1$s</string>

@@ -80,6 +80,8 @@ fun PublicationDetailsScreen(
     val favoriteToggleResult by viewModel.favoriteToggleResult.collectAsState()
     val commentResult by viewModel.commentResult.collectAsState()
     val isSavingComment by viewModel.isSavingComment.collectAsState()
+    val isModeratingComment by viewModel.isModeratingComment.collectAsState()
+    val commentModerationState by viewModel.commentModerationState.collectAsState()
     val isSubmittingReport by viewModel.isSubmittingReport.collectAsState()
     val reportResult by viewModel.reportResult.collectAsState()
     val snackbarHostState = remember { SnackbarHostState() }
@@ -319,8 +321,20 @@ fun PublicationDetailsScreen(
                     text = comment
                 )
             },
-            isLoading = isSavingComment
+            // Disable submit while moderation or saving is in progress to avoid duplicate requests
+            isLoading = isSavingComment || isModeratingComment
         )
+    }
+
+    // Show moderation suggestion modal when the moderation service provides a suggested rewrite
+    when (val state = commentModerationState) {
+        is CommentModerationState.Suggested -> {
+            InappropriateContentModal(
+                onDismiss = { viewModel.dismissModerationSuggestion() },
+                onReplace = { viewModel.resolveModeratedComment(true) }
+            )
+        }
+        else -> { /* no-op */ }
     }
 
     if (showDeletePublicationDialog) {
