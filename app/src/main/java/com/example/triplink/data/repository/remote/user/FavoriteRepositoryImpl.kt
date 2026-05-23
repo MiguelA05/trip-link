@@ -105,7 +105,10 @@ class FavoriteRepositoryImpl @Inject constructor(
         }
 
         updateFavoriteCache(normalizedUserId, publicationId, added)
-        return added
+        // Return true when operation succeeded (added or removed). Previously we returned
+        // 'added' which made removals report failure to callers. Always return true here
+        // to indicate the toggle completed successfully.
+        return true
     }
 
     override suspend fun getFavoritePublications(userId: String): List<PuntoInteres> {

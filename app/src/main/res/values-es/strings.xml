@@ -812,6 +812,14 @@
     <string name="badge_requirement_favorites">Recibe %1$d me gusta/favoritos en tus lugares.</string>
     <string name="badge_requirement_comments">Recibe %1$d comentarios en tus lugares.</string>
 
+    <!-- MANEJO DE IMAGENES: Publicacion de imagenes -->
+    <string name="error_max_images">Máximo de 5 imagnes permitidas</string>
+    <string name="error_image_compression">Error comprimiendo la imagen</string>
+    <string name="error_saving_image">Error guardando la imagen localmente</string>
+    <string name="error_uploading_images">Error subiendo imagenes. Por favor intentalo otra vez.</string>
+    <!-- Etiqueta genérica de carga usada por los snackbars cuando una operación está en curso -->
+    <string name="loading">Cargando...</string>
+
     <!-- PERMISOS: Selector de imágenes -->
     <string name="permissions_profile_image_description">Foto de perfil</string>
     <string name="permissions_change_photo">Cambiar foto</string>
@@ -821,5 +829,6 @@
     <string name="permissions_cancel">Cancelar</string>
     <string name="permissions_camera_permission_denied">Se requiere permiso de cámara para tomar fotos</string>
     <string name="permissions_image_picker_title">Seleccionar imagen</string>
+
 
 </resources>

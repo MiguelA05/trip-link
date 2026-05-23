@@ -26,6 +26,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import com.example.triplink.core.utils.RequestResult
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.example.triplink.R
@@ -60,9 +61,18 @@ fun UserHomeScreen(
         }
     }
 
+    // Pre-read the localized loading label in composable scope so it can be used inside
+    // coroutine-based LaunchedEffect (stringResource is @Composable and cannot be called
+    // from the LaunchedEffect lambda directly).
+    val loadingLabel = stringResource(R.string.loading)
+
     LaunchedEffect(favoriteResult) {
         favoriteResult?.let { result ->
-            val message = result.messageText()
+            val message = if (result is RequestResult.Loading) {
+                loadingLabel
+            } else {
+                result.messageText()
+            }
             snackbarHostState.showSnackbar(message)
             viewModel.clearFavoriteResult()
         }

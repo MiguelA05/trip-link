@@ -87,6 +87,7 @@ fun PublicationDetailsScreen(
     val inappropriateCommentSuggestion by viewModel.inappropriateCommentSuggestion.collectAsState()
     val snackbarHostState = remember { SnackbarHostState() }
     val coroutineScope = rememberCoroutineScope()
+    val loadingLabel = stringResource(R.string.loading)
 
     var showReportModal by remember { mutableStateOf(false) }
     var showRatingModal by remember { mutableStateOf(false) }
@@ -105,7 +106,7 @@ fun PublicationDetailsScreen(
 
     LaunchedEffect(publicationActionResult) {
         publicationActionResult?.let { result ->
-            val message = result.messageText()
+            val message = if (result is RequestResult.Loading) loadingLabel else result.messageText()
             if (result is RequestResult.Success && result.message.contains("eliminada", ignoreCase = true)) {
                 if (isOwnerPublicationView) {
                     onOwnerPublicationDeleted()
@@ -142,7 +143,9 @@ fun PublicationDetailsScreen(
                     viewModel.clearPublishingSuggestedComment()
                     viewModel.clearCommentResult()
                 }
-                RequestResult.Loading -> Unit
+                        RequestResult.Loading -> {
+                            snackbarHostState.showSnackbar(loadingLabel)
+                        }
             }
         }
     }
@@ -156,7 +159,7 @@ fun PublicationDetailsScreen(
 
     LaunchedEffect(favoriteToggleResult) {
         favoriteToggleResult?.let { result ->
-            val message = result.messageText()
+            val message = if (result is RequestResult.Loading) loadingLabel else result.messageText()
             snackbarHostState.showSnackbar(message)
             viewModel.clearFavoriteResult()
         }
@@ -164,7 +167,7 @@ fun PublicationDetailsScreen(
 
     LaunchedEffect(reportResult) {
         reportResult?.let { result ->
-            val message = result.messageText()
+            val message = if (result is RequestResult.Loading) loadingLabel else result.messageText()
             snackbarHostState.showSnackbar(message)
             if (result is RequestResult.Success) {
                 showReportModal = false

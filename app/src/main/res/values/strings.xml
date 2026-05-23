@@ -821,6 +821,8 @@
     <string name="error_image_compression">Error compressing image</string>
     <string name="error_saving_image">Error saving image locally</string>
     <string name="error_uploading_images">Error uploading images. Please try again.</string>
+    <!-- Generic loading label used by snackbars when operations are in progress -->
+    <string name="loading">Loading...</string>
 
     <!-- PERMISSIONS: Image Picker -->
     <string name="permissions_profile_image_description">Profile photo</string>
