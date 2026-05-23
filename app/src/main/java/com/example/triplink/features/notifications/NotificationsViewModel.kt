@@ -58,14 +58,14 @@ class NotificationsViewModel @Inject constructor(
 
     fun markAllAsRead() {
         viewModelScope.launch {
-            feedStore.markAllAsRead()
+            feedStore.clearAll()
             refresh()
         }
     }
 
     fun onNotificationOpened(notificationId: String) {
         viewModelScope.launch {
-            feedStore.markAsRead(notificationId)
+            feedStore.remove(notificationId)
             refresh()
         }
     }

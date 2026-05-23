@@ -56,15 +56,22 @@ class NearbyNotificationFeedStore(private val context: Context) {
     }
 
     suspend fun markAllAsRead() {
-        val updated = getAll().map { it.copy(isRead = true) }
-        persist(updated)
+        // Para mantener la vista simple, marcar todas como leídas elimina las notificaciones
+        persist(emptyList())
     }
 
     suspend fun markAsRead(notificationId: String) {
-        val updated = getAll().map { record ->
-            if (record.id == notificationId) record.copy(isRead = true) else record
-        }
+        val updated = getAll().filter { it.id != notificationId }
         persist(updated)
+    }
+
+    suspend fun remove(notificationId: String) {
+        val updated = getAll().filter { it.id != notificationId }
+        persist(updated)
+    }
+
+    suspend fun clearAll() {
+        persist(emptyList())
     }
 
     private suspend fun persist(items: List<NearbyNotificationRecord>) {

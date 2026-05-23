@@ -25,6 +25,10 @@ import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+    companion object {
+        const val EXTRA_TRIGGER_NEARBY_NOTIFICATIONS = "trigger_nearby_notifications"
+    }
+
     @Inject
     lateinit var nearbyNotificationsScheduler: NearbyNotificationsScheduler
 
@@ -39,6 +43,7 @@ class MainActivity : ComponentActivity() {
         deepLink = intent?.data
         pendingPublicationId = extractPublicationId(intent)
         markNotificationAsRead(pendingPublicationId)
+        triggerNearbyNotificationsIfRequested(intent)
         requestNotificationPermissionIfNeeded()
         lifecycleScope.launch {
             nearbyNotificationsScheduler.syncFromPreferences()
@@ -62,6 +67,7 @@ class MainActivity : ComponentActivity() {
         deepLink = intent.data
         pendingPublicationId = extractPublicationId(intent)
         markNotificationAsRead(pendingPublicationId)
+        triggerNearbyNotificationsIfRequested(intent)
     }
 
     private fun requestNotificationPermissionIfNeeded() {
@@ -82,8 +88,16 @@ class MainActivity : ComponentActivity() {
     private fun markNotificationAsRead(publicationId: String?) {
         val id = publicationId?.takeIf { it.isNotBlank() } ?: return
         lifecycleScope.launch {
-            NearbyNotificationFeedStore(applicationContext).markAsRead(id)
+            // Al tocar la notificación del sistema, eliminarla del feed local
+            NearbyNotificationFeedStore(applicationContext).remove(id)
         }
+    }
+
+    private fun triggerNearbyNotificationsIfRequested(intent: Intent?) {
+        val shouldTrigger = intent?.getBooleanExtra(EXTRA_TRIGGER_NEARBY_NOTIFICATIONS, false) == true
+        if (!shouldTrigger) return
+
+        nearbyNotificationsScheduler.triggerNow()
     }
 }
 
