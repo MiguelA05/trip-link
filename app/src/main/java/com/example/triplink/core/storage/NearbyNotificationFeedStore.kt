@@ -55,6 +55,34 @@ class NearbyNotificationFeedStore(private val context: Context) {
         persist(current.take(MAX_ITEMS))
     }
 
+    suspend fun upsertPushNotification(
+        notificationId: String,
+        publicationId: String,
+        title: String,
+        body: String,
+        notifiedAtMillis: Long = System.currentTimeMillis()
+    ) {
+        val recordId = notificationId.takeIf { it.isNotBlank() }
+            ?: publicationId.takeIf { it.isNotBlank() }
+            ?: notifiedAtMillis.toString()
+        val current = getAll()
+            .filterNot { it.id == recordId }
+            .toMutableList()
+
+        val record = NearbyNotificationRecord(
+            id = recordId,
+            publicationId = publicationId,
+            publicationTitle = title,
+            publicationInfo = body,
+            publicationCreatedAtMillis = notifiedAtMillis,
+            notifiedAtMillis = notifiedAtMillis,
+            isRead = false
+        )
+
+        current.add(0, record)
+        persist(current.take(MAX_ITEMS))
+    }
+
     suspend fun markAllAsRead() {
         // Para mantener la vista simple, marcar todas como leídas elimina las notificaciones
         persist(emptyList())
@@ -80,4 +108,3 @@ class NearbyNotificationFeedStore(private val context: Context) {
         }
     }
 }
-

@@ -78,7 +78,7 @@ class MainActivity : ComponentActivity() {
 
         deepLink = intent?.data
         pendingPublicationId = extractPublicationId(intent)
-        markNotificationAsRead(pendingPublicationId)
+        markNotificationAsRead(intent)
         triggerNearbyNotificationsIfRequested(intent)
         requestNotificationPermissionIfNeeded()
         lifecycleScope.launch {
@@ -102,7 +102,7 @@ class MainActivity : ComponentActivity() {
         setIntent(intent)
         deepLink = intent.data
         pendingPublicationId = extractPublicationId(intent)
-        markNotificationAsRead(pendingPublicationId)
+        markNotificationAsRead(intent)
         triggerNearbyNotificationsIfRequested(intent)
     }
 
@@ -121,8 +121,10 @@ class MainActivity : ComponentActivity() {
         return intent?.getStringExtra("publication_id")?.takeIf { it.isNotBlank() }
     }
 
-    private fun markNotificationAsRead(publicationId: String?) {
-        val id = publicationId?.takeIf { it.isNotBlank() } ?: return
+    private fun markNotificationAsRead(intent: Intent?) {
+        val id = intent?.getStringExtra("notification_id")?.takeIf { it.isNotBlank() }
+            ?: extractPublicationId(intent)
+            ?: return
         lifecycleScope.launch {
             // Al tocar la notificación del sistema, eliminarla del feed local
             NearbyNotificationFeedStore(applicationContext).remove(id)
@@ -144,4 +146,3 @@ class MainActivity : ComponentActivity() {
             Build.MANUFACTURER.contains("Genymotion")
     }
 }
-

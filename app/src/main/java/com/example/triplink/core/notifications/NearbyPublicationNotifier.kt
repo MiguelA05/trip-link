@@ -72,7 +72,12 @@ class NearbyPublicationNotifier(private val context: Context) {
         }
     }
 
-    fun showGenericNotification(title: String, body: String) {
+    fun showGenericNotification(
+        title: String,
+        body: String,
+        publicationId: String? = null,
+        notificationId: String? = null
+    ) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             val hasPermission = ContextCompat.checkSelfPermission(
                 context,
@@ -84,12 +89,18 @@ class NearbyPublicationNotifier(private val context: Context) {
         ensureChannel()
 
         val tapIntent = Intent(context, MainActivity::class.java).apply {
+            publicationId?.takeIf { it.isNotBlank() }?.let { putExtra("publication_id", it) }
+            notificationId?.takeIf { it.isNotBlank() }?.let { putExtra("notification_id", it) }
             flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
         }
 
+        val requestCode = notificationId?.hashCode()
+            ?: publicationId?.hashCode()
+            ?: System.currentTimeMillis().toInt()
+
         val pendingIntent = PendingIntent.getActivity(
             context,
-            0,
+            requestCode,
             tapIntent,
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
@@ -104,12 +115,10 @@ class NearbyPublicationNotifier(private val context: Context) {
             .build()
 
         try {
-            NotificationManagerCompat.from(context).notify(System.currentTimeMillis().toInt(), notification)
+            NotificationManagerCompat.from(context).notify(requestCode, notification)
         } catch (_: SecurityException) {
         }
     }
 }
-
-
 
 

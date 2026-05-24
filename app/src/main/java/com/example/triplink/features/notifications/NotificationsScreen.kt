@@ -59,7 +59,9 @@ fun NotificationsScreen(
                     onMarkAllAsRead = { viewModel.markAllAsRead() },
                     onNotificationClick = { item ->
                         viewModel.onNotificationOpened(item.id)
-                        onOpenPublication(item.publicationId)
+                        if (item.publicationId.isNotBlank()) {
+                            onOpenPublication(item.publicationId)
+                        }
                     }
                 )
             }

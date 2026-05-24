@@ -342,10 +342,15 @@ export const onPublicationStatusChange = onDocumentUpdated(
 
         // Rama A: Notificación personalizada al autor
         if (authorFcmToken) {
+          const title = "¡Tu publicación ha sido aprobada!";
+          const body = `Felicidades, "${publicationTitle}" ya es visible para toda la comunidad.`;
           const personalizedMessage = {
-            notification: {
-              title: "¡Tu publicación ha sido aprobada!",
-              body: `Felicidades, "${publicationTitle}" ya es visible para toda la comunidad.`
+            data: {
+              type: "publication_approved",
+              publication_id: event.params.publicationId,
+              notification_id: `approved_${event.params.publicationId}`,
+              title,
+              body,
             },
             token: authorFcmToken
           };
@@ -359,10 +364,15 @@ export const onPublicationStatusChange = onDocumentUpdated(
         }
 
         // Rama B: Broadcast a todos (topic)
+        const broadcastTitle = "¡Nuevo lugar descubierto!";
+        const broadcastBody = `Se ha publicado: ${publicationTitle}. ¡Ven a verlo!`;
         const broadcastMessage = {
-          notification: {
-            title: "¡Nuevo lugar descubierto!",
-            body: `Se ha publicado: ${publicationTitle}. ¡Ven a verlo!`
+          data: {
+            type: "new_publication",
+            publication_id: event.params.publicationId,
+            notification_id: `new_publication_${event.params.publicationId}`,
+            title: broadcastTitle,
+            body: broadcastBody,
           },
           topic: "new_places"
         };
@@ -382,7 +392,6 @@ export const onPublicationStatusChange = onDocumentUpdated(
     }
   }
 );
-
 
 
 
