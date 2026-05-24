@@ -20,7 +20,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.ArrowBack
 import androidx.compose.material.icons.filled.AccessTime
 import androidx.compose.material.icons.filled.AttachMoney
-import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.outlined.ThumbDown
 import androidx.compose.material.icons.outlined.ThumbUp
 import androidx.compose.material3.Button
@@ -51,6 +50,7 @@ import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
 import coil3.request.crossfade
 import com.example.triplink.core.components.publicationdetails.hero.ImageCarousel
+import com.example.triplink.core.components.publicationdetails.sections.PublicationLocationSection
 import com.example.triplink.R
 import com.example.triplink.core.components.ConfirmReportDialog
 import com.example.triplink.core.components.InvalidateReportDialog
@@ -186,23 +186,6 @@ fun AdminReportDetailsScreen(
                         horizontalArrangement = Arrangement.spacedBy(4.dp)
                     ) {
                         Icon(
-                            imageVector = Icons.Default.LocationOn,
-                            contentDescription = null,
-                            tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                            modifier = Modifier.size(18.dp)
-                        )
-                        Text(
-                            text = report.cityLabel,
-                            style = TextTokens.body(),
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
-                        )
-                    }
-
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(4.dp)
-                    ) {
-                        Icon(
                             imageVector = Icons.Default.AttachMoney,
                             contentDescription = null,
                             tint = MaterialTheme.colorScheme.primary,
@@ -233,6 +216,14 @@ fun AdminReportDetailsScreen(
                     }
                 }
             }
+
+            PublicationLocationSection(
+                city = report.pointOfInterest.ubicacion.ciudad,
+                coordinates = "${report.pointOfInterest.ubicacion.latitud}, ${report.pointOfInterest.ubicacion.longitud}",
+                latitude = report.pointOfInterest.ubicacion.latitud,
+                longitude = report.pointOfInterest.ubicacion.longitud,
+                modifier = Modifier.padding(horizontal = 0.dp, vertical = 0.dp)
+            )
 
             Surface(
                 modifier = Modifier.fillMaxWidth(),

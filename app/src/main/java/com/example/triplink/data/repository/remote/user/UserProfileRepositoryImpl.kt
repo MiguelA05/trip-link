@@ -41,7 +41,10 @@ class UserProfileRepositoryImpl @Inject constructor(
     }
 
     override suspend fun findUserNameById(userId: String): String? {
-        return getUserById(userId)?.nombre
+        return getUserById(userId)
+            ?.nombre
+            ?.takeIf { it.isNotBlank() }
+            ?: fallbackNameFromUserId(userId)
     }
 
     override suspend fun updateUser(user: Usuario): Boolean {
@@ -137,6 +140,21 @@ class UserProfileRepositoryImpl @Inject constructor(
             user.firebaseUid?.equals(normalizedId, ignoreCase = true) == true
     }
 
+    private fun fallbackNameFromUserId(userId: String): String? {
+        val normalized = userId.substringBefore('@')
+            .replace('.', ' ')
+            .replace('_', ' ')
+            .trim()
+            .split(' ')
+            .filter { it.isNotBlank() }
+            .joinToString(" ") { part ->
+                part.lowercase().replaceFirstChar { char ->
+                    if (char.isLowerCase()) char.titlecase() else char.toString()
+                }
+            }
+
+        return normalized.ifBlank { null }
+    }
+
     private fun normalize(value: String): String = value.trim().lowercase()
 }
-
