@@ -19,6 +19,7 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -37,7 +38,9 @@ class ModerationRepositoryImpl @Inject constructor(
 
     init {
         scope.launch {
-            refreshModerationPublications()
+            publicationRepository.publications.collectLatest { publications ->
+                updateModerationPublications(publications)
+            }
         }
     }
 
@@ -109,12 +112,16 @@ class ModerationRepositoryImpl @Inject constructor(
                     doc.toObject(FirestorePuntoInteresDto::class.java)?.toDomain()
                 }
 
-            _moderationPublications.value = publications
-                .sortedByDescending { it.fechaCreacion }
-                .map { it.toModerationPublication() }
+            updateModerationPublications(publications)
         } catch (e: Exception) {
             e.printStackTrace()
         }
+    }
+
+    private suspend fun updateModerationPublications(publications: List<PuntoInteres>) {
+        _moderationPublications.value = publications
+            .sortedByDescending { it.fechaCreacion }
+            .map { it.toModerationPublication() }
     }
 
     private suspend fun PuntoInteres.toModerationPublication(): ModerationPublication {
@@ -131,4 +138,3 @@ class ModerationRepositoryImpl @Inject constructor(
         )
     }
 }
-

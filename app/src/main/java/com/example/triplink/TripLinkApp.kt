@@ -14,8 +14,9 @@ class TripLinkApp : Application() {
     override fun onCreate() {
         super.onCreate()
 
-        // Suscribirse al tema general para recibir avisos de nuevos lugares
-        FirebaseMessaging.getInstance().subscribeToTopic("new_places")
+        // Las notificaciones de nuevos lugares se envían por token después de validar cercanía.
+        // Se desuscribe el topic antiguo para evitar broadcasts globales en instalaciones actualizadas.
+        FirebaseMessaging.getInstance().unsubscribeFromTopic("new_places")
 
         // Habilitar explicitamente Firestore offline persistence (si no está ya)
         try {
@@ -45,4 +46,3 @@ object AppNetwork {
     // Will be initialized by TripLinkApp onCreate
     var okHttpClient: OkHttpClient? = null
 }
-

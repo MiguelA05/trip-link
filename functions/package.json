@@ -9,7 +9,7 @@
     "build": "tsc -p tsconfig.json",
     "clean": "rimraf lib",
     "serve": "firebase emulators:start --only functions",
-    "deploy": "firebase deploy --only functions:moderateCommentDeepSeek"
+    "deploy": "firebase deploy --only functions"
   },
   "dependencies": {
     "firebase-admin": "^12.7.0",

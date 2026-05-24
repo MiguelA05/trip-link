@@ -14,6 +14,8 @@ type DeepSeekModerationJson = {
 
 const deepSeekApiKey = defineSecret("DEEPSEEK_API_KEY");
 const MAX_COMMENT_LENGTH = 300;
+const NEARBY_PUBLICATION_RADIUS_KM = 5;
+const FCM_MULTICAST_BATCH_SIZE = 500;
 
 const DEFAULT_SAFE_ALTERNATIVE =
   "El lugar no fue de mi agrado, mi experiencia fue mala.";
@@ -105,6 +107,123 @@ function buildUserPrompt(comment: string): string {
     "Si es inapropiado, devuelve isInappropriate=true con una alternativa cordial.",
     "Responde en espanol.",
   ].join("\n");
+}
+
+type GeoPointLike = {
+  latitud?: unknown;
+  longitud?: unknown;
+};
+
+function parseCoordinate(value: unknown): number | null {
+  if (typeof value !== "number" || !Number.isFinite(value)) {
+    return null;
+  }
+
+  return value;
+}
+
+function parseLocation(value: unknown): { latitud: number; longitud: number } | null {
+  if (!value || typeof value !== "object") {
+    return null;
+  }
+
+  const location = value as GeoPointLike;
+  const latitud = parseCoordinate(location.latitud);
+  const longitud = parseCoordinate(location.longitud);
+
+  if (latitud === null || longitud === null) {
+    return null;
+  }
+
+  if (latitud < -90 || latitud > 90 || longitud < -180 || longitud > 180) {
+    return null;
+  }
+
+  return { latitud, longitud };
+}
+
+function distanceKm(
+  from: { latitud: number; longitud: number },
+  to: { latitud: number; longitud: number }
+): number {
+  const earthRadiusKm = 6371;
+  const dLat = ((to.latitud - from.latitud) * Math.PI) / 180;
+  const dLon = ((to.longitud - from.longitud) * Math.PI) / 180;
+  const fromLat = (from.latitud * Math.PI) / 180;
+  const toLat = (to.latitud * Math.PI) / 180;
+
+  const a =
+    Math.sin(dLat / 2) ** 2 +
+    Math.cos(fromLat) * Math.cos(toLat) * Math.sin(dLon / 2) ** 2;
+
+  return 2 * earthRadiusKm * Math.asin(Math.sqrt(Math.min(1, Math.max(0, a))));
+}
+
+async function findNearbyUserTokens(params: {
+  authorEmail: string;
+  publicationLocation: { latitud: number; longitud: number };
+  radiusKm: number;
+}): Promise<string[]> {
+  const usersSnapshot = await admin.firestore()
+    .collection("users")
+    .where("activo", "==", true)
+    .get();
+
+  const tokens = new Set<string>();
+
+  usersSnapshot.forEach((userDoc) => {
+    const user = userDoc.data();
+    const email = String(user.email || userDoc.id || "").trim().toLowerCase();
+    const token = typeof user.fcmToken === "string" ? user.fcmToken.trim() : "";
+    const location = parseLocation(user.ubicacion);
+
+    if (!token || !location || email === params.authorEmail) {
+      return;
+    }
+
+    if (user.ubicacionExactaActiva === false) {
+      return;
+    }
+
+    const userDistanceKm = distanceKm(params.publicationLocation, location);
+    if (userDistanceKm <= params.radiusKm) {
+      tokens.add(token);
+    }
+  });
+
+  return [...tokens];
+}
+
+async function sendNearbyPublicationNotifications(params: {
+  tokens: string[];
+  publicationId: string;
+  publicationTitle: string;
+}): Promise<void> {
+  if (params.tokens.length === 0) {
+    console.log("INFO: No hay usuarios cercanos con token FCM para notificar");
+    return;
+  }
+
+  const title = "¡Nuevo lugar cercano!";
+  const body = `Se ha publicado cerca de ti: ${params.publicationTitle}. ¡Ven a verlo!`;
+
+  for (let start = 0; start < params.tokens.length; start += FCM_MULTICAST_BATCH_SIZE) {
+    const tokens = params.tokens.slice(start, start + FCM_MULTICAST_BATCH_SIZE);
+    const response = await admin.messaging().sendEachForMulticast({
+      data: {
+        type: "new_publication",
+        publication_id: params.publicationId,
+        notification_id: `new_publication_${params.publicationId}`,
+        title,
+        body,
+      },
+      tokens,
+    });
+
+    console.log(
+      `INFO: Notificaciones cercanas enviadas. Exitosas=${response.successCount}, fallidas=${response.failureCount}`
+    );
+  }
 }
 
 export const moderateCommentDeepSeek = onCall(
@@ -314,6 +433,7 @@ export const onPublicationStatusChange = onDocumentUpdated(
       // LIMPIEZA CRÍTICA: Firestore IDs suelen ser minúsculas y sin espacios
       const authorEmail = String(newData.usuarioAutorId || "").trim().toLowerCase();
       const publicationTitle = newData.titulo || "Nuevo lugar";
+      const publicationLocation = parseLocation(newData.ubicacion);
 
       console.log(`INFO: Procesando notificación para autor: [${authorEmail}]`);
 
@@ -336,8 +456,10 @@ export const onPublicationStatusChange = onDocumentUpdated(
           }
         }
 
-        // OPTIMIZACIÓN 3: Paralelizar envíos de mensajes (Promise.all)
-        // Ambos se envían al mismo tiempo, no secuencial
+        if (!publicationLocation) {
+          console.warn(`WARN: Publicación ${event.params.publicationId} no tiene ubicación válida; no se notifican usuarios cercanos`);
+        }
+
         const messagingPromises = [];
 
         // Rama A: Notificación personalizada al autor
@@ -363,24 +485,23 @@ export const onPublicationStatusChange = onDocumentUpdated(
           console.warn(`WARN: No hay fcmToken para autor ${authorEmail}`);
         }
 
-        // Rama B: Broadcast a todos (topic)
-        const broadcastTitle = "¡Nuevo lugar descubierto!";
-        const broadcastBody = `Se ha publicado: ${publicationTitle}. ¡Ven a verlo!`;
-        const broadcastMessage = {
-          data: {
-            type: "new_publication",
-            publication_id: event.params.publicationId,
-            notification_id: `new_publication_${event.params.publicationId}`,
-            title: broadcastTitle,
-            body: broadcastBody,
-          },
-          topic: "new_places"
-        };
-        messagingPromises.push(
-          admin.messaging().send(broadcastMessage)
-            .then(() => console.log("SUCCESS: Broadcast enviado al topic new_places"))
-            .catch((err) => console.error(`ERROR: Fallo broadcast: ${err.message}`))
-        );
+        if (publicationLocation) {
+          messagingPromises.push(
+            findNearbyUserTokens({
+              authorEmail,
+              publicationLocation,
+              radiusKm: NEARBY_PUBLICATION_RADIUS_KM,
+            })
+              .then((nearbyTokens) =>
+                sendNearbyPublicationNotifications({
+                  tokens: nearbyTokens,
+                  publicationId: event.params.publicationId,
+                  publicationTitle,
+                })
+              )
+              .catch((err) => console.error(`ERROR: Fallo notificaciones cercanas: ${err.message}`))
+          );
+        }
 
         // Esperar ambos en paralelo (mucho más rápido que secuencial)
         await Promise.all(messagingPromises);
@@ -392,7 +513,6 @@ export const onPublicationStatusChange = onDocumentUpdated(
     }
   }
 );
-
 
 
 
