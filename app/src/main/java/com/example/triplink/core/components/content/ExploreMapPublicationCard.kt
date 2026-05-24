@@ -38,7 +38,6 @@ import com.example.triplink.core.localization.localizedLabel
 import com.example.triplink.domain.model.PuntoInteres
 import com.example.triplink.ui.theme.TextColors
 import com.example.triplink.ui.theme.TextTokens
-import com.example.triplink.core.image.AppImageLoader
 
 @Composable
 fun ExploreMapPublicationCard(
@@ -66,7 +65,6 @@ fun ExploreMapPublicationCard(
                         .data(publication.fotos.firstOrNull())
                         .crossfade(true)
                         .build(),
-                    imageLoader = AppImageLoader.get(LocalContext.current),
                     contentDescription = null,
                     modifier = Modifier.matchParentSize(),
                     contentScale = ContentScale.Crop
