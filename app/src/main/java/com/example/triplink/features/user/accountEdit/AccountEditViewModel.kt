@@ -11,9 +11,12 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.triplink.R
 import com.example.triplink.core.utils.RequestResult
+import com.example.triplink.core.utils.ValidatedField
 import com.example.triplink.data.datastore.SessionDataStore
 import com.example.triplink.domain.model.Ubicacion
+import com.example.triplink.domain.repository.user.AuthRepository
 import com.example.triplink.domain.repository.user.UserProfileRepository
+import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -27,7 +30,7 @@ import javax.inject.Inject
 class AccountEditViewModel @Inject constructor(
     @param:ApplicationContext private val appContext: Context,
     private val userProfileRepository: UserProfileRepository,
-    private val authRepository: com.example.triplink.domain.repository.user.AuthRepository,
+    private val authRepository: AuthRepository,
     private val sessionDataStore: SessionDataStore
 ) : ViewModel() {
 
@@ -72,9 +75,49 @@ class AccountEditViewModel @Inject constructor(
     private val _isDeleting = MutableStateFlow(false)
     val isDeleting: StateFlow<Boolean> = _isDeleting.asStateFlow()
 
+    private val _isChangingPassword = MutableStateFlow(false)
+    val isChangingPassword: StateFlow<Boolean> = _isChangingPassword.asStateFlow()
+
     // Dialog state for change password modal
     private val _showChangePasswordDialog = MutableStateFlow(false)
     val showChangePasswordDialog: StateFlow<Boolean> = _showChangePasswordDialog.asStateFlow()
+
+    private var currentPasswordServerError by mutableStateOf<String?>(null)
+
+    var currentPassword = ValidatedField("") { value ->
+        when {
+            currentPasswordServerError != null -> currentPasswordServerError
+            value.isBlank() -> appContext.getString(R.string.feature_account_edit_current_password_required)
+            else -> null
+        }
+    }
+
+    var newPassword = ValidatedField("") { value ->
+        when {
+            value.isBlank() -> appContext.getString(R.string.vm_account_edit_change_password_required)
+            value.length < 6 -> appContext.getString(R.string.vm_account_edit_change_password_too_short)
+            else -> null
+        }
+    }
+
+    var confirmNewPassword = ValidatedField("") { value ->
+        when {
+            value.isBlank() -> appContext.getString(R.string.vm_account_edit_change_password_confirm_required)
+            value != newPassword.value -> appContext.getString(R.string.vm_account_edit_change_password_mismatch)
+            else -> null
+        }
+    }
+
+    var currentPasswordVisible by mutableStateOf(false)
+    var newPasswordVisible by mutableStateOf(false)
+    var confirmNewPasswordVisible by mutableStateOf(false)
+
+    val isChangePasswordFormValid: Boolean
+        get() = currentPassword.isValid &&
+                newPassword.isValid &&
+                confirmNewPassword.isValid &&
+                currentPassword.value.isNotBlank() &&
+                newPassword.value.isNotBlank()
 
     // Foto de Perfil
     private val _photoUri = MutableStateFlow<Uri?>(null)
@@ -231,42 +274,81 @@ class AccountEditViewModel @Inject constructor(
 
     fun closeChangePasswordDialog() {
         _showChangePasswordDialog.value = false
+        resetChangePasswordForm()
     }
 
-    fun performChangePassword(currentPassword: String, newPassword: String, confirmPassword: String) {
+    fun onCurrentPasswordChange(newValue: String) {
+        currentPasswordServerError = null
+        currentPassword.onChange(newValue)
+    }
+
+    fun onNewPasswordChange(newValue: String) {
+        newPassword.onChange(newValue)
+        if (confirmNewPassword.value.isNotEmpty()) {
+            confirmNewPassword.onChange(confirmNewPassword.value)
+        }
+    }
+
+    fun onConfirmNewPasswordChange(newValue: String) {
+        confirmNewPassword.onChange(newValue)
+    }
+
+    fun toggleCurrentPasswordVisibility() {
+        currentPasswordVisible = !currentPasswordVisible
+    }
+
+    fun toggleNewPasswordVisibility() {
+        newPasswordVisible = !newPasswordVisible
+    }
+
+    fun toggleConfirmNewPasswordVisibility() {
+        confirmNewPasswordVisible = !confirmNewPasswordVisible
+    }
+
+    private fun validateChangePasswordForm(): Boolean {
+        currentPassword.onChange(currentPassword.value)
+        newPassword.onChange(newPassword.value)
+        confirmNewPassword.onChange(confirmNewPassword.value)
+        return isChangePasswordFormValid
+    }
+
+    private fun resetChangePasswordForm() {
+        currentPassword.reset()
+        newPassword.reset()
+        confirmNewPassword.reset()
+        currentPasswordServerError = null
+        currentPasswordVisible = false
+        newPasswordVisible = false
+        confirmNewPasswordVisible = false
+    }
+
+    fun performChangePassword() {
+        if (_isChangingPassword.value) return
+
+        if (!validateChangePasswordForm()) {
+            _updateResult.value = RequestResult.Failure(appContext.getString(R.string.vm_account_edit_change_password_invalid_form))
+            return
+        }
+
         viewModelScope.launch {
-            _isLoading.value = true
+            _isChangingPassword.value = true
             try {
-                // Validaciones locales: longitud mínima y coincidencia
-                if (currentPassword.isBlank()) {
-                    _updateResult.value = RequestResult.Failure(appContext.getString(R.string.feature_account_edit_current_password_required))
-                    _isLoading.value = false
-                    return@launch
-                }
-
-                if (newPassword.length < 6) {
-                    _updateResult.value = RequestResult.Failure(appContext.getString(R.string.vm_account_edit_change_password_too_short))
-                    _isLoading.value = false
-                    return@launch
-                }
-
-                if (newPassword != confirmPassword) {
-                    _updateResult.value = RequestResult.Failure(appContext.getString(R.string.vm_account_edit_change_password_mismatch))
-                    _isLoading.value = false
-                    return@launch
-                }
-
-                val success = authRepository.updatePassword(currentPassword, newPassword)
+                val success = authRepository.updatePassword(currentPassword.value, newPassword.value)
                 if (success) {
                     _updateResult.value = RequestResult.Success(appContext.getString(R.string.vm_account_edit_change_password_success))
+                    _showChangePasswordDialog.value = false
+                    resetChangePasswordForm()
                 } else {
                     _updateResult.value = RequestResult.Failure(appContext.getString(R.string.vm_account_edit_change_password_failed))
                 }
+            } catch (e: FirebaseAuthInvalidCredentialsException) {
+                currentPasswordServerError = appContext.getString(R.string.vm_account_edit_current_password_invalid)
+                currentPassword.onChange(currentPassword.value)
+                _updateResult.value = RequestResult.Failure(appContext.getString(R.string.vm_account_edit_current_password_invalid))
             } catch (e: Exception) {
                 _updateResult.value = RequestResult.Failure(appContext.getString(R.string.vm_account_edit_change_password_failed_with_error, e.message ?: ""))
             } finally {
-                _isLoading.value = false
-                _showChangePasswordDialog.value = false
+                _isChangingPassword.value = false
             }
         }
     }

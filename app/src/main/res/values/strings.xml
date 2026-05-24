@@ -443,7 +443,7 @@
     <string name="feature_account_edit_email_label">Email</string>
     <string name="feature_account_edit_password_label">Password</string>
     <string name="feature_account_edit_change_password_action">Change password</string>
-    <string name="feature_account_edit_password_helper">Password is managed through the recovery process.</string>
+    <string name="feature_account_edit_password_helper">You can change your password after verifying your current password.</string>
     <string name="feature_account_edit_save_changes_action">Save changes</string>
     <string name="feature_account_edit_delete_account_action">Delete account</string>
     <string name="feature_account_edit_delete_account_dialog_title">Delete account?</string>
@@ -712,7 +712,7 @@
     <string name="vm_account_edit_session_expired">Session expired</string>
     <string name="vm_account_edit_save_error">Error saving changes: %1$s</string>
     <string name="vm_account_edit_open_change_password">Opening password change</string>
-    <string name="vm_account_edit_change_password_success">Password changed successfully</string>
+    <string name="vm_account_edit_change_password_success">Password updated successfully</string>
     <string name="vm_account_edit_change_password_failed">Could not change password</string>
     <string name="vm_account_edit_change_password_failed_with_error">Could not change password: %1$s</string>
     <string name="vm_account_edit_delete_success">Account deleted successfully</string>
@@ -721,12 +721,19 @@
     <string name="vm_account_edit_default_initial_two">D</string>
     <string name="feature_account_edit_change_password_dialog_title">Change password</string>
     <string name="feature_account_edit_current_password_label">Current password</string>
+    <string name="feature_account_edit_current_password_placeholder">Enter your current password</string>
     <string name="feature_account_edit_new_password_label">New password</string>
-    <string name="feature_account_edit_change_password_confirm">Confirm</string>
+    <string name="feature_account_edit_new_password_placeholder">Enter your new password</string>
+    <string name="feature_account_edit_change_password_confirm">Update password</string>
     <string name="feature_account_edit_change_password_cancel">Cancel</string>
     <string name="feature_account_edit_confirm_new_password_label">Confirm new password</string>
+    <string name="feature_account_edit_confirm_new_password_placeholder">Repeat your new password</string>
+    <string name="vm_account_edit_change_password_required">New password is required</string>
+    <string name="vm_account_edit_change_password_confirm_required">Confirm the new password</string>
     <string name="vm_account_edit_change_password_too_short">Password must be at least 6 characters</string>
     <string name="vm_account_edit_change_password_mismatch">New password and confirmation do not match</string>
+    <string name="vm_account_edit_change_password_invalid_form">Review the form fields</string>
+    <string name="vm_account_edit_current_password_invalid">The current password is incorrect</string>
     <string name="feature_account_edit_current_password_required">Current password is required</string>
 
     <!-- VIEWMODEL: UserInfo -->

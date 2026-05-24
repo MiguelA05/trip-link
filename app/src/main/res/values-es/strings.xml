@@ -444,7 +444,7 @@
     <string name="feature_account_edit_email_label">Correo electrónico</string>
     <string name="feature_account_edit_password_label">Contraseña</string>
     <string name="feature_account_edit_change_password_action">Cambiar contraseña</string>
-    <string name="feature_account_edit_password_helper">La contraseña se gestiona mediante el proceso de recuperación.</string>
+    <string name="feature_account_edit_password_helper">Puedes cambiar tu contraseña verificando primero la contraseña actual.</string>
     <string name="feature_account_edit_save_changes_action">Guardar cambios</string>
     <string name="feature_account_edit_delete_account_action">Eliminar cuenta</string>
     <string name="feature_account_edit_delete_account_dialog_title">¿Eliminar cuenta?</string>
@@ -713,7 +713,7 @@
     <string name="vm_account_edit_session_expired">Sesión expirada</string>
     <string name="vm_account_edit_save_error">Error al guardar cambios: %1$s</string>
     <string name="vm_account_edit_open_change_password">Abriendo cambio de contraseña</string>
-    <string name="vm_account_edit_change_password_success">Contraseña cambiada exitosamente</string>
+    <string name="vm_account_edit_change_password_success">Contraseña actualizada correctamente</string>
     <string name="vm_account_edit_change_password_failed">No se pudo cambiar la contraseña</string>
     <string name="vm_account_edit_change_password_failed_with_error">No se pudo cambiar la contraseña: %1$s</string>
     <string name="vm_account_edit_delete_success">Cuenta eliminada exitosamente</string>
@@ -722,13 +722,20 @@
     <string name="vm_account_edit_default_initial_two">A</string>
     <string name="feature_account_edit_change_password_dialog_title">Cambiar contraseña</string>
     <string name="feature_account_edit_current_password_label">Contraseña actual</string>
+    <string name="feature_account_edit_current_password_placeholder">Ingresa tu contraseña actual</string>
     <string name="feature_account_edit_new_password_label">Nueva contraseña</string>
-    <string name="feature_account_edit_change_password_confirm">Confirmar</string>
+    <string name="feature_account_edit_new_password_placeholder">Ingresa tu nueva contraseña</string>
+    <string name="feature_account_edit_change_password_confirm">Actualizar contraseña</string>
     <string name="feature_account_edit_change_password_cancel">Cancelar</string>
     <string name="feature_account_edit_confirm_new_password_label">Confirmar nueva contraseña</string>
+    <string name="feature_account_edit_confirm_new_password_placeholder">Repite tu nueva contraseña</string>
+    <string name="vm_account_edit_change_password_required">La nueva contraseña es obligatoria</string>
+    <string name="vm_account_edit_change_password_confirm_required">Confirma la nueva contraseña</string>
     <string name="vm_account_edit_change_password_too_short">La contraseña debe tener al menos 6 caracteres</string>
-    <string name="vm_account_edit_change_password_mismatch">La nueva contraseña y su confirmación no coinciden</string>
-    <string name="feature_account_edit_current_password_required">La contraseña actual es requerida</string>
+    <string name="vm_account_edit_change_password_mismatch">La nueva contraseña y la confirmación no coinciden</string>
+    <string name="vm_account_edit_change_password_invalid_form">Revisa los campos del formulario</string>
+    <string name="vm_account_edit_current_password_invalid">La contraseña actual no es correcta</string>
+    <string name="feature_account_edit_current_password_required">La contraseña actual es obligatoria</string>
 
     <!-- VIEWMODEL: UserInfo -->
     <string name="vm_user_info_default_user_name">Usuario</string>

@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -19,16 +20,17 @@ import androidx.compose.material.icons.outlined.Email
 import androidx.compose.material.icons.outlined.Lock
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.material3.IconButton
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
@@ -53,12 +55,12 @@ fun AccountEditScreen(
     onBackClick: () -> Unit = {},
     onAppHomeClick: () -> Unit = {}
 ) {
-    val context = LocalContext.current
     val snackbarHostState = remember { SnackbarHostState() }
     val updateResult by accountEditViewModel.updateResult.collectAsState()
     val deleteResult by accountEditViewModel.deleteResult.collectAsState()
     val isLoading by accountEditViewModel.isLoading.collectAsState()
     val isDeleting by accountEditViewModel.isDeleting.collectAsState()
+    val isChangingPassword by accountEditViewModel.isChangingPassword.collectAsState()
     val showChangePasswordDialog by accountEditViewModel.showChangePasswordDialog.collectAsState()
     var showDeleteConfirmation by remember { mutableStateOf(false) }
 
@@ -80,18 +82,6 @@ fun AccountEditScreen(
             accountEditViewModel.clearDeleteResult()
         }
     }
-
-    // Change password dialog state
-    var currentPasswordInput by remember { mutableStateOf("") }
-    var newPasswordInput by remember { mutableStateOf("") }
-    var confirmNewPasswordInput by remember { mutableStateOf("") }
-    var currentPasswordVisible by remember { mutableStateOf(false) }
-    var newPasswordVisible by remember { mutableStateOf(false) }
-    var confirmNewPasswordVisible by remember { mutableStateOf(false) }
-    // Inline validation errors
-    var currentPasswordError by remember { mutableStateOf<String?>(null) }
-    var newPasswordError by remember { mutableStateOf<String?>(null) }
-    var confirmPasswordError by remember { mutableStateOf<String?>(null) }
 
     Scaffold(
         snackbarHost = { SnackbarHost(snackbarHostState) },
@@ -349,118 +339,122 @@ fun AccountEditScreen(
         )
     }
 
-    // Change password dialog
-    // Clear inputs when dialog closed
-    LaunchedEffect(showChangePasswordDialog) {
-        if (!showChangePasswordDialog) {
-            currentPasswordInput = ""
-            newPasswordInput = ""
-            confirmNewPasswordInput = ""
-            currentPasswordVisible = false
-            newPasswordVisible = false
-            confirmNewPasswordVisible = false
-        }
-    }
-
     if (showChangePasswordDialog) {
-        AlertDialog(
-            onDismissRequest = { accountEditViewModel.closeChangePasswordDialog() },
-            title = { Text(text = stringResource(R.string.feature_account_edit_change_password_dialog_title)) },
-            text = {
-                Column {
+        Dialog(
+            onDismissRequest = {
+                if (!isChangingPassword) {
+                    accountEditViewModel.closeChangePasswordDialog()
+                }
+            }
+        ) {
+            Surface(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .widthIn(max = 420.dp),
+                shape = RoundedCornerShape(28.dp),
+                color = MaterialTheme.colorScheme.surface,
+                tonalElevation = 6.dp,
+                shadowElevation = 8.dp,
+                border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant)
+            ) {
+                Column(
+                    modifier = Modifier.padding(20.dp),
+                    verticalArrangement = Arrangement.spacedBy(16.dp)
+                ) {
+                    Text(
+                        text = stringResource(R.string.feature_account_edit_change_password_dialog_title),
+                        style = TextTokens.emphasized(TextTokens.title(), FontWeight.Bold),
+                        color = MaterialTheme.colorScheme.onSurface,
+                        modifier = Modifier.fillMaxWidth(),
+                        textAlign = TextAlign.Start
+                    )
+
                     FormField(
                         label = stringResource(R.string.feature_account_edit_current_password_label),
-                        value = currentPasswordInput,
-                        onValueChange = {
-                            currentPasswordInput = it
-                            if (!it.isNullOrBlank()) currentPasswordError = null
-                        },
-                        placeholder = "",
-                        visualTransformation = if (currentPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
-                        isError = currentPasswordError != null,
-                        errorText = currentPasswordError,
+                        value = accountEditViewModel.currentPassword.value,
+                        onValueChange = { accountEditViewModel.onCurrentPasswordChange(it) },
+                        placeholder = stringResource(R.string.feature_account_edit_current_password_placeholder),
+                        modifier = Modifier.fillMaxWidth(),
+                        visualTransformation = if (accountEditViewModel.currentPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+                        isError = accountEditViewModel.currentPassword.error != null,
+                        errorText = accountEditViewModel.currentPassword.error,
                         trailingIcon = {
-                            val img = if (currentPasswordVisible) Icons.Filled.Visibility else Icons.Filled.VisibilityOff
-                            IconButton(onClick = { currentPasswordVisible = !currentPasswordVisible }) {
-                                Icon(imageVector = img, contentDescription = null)
+                            val icon = if (accountEditViewModel.currentPasswordVisible) Icons.Filled.Visibility else Icons.Filled.VisibilityOff
+                            val description = if (accountEditViewModel.currentPasswordVisible) {
+                                stringResource(R.string.feature_login_hide_password)
+                            } else {
+                                stringResource(R.string.feature_login_show_password)
+                            }
+                            IconButton(onClick = { accountEditViewModel.toggleCurrentPasswordVisibility() }) {
+                                Icon(imageVector = icon, contentDescription = description)
                             }
                         }
                     )
-
-                    Spacer(modifier = Modifier.height(8.dp))
 
                     FormField(
                         label = stringResource(R.string.feature_account_edit_new_password_label),
-                        value = newPasswordInput,
-                        onValueChange = {
-                            newPasswordInput = it
-                            if (it.length >= 6) newPasswordError = null
-                        },
-                        placeholder = "",
-                        visualTransformation = if (newPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
-                        isError = newPasswordError != null,
-                        errorText = newPasswordError,
+                        value = accountEditViewModel.newPassword.value,
+                        onValueChange = { accountEditViewModel.onNewPasswordChange(it) },
+                        placeholder = stringResource(R.string.feature_account_edit_new_password_placeholder),
+                        modifier = Modifier.fillMaxWidth(),
+                        visualTransformation = if (accountEditViewModel.newPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+                        isError = accountEditViewModel.newPassword.error != null,
+                        errorText = accountEditViewModel.newPassword.error,
                         trailingIcon = {
-                            val img = if (newPasswordVisible) Icons.Filled.Visibility else Icons.Filled.VisibilityOff
-                            IconButton(onClick = { newPasswordVisible = !newPasswordVisible }) {
-                                Icon(imageVector = img, contentDescription = null)
+                            val icon = if (accountEditViewModel.newPasswordVisible) Icons.Filled.Visibility else Icons.Filled.VisibilityOff
+                            val description = if (accountEditViewModel.newPasswordVisible) {
+                                stringResource(R.string.feature_login_hide_password)
+                            } else {
+                                stringResource(R.string.feature_login_show_password)
+                            }
+                            IconButton(onClick = { accountEditViewModel.toggleNewPasswordVisibility() }) {
+                                Icon(imageVector = icon, contentDescription = description)
                             }
                         }
                     )
-
-                    Spacer(modifier = Modifier.height(8.dp))
 
                     FormField(
                         label = stringResource(R.string.feature_account_edit_confirm_new_password_label),
-                        value = confirmNewPasswordInput,
-                        onValueChange = {
-                            confirmNewPasswordInput = it
-                            if (it == newPasswordInput) confirmPasswordError = null
-                        },
-                        placeholder = "",
-                        visualTransformation = if (confirmNewPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
-                        isError = confirmPasswordError != null,
-                        errorText = confirmPasswordError,
+                        value = accountEditViewModel.confirmNewPassword.value,
+                        onValueChange = { accountEditViewModel.onConfirmNewPasswordChange(it) },
+                        placeholder = stringResource(R.string.feature_account_edit_confirm_new_password_placeholder),
+                        modifier = Modifier.fillMaxWidth(),
+                        visualTransformation = if (accountEditViewModel.confirmNewPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+                        isError = accountEditViewModel.confirmNewPassword.error != null,
+                        errorText = accountEditViewModel.confirmNewPassword.error,
                         trailingIcon = {
-                            val img = if (confirmNewPasswordVisible) Icons.Filled.Visibility else Icons.Filled.VisibilityOff
-                            IconButton(onClick = { confirmNewPasswordVisible = !confirmNewPasswordVisible }) {
-                                Icon(imageVector = img, contentDescription = null)
+                            val icon = if (accountEditViewModel.confirmNewPasswordVisible) Icons.Filled.Visibility else Icons.Filled.VisibilityOff
+                            val description = if (accountEditViewModel.confirmNewPasswordVisible) {
+                                stringResource(R.string.feature_login_hide_password)
+                            } else {
+                                stringResource(R.string.feature_login_show_password)
+                            }
+                            IconButton(onClick = { accountEditViewModel.toggleConfirmNewPasswordVisibility() }) {
+                                Icon(imageVector = icon, contentDescription = description)
                             }
                         }
                     )
-                }
-            },
-            confirmButton = {
-                TextButton(
-                    onClick = {
-                        // Local validations before calling ViewModel
-                        currentPasswordError = if (currentPasswordInput.isBlank()) context.getString(R.string.feature_account_edit_current_password_required) else null
-                        newPasswordError = if (newPasswordInput.length < 6) context.getString(R.string.vm_account_edit_change_password_too_short) else null
-                        confirmPasswordError = if (newPasswordInput != confirmNewPasswordInput) context.getString(R.string.vm_account_edit_change_password_mismatch) else null
 
-                        if (currentPasswordError == null && newPasswordError == null && confirmPasswordError == null) {
-                            accountEditViewModel.performChangePassword(currentPasswordInput, newPasswordInput, confirmNewPasswordInput)
-                        }
-                    },
-                    enabled = !isLoading
-                ) {
-                    Text(
+                    GeneralButton(
+                        primary = true,
+                        onClick = { accountEditViewModel.performChangePassword() },
                         text = stringResource(R.string.feature_account_edit_change_password_confirm),
-                        style = TextTokens.dialogButton(),
-                        textAlign = TextAlign.Center
+                        enabled = !isChangingPassword,
+                        isLoading = isChangingPassword
                     )
-                }
-            },
-            dismissButton = {
-                TextButton(onClick = { accountEditViewModel.closeChangePasswordDialog() }) {
-                    Text(
+
+                    GeneralButton(
+                        primary = false,
+                        onClick = { accountEditViewModel.closeChangePasswordDialog() },
                         text = stringResource(R.string.feature_account_edit_change_password_cancel),
-                        style = TextTokens.dialogButton(),
-                        textAlign = TextAlign.Center
+                        enabled = !isChangingPassword
                     )
                 }
             }
-        )
+        }
     }
 
 }
