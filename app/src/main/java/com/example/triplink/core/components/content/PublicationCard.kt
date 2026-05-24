@@ -33,6 +33,7 @@ import com.example.triplink.domain.model.PuntoInteres
 import com.example.triplink.ui.theme.TextColors
 import com.example.triplink.ui.theme.TextTokens
 import java.util.Locale
+import com.example.triplink.core.image.AppImageLoader
 
 @Composable
 fun PublicationCard(
@@ -132,6 +133,7 @@ fun PublicationCard(
                         .data(puntoInteres.fotos.firstOrNull())
                         .crossfade(true)
                         .build(),
+                    imageLoader = AppImageLoader.get(LocalContext.current),
                     contentDescription = null,
                     modifier = Modifier.fillMaxSize(),
                     contentScale = ContentScale.Crop
