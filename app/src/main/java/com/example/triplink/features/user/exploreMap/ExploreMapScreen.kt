@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.navigationBarsPadding
@@ -18,31 +17,20 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.FormatListBulleted
-import androidx.compose.material.icons.outlined.Eco
-import androidx.compose.material.icons.outlined.LocationOn
-import androidx.compose.material.icons.outlined.Star
 import androidx.compose.material3.BottomSheetScaffold
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SheetValue
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
 import androidx.compose.material3.rememberBottomSheetScaffoldState
 import androidx.compose.material3.rememberStandardBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.geometry.CornerRadius
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
@@ -54,8 +42,6 @@ import com.example.triplink.core.components.common.SearchBar
 import com.example.triplink.core.localization.localizedLabel
 import com.example.triplink.domain.model.enums.RangoPrecios
 import com.example.triplink.domain.model.enums.UbicacionFiltro
-import com.example.triplink.ui.theme.TextColors
-import com.example.triplink.ui.theme.TextTokens
 import com.example.triplink.core.components.map.MapBox
 import com.example.triplink.core.components.map.MapMarker as MapCompMarker
 // ...existing code...
@@ -138,75 +124,66 @@ fun ExploreMapScreen(
 			.fillMaxSize()
 			.padding(contentPadding),
 		scaffoldState = scaffoldState,
-		sheetPeekHeight = 170.dp,
+		sheetPeekHeight = if (selectedPublication == null) 0.dp else 170.dp,
 		sheetContainerColor = MaterialTheme.colorScheme.surface,
 		sheetShape = RoundedCornerShape(topStart = 28.dp, topEnd = 28.dp),
 		sheetShadowElevation = 8.dp,
 		sheetTonalElevation = 4.dp,
-		sheetSwipeEnabled = true,
+		sheetSwipeEnabled = selectedPublication != null,
 		sheetDragHandle = null,
-			sheetContent = {
-			Box(modifier = Modifier.fillMaxWidth()) {
-				Column(
-					modifier = Modifier
-						.fillMaxWidth()
-						.navigationBarsPadding()
-						.padding(horizontal = 12.dp, vertical = 8.dp)
-						.padding(bottom = 45.dp)
-				) {
-					Box(
+		sheetContent = {
+			if (selectedPublication != null) {
+				Box(modifier = Modifier.fillMaxWidth()) {
+					Column(
 						modifier = Modifier
-							.align(Alignment.CenterHorizontally)
-							.padding(top = 4.dp, bottom = 10.dp)
-							.size(width = 56.dp, height = 6.dp)
-							.background(MaterialTheme.colorScheme.outlineVariant, shape = RoundedCornerShape(999.dp))
-							.clickable {
-								coroutineScope.launch {
-									if (sheetState.currentValue == SheetValue.PartiallyExpanded) {
-										sheetState.expand()
-									} else {
-										sheetState.partialExpand()
+							.fillMaxWidth()
+							.navigationBarsPadding()
+							.padding(horizontal = 12.dp, vertical = 8.dp)
+							.padding(bottom = 45.dp)
+					) {
+						Box(
+							modifier = Modifier
+								.align(Alignment.CenterHorizontally)
+								.padding(top = 4.dp, bottom = 10.dp)
+								.size(width = 56.dp, height = 6.dp)
+								.background(MaterialTheme.colorScheme.outlineVariant, shape = RoundedCornerShape(999.dp))
+								.clickable {
+									coroutineScope.launch {
+										if (sheetState.currentValue == SheetValue.PartiallyExpanded) {
+											sheetState.expand()
+										} else {
+											sheetState.partialExpand()
+										}
 									}
 								}
-							}
-					)
-
-					selectedPublication?.let { selected ->
-						ExploreMapPublicationCard(
-							publication = selected,
-							ratingLabel = viewModel.selectedMarkerRatingLabel,
-							reviewCount = viewModel.selectedPublicationReviewCount,
-							expanded = sheetState.targetValue == SheetValue.Expanded || sheetState.currentValue == SheetValue.Expanded,
-							showLocation = false,
-							onOpenPublication = { onPublicationDetailsClick(selected.id) }
 						)
-					} ?: Text(
-						text = stringResource(
-							if (markers.isEmpty()) {
-								R.string.feature_filters_empty_filtered_results
-							} else {
-								R.string.feature_explore_map_no_selected_publication
-							}
-						),
-						style = TextTokens.body(),
-						color = TextColors.Secondary,
-						modifier = Modifier.padding(12.dp)
-					)
-				}
 
-				FloatingActionButton(
-					onClick = onBackToExplore,
-					modifier = Modifier
-						.align(Alignment.TopEnd)
-						.padding(top = 18.dp, end = 16.dp),
-					containerColor = MaterialTheme.colorScheme.primary,
-					contentColor = MaterialTheme.colorScheme.onPrimary,
-					shape = CircleShape
-				) {
-					Icon(
-						imageVector = Icons.AutoMirrored.Outlined.FormatListBulleted,
-						contentDescription = stringResource(R.string.feature_explore_map_back_to_list_content_description)
-					)
+						selectedPublication?.let { selected ->
+							ExploreMapPublicationCard(
+								publication = selected,
+								ratingLabel = viewModel.selectedMarkerRatingLabel,
+								reviewCount = viewModel.selectedPublicationReviewCount,
+								expanded = sheetState.targetValue == SheetValue.Expanded || sheetState.currentValue == SheetValue.Expanded,
+								showLocation = false,
+								onOpenPublication = { onPublicationDetailsClick(selected.id) }
+							)
+						}
+					}
+
+					FloatingActionButton(
+						onClick = onBackToExplore,
+						modifier = Modifier
+							.align(Alignment.TopEnd)
+							.padding(top = 18.dp, end = 16.dp),
+						containerColor = MaterialTheme.colorScheme.primary,
+						contentColor = MaterialTheme.colorScheme.onPrimary,
+						shape = CircleShape
+					) {
+						Icon(
+							imageVector = Icons.AutoMirrored.Outlined.FormatListBulleted,
+							contentDescription = stringResource(R.string.feature_explore_map_back_to_list_content_description)
+						)
+					}
 				}
 			}
 		}
@@ -265,6 +242,23 @@ fun ExploreMapScreen(
 
 			// Marker pins are rendered by MapBox annotation manager; keep existing MarkerPin UI removed
 
+			if (selectedPublication == null) {
+				FloatingActionButton(
+					onClick = onBackToExplore,
+					modifier = Modifier
+						.align(Alignment.BottomEnd)
+						.navigationBarsPadding()
+						.padding(end = 16.dp, bottom = 24.dp),
+					containerColor = MaterialTheme.colorScheme.primary,
+					contentColor = MaterialTheme.colorScheme.onPrimary,
+					shape = CircleShape
+				) {
+					Icon(
+						imageVector = Icons.AutoMirrored.Outlined.FormatListBulleted,
+						contentDescription = stringResource(R.string.feature_explore_map_back_to_list_content_description)
+					)
+				}
+			}
 		}
 	}
 }
