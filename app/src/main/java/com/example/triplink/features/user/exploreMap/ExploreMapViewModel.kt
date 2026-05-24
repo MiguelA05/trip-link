@@ -1,5 +1,6 @@
 package com.example.triplink.features.user.exploreMap
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.triplink.core.utils.toRatingLabel
@@ -11,6 +12,10 @@ import com.example.triplink.domain.model.enums.UbicacionFiltro
 import com.example.triplink.domain.repository.user.PublicationRepository
 import com.example.triplink.features.filters.FiltersStore
 import com.example.triplink.features.filters.publicationMatchesFilters
+import com.example.triplink.domain.model.Ubicacion
+import com.example.triplink.domain.repository.user.UserProfileRepository
+import com.example.triplink.core.utils.FirebaseAuthPersistenceManager
+import kotlinx.coroutines.launch
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -18,8 +23,9 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.launch
 import javax.inject.Inject
+
+private const val TAG = "ExploreMapViewModel"
 
 data class MapMarkerUi(
     val id: String,
@@ -32,8 +38,13 @@ data class MapMarkerUi(
 @HiltViewModel
 class ExploreMapViewModel @Inject constructor(
     private val publicationRepository: PublicationRepository,
-    private val filtersStore: FiltersStore
+    private val filtersStore: FiltersStore,
+    private val userProfileRepository: UserProfileRepository,
+    private val authPersistence: FirebaseAuthPersistenceManager
 ) : ViewModel() {
+
+    private val _userLocation = MutableStateFlow<Ubicacion?>(null)
+    val userLocation = _userLocation.asStateFlow()
 
     private val _query = MutableStateFlow("")
     val query: StateFlow<String> = _query.asStateFlow()
@@ -52,17 +63,18 @@ class ExploreMapViewModel @Inject constructor(
         Categoria.CULTURA
     )
 
-    // Flujo reactivo que combina publicaciones, appliedFilters, selectedCategory y query
+    // Flujo reactivo que combina publicaciones, appliedFilters, selectedCategory, query y userLocation
     val filteredPublications: StateFlow<List<PuntoInteres>> = combine(
         publications,
         filtersStore.appliedFilters,
         _selectedCategory,
-        _query
-    ) { pubs, filters, category, query ->
+        _query,
+        _userLocation
+    ) { pubs, filters, category, query, userLoc ->
         pubs.filter { publication ->
             val isVisible = publication.estado == EstadoPublicacion.VERIFICADA
             val categoryMatches = category == null || publication.categoria == category
-            isVisible && categoryMatches && publicationMatchesFilters(publication, filters, query)
+            isVisible && categoryMatches && publicationMatchesFilters(publication, filters, query, userLoc)
         }
     }.stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
 
@@ -143,7 +155,44 @@ class ExploreMapViewModel @Inject constructor(
     }
 
     init {
+        Log.d(TAG, "ExploreMapViewModel init: Starting user location resolution")
         viewModelScope.launch {
+            try {
+                var userEmail: String? = null
+
+                // Try cached auth state first
+                var cached = authPersistence.getCurrentAuthState()
+                Log.d(TAG, "getCurrentAuthState result: $cached")
+                if (cached != null) {
+                    userEmail = cached.email
+                } else {
+                    // Fallback to Firebase Auth directly
+                    Log.d(TAG, "Fallback: checking FirebaseAuth.currentUser directly")
+                    val currentUser = com.google.firebase.auth.FirebaseAuth.getInstance().currentUser
+                    if (currentUser != null) {
+                        Log.d(TAG, "FirebaseAuth.currentUser found: ${currentUser.email}")
+                        userEmail = currentUser.email
+                    }
+                }
+
+                if (!userEmail.isNullOrBlank()) {
+                    Log.d(TAG, "Fetching user with email: $userEmail")
+                    val user = userProfileRepository.getUserById(userEmail)
+                    Log.d(TAG, "User fetched: ${user?.email}, ubicacion: ${user?.ubicacion}")
+                    _userLocation.value = user?.ubicacion
+                    if (user?.ubicacion != null) {
+                        Log.i(TAG, "User location resolved: lat=${user.ubicacion.latitud}, lng=${user.ubicacion.longitud}, ciudad=${user.ubicacion.ciudad}")
+                    } else {
+                        Log.w(TAG, "User location is null")
+                    }
+                } else {
+                    Log.w(TAG, "No auth state or Firebase user found")
+                }
+            } catch (e: Exception) {
+                Log.e(TAG, "Error resolving user location: ${e.message}", e)
+                e.printStackTrace()
+            }
+
             filteredPublications.collect { filtered ->
                 keepValidSelection(filtered)
             }
