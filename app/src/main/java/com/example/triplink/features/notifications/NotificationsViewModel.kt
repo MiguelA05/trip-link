@@ -5,6 +5,7 @@ import android.text.format.DateUtils
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.core.app.NotificationManagerCompat
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.triplink.core.storage.NearbyNotificationFeedStore
@@ -33,25 +34,35 @@ class NotificationsViewModel @Inject constructor(
         private set
 
     init {
-        refresh()
+        viewModelScope.launch {
+            feedStore.observeAll().collect { records ->
+                notifications = records.map { record ->
+                    record.toNotificationItem()
+                }
+            }
+        }
+    }
+
+    private fun com.example.triplink.core.notifications.NearbyNotificationRecord.toNotificationItem(): NotificationItem {
+        return NotificationItem(
+            id = id,
+            publicationId = publicationId,
+            title = publicationTitle,
+            description = publicationInfo,
+            time = DateUtils.getRelativeTimeSpanString(
+                notifiedAtMillis,
+                System.currentTimeMillis(),
+                DateUtils.MINUTE_IN_MILLIS,
+                DateUtils.FORMAT_ABBREV_RELATIVE
+            ).toString(),
+            isRead = isRead
+        )
     }
 
     fun refresh() {
         viewModelScope.launch {
             notifications = feedStore.getAll().map { record ->
-                NotificationItem(
-                    id = record.id,
-                    publicationId = record.publicationId,
-                    title = record.publicationTitle,
-                    description = record.publicationInfo,
-                    time = DateUtils.getRelativeTimeSpanString(
-                        record.notifiedAtMillis,
-                        System.currentTimeMillis(),
-                        DateUtils.MINUTE_IN_MILLIS,
-                        DateUtils.FORMAT_ABBREV_RELATIVE
-                    ).toString(),
-                    isRead = record.isRead
-                )
+                record.toNotificationItem()
             }
         }
     }
@@ -59,14 +70,13 @@ class NotificationsViewModel @Inject constructor(
     fun markAllAsRead() {
         viewModelScope.launch {
             feedStore.clearAll()
-            refresh()
         }
     }
 
     fun onNotificationOpened(notificationId: String) {
         viewModelScope.launch {
+            NotificationManagerCompat.from(appContext).cancel(notificationId.hashCode())
             feedStore.remove(notificationId)
-            refresh()
         }
     }
 

@@ -6,7 +6,9 @@ import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import com.example.triplink.core.notifications.NearbyNotificationRecord
 import com.example.triplink.domain.model.PuntoInteres
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.map
 import kotlinx.serialization.json.Json
 
 private val Context.nearbyNotificationFeedDataStore by preferencesDataStore(name = "nearby_notification_feed")
@@ -27,11 +29,14 @@ class NearbyNotificationFeedStore(private val context: Context) {
         val encoded = context.nearbyNotificationFeedDataStore.data.first()[FEED_JSON].orEmpty()
         if (encoded.isBlank()) return emptyList()
 
-        return try {
-            json.decodeFromString<List<NearbyNotificationRecord>>(encoded)
+        return decodeList(encoded)
+            .sortedByDescending { it.notifiedAtMillis }
+    }
+
+    fun observeAll(): Flow<List<NearbyNotificationRecord>> {
+        return context.nearbyNotificationFeedDataStore.data.map { prefs ->
+            decodeList(prefs[FEED_JSON].orEmpty())
                 .sortedByDescending { it.notifiedAtMillis }
-        } catch (_: Exception) {
-            emptyList()
         }
     }
 
@@ -100,6 +105,15 @@ class NearbyNotificationFeedStore(private val context: Context) {
 
     suspend fun clearAll() {
         persist(emptyList())
+    }
+
+    private fun decodeList(encoded: String): List<NearbyNotificationRecord> {
+        if (encoded.isBlank()) return emptyList()
+        return try {
+            json.decodeFromString<List<NearbyNotificationRecord>>(encoded)
+        } catch (_: Exception) {
+            emptyList()
+        }
     }
 
     private suspend fun persist(items: List<NearbyNotificationRecord>) {

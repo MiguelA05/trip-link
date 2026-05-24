@@ -107,10 +107,8 @@ fun AdminReportsScreen(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.spacedBy(2.dp)
             ) {
-                // pending reports count derived from the current list of reportCards (reactive)
-                val pendingCount = reportCards.size
                 Text(
-                    text = pendingCount.toString(),
+                    text = viewModel.pendingCount.toString(),
                     style = TextTokens.screenTitle(),
                     color = MaterialTheme.colorScheme.onTertiaryContainer
                 )
