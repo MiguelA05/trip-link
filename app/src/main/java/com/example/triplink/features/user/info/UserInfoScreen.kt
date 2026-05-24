@@ -1,5 +1,6 @@
 package com.example.triplink.features.user.info
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -169,41 +170,43 @@ fun UserInfoScreen(
 						modifier = Modifier.fillMaxWidth()
 					)
 
-								Spacer(modifier = Modifier.height(12.dp))
+					Spacer(modifier = Modifier.height(12.dp))
 
-								// Para la sección de Favoritos (índice 0) mostramos un icono de "corazón" en lugar
-								// del botón de crear publicación. Para las otras secciones mantenemos el botón.
-								if (state.selectedContributionIndex == 0) {
-									Icon(
-										imageVector = Icons.Outlined.HeartBroken,
-										contentDescription = null,
-										tint = MaterialTheme.colorScheme.onSurfaceVariant,
-										modifier = Modifier.size(48.dp)
-									)
-								} else {
-									GeneralButton(
-										onClick = onPostCreationClick,
-										text = stringResource(R.string.feature_user_info_create_poi_action)
-									)
-								}
+					// Para la sección de Favoritos (índice 0) mostramos un icono de "corazón" en lugar
+					// del botón de crear publicación. Para las otras secciones mantenemos el botón.
+					if (state.selectedContributionIndex == 0) {
+						Icon(
+							imageVector = Icons.Outlined.HeartBroken,
+							contentDescription = null,
+							tint = MaterialTheme.colorScheme.onSurfaceVariant,
+							modifier = Modifier.size(48.dp)
+						)
+					} else {
+						GeneralButton(
+							onClick = onPostCreationClick,
+							text = stringResource(R.string.feature_user_info_create_poi_action)
+						)
+					}
 				}
 			}
 		} else {
 			items(state.selectedContributionItems) { contribution ->
-				ContributionCard(
-					contribution = contribution,
-					onActionClick = {
-						if (state.selectedContributionIndex == 0) {
-							// Favorites - open like verified
-							onViewVerifiedPublication(contribution.id)
-						} else {
-							when (contribution.status) {
-								EstadoPublicacion.RECHAZADA -> onEditRejectedPublication(contribution.id)
-								EstadoPublicacion.VERIFICADA -> onViewVerifiedPublication(contribution.id)
-								EstadoPublicacion.PENDIENTE -> Unit
-							}
+				val contributionAction = {
+					if (state.selectedContributionIndex == 0) {
+						// Favorites - open like verified
+						onViewVerifiedPublication(contribution.id)
+					} else {
+						when (contribution.status) {
+							EstadoPublicacion.RECHAZADA -> onEditRejectedPublication(contribution.id)
+							EstadoPublicacion.VERIFICADA,
+							EstadoPublicacion.PENDIENTE -> onViewVerifiedPublication(contribution.id)
 						}
 					}
+				}
+
+				ContributionCard(
+					contribution = contribution,
+					onActionClick = contributionAction
 				)
 			}
 		}
@@ -263,7 +266,9 @@ fun ContributionCard(
 		modifier = Modifier
 			.fillMaxWidth()
 			.padding(horizontal = 10.dp),
+		onClick = onActionClick,
 		colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+		border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
 		shape = RoundedCornerShape(16.dp),
 		elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
 	) {
