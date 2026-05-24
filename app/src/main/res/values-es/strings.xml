@@ -63,7 +63,7 @@
 
     <!-- COMPONENT: ReportModerationPublicationCard -->
     <!-- resource: component_report_moderation_publication_card_swipe_hint -->
-    <string name="component_report_moderation_publication_card_swipe_hint">Desliza a la izquierda para confirmar y a la derecha para invalidar</string>
+    <string name="component_report_moderation_publication_card_swipe_hint">Desliza a la izquierda para invalidar y a la derecha para confirmar</string>
 
     <!-- COMPONENT: AppTitle -->
     <!-- resource: component_app_title_trip -->

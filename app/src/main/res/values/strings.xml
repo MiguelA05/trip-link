@@ -61,7 +61,7 @@
 
     <!-- COMPONENT: ReportModerationPublicationCard -->
     <!-- resource: component_report_moderation_publication_card_swipe_hint -->
-    <string name="component_report_moderation_publication_card_swipe_hint">Swipe left to confirm - Swipe right to invalidate</string>
+    <string name="component_report_moderation_publication_card_swipe_hint">Swipe left to invalidate - Swipe right to confirm</string>
 
     <!-- COMPONENT: AppTitle -->
     <!-- resource: component_app_title_trip -->
