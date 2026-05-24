@@ -69,6 +69,13 @@ fun ModerationPublicationCard(
     } else {
         MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.9f)
     }
+    val authorName = publication.authorName.ifBlank {
+        stringResource(R.string.vm_user_info_default_user_name)
+    }
+    val authorInitials = buildAuthorInitials(
+        value = authorName,
+        fallbackInitial = stringResource(R.string.component_publication_card_default_initial)
+    )
 
     val dismissState = rememberSwipeToDismissBoxState(
         positionalThreshold = { it * 0.32f },
@@ -166,7 +173,7 @@ fun ModerationPublicationCard(
                                 contentAlignment = Alignment.Center
                             ) {
                                 Text(
-                                    text = publication.authorName.split(" ").take(2).joinToString("") { it.first().uppercase() },
+                                    text = authorInitials,
                                     color = MaterialTheme.colorScheme.onTertiary,
                                     style = TextTokens.emphasized(TextTokens.caption(), FontWeight.Bold)
                                 )
@@ -174,7 +181,7 @@ fun ModerationPublicationCard(
 
                             Column {
                                 Text(
-                                    text = publication.authorName,
+                                    text = authorName,
                                     style = TextTokens.emphasized(TextTokens.chip(), FontWeight.SemiBold),
                                     color = MaterialTheme.colorScheme.onPrimary,
                                 )
@@ -423,3 +430,10 @@ fun ModerationPublicationCard(
     }
 }
 
+private fun buildAuthorInitials(value: String, fallbackInitial: String): String {
+    val parts = value.trim().split(" ").filter { it.isNotBlank() }
+    if (parts.isEmpty()) return fallbackInitial
+    return parts.take(2).joinToString("") { part ->
+        part.firstOrNull()?.uppercaseChar()?.toString().orEmpty()
+    }.ifBlank { fallbackInitial }
+}
