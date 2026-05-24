@@ -149,7 +149,8 @@ fun ExploreScreen(
 					puntoInteres = publication,
 					ratingLabel = viewModel.ratingLabelForPublication(publication),
 					onCardClick = { onPublicationClick(publication.id) },
-					showFooter = false
+					showFooter = false,
+					showLocation = false
 				)
 			}
 		}

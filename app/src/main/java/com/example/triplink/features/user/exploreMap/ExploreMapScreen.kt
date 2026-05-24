@@ -172,13 +172,14 @@ fun ExploreMapScreen(
 					)
 
 					selectedPublication?.let { selected ->
-						ExploreMapPublicationCard(
-							publication = selected,
-							ratingLabel = viewModel.selectedMarkerRatingLabel,
-							reviewCount = viewModel.selectedPublicationReviewCount,
-							expanded = sheetState.targetValue == SheetValue.Expanded || sheetState.currentValue == SheetValue.Expanded,
-							onOpenPublication = { onPublicationDetailsClick(selected.id) }
-						)
+										ExploreMapPublicationCard(
+											publication = selected,
+											ratingLabel = viewModel.selectedMarkerRatingLabel,
+											reviewCount = viewModel.selectedPublicationReviewCount,
+											expanded = sheetState.targetValue == SheetValue.Expanded || sheetState.currentValue == SheetValue.Expanded,
+											showLocation = false,
+											onOpenPublication = { onPublicationDetailsClick(selected.id) }
+										)
 					} ?: Text(
 						text = stringResource(R.string.feature_filters_empty_filtered_results),
 						style = TextTokens.body(),

@@ -31,7 +31,8 @@ import com.example.triplink.ui.theme.TextTokens
 fun BrandHeader(
     locationText: String,
     onNotificationsClick: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    showLocation: Boolean = true
 ) {
     Row(
         modifier = modifier
@@ -51,11 +52,13 @@ fun BrandHeader(
             Spacer(modifier = Modifier.width(8.dp))
             Column {
                 AppTitle(variant = AppTitleVariant.Compact)
-                Text(
-                    text = locationText,
-                    style = TextTokens.bodySecondary(),
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
+                if (showLocation) {
+                    Text(
+                        text = locationText,
+                        style = TextTokens.bodySecondary(),
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
             }
         }
 
