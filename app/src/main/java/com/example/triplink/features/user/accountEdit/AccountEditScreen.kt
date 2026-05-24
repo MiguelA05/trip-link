@@ -444,12 +444,20 @@ fun AccountEditScreen(
                     },
                     enabled = !isLoading
                 ) {
-                    Text(text = stringResource(R.string.feature_account_edit_change_password_confirm))
+                    Text(
+                        text = stringResource(R.string.feature_account_edit_change_password_confirm),
+                        style = TextTokens.dialogButton(),
+                        textAlign = TextAlign.Center
+                    )
                 }
             },
             dismissButton = {
                 TextButton(onClick = { accountEditViewModel.closeChangePasswordDialog() }) {
-                    Text(text = stringResource(R.string.feature_account_edit_change_password_cancel))
+                    Text(
+                        text = stringResource(R.string.feature_account_edit_change_password_cancel),
+                        style = TextTokens.dialogButton(),
+                        textAlign = TextAlign.Center
+                    )
                 }
             }
         )

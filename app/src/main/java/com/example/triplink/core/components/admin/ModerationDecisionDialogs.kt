@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -269,11 +270,13 @@ private fun BaseModerationDialog(
                             .weight(1f)
                             .height(56.dp),
                         shape = RoundedCornerShape(30.dp),
-                        colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colorScheme.primary)
+                        colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colorScheme.primary),
+                        contentPadding = PaddingValues(horizontal = 10.dp, vertical = 8.dp)
                     ) {
                         Text(
                             text = stringResource(R.string.component_moderation_decision_dialog_cancel_action),
-                            style = TextTokens.emphasized(TextTokens.button(), FontWeight.Bold)
+                            style = TextTokens.emphasized(TextTokens.dialogButton(), FontWeight.Bold),
+                            textAlign = TextAlign.Center
                         )
                     }
 
@@ -287,11 +290,13 @@ private fun BaseModerationDialog(
                         colors = ButtonDefaults.buttonColors(
                             containerColor = confirmColor,
                             contentColor = if (confirmColor == MaterialTheme.colorScheme.error) MaterialTheme.colorScheme.onError else MaterialTheme.colorScheme.onPrimary
-                        )
+                        ),
+                        contentPadding = PaddingValues(horizontal = 10.dp, vertical = 8.dp)
                     ) {
                         Text(
                             text = confirmText,
-                            style = TextTokens.emphasized(TextTokens.button(), FontWeight.Bold)
+                            style = TextTokens.emphasized(TextTokens.dialogButton(), FontWeight.Bold),
+                            textAlign = TextAlign.Center
                         )
                     }
                 }
@@ -299,6 +304,5 @@ private fun BaseModerationDialog(
         }
     }
 }
-
 
 
