@@ -32,7 +32,7 @@ class ResetPasswordViewModel @Inject constructor(
 
     var password = ValidatedField("") { value ->
         when {
-            value.isEmpty() -> appContext.getString(R.string.vm_reset_password_required)
+            value.isBlank() -> appContext.getString(R.string.vm_reset_password_required)
             value.length < 6 -> appContext.getString(R.string.vm_reset_password_min_length)
             else -> null
         }
@@ -40,7 +40,7 @@ class ResetPasswordViewModel @Inject constructor(
 
     var confirmPassword = ValidatedField("") { value ->
         when {
-            value.isEmpty() -> appContext.getString(R.string.vm_reset_confirm_required)
+            value.isBlank() -> appContext.getString(R.string.vm_reset_confirm_required)
             value != password.value -> appContext.getString(R.string.vm_reset_password_mismatch)
             else -> null
         }

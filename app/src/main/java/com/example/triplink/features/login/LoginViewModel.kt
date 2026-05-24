@@ -33,7 +33,7 @@ class LoginViewModel @Inject constructor(
 ) : ViewModel() {
     var email = ValidatedField("") { value ->
         when {
-            value.isEmpty() -> appContext.getString(R.string.vm_login_email_required)
+            value.isBlank() -> appContext.getString(R.string.vm_login_email_required)
             !Patterns.EMAIL_ADDRESS.matcher(value).matches() -> appContext.getString(R.string.vm_login_email_invalid)
             else -> null
         }
@@ -42,7 +42,7 @@ class LoginViewModel @Inject constructor(
 
     var password = ValidatedField("") { value ->
         when {
-            value.isEmpty() -> appContext.getString(R.string.vm_login_password_required)
+            value.isBlank() -> appContext.getString(R.string.vm_login_password_required)
             value.length < 6 -> appContext.getString(R.string.vm_login_password_min_length)
             else -> null
         }

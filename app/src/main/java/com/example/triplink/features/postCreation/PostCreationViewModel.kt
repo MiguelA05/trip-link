@@ -65,6 +65,9 @@ class PostCreationViewModel @Inject constructor(
     val hasSelectedLocation: Boolean
         get() = latitude != null && longitude != null
 
+    val hasSelectedPhotos: Boolean
+        get() = imagenesTemporales.isNotEmpty() || prefilledPhotos.isNotEmpty()
+
     val selectedLocationLabel: String
         get() = if (hasSelectedLocation) {
             appContext.getString(
@@ -120,7 +123,9 @@ class PostCreationViewModel @Inject constructor(
             val areMandatoryFieldsValid = placeName.isValid &&
                 placeName.value.isNotBlank() &&
                 selectedCategory.isValid &&
-                selectedCategory.value != null
+                selectedCategory.value != null &&
+                hasSelectedPhotos &&
+                hasSelectedLocation
 
             val areSchedulesValid = daySchedules.all { schedule ->
                 if (schedule.isEnabled) {
@@ -235,6 +240,8 @@ class PostCreationViewModel @Inject constructor(
 
     fun createPost() {
         if (!isFormValid) {
+            placeName.onChange(placeName.value)
+            selectedCategory.onChange(selectedCategory.value)
             _createResult.value = RequestResult.Failure(appContext.getString(R.string.vm_post_creation_required_fields))
             return
         }

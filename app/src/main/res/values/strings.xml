@@ -200,7 +200,7 @@
     <!-- resource: feature_post_creation_required_fields_warning_prefix -->
     <string name="feature_post_creation_required_fields_warning_prefix">Required fields:</string>
     <!-- resource: feature_post_creation_required_fields_warning_body -->
-    <string name="feature_post_creation_required_fields_warning_body">Name, Category and map location are needed to publish.</string>
+    <string name="feature_post_creation_required_fields_warning_body">Name, Category, photos and map location are needed to publish.</string>
 
     <!-- FEATURE: Filters -->
     <!-- resource: feature_filters_title -->

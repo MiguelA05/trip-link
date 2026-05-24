@@ -238,6 +238,12 @@ class AccountEditViewModel @Inject constructor(
             _isLoading.value = true
             try {
                 // Validaciones locales: longitud mínima y coincidencia
+                if (currentPassword.isBlank()) {
+                    _updateResult.value = RequestResult.Failure(appContext.getString(R.string.feature_account_edit_current_password_required))
+                    _isLoading.value = false
+                    return@launch
+                }
+
                 if (newPassword.length < 6) {
                     _updateResult.value = RequestResult.Failure(appContext.getString(R.string.vm_account_edit_change_password_too_short))
                     _isLoading.value = false

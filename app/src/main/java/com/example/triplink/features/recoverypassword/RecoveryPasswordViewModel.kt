@@ -41,7 +41,7 @@ class RecoveryPasswordViewModel @Inject constructor(
 
     val email = ValidatedField("") { value ->
         when {
-            value.isEmpty() -> appContext.getString(R.string.vm_recovery_email_required)
+            value.isBlank() -> appContext.getString(R.string.vm_recovery_email_required)
             !Patterns.EMAIL_ADDRESS.matcher(value).matches() -> appContext.getString(R.string.vm_recovery_email_invalid)
             else -> null
         }
