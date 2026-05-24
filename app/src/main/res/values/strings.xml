@@ -420,7 +420,7 @@
 
     <!-- FEATURE: ExploreMap -->
     <string name="feature_explore_map_back_to_list_content_description">Back to list</string>
-    <string name="feature_explore_map_no_selected_publication">Sin publicación seleccionada</string>
+    <string name="feature_explore_map_no_selected_publication">No publication selected</string>
     <string name="feature_explore_map_publication_rating_no_reviews">No reviews</string>
 
     <!-- FEATURE: AccountEdit -->
@@ -648,7 +648,7 @@
     <string name="vm_publication_details_login_required">You must sign in to comment</string>
     <string name="vm_publication_details_comment_saved">Comment saved successfully</string>
     <string name="vm_publication_details_comment_save_failed">Could not save the comment</string>
-    <string name="vm_publication_details_moderation_failed">No se pudo validar el comentario en este momento. Intenta nuevamente.</string>
+    <string name="vm_publication_details_moderation_failed">The comment could not be validated right now. Try again.</string>
     <string name="vm_publication_details_save_error">Error saving: %1$s</string>
     <string name="vm_publication_details_publication_updated">Publication updated</string>
     <string name="vm_publication_details_publication_update_failed">Could not update publication</string>
@@ -725,9 +725,9 @@
     <string name="feature_account_edit_change_password_confirm">Confirm</string>
     <string name="feature_account_edit_change_password_cancel">Cancel</string>
     <string name="feature_account_edit_confirm_new_password_label">Confirm new password</string>
-    <string name="vm_account_edit_change_password_too_short">La contraseña debe tener al menos 6 caracteres</string>
-    <string name="vm_account_edit_change_password_mismatch">La nueva contraseña y su confirmación no coinciden</string>
-    <string name="feature_account_edit_current_password_required">La contraseña actual es requerida</string>
+    <string name="vm_account_edit_change_password_too_short">Password must be at least 6 characters</string>
+    <string name="vm_account_edit_change_password_mismatch">New password and confirmation do not match</string>
+    <string name="feature_account_edit_current_password_required">Current password is required</string>
 
     <!-- VIEWMODEL: UserInfo -->
     <string name="vm_user_info_default_user_name">User</string>

@@ -202,7 +202,7 @@
     <!-- resource: feature_post_creation_required_fields_warning_prefix -->
     <string name="feature_post_creation_required_fields_warning_prefix">Campos obligatorios:</string>
     <!-- resource: feature_post_creation_required_fields_warning_body -->
-    <string name="feature_post_creation_required_fields_warning_body">Nombre, Categoría y Ubicación en mapa para poder publicar.</string>
+    <string name="feature_post_creation_required_fields_warning_body">Nombre, categoría, fotos y ubicación en mapa para poder publicar.</string>
 
     <!-- FEATURE: Filters -->
     <!-- resource: feature_filters_title -->
@@ -421,6 +421,7 @@
 
     <!-- FEATURE: ExploreMap -->
     <string name="feature_explore_map_back_to_list_content_description">Volver a lista</string>
+    <string name="feature_explore_map_no_selected_publication">Sin publicación seleccionada</string>
     <string name="feature_explore_map_publication_rating_no_reviews">Sin reseñas</string>
 
     <!-- FEATURE: AccountEdit -->
@@ -648,6 +649,7 @@
     <string name="vm_publication_details_login_required">Debes iniciar sesión para comentar</string>
     <string name="vm_publication_details_comment_saved">Comentario guardado exitosamente</string>
     <string name="vm_publication_details_comment_save_failed">No se pudo guardar el comentario</string>
+    <string name="vm_publication_details_moderation_failed">No se pudo validar el comentario en este momento. Intenta nuevamente.</string>
     <string name="vm_publication_details_save_error">Error al guardar: %1$s</string>
     <string name="vm_publication_details_publication_updated">Publicación actualizada</string>
     <string name="vm_publication_details_publication_update_failed">No se pudo actualizar la publicación</string>
@@ -723,6 +725,10 @@
     <string name="feature_account_edit_new_password_label">Nueva contraseña</string>
     <string name="feature_account_edit_change_password_confirm">Confirmar</string>
     <string name="feature_account_edit_change_password_cancel">Cancelar</string>
+    <string name="feature_account_edit_confirm_new_password_label">Confirmar nueva contraseña</string>
+    <string name="vm_account_edit_change_password_too_short">La contraseña debe tener al menos 6 caracteres</string>
+    <string name="vm_account_edit_change_password_mismatch">La nueva contraseña y su confirmación no coinciden</string>
+    <string name="feature_account_edit_current_password_required">La contraseña actual es requerida</string>
 
     <!-- VIEWMODEL: UserInfo -->
     <string name="vm_user_info_default_user_name">Usuario</string>
