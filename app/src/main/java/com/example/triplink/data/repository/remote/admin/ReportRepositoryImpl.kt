@@ -58,9 +58,14 @@ class ReportRepositoryImpl @Inject constructor(
         if (hasUserReportedPublication(report.reportadorId, report.puntoInteresId)) return false
 
         val updatedReports = publication.reportes + report.copy(estado = EstadoReporte.PENDIENTE)
-        return publicationRepository.updatePuntoInteres(
+        val wasUpdated = publicationRepository.updatePuntoInteres(
             publication.copy(reportes = updatedReports)
         )
+        if (wasUpdated) {
+            // refresh cached report cases so admin UI sees the new pending report
+            refreshReportCases()
+        }
+        return wasUpdated
     }
 
     override suspend fun getReportById(reportId: String): AdminReportCase? {
