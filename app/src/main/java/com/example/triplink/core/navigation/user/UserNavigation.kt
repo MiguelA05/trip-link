@@ -167,11 +167,17 @@ fun UserNavigation(
                 publicationIdToEdit = route.publicationId,
                 onUserHomeClick = {
                     navController.navigate(UserSectionRoutes.UserHome) {
+                        popUpTo(UserSectionRoutes.UserHome) {
+                            inclusive = false
+                        }
                         launchSingleTop = true
                     }
                 },
                 onUserInfoClick = {
                     navController.navigate(UserSectionRoutes.UserInfo) {
+                        popUpTo(UserSectionRoutes.UserHome) {
+                            inclusive = false
+                        }
                         launchSingleTop = true
                     }
                 }

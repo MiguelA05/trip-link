@@ -8,7 +8,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavDestination.Companion.hasRoute
-import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.triplink.core.components.navigation.BottomBar
@@ -55,11 +54,10 @@ fun UserSectionScreen(
                     selectedIndex = selectedIndex,
                     onItemSelected = { index ->
                         navController.navigate(tabRoutes[index]) {
-                            popUpTo(navController.graph.findStartDestination().id) {
-                                saveState = true
+                            popUpTo(UserSectionRoutes.UserHome) {
+                                inclusive = false
                             }
                             launchSingleTop = true
-                            restoreState = true
                         }
                     }
                 )
