@@ -21,7 +21,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
-import com.example.triplink.core.image.AppImageLoader
 import coil3.request.ImageRequest
 import coil3.request.crossfade
 import com.example.triplink.ui.theme.TextTokens
@@ -45,7 +44,6 @@ fun PublicationPreviewHero(
                     .data(imageUrl)
                     .crossfade(true)
                     .build(),
-                imageLoader = AppImageLoader.get(LocalContext.current),
                 contentDescription = title,
                 contentScale = ContentScale.Crop,
                 modifier = Modifier.fillMaxSize()

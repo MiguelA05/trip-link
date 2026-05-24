@@ -178,8 +178,6 @@ dependencies {
     implementation(libs.material.icons.extended)
     implementation(libs.coil.compose)
     implementation(libs.coil.network.okhttp)
-    // OkHttp client used by app (and by Coil). Added explicitly for network calls.
-    implementation("com.squareup.okhttp3:okhttp:4.11.0")
     implementation(libs.firebase.firestore)
     implementation(libs.firebase.functions)
     implementation(libs.firebase.messaging)
