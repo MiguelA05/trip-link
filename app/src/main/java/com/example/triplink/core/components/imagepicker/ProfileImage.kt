@@ -20,8 +20,6 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
-import com.example.triplink.core.image.AppImageLoader
-import androidx.compose.ui.platform.LocalContext
 import com.example.triplink.R
 
 /**
@@ -40,7 +38,6 @@ fun ProfileImage(
         if (photoUri != null) {
             AsyncImage(
                 model = photoUri,
-                imageLoader = AppImageLoader.get(LocalContext.current),
                 contentDescription = stringResource(R.string.permissions_profile_image_description),
                 modifier = Modifier
                     .size(imageSize)

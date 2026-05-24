@@ -62,12 +62,6 @@
             </intent-filter>
         </activity>
 
-        <!-- Debugging activity to run environment diagnostics (not exported) -->
-        <activity
-            android:name=".debug.DebugActivity"
-            android:exported="false"
-            android:label="Diagnostics" />
-
         <service
             android:name=".core.notifications.TripLinkMessagingService"
             android:exported="false">
