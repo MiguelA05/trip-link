@@ -21,6 +21,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -46,6 +47,21 @@ fun LocationPickerMapField(
 
     val hasSelectedLocation = currentLatitude != null && currentLongitude != null
     val hasPendingLocation = pendingLatitude != null && pendingLongitude != null
+    val selectedMarker = when {
+        hasPendingLocation -> MapMarker(
+            id = "pending_location",
+            latitude = pendingLatitude!!,
+            longitude = pendingLongitude!!,
+            highlighted = true
+        )
+        hasSelectedLocation -> MapMarker(
+            id = "selected_location",
+            latitude = currentLatitude!!,
+            longitude = currentLongitude!!,
+            highlighted = true
+        )
+        else -> null
+    }
 
     val selectedLocationLabel = if (hasPendingLocation) {
         stringResource(
@@ -76,42 +92,26 @@ fun LocationPickerMapField(
             modifier = Modifier.padding(10.dp),
             verticalArrangement = Arrangement.spacedBy(10.dp)
         ) {
-            MapBox(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(180.dp),
-                markers = listOfNotNull(
-                    if (hasPendingLocation) {
-                        MapMarker(
-                            id = "pending_location",
-                            latitude = pendingLatitude!!,
-                            longitude = pendingLongitude!!,
-                            highlighted = true
-                        )
-                    } else if (hasSelectedLocation) {
-                        MapMarker(
-                            id = "selected_location",
-                            latitude = currentLatitude,
-                            longitude = currentLongitude,
-                            highlighted = true
-                        )
-                    } else {
-                        null
+            key(selectedMarker?.id, selectedMarker?.latitude, selectedMarker?.longitude) {
+                MapBox(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(180.dp),
+                    markers = listOfNotNull(selectedMarker),
+                    showMyLocationButton = showMyLocationButton,
+                    activateClick = true,
+                    centerCameraOnUpdate = !hasPendingLocation, // Only center automatically if not currently picking
+                    onMapClickListener = { longitude, latitude ->
+                        pendingLongitude = longitude
+                        pendingLatitude = latitude
+                    },
+                    onDeviceLocation = { longitude, latitude ->
+                        // When MapBox obtains device location, set pending so user can confirm
+                        pendingLongitude = longitude
+                        pendingLatitude = latitude
                     }
-                ),
-                showMyLocationButton = showMyLocationButton,
-                activateClick = true,
-                centerCameraOnUpdate = !hasPendingLocation, // Only center automatically if not currently picking
-                onMapClickListener = { longitude, latitude ->
-                    pendingLongitude = longitude
-                    pendingLatitude = latitude
-                },
-                onDeviceLocation = { longitude, latitude ->
-                    // When MapBox obtains device location, set pending so user can confirm
-                    pendingLongitude = longitude
-                    pendingLatitude = latitude
-                }
-            )
+                )
+            }
 
             Box(
                 modifier = Modifier
@@ -167,4 +167,3 @@ fun LocationPickerMapField(
         )
     }
 }
-

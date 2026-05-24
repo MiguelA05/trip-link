@@ -420,6 +420,7 @@
 
     <!-- FEATURE: ExploreMap -->
     <string name="feature_explore_map_back_to_list_content_description">Back to list</string>
+    <string name="feature_explore_map_no_selected_publication">Sin publicación seleccionada</string>
     <string name="feature_explore_map_publication_rating_no_reviews">No reviews</string>
 
     <!-- FEATURE: AccountEdit -->

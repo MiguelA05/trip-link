@@ -70,12 +70,9 @@ class ExploreMapViewModel @Inject constructor(
 
     val selectedPublication: StateFlow<PuntoInteres?> = combine(
         filteredPublications,
-        _selectedPublicationId,
-        publications
-    ) { filtered, selectedId, allPublications ->
+        _selectedPublicationId
+    ) { filtered, selectedId ->
         filtered.firstOrNull { it.id == selectedId }
-            ?: filtered.firstOrNull()
-            ?: allPublications.firstOrNull { it.estado == EstadoPublicacion.VERIFICADA }
     }.stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
     val markers: StateFlow<List<MapMarkerUi>> = combine(
@@ -114,12 +111,9 @@ class ExploreMapViewModel @Inject constructor(
     }
 
     private fun keepValidSelection(filtered: List<PuntoInteres> = filteredPublications.value) {
-        val nextSelectionId = filtered.firstOrNull { it.id == _selectedPublicationId.value }?.id
-            ?: filtered.firstOrNull()?.id
-            ?: ""
-
-        if (nextSelectionId != _selectedPublicationId.value) {
-            _selectedPublicationId.value = nextSelectionId
+        val selectedId = _selectedPublicationId.value
+        if (selectedId.isNotBlank() && filtered.none { it.id == selectedId }) {
+            _selectedPublicationId.value = ""
         }
     }
 

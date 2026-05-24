@@ -5,6 +5,7 @@ import android.Manifest
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Paint
+import android.graphics.Path
 import android.util.Log
 import android.view.MotionEvent
 import androidx.compose.foundation.isSystemInDarkTheme
@@ -69,12 +70,38 @@ private fun createMarkerBitmap(fillColor: Int): Bitmap {
     val bitmap = Bitmap.createBitmap(sizePx, sizePx, Bitmap.Config.ARGB_8888)
     val canvas = Canvas(bitmap)
     val paint = Paint(Paint.ANTI_ALIAS_FLAG)
+    val centerX = sizePx / 2f
+    val headRadius = 30f
+    val headCenterY = 36f
+    val tipY = 88f
+
+    paint.style = Paint.Style.FILL
 
     paint.color = android.graphics.Color.WHITE
-    canvas.drawCircle(sizePx / 2f, sizePx / 2f, sizePx / 2f - 4f, paint)
+    val shadowPath = Path().apply {
+        moveTo(centerX, tipY)
+        cubicTo(78f, 62f, 86f, 44f, 78f, 26f)
+        cubicTo(69f, 6f, 27f, 6f, 18f, 26f)
+        cubicTo(10f, 44f, 18f, 62f, centerX, tipY)
+        close()
+    }
+    canvas.drawPath(shadowPath, paint)
 
     paint.color = fillColor
-    canvas.drawCircle(sizePx / 2f, sizePx / 2f, sizePx / 2f - 12f, paint)
+    val pinPath = Path().apply {
+        moveTo(centerX, 82f)
+        cubicTo(72f, 58f, 78f, 43f, 71f, 28f)
+        cubicTo(63f, 12f, 33f, 12f, 25f, 28f)
+        cubicTo(18f, 43f, 24f, 58f, centerX, 82f)
+        close()
+    }
+    canvas.drawPath(pinPath, paint)
+
+    paint.color = android.graphics.Color.WHITE
+    canvas.drawCircle(centerX, headCenterY, headRadius * 0.38f, paint)
+
+    paint.color = fillColor
+    canvas.drawCircle(centerX, headCenterY, headRadius * 0.22f, paint)
 
     return bitmap
 }
@@ -130,6 +157,30 @@ fun MapBox(
     val isDarkTheme = isSystemInDarkTheme()
     val mapStyle = if (isDarkTheme) Style.DARK else Style.MAPBOX_STREETS
 
+    fun renderMarkers(activeMarkers: List<MapMarker>) {
+        val manager = pointAnnotationManager.value ?: return
+        manager.deleteAll()
+        markerByAnnotationId.clear()
+
+        if (activeMarkers.isEmpty()) return
+
+        val options = activeMarkers.map { marker ->
+            PointAnnotationOptions()
+                .withPoint(Point.fromLngLat(marker.longitude, marker.latitude))
+                .withIconImage(if (marker.highlighted) HIGHLIGHT_MARKER_IMAGE_ID else NORMAL_MARKER_IMAGE_ID)
+                .withIconSize(if (marker.highlighted) 1.6 else 1.2)
+        }
+
+        val annotations = manager.create(options)
+        annotations.forEachIndexed { index, annotation ->
+            markerByAnnotationId[annotation.id] = activeMarkers[index].id
+        }
+    }
+
+    LaunchedEffect(markers, pointAnnotationManager.value) {
+        renderMarkers(markers)
+    }
+
     // Manejar carga de estilo y registro de recursos de forma reactiva al cambio de tema
     LaunchedEffect(mapStyle, mapView.value) {
         val mv = mapView.value ?: return@LaunchedEffect
@@ -148,19 +199,8 @@ fun MapBox(
                         true
                     } ?: false
                 }
-                
-                // Definir lógica local de renderizado para el callback inicial
-                val options = markers.map { marker ->
-                    PointAnnotationOptions()
-                        .withPoint(Point.fromLngLat(marker.longitude, marker.latitude))
-                        .withIconImage(if (marker.highlighted) HIGHLIGHT_MARKER_IMAGE_ID else NORMAL_MARKER_IMAGE_ID)
-                        .withIconSize(if (marker.highlighted) 1.6 else 1.2)
-                }
 
-                val annotations = manager.create(options)
-                annotations.forEachIndexed { index, annotation ->
-                    markerByAnnotationId[annotation.id] = markers[index].id
-                }
+                renderMarkers(markers)
                 
                 // Centrar cámara inicialmente
                 if (markers.isNotEmpty()) {
@@ -175,26 +215,6 @@ fun MapBox(
             } catch (e: Exception) {
                 Log.e("MapBox", "Error al cargar recursos en el estilo: ${e.message}", e)
             }
-        }
-    }
-
-    fun renderMarkers(activeMarkers: List<MapMarker>) {
-        val manager = pointAnnotationManager.value ?: return
-        manager.deleteAll()
-        markerByAnnotationId.clear()
-
-        if (activeMarkers.isEmpty()) return
-
-        val options = activeMarkers.map { marker ->
-            PointAnnotationOptions()
-                .withPoint(Point.fromLngLat(marker.longitude, marker.latitude))
-                .withIconImage(if (marker.highlighted) HIGHLIGHT_MARKER_IMAGE_ID else NORMAL_MARKER_IMAGE_ID)
-                .withIconSize(if (marker.highlighted) 1.6 else 1.2)
-        }
-
-        val annotations = manager.create(options)
-        annotations.forEachIndexed { index, annotation ->
-            markerByAnnotationId[annotation.id] = activeMarkers[index].id
         }
     }
 
@@ -449,8 +469,6 @@ fun MapBox(
         }
     }
 }
-
-
 
 
 
