@@ -53,6 +53,9 @@ object TextTokens {
     fun button(): TextStyle = MaterialTheme.typography.labelLarge
 
     @Composable
+    fun dialogButton(): TextStyle = MaterialTheme.typography.labelMedium
+
+    @Composable
     fun caption(): TextStyle = MaterialTheme.typography.labelSmall
 
     fun emphasized(style: TextStyle, weight: FontWeight = FontWeight.SemiBold): TextStyle =
@@ -81,7 +84,6 @@ object TextColors {
     val Muted: Color
         @Composable get() = MaterialTheme.colorScheme.outline
 }
-
 
 
 

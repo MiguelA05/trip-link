@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -121,11 +122,13 @@ fun DestructiveConfirmDialog(
                                 .weight(1f)
                                 .height(50.dp),
                             shape = RoundedCornerShape(26.dp),
-                            colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colorScheme.primary)
+                            colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colorScheme.primary),
+                            contentPadding = PaddingValues(horizontal = 10.dp, vertical = 8.dp)
                         ) {
                             Text(
                                 text = dismissText,
-                                style = TextTokens.emphasized(TextTokens.button(), FontWeight.Bold)
+                                style = TextTokens.emphasized(TextTokens.dialogButton(), FontWeight.Bold),
+                                textAlign = TextAlign.Center
                             )
                         }
 
@@ -135,12 +138,14 @@ fun DestructiveConfirmDialog(
                                 .weight(1f)
                                 .height(50.dp),
                             shape = RoundedCornerShape(26.dp),
-                            colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.error)
+                            colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.error),
+                            contentPadding = PaddingValues(horizontal = 10.dp, vertical = 8.dp)
                         ) {
                             Text(
                                 text = confirmText,
-                                style = TextTokens.emphasized(TextTokens.button(), FontWeight.Bold),
+                                style = TextTokens.emphasized(TextTokens.dialogButton(), FontWeight.Bold),
                                 color = MaterialTheme.colorScheme.onError,
+                                textAlign = TextAlign.Center
                             )
                         }
                     }
