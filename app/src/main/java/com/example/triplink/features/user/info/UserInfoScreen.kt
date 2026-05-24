@@ -27,6 +27,7 @@ import androidx.compose.material.icons.outlined.HeartBroken
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
@@ -146,7 +147,18 @@ fun UserInfoScreen(
 			}
 		}
 
-		if (state.selectedContributionItems.isEmpty()) {
+		if (state.isContributionsLoading) {
+			item {
+				Box(
+					modifier = Modifier
+						.fillMaxWidth()
+						.padding(vertical = 32.dp),
+					contentAlignment = Alignment.Center
+				) {
+					CircularProgressIndicator()
+				}
+			}
+		} else if (state.selectedContributionItems.isEmpty()) {
 			item {
 				val emptyMessage = when (state.selectedContributionIndex) {
 					0 -> stringResource(R.string.feature_user_info_empty_favorites)
