@@ -45,6 +45,7 @@ import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
 import coil3.request.crossfade
 import com.example.triplink.R
+import com.example.triplink.core.image.AppImageLoader
 import com.example.triplink.features.admin.moderation.ModerationPublicationCardStatus
 import com.example.triplink.features.admin.moderation.ModerationPublicationCardUi
 import com.example.triplink.ui.theme.TextColors
@@ -136,6 +137,7 @@ fun ModerationPublicationCard(
                             .data(publication.imageUrl)
                             .crossfade(true)
                             .build(),
+                        imageLoader = AppImageLoader.get(LocalContext.current),
                         contentDescription = publication.title,
                         contentScale = ContentScale.Crop,
                         modifier = Modifier.fillMaxWidth()
