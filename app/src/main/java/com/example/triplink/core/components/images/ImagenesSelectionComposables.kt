@@ -19,6 +19,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
+import com.example.triplink.core.image.AppImageLoader
+import androidx.compose.ui.platform.LocalContext
 
 @Composable
 fun ImagenesSelectorGrid(
@@ -97,6 +99,7 @@ fun ImageThumbnail(
     ) {
         AsyncImage(
             model = uri,
+            imageLoader = AppImageLoader.get(LocalContext.current),
             contentDescription = "Imagen publicación",
             modifier = Modifier.fillMaxSize(),
             contentScale = ContentScale.Crop

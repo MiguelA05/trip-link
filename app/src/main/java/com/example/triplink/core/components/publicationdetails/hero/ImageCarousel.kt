@@ -23,6 +23,7 @@ import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
 import coil3.request.crossfade
 import com.example.triplink.R
+import com.example.triplink.core.image.AppImageLoader
 import com.example.triplink.ui.theme.TextTokens
 
 @Composable
@@ -57,6 +58,7 @@ fun ImageCarousel(
                         .data(imageUrl)
                         .crossfade(true)
                         .build(),
+                    imageLoader = AppImageLoader.get(LocalContext.current),
                     contentDescription = title,
                     contentScale = ContentScale.Crop,
                     modifier = Modifier.fillMaxSize()
