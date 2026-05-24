@@ -91,7 +91,8 @@ fun UserHomeScreen(
             Column {
                 BrandHeader(
                     locationText = stringResource(R.string.feature_user_home_location),
-                    onNotificationsClick = onNotificationsClick
+                    onNotificationsClick = onNotificationsClick,
+                    showLocation = false
                 )
                 SectionTitleDivider(title = stringResource(R.string.feature_user_home_recommended_title))
             }
@@ -121,6 +122,7 @@ fun UserHomeScreen(
                     puntoInteres = publication,
                     ratingLabel = viewModel.ratingLabelForPublication(publication),
                     isFavorite = favoriteIds.contains(publication.id),
+                    showLocation = false,
                     onCardClick = { onPublicationClick(publication.id) },
                     onFavoriteToggle = { viewModel.toggleFavorite(userId, publication.id) },
                     onCommentsClick = { onCommentsClick(publication.id) }

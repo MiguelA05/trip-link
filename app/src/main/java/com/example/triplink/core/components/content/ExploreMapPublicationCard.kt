@@ -47,6 +47,7 @@ fun ExploreMapPublicationCard(
     reviewCount: Int,
     expanded: Boolean,
     modifier: Modifier = Modifier,
+    showLocation: Boolean = true,
     onOpenPublication: (() -> Unit)? = null
 ) {
     Column(
@@ -150,21 +151,23 @@ fun ExploreMapPublicationCard(
                 }
             }
 
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(4.dp)
-            ) {
-                Icon(
-                    imageVector = Icons.Outlined.LocationOn,
-                    contentDescription = null,
-                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                    modifier = Modifier.size(14.dp)
-                )
-                Text(
-                    text = publication.ubicacion.ciudad,
-                    color = TextColors.Secondary,
-                    style = TextTokens.bodySecondary()
-                )
+            if (showLocation) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(4.dp)
+                ) {
+                    Icon(
+                        imageVector = Icons.Outlined.LocationOn,
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                        modifier = Modifier.size(14.dp)
+                    )
+                    Text(
+                        text = publication.ubicacion.ciudad,
+                        color = TextColors.Secondary,
+                        style = TextTokens.bodySecondary()
+                    )
+                }
             }
 
             if (expanded) {

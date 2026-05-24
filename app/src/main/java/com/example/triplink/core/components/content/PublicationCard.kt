@@ -42,6 +42,7 @@ fun PublicationCard(
     modifier: Modifier = Modifier,
     showFooter: Boolean = true,
     isFavorite: Boolean = false,
+    showLocation: Boolean = true,
     onCardClick: (() -> Unit)? = null,
     onFavoriteToggle: () -> Unit = {},
     onCommentsClick: () -> Unit = {}
@@ -212,21 +213,23 @@ fun PublicationCard(
                             style = TextTokens.emphasized(TextTokens.title(), FontWeight.Bold),
                             maxLines = 1
                         )
-                        Row(verticalAlignment = Alignment.CenterVertically) {
-                            Icon(
-                                imageVector = Icons.Outlined.LocationOn,
-                                contentDescription = null,
-                                tint = MaterialTheme.colorScheme.onPrimary,
-                                modifier = Modifier.size(14.dp)
-                            )
-                            Spacer(modifier = Modifier.width(4.dp))
-                            Text(
-                                text = puntoInteres.ubicacion.ciudad,
-                                color = MaterialTheme.colorScheme.onSurface,
-                                style = TextTokens.bodySecondary(),
-                                maxLines = 1
-                            )
-                        }
+                            if (showLocation) {
+                                Row(verticalAlignment = Alignment.CenterVertically) {
+                                    Icon(
+                                        imageVector = Icons.Outlined.LocationOn,
+                                        contentDescription = null,
+                                        tint = MaterialTheme.colorScheme.onPrimary,
+                                        modifier = Modifier.size(14.dp)
+                                    )
+                                    Spacer(modifier = Modifier.width(4.dp))
+                                    Text(
+                                        text = puntoInteres.ubicacion.ciudad,
+                                        color = MaterialTheme.colorScheme.onSurface,
+                                        style = TextTokens.bodySecondary(),
+                                        maxLines = 1
+                                    )
+                                }
+                            }
                     }
                 }
             }
