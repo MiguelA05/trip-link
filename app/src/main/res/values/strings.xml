@@ -98,9 +98,9 @@
     <!-- resource: component_explore_map_publication_card_rating -->
     <string name="component_explore_map_publication_card_rating">%1$s (%2$d)</string>
     <!-- resource: component_explore_map_publication_card_duration -->
-    <string name="component_explore_map_publication_card_duration">3â€“4 hrs</string>
+    <string name="component_explore_map_publication_card_duration">3-4 hrs</string>
     <!-- resource: component_explore_map_publication_card_open_full_publication -->
-    <string name="component_explore_map_publication_card_open_full_publication">View full publication  ></string>
+    <string name="component_explore_map_publication_card_open_full_publication">View full publication &gt;</string>
     <!-- resource: component_explore_map_publication_card_no_reviews -->
     <string name="component_explore_map_publication_card_no_reviews">No reviews</string>
 
@@ -264,7 +264,7 @@
     <!-- resource: feature_publication_details_comment_optional_label -->
     <string name="feature_publication_details_comment_optional_label">OPTIONAL</string>
     <!-- resource: feature_publication_details_comment_placeholder -->
-    <string name="feature_publication_details_comment_placeholder">Tell us more about your experienceâ€¦</string>
+    <string name="feature_publication_details_comment_placeholder">Tell us more about your experience...</string>
     <!-- resource: feature_publication_details_review_rating_note -->
     <string name="feature_publication_details_review_rating_note">Tap to rate</string>
     <!-- resource: feature_publication_details_reviews_title -->
@@ -314,7 +314,7 @@
     <!-- resource: feature_post_creation_category_placeholder -->
     <string name="feature_post_creation_category_placeholder">Select category</string>
     <!-- resource: feature_post_creation_time_separator -->
-    <string name="feature_post_creation_time_separator">â€“</string>
+    <string name="feature_post_creation_time_separator">-</string>
     <!-- resource: feature_moderation_reject_action -->
     <!-- resource: feature_moderation_approve_action -->
     <!-- resource: feature_post_creation_title -->
@@ -326,7 +326,7 @@
     <!-- resource: feature_post_creation_description_label -->
     <string name="feature_post_creation_description_label">Description</string>
     <!-- resource: feature_post_creation_description_placeholder -->
-    <string name="feature_post_creation_description_placeholder">Describe this place, what makes it specialâ€¦</string>
+    <string name="feature_post_creation_description_placeholder">Describe this place, what makes it special...</string>
     <!-- resource: feature_post_creation_photos_label -->
     <string name="feature_post_creation_photos_label">Photos</string>
     <!-- resource: feature_post_creation_photos_helper -->
@@ -346,7 +346,7 @@
     <!-- resource: feature_post_creation_location_helper -->
     <string name="feature_post_creation_location_helper">Tap the map to mark the exact location of the place</string>
     <!-- resource: feature_post_creation_location_city -->
-    <string name="feature_post_creation_location_city">Armenia, QuindÃ­o</string>
+    <string name="feature_post_creation_location_city">Armenia, Quindio</string>
     <!-- resource: feature_post_creation_location_mark_action -->
     <string name="feature_post_creation_location_mark_action">Tap to mark</string>
     <!-- resource: feature_post_creation_location_address_placeholder -->
@@ -360,7 +360,7 @@
     <!-- resource: feature_post_creation_success_title -->
     <string name="feature_post_creation_success_title">Publication sent!</string>
     <!-- resource: feature_post_creation_success_subtitle -->
-    <string name="feature_post_creation_success_subtitle">It is now in the moderation teamâ€™s hands</string>
+    <string name="feature_post_creation_success_subtitle">It is now in the moderation team\'s hands</string>
     <!-- resource: feature_post_creation_process_title -->
     <string name="feature_post_creation_process_title">PUBLICATION PROCESS</string>
     <!-- resource: feature_post_creation_step_sent_title -->
