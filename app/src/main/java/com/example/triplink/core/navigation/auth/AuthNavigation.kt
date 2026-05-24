@@ -16,6 +16,7 @@ import com.example.triplink.features.resetpassword.ResetPasswordScreen
 @Composable
 fun AuthNavigation(
     deepLink: android.net.Uri? = null,
+    onDeepLinkConsumed: () -> Unit = {},
     onResetPasswordSuccess: () -> Unit = {}
 ) {
     val navController = rememberNavController()
@@ -86,6 +87,13 @@ fun AuthNavigation(
             // Aquí iría la pantalla de restablecimiento de contraseña, si es diferente a la de recuperación
             ResetPasswordScreen(
                 oobCode = route.oobCode,
+                onBack = {
+                    onDeepLinkConsumed()
+                    navController.navigate(MainRoutes.Login) {
+                        popUpTo(MainRoutes.ResetPassword(route.oobCode)) { inclusive = true }
+                        launchSingleTop = true
+                    }
+                },
                 onPasswordChanged = {
                     navController.navigate(MainRoutes.Login) {
                         popUpTo(MainRoutes.ResetPassword(route.oobCode)) { inclusive = true }

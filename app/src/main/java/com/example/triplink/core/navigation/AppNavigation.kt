@@ -30,6 +30,7 @@ fun AppNavigation(
         if (isResetPasswordDeepLink) {
             AuthNavigation(
                 deepLink = deepLink,
+                onDeepLinkConsumed = onDeepLinkConsumed,
                 onResetPasswordSuccess = {
                     sessionViewModel.logout()
                     onDeepLinkConsumed()

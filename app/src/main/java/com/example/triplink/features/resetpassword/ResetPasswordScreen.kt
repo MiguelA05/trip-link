@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.activity.compose.BackHandler
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
@@ -48,12 +49,17 @@ import com.example.triplink.ui.theme.TextTokens
 @Composable
 fun ResetPasswordScreen(
     oobCode: String,
+    onBack: () -> Unit = {},
     onPasswordChanged: () -> Unit = {},
     viewModel: ResetPasswordViewModel = hiltViewModel()
 ) {
     val snackbarHostState = remember { SnackbarHostState() }
     val recoveryResult by viewModel.recoveryResult.collectAsState()
     val isLoading by viewModel.isLoading.collectAsState()
+
+    BackHandler {
+        onBack()
+    }
 
     LaunchedEffect(recoveryResult) {
         recoveryResult?.let { result ->
@@ -81,7 +87,7 @@ fun ResetPasswordScreen(
         topBar = {
             GeneralTopBar(
                 title = stringResource(R.string.feature_reset_password_title),
-                onBack = {}
+                onBack = onBack
             )
         }
     ) { paddingValues ->
