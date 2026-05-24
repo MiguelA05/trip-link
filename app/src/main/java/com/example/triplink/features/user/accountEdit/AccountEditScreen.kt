@@ -1,8 +1,6 @@
 package com.example.triplink.features.user.accountEdit
 
-import android.Manifest
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
+// photo picker removed: AccountEditScreen shows only initials circle
 import androidx.compose.foundation.background
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.border
@@ -10,6 +8,8 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowDown
@@ -39,12 +39,10 @@ import com.example.triplink.core.components.FormField
 import com.example.triplink.core.components.DestructiveConfirmDialog
 import com.example.triplink.core.components.GeneralButton
 import com.example.triplink.core.components.GeneralTopBar
-import com.example.triplink.core.components.imagepicker.ImagePickerBottomSheet
-import com.example.triplink.core.components.imagepicker.ProfileImage
 import com.example.triplink.core.components.map.LocationPickerMapField
 import com.example.triplink.core.utils.RequestResult
 import com.example.triplink.core.utils.messageText
-import com.example.triplink.core.utils.createTempImageUri
+// photo picker utils removed
 import com.example.triplink.ui.theme.TextColors
 import com.example.triplink.ui.theme.TextTokens
 
@@ -61,50 +59,10 @@ fun AccountEditScreen(
     val deleteResult by accountEditViewModel.deleteResult.collectAsState()
     val isLoading by accountEditViewModel.isLoading.collectAsState()
     val isDeleting by accountEditViewModel.isDeleting.collectAsState()
-    val photoUri by accountEditViewModel.photoUri.collectAsState()
     val showChangePasswordDialog by accountEditViewModel.showChangePasswordDialog.collectAsState()
     var showDeleteConfirmation by remember { mutableStateOf(false) }
-    var showBottomSheet by remember { mutableStateOf(false) }
-    var showCameraPermissionError by remember { mutableStateOf(false) }
-    var tempCameraUri by remember { mutableStateOf<android.net.Uri?>(null) }
-    val bottomSheetState = rememberModalBottomSheetState()
 
-    // Galería
-    val galleryLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.GetContent()
-    ) { uri: android.net.Uri? ->
-        uri?.let { accountEditViewModel.onPhotoUriChange(it) }
-        showBottomSheet = false
-    }
-
-    // Cámara
-    val cameraLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.TakePicture()
-    ) { success: Boolean ->
-        if (success) {
-            tempCameraUri?.let { accountEditViewModel.onPhotoUriChange(it) }
-        }
-        showBottomSheet = false
-    }
-
-    // Permiso de cámara
-    val cameraPermissionLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.RequestPermission()
-    ) { isGranted: Boolean ->
-        if (isGranted) {
-            tempCameraUri = createTempImageUri(context)
-            tempCameraUri?.let { cameraLauncher.launch(it) }
-        } else {
-            showCameraPermissionError = true
-        }
-    }
-
-    LaunchedEffect(showCameraPermissionError) {
-        if (showCameraPermissionError) {
-            snackbarHostState.showSnackbar(context.getString(R.string.permissions_camera_permission_denied))
-            showCameraPermissionError = false
-        }
-    }
+    // photo picker removed: no gallery/camera launchers here
 
     LaunchedEffect(updateResult) {
         updateResult?.let { result ->
@@ -156,14 +114,23 @@ fun AccountEditScreen(
         ) {
             Spacer(modifier = Modifier.height(24.dp))
 
-            // User Avatar - Profileimage con soporte para cambio de foto
-            ProfileImage(
-                photoUri = photoUri,
-                isEditMode = true,
-                onEditClick = { showBottomSheet = true }
-            )
+            // Initial circle (single letter) — no edit affordance
+            val initial = accountEditViewModel.fullName.trim().firstOrNull()?.uppercaseChar()?.toString() ?: ""
+            Surface(
+                modifier = Modifier.size(118.dp),
+                shape = CircleShape,
+                color = MaterialTheme.colorScheme.primaryContainer
+            ) {
+                Box(contentAlignment = Alignment.Center) {
+                    Text(
+                        text = initial,
+                        style = TextTokens.emphasized(TextTokens.screenTitle(), FontWeight.Bold),
+                        color = MaterialTheme.colorScheme.onPrimaryContainer
+                    )
+                }
+            }
 
-            Spacer(modifier = Modifier.height(28.dp))
+            Spacer(modifier = Modifier.height(24.dp))
 
             AccountSectionContainer(
                 title = stringResource(R.string.feature_account_edit_personal_info_section)
@@ -488,25 +455,6 @@ fun AccountEditScreen(
         )
     }
 
-    // Image Picker Bottom Sheet
-    if (showBottomSheet) {
-        ModalBottomSheet(
-            onDismissRequest = { showBottomSheet = false },
-            sheetState = bottomSheetState
-        ) {
-            ImagePickerBottomSheet(
-                onCameraClick = {
-                    showBottomSheet = false
-                    cameraPermissionLauncher.launch(Manifest.permission.CAMERA)
-                },
-                onGalleryClick = {
-                    showBottomSheet = false
-                    galleryLauncher.launch("image/*")
-                },
-                onDismiss = { showBottomSheet = false }
-            )
-        }
-    }
 }
 
 @Composable

@@ -318,10 +318,16 @@ class PublicationDetailsViewModel @Inject constructor(
                 )
 
                 val wasSaved = reportRepository.submitReport(report)
-                _reportResult.value = if (wasSaved) {
-                    RequestResult.Success(appContext.getString(R.string.vm_publication_details_report_sent))
+                if (wasSaved) {
+                    // Refresh publication so UI receives the updated report list
+                    try {
+                        _publication.value = publicationRepository.getPublicationById(publicationId)
+                    } catch (e: Exception) {
+                        Log.w("PublicationDetails", "Failed to refresh publication after report: ${e.message}")
+                    }
+                    _reportResult.value = RequestResult.Success(appContext.getString(R.string.vm_publication_details_report_sent))
                 } else {
-                    RequestResult.Failure(appContext.getString(R.string.vm_publication_details_report_send_failed))
+                    _reportResult.value = RequestResult.Failure(appContext.getString(R.string.vm_publication_details_report_send_failed))
                 }
             } catch (e: Exception) {
                 _reportResult.value = RequestResult.Failure(

@@ -93,6 +93,8 @@ fun PublicationDetailsScreen(
     var showRatingModal by remember { mutableStateOf(false) }
     var showDeletePublicationDialog by remember { mutableStateOf(false) }
     val ratingModalSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+    // Local flag to track whether the current user already reported this publication
+    var hasReported by remember { mutableStateOf(false) }
 
     LaunchedEffect(publicationId) {
         viewModel.loadPublication(publicationId)
@@ -170,7 +172,20 @@ fun PublicationDetailsScreen(
             val message = if (result is RequestResult.Loading) loadingLabel else result.messageText()
             snackbarHostState.showSnackbar(message)
             if (result is RequestResult.Success) {
-                showReportModal = false
+                // Mark as reported locally so the report button is disabled for this publication
+                hasReported = true
+                // Wait until the ViewModel reports that submission is finished before closing the modal
+                // This prevents the modal from closing while the loading spinner is still active and avoids double submissions
+                if (!isSubmittingReport) {
+                    showReportModal = false
+                } else {
+                    // suspend until isSubmittingReport becomes false
+                    // LaunchedEffect is a suspend scope, so we can poll briefly
+                    while (isSubmittingReport) {
+                        delay(50)
+                    }
+                    showReportModal = false
+                }
             }
             viewModel.clearReportResult()
         }
@@ -224,7 +239,18 @@ fun PublicationDetailsScreen(
     val alreadyReportedByCurrentUser = currentUserId.isNotBlank() && currentPublication.reportes.any {
         it.reportadorId.equals(currentUserId, ignoreCase = true)
     }
-    val canOpenReportModal = !ownerViewEnabled && !alreadyReportedByCurrentUser
+
+    // If publication or session changes, refresh the local hasReported flag
+    LaunchedEffect(publication, sessionState) {
+        val uid = (sessionState as? SessionState.Authenticated)?.session?.userId.orEmpty()
+        val pub = publication
+        hasReported = if (uid.isBlank() || pub == null) {
+            false
+        } else {
+            pub.reportes.any { it.reportadorId.equals(uid, ignoreCase = true) }
+        }
+    }
+    val canOpenReportModal = !ownerViewEnabled && !hasReported
 
     val selectedPriceLevel = currentPublication.rangoPrecios.localizedLabelOrNoPrice()
 

@@ -11,10 +11,12 @@ import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MyLocation
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
@@ -118,6 +120,7 @@ fun MapBox(
     val markerByAnnotationId = remember { mutableMapOf<String, String>() }
     val mapClickListenerRef = remember { mutableStateOf<OnMapClickListener?>(null) }
     val hasLocationPermission = remember { mutableStateOf(false) }
+    val isRequestingLocation = remember { mutableStateOf(false) }
     val currentOnMarkerClick by rememberUpdatedState(onMarkerClick)
     val currentOnMapClick by rememberUpdatedState(onMapClickListener)
     val currentActivateClick by rememberUpdatedState(activateClick)
@@ -356,51 +359,65 @@ fun MapBox(
         if (showMyLocationButton) {
             FloatingActionButton(
                 onClick = {
+                    if (isRequestingLocation.value) return@FloatingActionButton
                     if (hasLocationPermission.value) {
                         try {
+                            isRequestingLocation.value = true
                             val fusedClient = LocationServices.getFusedLocationProviderClient(context)
                             val cts = CancellationTokenSource()
                             // Request a current high-accuracy location; fallback to lastLocation if returns null
                             fusedClient.getCurrentLocation(Priority.PRIORITY_HIGH_ACCURACY, cts.token)
                                 .addOnSuccessListener { location ->
-                                    if (location != null) {
-                                        val lon = location.longitude
-                                        val lat = location.latitude
-                                        Log.d("MapBox", "Device location obtained: $lat,$lon")
-                                        // Notify parent and center camera
-                                        onDeviceLocation(lon, lat)
-                                        mapView.value?.mapboxMap?.setCamera(
-                                            CameraOptions.Builder()
-                                                .zoom(14.0)
-                                                .center(Point.fromLngLat(lon, lat))
-                                                .build()
-                                        )
-                                    } else {
-                                        Log.w("MapBox", "getCurrentLocation returned null, trying lastLocation")
-                                        fusedClient.lastLocation.addOnSuccessListener { last ->
-                                            if (last != null) {
-                                                val lon = last.longitude
-                                                val lat = last.latitude
-                                                onDeviceLocation(lon, lat)
-                                                mapView.value?.mapboxMap?.setCamera(
-                                                    CameraOptions.Builder()
-                                                        .zoom(14.0)
-                                                        .center(Point.fromLngLat(lon, lat))
-                                                        .build()
-                                                )
-                                            } else {
-                                                Log.w("MapBox", "lastLocation also null")
+                                    try {
+                                        if (location != null) {
+                                            val lon = location.longitude
+                                            val lat = location.latitude
+                                            Log.d("MapBox", "Device location obtained: $lat,$lon")
+                                            // Notify parent and center camera
+                                            onDeviceLocation(lon, lat)
+                                            mapView.value?.mapboxMap?.setCamera(
+                                                CameraOptions.Builder()
+                                                    .zoom(14.0)
+                                                    .center(Point.fromLngLat(lon, lat))
+                                                    .build()
+                                            )
+                                        } else {
+                                            Log.w("MapBox", "getCurrentLocation returned null, trying lastLocation")
+                                            fusedClient.lastLocation.addOnSuccessListener { last ->
+                                                if (last != null) {
+                                                    val lon = last.longitude
+                                                    val lat = last.latitude
+                                                    onDeviceLocation(lon, lat)
+                                                    mapView.value?.mapboxMap?.setCamera(
+                                                        CameraOptions.Builder()
+                                                            .zoom(14.0)
+                                                            .center(Point.fromLngLat(lon, lat))
+                                                            .build()
+                                                    )
+                                                } else {
+                                                    Log.w("MapBox", "lastLocation also null")
+                                                }
+                                            }.addOnFailureListener { e ->
+                                                Log.e("MapBox", "Error getting lastLocation: ${e.message}", e)
+                                            }.addOnCompleteListener {
+                                                isRequestingLocation.value = false
+                                                cts.cancel()
                                             }
-                                        }.addOnFailureListener { e ->
-                                            Log.e("MapBox", "Error getting lastLocation: ${e.message}", e)
                                         }
+                                    } finally {
+                                        // ensure flag reset when getCurrentLocation completes
+                                        isRequestingLocation.value = false
+                                        cts.cancel()
                                     }
                                 }
                                 .addOnFailureListener { e ->
                                     Log.e("MapBox", "Error getting current location: ${e.message}", e)
+                                    isRequestingLocation.value = false
+                                    try { cts.cancel() } catch (_: Exception) {}
                                 }
                         } catch (e: Exception) {
                             Log.e("MapBox", "Exception requesting device location: ${e.message}", e)
+                            isRequestingLocation.value = false
                         }
                     } else {
                         // Solicitar permisos usando el mismo launcher que definimos arriba (Activity Result API)
@@ -417,10 +434,17 @@ fun MapBox(
                     .padding(16.dp),
                 containerColor = MaterialTheme.colorScheme.primaryContainer
             ) {
-                Icon(
-                    imageVector = Icons.Default.MyLocation,
-                    contentDescription = "Mi ubicación"
-                )
+                if (isRequestingLocation.value) {
+                    CircularProgressIndicator(
+                        modifier = Modifier.size(20.dp),
+                        color = MaterialTheme.colorScheme.onPrimary
+                    )
+                } else {
+                    Icon(
+                        imageVector = Icons.Default.MyLocation,
+                        contentDescription = "Mi ubicación"
+                    )
+                }
             }
         }
     }
