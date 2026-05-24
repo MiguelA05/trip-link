@@ -88,7 +88,15 @@ class PublicationRepositoryImpl @Inject constructor(
         if (!snapshot.exists()) return false
 
         publicationRef.delete().await()
-        deleteFavoritesForPublication(publicationId)
+        try {
+            deleteFavoritesForPublication(publicationId)
+        } catch (e: Exception) {
+            Log.w(
+                "PublicationRepo",
+                "Publication deleted but favorite cleanup failed for pub=$publicationId",
+                e
+            )
+        }
         _publications.value = _publications.value.filterNot { it.id == publicationId }
         return true
     }
@@ -208,4 +216,3 @@ class PublicationRepositoryImpl @Inject constructor(
 
     private fun normalize(value: String): String = value.trim().lowercase()
 }
-

@@ -65,6 +65,8 @@ class ResetPasswordViewModel @Inject constructor(
     }
 
     fun saveNewPassword( oobCode: String) {
+        if (_isLoading.value) return
+
         if (!isFormValid) {
             _recoveryResult.value = RequestResult.Failure(appContext.getString(R.string.vm_reset_invalid_form))
             return
@@ -78,7 +80,6 @@ class ResetPasswordViewModel @Inject constructor(
                     newPassword = password.value
                 )
 
-                _isLoading.value = false
                 _recoveryResult.value = RequestResult.Success(
                     appContext.getString(R.string.vm_reset_success)
                 )
@@ -89,6 +90,7 @@ class ResetPasswordViewModel @Inject constructor(
                         e.localizedMessage ?: e.message.orEmpty()
                     )
                 )
+                _isLoading.value = false
             }
         }
     }

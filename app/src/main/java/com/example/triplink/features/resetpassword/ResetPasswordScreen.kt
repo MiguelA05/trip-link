@@ -25,7 +25,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -56,6 +58,8 @@ fun ResetPasswordScreen(
     val snackbarHostState = remember { SnackbarHostState() }
     val recoveryResult by viewModel.recoveryResult.collectAsState()
     val isLoading by viewModel.isLoading.collectAsState()
+    var isRedirecting by remember { mutableStateOf(false) }
+    val isSubmitBlocked = isLoading || isRedirecting
 
     BackHandler {
         onBack()
@@ -64,6 +68,9 @@ fun ResetPasswordScreen(
     LaunchedEffect(recoveryResult) {
         recoveryResult?.let { result ->
             val message = result.messageText()
+            if (!result.isErrorResult) {
+                isRedirecting = true
+            }
             snackbarHostState.showSnackbar(message)
             viewModel.resetRecoveryResult()
             if (!result.isErrorResult) {
@@ -160,8 +167,8 @@ fun ResetPasswordScreen(
             GeneralButton(
                 primary = true,
                 onClick = { viewModel.saveNewPassword(oobCode) },
-                enabled = viewModel.isFormValid,
-                isLoading = isLoading,
+                enabled = viewModel.isFormValid && !isSubmitBlocked,
+                isLoading = isSubmitBlocked,
                 text = stringResource(R.string.feature_reset_password_submit_action)
             )
         }
