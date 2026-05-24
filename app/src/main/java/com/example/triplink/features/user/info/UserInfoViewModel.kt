@@ -24,6 +24,8 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import java.util.Locale
 import javax.inject.Inject
@@ -54,6 +56,7 @@ data class UserInfoUiState(
 	val selectedContributionIndex: Int,
 	val selectedBottomTabIndex: Int,
 	val selectedContributionItems: List<UserContributionItem>,
+	val isContributionsLoading: Boolean = false,
 	val recentBadges: List<UserRecentBadgeItem> = emptyList(),
 	val favoritesCount: Int = 0,
 	val verifiedCount: Int = 0,
@@ -90,6 +93,7 @@ class UserInfoViewModel @Inject constructor(
 	val uiState: StateFlow<UserInfoUiState> = _uiState.asStateFlow()
 
 	private var currentUserId: String? = null
+	private var refreshContributionsJob: Job? = null
 
 	init {
 		observePublications()
@@ -105,7 +109,10 @@ class UserInfoViewModel @Inject constructor(
 	}
 
 	fun onContributionTabSelected(index: Int) {
-		_uiState.value = _uiState.value.copy(selectedContributionIndex = index)
+		_uiState.value = _uiState.value.copy(
+			selectedContributionIndex = index,
+			isContributionsLoading = true
+		)
 		refreshSelectedContributions()
 	}
 
@@ -160,16 +167,22 @@ class UserInfoViewModel @Inject constructor(
 	}
 
 	private fun refreshSelectedContributions() {
-		viewModelScope.launch {
+		refreshContributionsJob?.cancel()
+		refreshContributionsJob = viewModelScope.launch {
 			try {
-				val userId = currentUserId ?: return@launch
+				_uiState.value = _uiState.value.copy(isContributionsLoading = true)
+				val userId = currentUserId ?: run {
+					_uiState.value = _uiState.value.copy(isContributionsLoading = false)
+					return@launch
+				}
+				val selectedIndex = _uiState.value.selectedContributionIndex
 				val allUserPublications = publicationRepository.getUserPublications(userId)
 				val favorites = favoriteRepository.getFavoritePublications(userId)
 
-				val filtered = if (_uiState.value.selectedContributionIndex == 0) {
+				val filtered = if (selectedIndex == 0) {
 					favorites.map { it.toContributionItem() }
 				} else {
-					val targetEstado = when (_uiState.value.selectedContributionIndex) {
+					val targetEstado = when (selectedIndex) {
 						1 -> EstadoPublicacion.VERIFICADA
 						2 -> EstadoPublicacion.PENDIENTE
 						3 -> EstadoPublicacion.RECHAZADA
@@ -182,13 +195,17 @@ class UserInfoViewModel @Inject constructor(
 
 				_uiState.value = _uiState.value.copy(
 					selectedContributionItems = filtered,
+					isContributionsLoading = false,
 					favoritesCount = favorites.size,
 					verifiedCount = allUserPublications.count { it.estado == EstadoPublicacion.VERIFICADA },
 					pendingCount = allUserPublications.count { it.estado == EstadoPublicacion.PENDIENTE },
 					rejectedCount = allUserPublications.count { it.estado == EstadoPublicacion.RECHAZADA }
 				)
+			} catch (e: CancellationException) {
+				throw e
 			} catch (e: Exception) {
 				e.printStackTrace()
+				_uiState.value = _uiState.value.copy(isContributionsLoading = false)
 			}
 		}
 	}
