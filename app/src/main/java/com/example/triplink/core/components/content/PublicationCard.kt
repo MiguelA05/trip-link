@@ -28,6 +28,7 @@ import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
 import coil3.request.crossfade
 import com.example.triplink.R
+import com.example.triplink.core.components.common.OutlinedThemeText
 import com.example.triplink.core.localization.localizedLabel
 import com.example.triplink.domain.model.PuntoInteres
 import com.example.triplink.ui.theme.TextColors
@@ -207,9 +208,8 @@ fun PublicationCard(
                         .padding(16.dp)
                 ) {
                     Column {
-                        Text(
+                        OutlinedThemeText(
                             text = puntoInteres.titulo,
-                            color = TextColors.OnImage,
                             style = TextTokens.emphasized(TextTokens.title(), FontWeight.Bold),
                             maxLines = 1
                         )
@@ -222,9 +222,8 @@ fun PublicationCard(
                                         modifier = Modifier.size(14.dp)
                                     )
                                     Spacer(modifier = Modifier.width(4.dp))
-                                    Text(
+                                    OutlinedThemeText(
                                         text = puntoInteres.ubicacion.ciudad,
-                                        color = MaterialTheme.colorScheme.onSurface,
                                         style = TextTokens.bodySecondary(),
                                         maxLines = 1
                                     )
@@ -344,4 +343,3 @@ private fun Long.toRelativeTimeLabel(now: Long = System.currentTimeMillis()): St
         }
     }
 }
-

@@ -23,6 +23,7 @@ import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
 import coil3.request.crossfade
 import com.example.triplink.R
+import com.example.triplink.core.components.common.OutlinedThemeText
 import com.example.triplink.core.image.AppImageLoader
 import com.example.triplink.ui.theme.TextTokens
 
@@ -87,15 +88,14 @@ fun ImageCarousel(
                 .align(Alignment.BottomStart)
                 .padding(16.dp)
         ) {
-            Text(
+            OutlinedThemeText(
                 text = categoryLabel.uppercase(),
-                color = MaterialTheme.colorScheme.secondary,
                 style = TextTokens.emphasized(TextTokens.button(), androidx.compose.ui.text.font.FontWeight.Bold)
             )
-            Text(
+            OutlinedThemeText(
                 text = title,
-                color = MaterialTheme.colorScheme.onSurface,
-                style = TextTokens.emphasized(TextTokens.screenTitle(), androidx.compose.ui.text.font.FontWeight.Bold)
+                style = TextTokens.emphasized(TextTokens.screenTitle(), androidx.compose.ui.text.font.FontWeight.Bold),
+                maxLines = 2
             )
         }
 
@@ -197,6 +197,5 @@ private fun DotsIndicator(
         }
     }
 }
-
 
 

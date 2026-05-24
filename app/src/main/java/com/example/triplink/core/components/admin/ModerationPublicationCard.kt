@@ -44,6 +44,7 @@ import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
 import coil3.request.crossfade
 import com.example.triplink.R
+import com.example.triplink.core.components.common.OutlinedThemeText
 import com.example.triplink.core.image.AppImageLoader
 import com.example.triplink.features.admin.moderation.ModerationPublicationCardStatus
 import com.example.triplink.features.admin.moderation.ModerationPublicationCardUi
@@ -179,15 +180,17 @@ fun ModerationPublicationCard(
                             }
 
                             Column {
-                                Text(
+                                OutlinedThemeText(
                                     text = authorName,
                                     style = TextTokens.emphasized(TextTokens.chip(), FontWeight.SemiBold),
-                                    color = MaterialTheme.colorScheme.onPrimary,
+                                    maxLines = 1,
+                                    strokeWidth = 3f
                                 )
-                                Text(
+                                OutlinedThemeText(
                                     text = publication.timeLabel,
                                     style = TextTokens.caption(),
-                                    color = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.85f)
+                                    maxLines = 1,
+                                    strokeWidth = 3f
                                 )
                             }
                         }
